@@ -1,0 +1,1 @@
+// Bridge message serialization.

@@ -1,0 +1,1 @@
+"""Validated EA command dispatcher."""

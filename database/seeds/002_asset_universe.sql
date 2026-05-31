@@ -1,0 +1,1 @@
+-- Compatibility seed entrypoint. Apply database/seeds/001_asset_universe.sql.

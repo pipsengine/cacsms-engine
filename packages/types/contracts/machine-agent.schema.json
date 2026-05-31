@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cacsms.engine/contracts/machine-agent.schema.json",
+  "title": "Machine Agent Envelope",
+  "type": "object",
+  "required": ["agentKey", "machineKey", "type", "timestamp", "payload"],
+  "properties": {
+    "agentKey": { "type": "string", "minLength": 1 },
+    "machineKey": { "type": "string", "minLength": 1 },
+    "type": {
+      "enum": [
+        "register_machine", "send_heartbeat", "discover_mt5_terminals", "launch_mt5",
+        "restart_mt5", "deploy_ea", "update_ea", "capture_screenshots",
+        "monitor_resources", "forward_execution_commands",
+        "report_broker_account_health", "recover_failed_terminals"
+      ]
+    },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "payload": { "type": "object" }
+  },
+  "additionalProperties": false
+}

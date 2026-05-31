@@ -1,0 +1,1 @@
+-- Risk-rule defaults are seeded by database/seeds/002_operational_defaults.sql.

@@ -1,0 +1,20 @@
+{
+  "name": "cacsms-engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CACSMS Engine enterprise trading intelligence foundation",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "services/*"
+  ],
+  "scripts": {
+    "dev": "node apps/web/server.mjs",
+    "dev:web": "node apps/web/server.mjs",
+    "check": "node --check apps/web/app.js && node --check apps/web/workflow-page.js && node --check apps/web/server.mjs && node --check apps/api/src/server.mjs && node --check packages/workflow/src/index.js && node --check packages/workflow/src/mock-data.js && node --check packages/execution/src/gate.js",
+    "test": "node --test packages/workflow/test/*.test.js packages/execution/test/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

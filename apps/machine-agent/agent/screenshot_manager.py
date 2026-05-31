@@ -1,0 +1,1 @@
+"""Terminal screenshot capture."""

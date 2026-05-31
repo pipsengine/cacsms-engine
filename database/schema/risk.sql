@@ -1,0 +1,1 @@
+-- Risk schema reference. Canonical changes live in database/migrations.

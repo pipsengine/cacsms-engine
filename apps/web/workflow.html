@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CACSMS Engine | End-to-End Workflow</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/workflow.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="CACSMS Engine home"><span class="brand-mark">C</span><span><strong>CACSMS</strong><small>ENGINE</small></span></a>
+        <label class="global-search"><span class="icon">?</span><input type="search" placeholder="Search workflow, asset, machine..." /><kbd>CTRL K</kbd></label>
+        <div class="topbar-actions">
+          <div class="workflow-pill"><span class="pulse"></span><strong>SYSTEM</strong><span>OPERATIONAL</span></div>
+          <div class="ai-indicator"><span class="pulse purple"></span><small>AI STATUS</small><strong>ONLINE</strong></div>
+          <div class="session"><small>MARKET SESSION</small><strong>LONDON / NY</strong></div>
+          <button class="icon-button" aria-label="Alerts"><span>!</span><b>3</b></button>
+          <button class="icon-button" aria-label="Notifications"><span>#</span><b>8</b></button>
+          <button class="user-menu" aria-label="User menu"><span>CA</span><i></i></button>
+        </div>
+      </header>
+      <aside class="sidebar">
+        <div class="sidebar-heading">CONTROL SYSTEMS</div>
+        <nav id="workflow-nav" aria-label="Primary navigation"></nav>
+        <div class="sidebar-footer"><div class="operator"><span class="operator-dot"></span><div><small>SYSTEM STATUS</small><strong>ALL SYSTEMS NOMINAL</strong></div></div><button id="collapse-sidebar" class="collapse-button" aria-label="Collapse sidebar">&lt;</button></div>
+      </aside>
+      <main class="workspace workflow-workspace">
+        <section class="workflow-page-header">
+          <div>
+            <p class="eyebrow">AUTONOMOUS OPERATIONS / LIVE WORKFLOW</p>
+            <h1>CACSMS ENGINE - END TO END WORKFLOW</h1>
+            <p class="subtitle">FROM MARKET INTELLIGENCE TO TRADE EXECUTION ACROSS MULTIPLE MT5 ENVIRONMENTS</p>
+          </div>
+          <div class="workflow-run-meta"><span class="status-chip running">RUNNING</span><strong>WF-2026-0531-0847</strong><small>STAGE 09 / 14</small></div>
+        </section>
+        <section class="workflow-layout">
+          <div class="workflow-side-column">
+            <article class="workflow-panel"><div class="panel-title blue">DATA SOURCES</div><div id="data-sources"></div></article>
+            <article class="workflow-panel"><div class="panel-title teal">INFRASTRUCTURE LAYER</div><div id="infrastructure-layer"></div></article>
+          </div>
+          <div class="workflow-center-column">
+            <div class="pipeline-heading"><span>14-STAGE AUTONOMOUS PIPELINE</span><small>CONTINUOUS OPERATION MODE</small></div>
+            <div id="workflow-pipeline"></div>
+            <div class="loop-back">LOOP BACK TO STAGE 1 FOR CONTINUOUS OPERATION</div>
+          </div>
+          <div class="workflow-side-column">
+            <article class="workflow-panel reject-panel"><div class="panel-title red">REJECT / STOP CONDITIONS</div><div id="reject-conditions"></div></article>
+            <article class="workflow-panel"><div class="panel-title purple-bg">20-ASSET UNIVERSE (PHASE 1 + 2)</div><div id="asset-universe"></div></article>
+          </div>
+        </section>
+        <section class="workflow-bottom-grid">
+          <article class="workflow-panel audit-engine"><div class="panel-title blue">AUDIT TRAIL & REPORTING ENGINE</div><p>Complete audit log, compliance report, performance report, and real-time notifications.</p><div id="audit-items"></div></article>
+          <article class="workflow-panel outcome-panel"><div class="panel-title green">FINAL OUTCOME</div><div id="final-outcome"></div></article>
+        </section>
+        <section class="key-points"><strong>KEY POINTS</strong><div id="key-points"></div></section>
+      </main>
+      <footer class="statusbar">
+        <div><span class="dot success"></span> API <strong>ONLINE</strong></div><div>DATABASE <strong>READY</strong></div><div>WEBSOCKET <strong>ONLINE</strong></div><div>REDIS <strong>READY</strong></div><div>RABBITMQ <strong>READY</strong></div><div class="status-spacer"></div><div>ENV <strong>FOUNDATION</strong></div><div id="utc-clock">UTC</div>
+      </footer>
+    </div>
+    <script type="module" src="/workflow-page.js"></script>
+  </body>
+</html>

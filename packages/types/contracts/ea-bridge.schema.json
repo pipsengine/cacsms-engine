@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cacsms.engine/contracts/ea-bridge.schema.json",
+  "title": "EA Bridge Signed Command",
+  "type": "object",
+  "required": ["type", "correlationId", "token", "payload"],
+  "properties": {
+    "type": { "enum": ["open", "modify", "close", "partial_close", "move_sl_tp", "breakeven", "trailing_stop"] },
+    "correlationId": { "type": "string", "minLength": 1 },
+    "token": { "type": "string", "minLength": 1 },
+    "payload": { "type": "object" }
+  },
+  "additionalProperties": false
+}

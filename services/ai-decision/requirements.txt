@@ -1,0 +1,4 @@
+openai==1.59.7
+langgraph==0.2.62
+crewai==0.95.0
+pgvector==0.3.6

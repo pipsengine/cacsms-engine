@@ -1,0 +1,1 @@
+-- Workflow stages are defined by packages/workflow and instantiated per run.

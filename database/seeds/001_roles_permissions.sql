@@ -1,0 +1,1 @@
+-- Compatibility seed entrypoint. Apply database/seeds/002_operational_defaults.sql.

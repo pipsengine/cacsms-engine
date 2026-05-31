@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: timescale/timescaledb-ha:pg16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-cacsms}
+      POSTGRES_USER: ${POSTGRES_USER:-cacsms}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-replace-me}
+    ports: ["5432:5432"]
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ../database/migrations/001_foundation.sql:/docker-entrypoint-initdb.d/001_foundation.sql:ro
+      - ../database/migrations/002_level_1_architecture.sql:/docker-entrypoint-initdb.d/002_level_1_architecture.sql:ro
+      - ../database/migrations/003_operational_workflow_foundation.sql:/docker-entrypoint-initdb.d/003_operational_workflow_foundation.sql:ro
+      - ../database/seeds/001_asset_universe.sql:/docker-entrypoint-initdb.d/004_asset_universe.sql:ro
+      - ../database/seeds/002_operational_defaults.sql:/docker-entrypoint-initdb.d/005_operational_defaults.sql:ro
+
+  redis:
+    image: redis:7.4-alpine
+    ports: ["6379:6379"]
+
+  rabbitmq:
+    image: rabbitmq:4.0-management-alpine
+    ports: ["5672:5672", "15672:15672"]
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    command: ["--config.file=/etc/prometheus/prometheus.yml"]
+    ports: ["9090:9090"]
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    ports: ["3000:3000"]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-replace-me}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./observability/grafana-datasources.yml:/etc/grafana/provisioning/datasources/cacsms.yml:ro
+
+  loki:
+    image: grafana/loki:3.1.1
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    ports: ["3100:3100"]
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.108.0
+    command: ["--config=/etc/otelcol/config.yml"]
+    ports: ["4317:4317", "4318:4318", "8889:8889"]
+    volumes:
+      - ./observability/otel-collector.yml:/etc/otelcol/config.yml:ro
+
+volumes:
+  postgres-data:
+  grafana-data:

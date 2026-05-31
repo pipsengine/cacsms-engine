@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="CACSMS Engine institutional executive command center" />
+    <title>CACSMS Engine | Executive Command Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="CACSMS Engine home">
+          <span class="brand-mark">C</span>
+          <span><strong>CACSMS</strong><small>ENGINE</small></span>
+        </a>
+        <label class="global-search">
+          <span class="icon">⌕</span>
+          <input type="search" placeholder="Search assets, workflows, machines..." />
+          <kbd>⌘ K</kbd>
+        </label>
+        <div class="topbar-actions">
+          <div class="workflow-pill"><span class="pulse"></span><strong>WORKFLOW</strong><span>RUNNING</span></div>
+          <button class="icon-button" aria-label="Alerts"><span>△</span><b>3</b></button>
+          <button class="icon-button" aria-label="Notifications"><span>♧</span><b>8</b></button>
+          <div class="ai-indicator"><span class="pulse purple"></span><small>AI STATUS</small><strong>ONLINE</strong></div>
+          <div class="session"><small>SESSION</small><strong>LDN / NY OVERLAP</strong></div>
+          <button class="user-menu" aria-label="User menu"><span>CA</span><i></i></button>
+        </div>
+      </header>
+
+      <aside class="sidebar">
+        <div class="sidebar-heading">CONTROL SYSTEMS</div>
+        <nav id="main-nav" aria-label="Primary navigation"></nav>
+        <div class="sidebar-footer">
+          <div class="operator"><span class="operator-dot"></span><div><small>SYSTEM STATUS</small><strong>ALL SYSTEMS NOMINAL</strong></div></div>
+          <button id="collapse-sidebar" class="collapse-button" aria-label="Collapse sidebar">‹</button>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <section class="page-header">
+          <div>
+            <p class="eyebrow">EXECUTIVE OPERATIONS / LIVE ENVIRONMENT</p>
+            <h1>Executive Command Center</h1>
+            <p class="subtitle">Unified intelligence, risk, execution, and infrastructure oversight.</p>
+          </div>
+          <div class="header-meta">
+            <div><small>MARKET SESSION</small><strong><span class="dot success"></span>LONDON / NEW YORK</strong></div>
+            <div><small>LAST SYNC</small><strong id="last-sync">14:32:08 UTC</strong></div>
+            <button class="primary-button">Generate Report</button>
+          </div>
+        </section>
+
+        <section id="kpi-grid" class="kpi-grid" aria-label="Executive KPIs"></section>
+
+        <section class="dashboard-grid dashboard-grid-main">
+          <article class="card workflow-card">
+            <div class="card-heading">
+              <div><p class="eyebrow">ORCHESTRATION</p><h2>Live Workflow Status</h2></div>
+              <div class="heading-actions"><span class="status-chip running">RUNNING</span><button class="text-button">View Detail →</button></div>
+            </div>
+            <div class="workflow-summary">
+              <div><small>RUN ID</small><strong>WF-2026-0531-0847</strong></div>
+              <div><small>ELAPSED</small><strong>08m 42s</strong></div>
+              <div><small>PROGRESS</small><strong>64%</strong></div>
+              <div><small>ACTIVE STAGE</small><strong>09 / RISK VALIDATION</strong></div>
+            </div>
+            <div class="progress-track"><span style="width:64%"></span></div>
+            <div id="workflow-stages" class="workflow-stages"></div>
+          </article>
+
+          <article class="card opportunities-card">
+            <div class="card-heading">
+              <div><p class="eyebrow">MARKET INTELLIGENCE</p><h2>Top Opportunities</h2></div>
+              <button class="text-button">Universe Scanner →</button>
+            </div>
+            <div id="opportunities" class="opportunity-list"></div>
+          </article>
+        </section>
+
+        <section class="dashboard-grid dashboard-grid-secondary">
+          <article class="card risk-card">
+            <div class="card-heading"><div><p class="eyebrow">RISK INTELLIGENCE</p><h2>Portfolio Risk</h2></div><span class="status-chip success">NORMAL</span></div>
+            <div class="risk-score"><div class="gauge"><span>28</span><small>/100</small></div><div><strong>LOW RISK</strong><p>Within approved parameters</p></div></div>
+            <div class="metric-rows">
+              <div><span>Daily drawdown</span><strong>1.24% <small>/ 4.00%</small></strong></div>
+              <div><span>Capital deployed</span><strong>34.8% <small>/ 65.0%</small></strong></div>
+              <div><span>Open exposure</span><strong>$184,250</strong></div>
+            </div>
+          </article>
+
+          <article class="card execution-card">
+            <div class="card-heading"><div><p class="eyebrow">EXECUTION CENTER</p><h2>Live Positions</h2></div><span class="count-badge">04 OPEN</span></div>
+            <div id="positions" class="position-list"></div>
+          </article>
+
+          <article class="card infra-card">
+            <div class="card-heading"><div><p class="eyebrow">INFRASTRUCTURE</p><h2>Fleet Status</h2></div><span class="status-chip success">HEALTHY</span></div>
+            <div class="infra-hero"><strong>99.98%</strong><span>OPERATIONAL UPTIME</span></div>
+            <div class="infra-grid">
+              <div><strong>1,248</strong><span>Machines</span></div><div><strong>5,672</strong><span>MT5 Terms</span></div>
+              <div><strong>18,420</strong><span>Accounts</span></div><div><strong>42 ms</strong><span>Avg Latency</span></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="dashboard-grid dashboard-grid-bottom">
+          <article class="card performance-card">
+            <div class="card-heading">
+              <div><p class="eyebrow">PERFORMANCE OVERVIEW</p><h2>Equity Performance</h2></div>
+              <div class="range-tabs"><button>1D</button><button>1W</button><button class="active">1M</button><button>3M</button></div>
+            </div>
+            <div class="chart-head"><strong>+$28,452.84</strong><span>+8.42% this month</span></div>
+            <div class="chart-wrap">
+              <svg viewBox="0 0 800 180" preserveAspectRatio="none" aria-label="Equity performance chart">
+                <defs><linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#2563EB" stop-opacity=".22"/><stop offset="1" stop-color="#2563EB" stop-opacity="0"/></linearGradient></defs>
+                <path class="chart-grid" d="M0 25H800M0 75H800M0 125H800M0 175H800"/>
+                <path class="chart-area" d="M0 154 C60 149 70 124 120 129 S180 117 220 125 S290 93 340 103 S395 77 430 85 S500 58 545 68 S610 48 655 52 S730 22 800 28 V180 H0Z"/>
+                <path class="chart-line" d="M0 154 C60 149 70 124 120 129 S180 117 220 125 S290 93 340 103 S395 77 430 85 S500 58 545 68 S610 48 655 52 S730 22 800 28"/>
+              </svg>
+              <div class="chart-axis"><span>MAY 01</span><span>MAY 08</span><span>MAY 15</span><span>MAY 22</span><span>MAY 31</span></div>
+            </div>
+          </article>
+
+          <article class="card ai-card">
+            <div class="card-heading"><div><p class="eyebrow">AI OPERATING SYSTEM</p><h2>Intelligence Status</h2></div><span class="status-chip purple">ONLINE</span></div>
+            <div class="ai-core"><div class="ai-orbit"><span></span><i></i></div><div><strong>DECISION ENGINE</strong><p>Analyzing 20 assets across 8 models</p></div></div>
+            <div class="metric-rows compact">
+              <div><span>Models active</span><strong>08 / 08</strong></div>
+              <div><span>Debate confidence</span><strong>87.4%</strong></div>
+              <div><span>Signals processed</span><strong>1,842</strong></div>
+            </div>
+          </article>
+
+          <article class="card alerts-card">
+            <div class="card-heading"><div><p class="eyebrow">MONITORING CENTER</p><h2>Active Alerts</h2></div><span class="count-badge warning">03 OPEN</span></div>
+            <div id="alerts" class="alerts-list"></div>
+          </article>
+        </section>
+      </main>
+
+      <footer class="statusbar">
+        <div><span class="dot success"></span> SYSTEM OPERATIONAL</div>
+        <div>API <strong>ONLINE</strong></div><div>DATABASE <strong>READY</strong></div><div>WEBSOCKET <strong>ONLINE</strong></div><div>REDIS <strong>READY</strong></div><div>RABBITMQ <strong>READY</strong></div>
+        <div class="status-spacer"></div><div>ENV <strong>FOUNDATION</strong></div><div id="utc-clock">UTC 14:32:08</div>
+      </footer>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
