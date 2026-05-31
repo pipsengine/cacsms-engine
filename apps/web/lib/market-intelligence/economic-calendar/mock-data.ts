@@ -1,0 +1,1 @@
+export const economicCalendarMock={status:"SYNCED",eventRiskMode:"CAUTION",eventsToday:18,highImpactEvents:3,nextHighImpactEvent:"USD CPI",countdownMinutes:135,workflowPermission:"RESTRICTED",calendarFreshness:"Live",eventRiskScore:68};

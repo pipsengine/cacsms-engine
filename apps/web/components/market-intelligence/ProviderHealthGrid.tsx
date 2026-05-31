@@ -1,0 +1,1 @@
+import type{MarketDataProvider}from"../../lib/market-intelligence/market-data-types";export function ProviderHealthGrid({providers}:{providers:MarketDataProvider[]}){return <section className="md-panel"><h2>Provider Health Grid</h2>{providers.map(x=><p key={x.id}>{x.name} / {x.status} / {x.latencyMs}ms / {x.qualityScore}%</p>)}</section>}

@@ -1,0 +1,11 @@
+BEGIN;
+CREATE TABLE market.social_sentiment_sources(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),source_key text UNIQUE NOT NULL,name text NOT NULL,status text NOT NULL,config jsonb NOT NULL DEFAULT '{}'::jsonb);
+CREATE TABLE market.social_sentiment_items(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),source_id uuid REFERENCES market.social_sentiment_sources(id),topic text NOT NULL,sentiment text NOT NULL,mention_volume integer,confidence numeric(7,4),trust_score numeric(7,4),risk_flag text,created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE market.social_sentiment_scores(observed_at timestamptz NOT NULL DEFAULT now(),id uuid NOT NULL DEFAULT gen_random_uuid(),score numeric(7,4),mode text,trust_score numeric(7,4),mention_volume integer,PRIMARY KEY(observed_at,id));
+CREATE TABLE market.social_asset_sentiment(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),symbol text UNIQUE NOT NULL,bullish numeric(7,4),bearish numeric(7,4),neutral numeric(7,4),crowd_bias text,crowd_risk text,workflow_impact text);
+CREATE TABLE market.retail_positioning(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),symbol text UNIQUE NOT NULL,retail_long numeric(7,4),retail_short numeric(7,4),crowding_score numeric(7,4),contrarian_risk text);
+CREATE TABLE market.sentiment_spikes(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),symbol text NOT NULL,spike_type text NOT NULL,magnitude text,confidence numeric(7,4),recommended_action text,detected_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE market.contrarian_signals(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),symbol text NOT NULL,crowd_bias text,structure_bias text,contrarian_score numeric(7,4),recommendation text,created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE market.social_source_health(observed_at timestamptz NOT NULL DEFAULT now(),id uuid NOT NULL DEFAULT gen_random_uuid(),source_id uuid REFERENCES market.social_sentiment_sources(id),status text,trust_score numeric(7,4),noise_score numeric(7,4),error_rate numeric(7,4),PRIMARY KEY(observed_at,id));
+CREATE TABLE market.social_sentiment_audit_logs(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),event_type text NOT NULL,payload jsonb NOT NULL DEFAULT '{}'::jsonb,created_at timestamptz NOT NULL DEFAULT now());
+COMMIT;

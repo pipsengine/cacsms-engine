@@ -1,0 +1,1 @@
+export function EconomicCalendarHeader(){return <header><h1>Economic Calendar</h1><p>Monitor macroeconomic events, central bank decisions, high-impact releases and event-driven trading restrictions for CACSMS Engine.</p></header>}

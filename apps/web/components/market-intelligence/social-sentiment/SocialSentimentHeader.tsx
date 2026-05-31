@@ -1,0 +1,1 @@
+export function SocialSentimentHeader(){return <header><h1>Social &amp; Community Sentiment</h1><p>Monitor retail positioning, crowd bias, community trend, social media discussion and sentiment spikes across the CACSMS Engine 20-asset universe.</p></header>}

@@ -1,0 +1,1 @@
+export function EconomicCalendarStatusStrip(){return <section>{[["Calendar Status","SYNCED"],["Event Risk Mode","CAUTION"],["Events Today","18"],["High Impact Events","3"],["Next High Impact Event","USD CPI in 2h 15m"],["Workflow Permission","RESTRICTED"]].map(([a,b])=><article key={a}><small>{a}</small><strong>{b}</strong></article>)}</section>}

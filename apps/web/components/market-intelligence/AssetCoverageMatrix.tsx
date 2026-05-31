@@ -1,0 +1,1 @@
+import type{AssetFeedCoverage}from"../../lib/market-intelligence/market-data-types";export function AssetCoverageMatrix({assets}:{assets:AssetFeedCoverage[]}){return <section className="md-panel"><h2>Asset Feed Coverage Matrix</h2>{assets.map(x=><span key={x.symbol}>{x.symbol} {x.coverage}%</span>)}</section>}

@@ -1,0 +1,1 @@
+export function NewsSentimentHeader(){return <header><h1>News &amp; Sentiment Sources</h1><p>Monitor financial news, RSS feeds, AI sentiment, market tone and asset-impact intelligence for autonomous trade decisioning.</p></header>}

@@ -1,0 +1,1 @@
+export const socialSentimentMock={status:"ACTIVE",crowdMode:"NORMAL",sentimentScore:58,mentionVolume:12480,spikeAlerts:2,trustScore:74,crowdRiskAssets:3,contrarianSignals:2,workflowPermission:"ALLOWED_WITH_WARNING"};

@@ -1,0 +1,1 @@
+export function FeedOperationsCenter(){return <section className="md-panel"><h2>Feed Operations Center</h2>{["Connect Feed","Disconnect Feed","Validate Feed","Run Quality Check","Compare Providers","Sync Symbols","Restart Feed","Generate Feed Report"].map(x=><button key={x}>{x}</button>)}</section>}

@@ -1,0 +1,1 @@
+export function EconomicCalendarActionCenter(){return <section><h2>Action Center</h2>{["Refresh Calendar","Sync Events","Run Event Risk Scan","Apply Restriction Windows","Release Restrictions","Push Event to AI Debate","Push Event to Risk Engine","Export Calendar Snapshot","Configure Event Rules"].map(x=><button key={x}>{x}</button>)}</section>}

@@ -1,0 +1,1 @@
+export function SocialSentimentActionCenter(){return <section><h2>Action Center</h2>{["Refresh Social Feeds","Run Crowd Sentiment Scan","Detect Sentiment Spikes","Generate Contrarian Signals","Send Watchlist to AI Decision","Push Crowd Risk to AI Debate","Export Sentiment Snapshot","Configure Sources"].map(x=><button key={x}>{x}</button>)}</section>}

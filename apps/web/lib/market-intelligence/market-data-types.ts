@@ -1,0 +1,3 @@
+export type MarketDataProvider={id:string;name:string;type:string;status:string;latencyMs:number;tickRate:number;qualityScore:number;lastSync:string;coverage:string;workflowImpact:string};
+export type AssetFeedCoverage={symbol:string;provider:string;priceFeed:boolean;tickFeed:boolean;volumeFeed:boolean;spreadFeed:boolean;status:string;coverage:number};
+export type MarketDataProvidersDashboard={market_data_status:string;feed_quality_score:number;latency_ms:number;coverage:AssetFeedCoverage[];symbols_online:number;workflow_ready:boolean;providers:MarketDataProvider[];tickRate:number;packetLoss:number;reconnects:number;session:string};

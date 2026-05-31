@@ -1,0 +1,1 @@
+export function SocialSentimentStatusStrip(){return <section>{[["Source Status","ACTIVE"],["Crowd Sentiment Mode","NORMAL"],["Retail Bias","58% Risk-On"],["Mention Volume","12,480"],["Sentiment Spike Alerts","2"],["Trust Score","74%"]].map(([a,b])=><article key={a}><small>{a}</small><strong>{b}</strong></article>)}</section>}

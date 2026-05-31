@@ -1,0 +1,1 @@
+export function NewsSentimentActionCenter(){return <section><h2>Action Center</h2>{["Refresh News","Run AI Sentiment Scan","Validate News Sources","Create News Risk Alert","Push to AI Debate","Push to Risk Watch","Export Sentiment Snapshot","Open Source Configuration"].map(x=><button key={x}>{x}</button>)}</section>}

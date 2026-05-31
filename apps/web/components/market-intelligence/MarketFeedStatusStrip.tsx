@@ -1,0 +1,1 @@
+export function MarketFeedStatusStrip(){return <section className="md-status-strip">{[["Feed Status","LIVE"],["Feed Quality","98%"],["Feed Freshness","REAL-TIME"],["Latency","42ms"],["Asset Coverage","20/20"],["Workflow Status","READY"]].map(([a,b])=><article key={a}><small>{a}</small><strong>{b}</strong></article>)}</section>}

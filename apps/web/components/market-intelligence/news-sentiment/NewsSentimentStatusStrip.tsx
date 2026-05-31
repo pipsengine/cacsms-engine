@@ -1,0 +1,1 @@
+export function NewsSentimentStatusStrip(){return <section>{[["News Feed Status","LIVE"],["Sentiment Score","62% Risk-On"],["News Risk Mode","MODERATE"],["Active Headlines","128"],["High Impact Headlines","4"],["Source Health","96%"]].map(([a,b])=><article key={a}><small>{a}</small><strong>{b}</strong></article>)}</section>}

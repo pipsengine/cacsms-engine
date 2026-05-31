@@ -3,6 +3,10 @@ import { createServer } from "node:http";
 import { ASSET_SCORES, ASSET_UNIVERSE, MOCK_WORKFLOW, WORKFLOW_EVENTS } from "../../../packages/workflow/src/mock-data.js";
 import { DATA_SOURCES, evaluateDataQualityGate } from "../../../packages/market-intelligence/src/data-sources.js";
 import { BROKER_FEEDS, ECONOMIC_EVENTS, NEWS_SENTIMENT, TIMELINE_EVENTS, getMarketIntelligenceDashboard } from "../../../packages/market-intelligence/src/dashboard-mock.js";
+import { MARKET_DATA_COVERAGE, MARKET_DATA_EVENTS, MARKET_DATA_PROVIDERS, evaluateMarketDataQuality, getMarketDataProvidersDashboard } from "../../../packages/market-intelligence/src/market-data-providers.js";
+import { AI_HEADLINE_CLASSIFICATION, NEWS_ASSET_IMPACT, NEWS_HEADLINES, NEWS_RISK_EVENTS, NEWS_SOURCES, evaluateNewsSentiment, getNewsSentimentDashboard } from "../../../packages/market-intelligence/src/news-sentiment.js";
+import { CENTRAL_BANK_WATCH, CURRENCY_ASSET_IMPACT, ECONOMIC_CALENDAR_EVENTS, ECONOMIC_RESTRICTION_WINDOWS, evaluateEconomicCalendar, getEconomicCalendarDashboard } from "../../../packages/market-intelligence/src/economic-calendar.js";
+import { ASSET_CROWD_SENTIMENT, CONTRARIAN_SIGNALS, RETAIL_POSITIONING, SENTIMENT_SPIKES, SOCIAL_SENTIMENT_ITEMS, SOCIAL_SOURCE_HEALTH, evaluateSocialSentiment, getSocialSentimentDashboard } from "../../../packages/market-intelligence/src/social-sentiment.js";
 
 const port = Number(process.env.API_PORT || 8080);
 let workflow = { ...MOCK_WORKFLOW };
@@ -48,6 +52,30 @@ const routes = {
   "GET /api/market-intelligence/broker-feeds": () => ({ brokerHealth: 97, portfolioSync: "Live", feeds: BROKER_FEEDS }),
   "GET /api/market-intelligence/data-quality-gate": () => evaluateDataQualityGate(),
   "GET /api/market-intelligence/feed-events": () => ({ events: TIMELINE_EVENTS })
+  ,"GET /api/market-data/providers": () => getMarketDataProvidersDashboard()
+  ,"GET /api/market-data/providers/health": () => ({ providers: MARKET_DATA_PROVIDERS })
+  ,"GET /api/market-data/providers/latency": () => ({ averageLatencyMs: evaluateMarketDataQuality().latency_ms, providers: MARKET_DATA_PROVIDERS.map(({ id, name, latencyMs }) => ({ id, name, latencyMs })) })
+  ,"GET /api/market-data/providers/coverage": () => ({ symbolsOnline: MARKET_DATA_COVERAGE.length, assets: MARKET_DATA_COVERAGE })
+  ,"GET /api/market-data/providers/events": () => ({ events: MARKET_DATA_EVENTS })
+  ,"GET /api/market-data/providers/quality": () => evaluateMarketDataQuality()
+  ,"GET /api/market-intelligence/news-sentiment/dashboard": () => getNewsSentimentDashboard()
+  ,"GET /api/market-intelligence/news-sentiment/headlines": () => ({ headlines: NEWS_HEADLINES })
+  ,"GET /api/market-intelligence/news-sentiment/sources": () => ({ sources: NEWS_SOURCES })
+  ,"GET /api/market-intelligence/news-sentiment/asset-impact": () => ({ assets: NEWS_ASSET_IMPACT })
+  ,"GET /api/market-intelligence/news-sentiment/risk-panel": () => ({ ...evaluateNewsSentiment(), events: NEWS_RISK_EVENTS })
+  ,"GET /api/market-intelligence/economic-calendar/dashboard": () => getEconomicCalendarDashboard()
+  ,"GET /api/market-intelligence/economic-calendar/events": () => ({ events: ECONOMIC_CALENDAR_EVENTS })
+  ,"GET /api/market-intelligence/economic-calendar/high-impact": () => ({ event: ECONOMIC_CALENDAR_EVENTS[0], ...evaluateEconomicCalendar() })
+  ,"GET /api/market-intelligence/economic-calendar/restrictions": () => ({ restrictions: ECONOMIC_RESTRICTION_WINDOWS })
+  ,"GET /api/market-intelligence/economic-calendar/asset-impact": () => ({ assets: CURRENCY_ASSET_IMPACT })
+  ,"GET /api/market-intelligence/economic-calendar/central-banks": () => ({ centralBanks: CENTRAL_BANK_WATCH })
+  ,"GET /api/market-intelligence/social-sentiment/dashboard": () => getSocialSentimentDashboard()
+  ,"GET /api/market-intelligence/social-sentiment/feed": () => ({ items: SOCIAL_SENTIMENT_ITEMS })
+  ,"GET /api/market-intelligence/social-sentiment/asset-matrix": () => ({ assets: ASSET_CROWD_SENTIMENT })
+  ,"GET /api/market-intelligence/social-sentiment/retail-positioning": () => ({ positioning: RETAIL_POSITIONING })
+  ,"GET /api/market-intelligence/social-sentiment/spikes": () => ({ spikes: SENTIMENT_SPIKES })
+  ,"GET /api/market-intelligence/social-sentiment/contrarian": () => ({ signals: CONTRARIAN_SIGNALS })
+  ,"GET /api/market-intelligence/social-sentiment/source-health": () => ({ sources: SOCIAL_SOURCE_HEALTH })
 };
 
 const actions = {
@@ -76,6 +104,18 @@ const actions = {
   "/api/market-intelligence/scan": () => ({ type: "market_intelligence.scan.completed", scannedSources: DATA_SOURCES.length, status: "completed" }),
   "/api/market-intelligence/refresh-feeds": () => ({ type: "market_intelligence.feeds.refreshed", refreshedSources: DATA_SOURCES.length, status: "completed" }),
   "/api/market-intelligence/test-sources": () => ({ type: "market_intelligence.sources.tested", testedSources: DATA_SOURCES.length, status: "passed" })
+  ,"/api/market-data/providers/validate": () => ({ type: "market_data.providers.validated", status: "passed", providers: MARKET_DATA_PROVIDERS.length, ...evaluateMarketDataQuality() })
+  ,"/api/market-data/providers/restart": () => ({ type: "market_data.provider.restarted", status: "completed" })
+  ,"/api/market-intelligence/news-sentiment/refresh": () => ({ type: "news_sentiment.refreshed", status: "completed", headlines: 128 })
+  ,"/api/market-intelligence/news-sentiment/classify": () => ({ type: "news_sentiment.headline.classified", status: "completed", classification: AI_HEADLINE_CLASSIFICATION })
+  ,"/api/market-intelligence/news-sentiment/create-alert": () => ({ type: "news_sentiment.risk_alert.created", status: "completed", permission: evaluateNewsSentiment().workflow_permission })
+  ,"/api/market-intelligence/economic-calendar/sync": () => ({ type: "economic_calendar.synced", status: "completed", events: 18 })
+  ,"/api/market-intelligence/economic-calendar/risk-scan": () => ({ type: "economic_calendar.risk_scan.completed", ...evaluateEconomicCalendar(), action_status: "completed" })
+  ,"/api/market-intelligence/economic-calendar/apply-restriction": () => ({ type: "economic_calendar.restriction.applied", status: "completed", permission: "RESTRICTED" })
+  ,"/api/market-intelligence/economic-calendar/release-restriction": () => ({ type: "economic_calendar.restriction.released", status: "completed" })
+  ,"/api/market-intelligence/social-sentiment/refresh": () => ({ type: "social_sentiment.refreshed", status: "completed", mentions: 12480 })
+  ,"/api/market-intelligence/social-sentiment/run-scan": () => ({ type: "social_sentiment.scan.completed", ...evaluateSocialSentiment(), action_status: "completed" })
+  ,"/api/market-intelligence/social-sentiment/generate-contrarian-signals": () => ({ type: "social_sentiment.contrarian.generated", status: "completed", signals: CONTRARIAN_SIGNALS })
 };
 
 const server = createServer((request, response) => {
