@@ -9,10 +9,12 @@
     "services/*"
   ],
   "scripts": {
-    "dev": "node apps/web/server.mjs",
+    "dev": "node scripts/dev.mjs",
     "dev:web": "node apps/web/server.mjs",
-    "check": "node --check apps/web/app.js && node --check apps/web/workflow-page.js && node --check apps/web/server.mjs && node --check apps/api/src/server.mjs && node --check packages/workflow/src/index.js && node --check packages/workflow/src/mock-data.js && node --check packages/execution/src/gate.js",
-    "test": "node --test packages/workflow/test/*.test.js packages/execution/test/*.test.js"
+    "dev:api": "node apps/api/src/server.mjs",
+    "stop": "node scripts/stop.mjs",
+    "check": "node --check scripts/dev.mjs && node --check scripts/stop.mjs && node --check apps/web/enterprise-sidebar.js && node --check apps/web/app.js && node --check apps/web/workflow-page.js && node --check apps/web/market-intelligence-page.js && node --check apps/web/server.mjs && node --check apps/api/src/server.mjs && node --check packages/workflow/src/index.js && node --check packages/workflow/src/mock-data.js && node --check packages/execution/src/gate.js && node --check packages/market-intelligence/src/data-sources.js && node --check packages/market-intelligence/src/dashboard-mock.js",
+    "test": "node --test packages/workflow/test/*.test.js packages/execution/test/*.test.js packages/market-intelligence/test/*.test.js"
   },
   "engines": {
     "node": ">=20"

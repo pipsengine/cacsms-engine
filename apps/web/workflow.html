@@ -27,27 +27,48 @@
         <div class="sidebar-footer"><div class="operator"><span class="operator-dot"></span><div><small>SYSTEM STATUS</small><strong>ALL SYSTEMS NOMINAL</strong></div></div><button id="collapse-sidebar" class="collapse-button" aria-label="Collapse sidebar">&lt;</button></div>
       </aside>
       <main class="workspace workflow-workspace">
-        <section class="workflow-page-header">
-          <div>
-            <p class="eyebrow">AUTONOMOUS OPERATIONS / LIVE WORKFLOW</p>
-            <h1>CACSMS ENGINE - END TO END WORKFLOW</h1>
-            <p class="subtitle">FROM MARKET INTELLIGENCE TO TRADE EXECUTION ACROSS MULTIPLE MT5 ENVIRONMENTS</p>
+        <header class="mission-control-banner">
+          <div class="mission-banner-copy">
+            <div class="mission-banner-classification">
+              <span class="mission-banner-badge">AUTONOMOUS AI TRADING OPERATING SYSTEM</span>
+              <span>MISSION CONTROL / PRODUCTION</span>
+            </div>
+            <h1>CACSMS ENGINE - END-TO-END AUTONOMOUS TRADING WORKFLOW</h1>
+            <p>From market intelligence, 20-asset scanning, AI decision, debate, risk validation and MT5 execution to position management, audit, learning and continuous optimization.</p>
+            <div class="mission-banner-meta">
+              <span>CURRENT WORKFLOW <strong>WF-2026-0531-0847</strong></span>
+              <span>CURRENT STAGE <strong>20-Asset Universe Scanner</strong></span>
+              <span>MARKET SESSION <strong>London / New York Overlap</strong></span>
+              <span>LAST UPDATED <strong id="workflow-last-updated">--:--:-- UTC</strong></span>
+            </div>
           </div>
-          <div class="workflow-run-meta"><span class="status-chip running">RUNNING</span><strong>WF-2026-0531-0847</strong><small>STAGE 09 / 14</small></div>
-        </section>
+          <div class="mission-banner-control">
+            <div class="mission-banner-indicators">
+              <div class="mission-indicator"><small>WORKFLOW STATUS</small><strong><i class="active"></i>RUNNING</strong></div>
+              <div class="mission-indicator"><small>ASSET UNIVERSE</small><strong><i class="active"></i>20 ASSETS</strong></div>
+              <div class="mission-indicator"><small>EXECUTION MODE</small><strong><i class="warning"></i>SAFE MODE</strong></div>
+              <div class="mission-indicator"><small>RISK GATE</small><strong><i class="active"></i>ACTIVE</strong></div>
+            </div>
+            <div class="mission-banner-actions">
+              <button type="button">VIEW CURRENT RUN</button>
+              <button type="button">START WORKFLOW</button>
+              <button type="button">PAUSE WORKFLOW</button>
+              <button type="button" class="emergency">EMERGENCY STOP</button>
+            </div>
+          </div>
+        </header>
         <section class="workflow-layout">
           <div class="workflow-side-column">
-            <article class="workflow-panel"><div class="panel-title blue">DATA SOURCES</div><div id="data-sources"></div></article>
+            <article id="data-sources-card" class="workflow-data-sources-card"><h2>DATA SOURCES</h2><div id="data-sources"></div></article>
             <article class="workflow-panel"><div class="panel-title teal">INFRASTRUCTURE LAYER</div><div id="infrastructure-layer"></div></article>
           </div>
           <div class="workflow-center-column">
             <div class="pipeline-heading"><span>14-STAGE AUTONOMOUS PIPELINE</span><small>CONTINUOUS OPERATION MODE</small></div>
             <div id="workflow-pipeline"></div>
-            <div class="loop-back">LOOP BACK TO STAGE 1 FOR CONTINUOUS OPERATION</div>
           </div>
           <div class="workflow-side-column">
-            <article class="workflow-panel reject-panel"><div class="panel-title red">REJECT / STOP CONDITIONS</div><div id="reject-conditions"></div></article>
             <article class="workflow-panel"><div class="panel-title purple-bg">20-ASSET UNIVERSE (PHASE 1 + 2)</div><div id="asset-universe"></div></article>
+            <article class="workflow-panel reject-panel"><div class="panel-title red">REJECT / STOP CONDITIONS</div><div id="reject-conditions"></div></article>
           </div>
         </section>
         <section class="workflow-bottom-grid">
@@ -55,6 +76,7 @@
           <article class="workflow-panel outcome-panel"><div class="panel-title green">FINAL OUTCOME</div><div id="final-outcome"></div></article>
         </section>
         <section class="key-points"><strong>KEY POINTS</strong><div id="key-points"></div></section>
+        <div class="loop-back workflow-loop-back">LOOP BACK TO STAGE 1 FOR CONTINUOUS OPERATION</div>
       </main>
       <footer class="statusbar">
         <div><span class="dot success"></span> API <strong>ONLINE</strong></div><div>DATABASE <strong>READY</strong></div><div>WEBSOCKET <strong>ONLINE</strong></div><div>REDIS <strong>READY</strong></div><div>RABBITMQ <strong>READY</strong></div><div class="status-spacer"></div><div>ENV <strong>FOUNDATION</strong></div><div id="utc-clock">UTC</div>

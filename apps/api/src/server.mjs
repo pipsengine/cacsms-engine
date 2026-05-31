@@ -1,6 +1,8 @@
 import { createHash } from "node:crypto";
 import { createServer } from "node:http";
 import { ASSET_SCORES, ASSET_UNIVERSE, MOCK_WORKFLOW, WORKFLOW_EVENTS } from "../../../packages/workflow/src/mock-data.js";
+import { DATA_SOURCES, evaluateDataQualityGate } from "../../../packages/market-intelligence/src/data-sources.js";
+import { BROKER_FEEDS, ECONOMIC_EVENTS, NEWS_SENTIMENT, TIMELINE_EVENTS, getMarketIntelligenceDashboard } from "../../../packages/market-intelligence/src/dashboard-mock.js";
 
 const port = Number(process.env.API_PORT || 8080);
 let workflow = { ...MOCK_WORKFLOW };
@@ -37,7 +39,15 @@ const routes = {
   "GET /api/assets/scores": () => ({ workflowId: workflow.workflowId, scores: ASSET_SCORES }),
   "GET /api/infrastructure/status": () => ({
     status: "healthy", machines: 1248, mt5Terminals: 5672, accounts: 18420, averageLatencyMs: 42
-  })
+  }),
+  "GET /api/market-intelligence/data-sources": () => ({ sources: DATA_SOURCES }),
+  "GET /api/market-intelligence/dashboard": () => getMarketIntelligenceDashboard(),
+  "GET /api/market-intelligence/data-sources/health": () => ({ sources: DATA_SOURCES.map(({ id, name, status, freshnessSeconds, healthScore, latencyMs, errorCount }) => ({ id, name, status, freshnessSeconds, healthScore, latencyMs, errorCount })) }),
+  "GET /api/market-intelligence/economic-events": () => ({ events: ECONOMIC_EVENTS }),
+  "GET /api/market-intelligence/news-sentiment": () => ({ sentimentScore: 62, mode: "Risk-On", items: NEWS_SENTIMENT }),
+  "GET /api/market-intelligence/broker-feeds": () => ({ brokerHealth: 97, portfolioSync: "Live", feeds: BROKER_FEEDS }),
+  "GET /api/market-intelligence/data-quality-gate": () => evaluateDataQualityGate(),
+  "GET /api/market-intelligence/feed-events": () => ({ events: TIMELINE_EVENTS })
 };
 
 const actions = {
@@ -60,7 +70,12 @@ const actions = {
   "/api/workflow/retry-stage": () => {
     workflow = { ...workflow, status: "retrying", retryCount: workflow.retryCount + 1 };
     return record("workflow.stage.started", { stage: workflow.currentStage, retry: workflow.retryCount });
-  }
+  },
+  "/api/market-intelligence/data-sources/test": () => ({ type: "market_intelligence.sources.tested", testedSources: DATA_SOURCES.length, status: "passed" }),
+  "/api/market-intelligence/data-sources/sync": () => ({ type: "market_intelligence.sources.synced", syncedSources: DATA_SOURCES.length, status: "completed" }),
+  "/api/market-intelligence/scan": () => ({ type: "market_intelligence.scan.completed", scannedSources: DATA_SOURCES.length, status: "completed" }),
+  "/api/market-intelligence/refresh-feeds": () => ({ type: "market_intelligence.feeds.refreshed", refreshedSources: DATA_SOURCES.length, status: "completed" }),
+  "/api/market-intelligence/test-sources": () => ({ type: "market_intelligence.sources.tested", testedSources: DATA_SOURCES.length, status: "passed" })
 };
 
 const server = createServer((request, response) => {
@@ -68,6 +83,10 @@ const server = createServer((request, response) => {
   const url = new URL(request.url, `http://${request.headers.host}`);
   const route = routes[`${request.method} ${url.pathname}`];
   if (route) return json(response, 200, route());
+  if (request.method === "GET" && url.pathname.startsWith("/api/market-intelligence/data-sources/")) {
+    const source = DATA_SOURCES.find(({ id }) => id === url.pathname.split("/").at(-1));
+    return source ? json(response, 200, source) : json(response, 404, { error: "source_not_found" });
+  }
   if (request.method === "POST" && actions[url.pathname]) return json(response, 200, { accepted: true, event: actions[url.pathname](), workflow });
   return json(response, 404, { error: "not_found" });
 });

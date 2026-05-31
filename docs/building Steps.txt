@@ -1,0 +1,24 @@
+1. Page Shell / Canvas
+2. Header Card
+3. Data Sources Card
+4. Infrastructure Layer Card
+5. 20-Asset Universe Card
+6. Stage 1 – Market Intelligence Gathering
+7. Stage 2 – 20-Asset Universe Scanner
+8. Stage 3 – Asset Ranking & Pair Selection
+9. Stage 4 – Market Analysis & Context Engine
+10. Stage 5 – Computer Vision & Chart Analysis
+11. Stage 6 – AI Decision Engine
+12. Stage 7 – AI Debate & Consensus
+13. Stage 8 – Strategy Intelligence Center
+14. Stage 9 – Risk Intelligence & Capital Protection
+15. Stage 10 – Execution Preparation
+16. Stage 11 – Trade Execution & Order Management
+17. Stage 12 – Position Management Engine
+18. Stage 13 – Exit Management Engine
+19. Stage 14 – Post-Trade Analytics & Learning
+20. Reject / Stop Conditions Card
+21. Audit Trail & Reporting Engine Card
+22. Final Outcome Card
+23. Key Points Strip
+24. Loop Back / Continuous Operation Indicator

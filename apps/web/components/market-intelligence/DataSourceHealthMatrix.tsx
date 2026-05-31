@@ -1,0 +1,2 @@
+import type { DataSourceHealth } from "../../lib/market-intelligence/types";
+export function DataSourceHealthMatrix({ sources }: { sources: DataSourceHealth[] }) { return <section className="mi-panel mi-wide"><h2>Data Source Health Matrix</h2><table><tbody>{sources.map((source)=><tr key={source.id}><td>{source.name}</td><td>{source.subtitle}</td><td>{source.status}</td><td>{source.required?"Yes":"No"}</td><td>{source.healthScore}%</td><td>{source.latencyMs}ms</td></tr>)}</tbody></table></section>; }

@@ -1,0 +1,1 @@
+export function MarketSessionPanel() { return <section className="mi-panel"><h2>Market Session &amp; Trading Window</h2><strong>London / New York Overlap</strong><p>Market Open / Trading Window Allowed / Session Quality High</p></section>; }

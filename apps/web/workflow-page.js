@@ -1,18 +1,14 @@
-const navItems = [
-  ["01", "Executive Command Center", "/"], ["02", "End-to-End Workflow", "/workflow/end-to-end", true],
-  ["03", "Market Intelligence"], ["04", "20-Asset Universe Scanner"], ["05", "Market Analysis"],
-  ["06", "Computer Vision"], ["07", "AI Decision"], ["08", "AI Debate & Consensus"],
-  ["09", "Strategy Intelligence"], ["10", "Risk Intelligence"], ["11", "Execution Center"],
-  ["12", "Position Management"], ["13", "Learning & Memory"], ["14", "MT5 Infrastructure"],
-  ["15", "Machine Registry"], ["16", "Monitoring & Self-Healing"], ["17", "Reports & Audit"],
-  ["18", "Security & Governance"], ["19", "Administration"]
-];
+import { initEnterpriseSidebar } from "./enterprise-sidebar.js";
 const dataSources = [
-  ["Market Data Providers", "Real-time prices, ticks, depth"], ["News & Sentiment Sources", "News, RSS, AI sentiment"],
-  ["Economic Calendar", "Events, indicators, central banks"], ["Social Media & Community", "Twitter, Reddit, Telegram"],
-  ["On-Chain & Institutional Data", "Whale flow, COT, volatility index"], ["Historical Data", "OHLCV, tick, fundamentals"],
-  ["Broker Data", "Spread, depth, liquidity, slippage"], ["Account & Portfolio Data", "Balance, equity, positions, risk"],
-  ["Prop Firm Rules & Limits", "Drawdown, daily loss, targets"]
+  ["market-data","ACT","Market Data Providers","Real-time prices, ticks, OHLCV, volume, spread and volatility feeds.","ONLINE",true,"#2563EB",["Stage 1","Stage 2","Stage 3","Stage 4"],"Workflow cannot proceed."],
+  ["news-sentiment","NEWS","News & Sentiment Sources","Market-moving news, financial headlines, AI sentiment and risk tone.","ONLINE",true,"#7C3AED",["Stage 1","Stage 4","Stage 6","Stage 7","Stage 9"],"Restrict or block high-impact trades."],
+  ["economic-calendar","CAL","Economic Calendar","CPI, NFP, FOMC, interest rates, central bank speeches and macro releases.","SYNCED",true,"#F59E0B",["Stage 1","Stage 4","Stage 6","Stage 7","Stage 9"],"Restrict trading around unknown news events."],
+  ["social-sentiment","SOC","Social & Community Sentiment","Retail positioning, crowd bias, community trend and public sentiment.","OPTIONAL",false,"#0EA5E9",["Stage 1","Stage 6","Stage 7"],"Reduce sentiment confidence only."],
+  ["institutional-data","COT","Institutional / COT Data","Commitment of Traders, institutional positioning, macro flow and smart money bias.","SCHEDULED",false,"#0F766E",["Stage 1","Stage 4","Stage 6","Stage 7"],"Reduce institutional confidence score."],
+  ["historical-data","HIST","Historical Market Data","OHLCV, tick history, volatility history, pattern history and strategy history.","AVAILABLE",true,"#9333EA",["Stage 3","Stage 4","Stage 6","Stage 8","Stage 14"],"Historical comparison and learning become unavailable."],
+  ["broker-data","BRK","Broker Data","Spread, slippage, liquidity, execution latency, symbol availability and server health.","LIVE",true,"#DC2626",["Stage 2","Stage 3","Stage 9","Stage 10","Stage 11"],"No execution allowed if broker data is unavailable."],
+  ["portfolio-data","ACC","Account & Portfolio Data","Balance, equity, margin, exposure, open positions, drawdown and account limits.","LIVE",true,"#16A34A",["Stage 7","Stage 9","Stage 12","Stage 13","Stage 14"],"Risk validation cannot proceed."],
+  ["prop-rules","RULE","Prop Firm Rules & Limits","Daily loss, maximum drawdown, minimum days, trading restrictions and account rules.","ACTIVE",true,"#EA580C",["Stage 9","Stage 16 audit/compliance"],"Prop account trading must be blocked."]
 ];
 const infrastructure = [
   ["Multiple Machines", "Local, VPS, Cloud"], ["MT5 Terminals", "Per machine"], ["EA Bridge", "MQL5 Expert Advisor Bridge"],
@@ -46,9 +42,10 @@ const rejects = [
 const tier1 = ["XAUUSD","EURUSD","GBPUSD","USDJPY","AUDUSD","USDCAD","USDCHF","NZDUSD","NAS100","US30"];
 const tier2 = ["EURJPY","GBPJPY","AUDJPY","CADJPY","EURGBP","EURAUD","EURCAD","SPX500","GER40","USOIL"];
 const list = (items) => items.map(([title, detail]) => `<div class="source-item"><i></i><div><strong>${title}</strong><small>${detail}</small></div></div>`).join("");
+const compactSourceIcons = ["ACT","NEWS","CAL","SOC","COT","HIST","BRK","ACC","RULE"];
 
-document.querySelector("#workflow-nav").innerHTML = navItems.map(([code, label, href = "#", active]) => `<a href="${href}" class="nav-item${active ? " active" : ""}"><span>${code}</span><em>${label}</em></a>`).join("");
-document.querySelector("#data-sources").innerHTML = list(dataSources);
+initEnterpriseSidebar("workflow-nav");
+document.querySelector("#data-sources").innerHTML = dataSources.map(([, , title, , , , , , ], index) => `<div class="workflow-data-source-item"><span>${compactSourceIcons[index]}</span><div><strong>${title.replace("Social & Community Sentiment","Social Media & Community").replace("Institutional / COT Data","On-Chain & Institutional Data").replace("Historical Market Data","Historical Data")}</strong><small>${["Real-time Prices, Ticks, Depth","News, RSS, AI Sentiment","Events, Indicators, Central Banks","Twitter, Reddit, Telegram","Whale Flow, COT, Volatility Index","OHLCV, Tick, Fundamentals","Spread, Depth, Liquidity","Balance, Equity, Positions, Risk","Drawdown, Daily Loss, Targets"][index]}</small></div></div>`).join("");
 document.querySelector("#infrastructure-layer").innerHTML = list(infrastructure);
 document.querySelector("#workflow-pipeline").innerHTML = stages.map(([title, bullets, output, status, veto], index) => `
   <article class="pipeline-stage${index === 8 ? " current" : ""}">
@@ -61,5 +58,10 @@ document.querySelector("#asset-universe").innerHTML = `<div class="asset-tier"><
 document.querySelector("#audit-items").innerHTML = ["Decision Logs","Risk Logs","Execution Logs","Position Logs","System Logs","Compliance Logs","Notifications"].map(x => `<span>${x}</span>`).join("");
 document.querySelector("#final-outcome").innerHTML = ["Trade Completed","Profit / Loss Realized","All Records Stored","System Learning Updated"].map(x => `<span>${x}</span>`).join("");
 document.querySelector("#key-points").innerHTML = ["Risk Engine Has Absolute Veto","Every Step Is Logged","Multi-Agent Governance","End-to-End Encryption","Self-Healing Infrastructure","100% Audit Traceable"].map(x => `<span>${x}</span>`).join("");
-document.querySelector("#collapse-sidebar").addEventListener("click", () => document.querySelector(".app-shell").classList.toggle("sidebar-collapsed"));
-setInterval(() => document.querySelector("#utc-clock").textContent = `UTC ${new Date().toISOString().slice(11,19)}`, 1000);
+function updateWorkflowClock() {
+  const time = new Date().toISOString().slice(11,19);
+  document.querySelector("#utc-clock").textContent = `UTC ${time}`;
+  document.querySelector("#workflow-last-updated").textContent = `${time} UTC`;
+}
+updateWorkflowClock();
+setInterval(updateWorkflowClock, 1000);

@@ -1,0 +1,1 @@
+export function WorkflowImpactPanel() { return <section className="mi-panel"><h2>Workflow Impact</h2><p>Feeds Stage 1, 2, 3, 4, 6, 7 and 9</p><p>Market Data -&gt; Asset Scanner / Economic Calendar -&gt; Risk Gate / Broker Data -&gt; Execution Preparation</p></section>; }

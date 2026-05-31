@@ -1,0 +1,9 @@
+export type ProceedStatus = "ALLOWED" | "RESTRICTED" | "BLOCKED";
+export type DataSourceHealth = { id: string; name: string; category: string; subtitle: string; status: string; required: boolean; healthScore: number; freshnessSeconds: number; latencyMs: number; lastSyncAt: string; feedsStage: string; failureAction: string };
+export type EconomicEvent = { time: string; currency: string; event: string; impact: string; previous: string; forecast: string; actual: string; riskLevel: string; tradingAction: string };
+export type NewsSentimentItem = { title: string; source: string; time: string; impact: string; assets: string[]; sentiment: string };
+export type BrokerFeedHealth = { broker: string; status: string; latencyMs: number; spreadQuality: string; liquidity: string; executionReadiness: string };
+export type DataQualityGate = { proceedToStageOne: boolean; dataQualityScore: number; freshnessStatus: string; validationStatus: string; tradingMode: string; warnings: string[]; rejectReasons: string[] };
+export type WorkflowImpact = { source: string; target: string };
+export type IntelligenceTimelineEvent = { time: string; event: string; source: string; severity: string; workflowImpact: string };
+export type MarketIntelligenceDashboard = { status: string; proceedStatus: ProceedStatus; environment: string; lastUpdated: string; dataQualityScore: number; feedFreshness: string; criticalSources: { online: number; total: number }; optionalSources: { online: number; total: number }; sentiment: { score: number; mode: string; risk: string; theme: string }; brokerHealth: number; portfolioSync: string; sources: DataSourceHealth[]; economicEvents: EconomicEvent[]; newsSentiment: NewsSentimentItem[]; brokerFeeds: BrokerFeedHealth[]; timeline: IntelligenceTimelineEvent[]; gate: DataQualityGate };

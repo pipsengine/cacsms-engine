@@ -1,0 +1,2 @@
+import type { EconomicEvent } from "../../lib/market-intelligence/types";
+export function EconomicRiskPanel({ events }: { events: EconomicEvent[] }) { return <section className="mi-panel"><h2>Economic Risk</h2><p>High Impact Events Today: 3</p>{events.slice(0,3).map((event)=><div key={`${event.time}-${event.event}`}>{event.time} {event.currency} {event.event} / {event.tradingAction}</div>)}</section>; }

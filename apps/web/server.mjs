@@ -18,6 +18,8 @@ createServer((request, response) => {
     ? "index.html"
     : pathname === "/workflow/end-to-end"
       ? "workflow.html"
+      : pathname === "/market-intelligence" || pathname.startsWith("/market-intelligence/") || pathname.startsWith("/workspace/market-intelligence/")
+        ? "market-intelligence.html"
       : pathname.slice(1);
   const file = normalize(join(root, requested));
 

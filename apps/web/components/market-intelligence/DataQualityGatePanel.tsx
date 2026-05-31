@@ -1,0 +1,2 @@
+import type { DataQualityGate } from "../../lib/market-intelligence/types";
+export function DataQualityGatePanel({ gate }: { gate: DataQualityGate }) { return <section className="mi-panel mi-gate"><h2>Data Quality Gate</h2><strong>{gate.validationStatus}</strong><p>Proceed Status: {gate.proceedToStageOne?"ALLOWED":"BLOCKED"} / Score: {gate.dataQualityScore}% / Freshness: {gate.freshnessStatus}</p></section>; }

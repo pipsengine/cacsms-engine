@@ -1,0 +1,2 @@
+import type { MarketIntelligenceDashboard } from "../../lib/market-intelligence/types";
+export function MarketIntelligenceHeader({ data }: { data: MarketIntelligenceDashboard }) { return <header className="mi-page-header"><div><p>03 / MARKET INTELLIGENCE CENTER</p><h1>Market Intelligence Dashboard</h1><span>Live market observation, feed health, macro events, sentiment, broker intelligence and data quality validation for CACSMS Engine.</span></div><aside><b>STAGE 1</b><b>{data.proceedStatus}</b><b>{data.environment}</b><small>{data.lastUpdated}</small></aside></header>; }

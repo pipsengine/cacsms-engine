@@ -11,8 +11,9 @@ services:
       - ../database/migrations/001_foundation.sql:/docker-entrypoint-initdb.d/001_foundation.sql:ro
       - ../database/migrations/002_level_1_architecture.sql:/docker-entrypoint-initdb.d/002_level_1_architecture.sql:ro
       - ../database/migrations/003_operational_workflow_foundation.sql:/docker-entrypoint-initdb.d/003_operational_workflow_foundation.sql:ro
-      - ../database/seeds/001_asset_universe.sql:/docker-entrypoint-initdb.d/004_asset_universe.sql:ro
-      - ../database/seeds/002_operational_defaults.sql:/docker-entrypoint-initdb.d/005_operational_defaults.sql:ro
+      - ../database/migrations/004_market_intelligence_data_sources.sql:/docker-entrypoint-initdb.d/004_market_intelligence_data_sources.sql:ro
+      - ../database/seeds/001_asset_universe.sql:/docker-entrypoint-initdb.d/005_asset_universe.sql:ro
+      - ../database/seeds/002_operational_defaults.sql:/docker-entrypoint-initdb.d/006_operational_defaults.sql:ro
 
   redis:
     image: redis:7.4-alpine

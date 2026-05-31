@@ -10,6 +10,12 @@ npm run dev
 
 Open `http://localhost:4173`.
 
+`npm run dev` starts both the web console and API in the foreground. Press `Ctrl+C` to stop both. If an earlier preview is occupying the local ports, run:
+
+```bash
+npm run stop
+```
+
 ## Validate
 
 ```bash

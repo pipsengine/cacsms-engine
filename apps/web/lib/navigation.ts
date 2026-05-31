@@ -1,4 +1,2 @@
-export const navigation = [
-  { label: "Executive Command Center", href: "/executive-command-center" },
-  { label: "End-to-End Workflow", href: "/workflow/end-to-end" }
-] as const;
+export { sidebarFunctions as navigation } from "./navigation/sidebar-config";
+export type { SidebarFunction, SidebarSubFunction, SidebarStatus } from "./navigation/sidebar-config";

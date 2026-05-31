@@ -1,13 +1,4 @@
-const navItems = [
-  ["01", "Executive Command Center", "/", true],
-  ["02", "End-to-End Workflow", "/workflow/end-to-end"],
-  ["03", "Market Intelligence"], ["04", "20-Asset Universe Scanner"], ["05", "Market Analysis"],
-  ["06", "Computer Vision"], ["07", "AI Decision"], ["08", "AI Debate & Consensus"],
-  ["09", "Strategy Intelligence"], ["10", "Risk Intelligence"], ["11", "Execution Center"],
-  ["12", "Position Management"], ["13", "Learning & Memory"], ["14", "MT5 Infrastructure"],
-  ["15", "Machine Registry"], ["16", "Monitoring & Self-Healing"], ["17", "Reports & Audit"],
-  ["18", "Security & Governance"], ["19", "Administration"]
-];
+import { initEnterpriseSidebar } from "./enterprise-sidebar.js";
 
 const kpis = [
   ["PORTFOLIO VALUE", "$1,284,920", "+8.42%", "positive", "◈"],
@@ -45,11 +36,7 @@ const alerts = [
   ["info", "Workflow retry completed", "Computer Vision · 22m ago"]
 ];
 
-const nav = document.querySelector("#main-nav");
-nav.innerHTML = navItems.map(([icon, label, href = "#", active]) => `
-  <a href="${href}" class="nav-item${active ? " active" : ""}" title="${label}">
-    <span>${icon}</span><em>${label}</em>${label === "End-to-End Workflow" ? "<b>LIVE</b>" : ""}
-  </a>`).join("");
+initEnterpriseSidebar("main-nav");
 
 document.querySelector("#kpi-grid").innerHTML = kpis.map(([label, value, note, type, icon]) => `
   <article class="kpi-card ${type}">
@@ -76,10 +63,6 @@ document.querySelector("#positions").innerHTML = positions.map(([symbol, side, p
 
 document.querySelector("#alerts").innerHTML = alerts.map(([type, title, detail]) => `
   <div class="alert-row"><span class="alert-icon ${type}">!</span><div><strong>${title}</strong><small>${detail}</small></div></div>`).join("");
-
-document.querySelector("#collapse-sidebar").addEventListener("click", () => {
-  document.querySelector(".app-shell").classList.toggle("sidebar-collapsed");
-});
 
 function updateClock() {
   const time = new Intl.DateTimeFormat("en-GB", {
