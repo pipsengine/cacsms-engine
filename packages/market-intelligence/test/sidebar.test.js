@@ -7,7 +7,7 @@ test("Market Intelligence sidebar defines the required workspace sub-function pa
   for (const page of [
     "Intelligence Dashboard", "Data Sources & Feed Health", "Market Data Providers",
     "News & Sentiment Sources", "Economic Calendar", "Social & Community Sentiment", "Institutional / COT Data", "Historical Data", "Broker Data",
-    "Account & Portfolio Data", "Prop Firm Rules & Limits", "Data Quality Gate"
+    "Account Portfolio", "Prop Firm Rules", "Data Quality Gate"
   ]) assert.match(navigation, new RegExp(page.replace(/[&/]/g, "\\$&")));
 });
 

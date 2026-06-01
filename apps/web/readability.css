@@ -1,0 +1,52 @@
+/* Site-wide readability floor. Loaded after page-specific styles. */
+html { font-size: 16px; }
+body { font-size: 14px; line-height: 1.45; }
+
+.brand strong { font-size: 17px; line-height: 18px; }
+.brand small, .sidebar-heading, .topbar-actions small, .header-meta small,
+.operator small, .operator strong, .statusbar, .eyebrow { font-size: 11px; }
+.nav-item { font-size: 14px; }
+.nav-subitem, .enterprise-sidebar-child { font-size: 12px; line-height: 1.35; }
+.nav-subgroup small, .enterprise-sidebar-parent .function-number,
+.enterprise-sidebar-parent .function-icon, .enterprise-sidebar-parent b { font-size: 10px; }
+.enterprise-sidebar-parent strong { font-size: 13px; }
+.global-search input, .subtitle { font-size: 14px; }
+.topbar-actions strong, .header-meta strong { font-size: 12px; }
+.primary-button, .text-button, button { font-size: 12px; }
+h1 { font-size: 29px; }
+h2 { font-size: 17px; }
+
+.kpi-card small, .workflow-summary small, .workflow-summary strong,
+.workflow-stage span, .workflow-stage strong, .score small, .change small,
+.metric-rows strong, .range-tabs button, .alert-row small { font-size: 11px; }
+.kpi-card span, .asset small, .position-row small, .metric-rows > div,
+.alert-row strong, .infra-grid span, .ai-core p { font-size: 12px; }
+.asset strong, .position-row > strong, .infra-grid strong { font-size: 14px; }
+
+.intelligence-workspace small, .workflow-workspace small { font-size: 11px; }
+.mi-panel table, .md-panel table, .ns-panel table, .ec-panel table, .ss-panel table,
+.feed-health-panel table, .icot-table-wrap td, .cot-table-wrap td, .hd-table-wrap td { font-size: 11px; }
+.mi-panel th, .md-panel th, .ns-panel th, .ec-panel th, .ss-panel th,
+.icot-table-wrap th, .cot-table-wrap th, .hd-table-wrap th { font-size: 10px; }
+.mi-panel p, .md-panel p, .ns-panel p, .ec-panel p, .ss-panel p,
+.icot-section-heading p, .cot-title p, .hd-title p { font-size: 12px; }
+.mi-panel-head h2, .cot-title h2, .hd-title h2 { font-size: 15px; }
+.mi-panel-head b, .mi-panel-head .warning, .icot-chip, .cot-bias, .hd-bias { font-size: 10px; }
+
+.icot-status-strip small, .icot-kpi small, .icot-timeline time, .icot-timeline small,
+.icot-workflow b, .cot-status small, .cot-kpis small, .cot-sync-grid small,
+.cot-title > small, .cot-title > b, .cot-title > span, .cot-workflow small,
+.hd-header p, .hd-header aside b, .hd-header aside small, .hd-filter-grid label,
+.hd-title > b, .hd-ma b, .hd-ma span { font-size: 11px; }
+.icot-status-strip strong, .icot-kpi span, .icot-alert-list p, .icot-ai-summary p,
+.icot-timeline strong, .icot-workflow p, .cot-dashboard button, .cot-selector button span,
+.cot-kpis span, .cot-workflow span, .hd-dashboard button, .hd-dashboard select,
+.hd-dashboard input, .hd-state-library p { font-size: 12px; }
+.cot-selector button small { font-size: 10px; }
+.cot-status strong, .icot-workflow strong, .cot-interpretation-grid strong { font-size: 13px; }
+.hd-metrics small, .hd-metrics span { font-size: 10px; }
+.hd-metrics strong { font-size: 17px; }
+.hd-pagination, .cot-history footer { font-size: 11px; }
+
+.workflow-panel, .workflow-data-sources-card, .mission-control-banner { font-size: 13px; }
+.workflow-panel p, .mission-control-banner p { font-size: 12px; }

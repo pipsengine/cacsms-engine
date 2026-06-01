@@ -8,13 +8,13 @@ const marketIntelligenceChildren = [
   ["Institutional / COT Data", "/workspace/market-intelligence/institutional-cot"],
   ["Historical Data", "/workspace/market-intelligence/historical-data"],
   ["Broker Data", "/workspace/market-intelligence/broker-data"],
-  ["Account & Portfolio Data", "/workspace/market-intelligence/account-portfolio"],
-  ["Prop Firm Rules & Limits", "/workspace/market-intelligence/prop-firm-rules"],
+  ["Account Portfolio", "/workspace/market-intelligence/account-portfolio"],
+  ["Prop Firm Rules", "/workspace/market-intelligence/prop-firm-rules"],
   ["Data Quality Gate", "/workspace/market-intelligence/data-quality-gate"]
 ];
 
 export const sidebarFunctions = [
-  ["01", "CMD", "Executive Command Center", "LIVE", [["Executive Dashboard", "/"]]],
+  ["01", "CMD", "Executive Command Center", "LIVE", [["Executive Dashboard", "/"], ["Workflow Dashboard", "/executive-command-center/workflow-dashboard"]], true],
   ["02", "FLOW", "End-to-End Workflow", "LIVE", [["Workflow Dashboard", "/workflow/end-to-end"]]],
   ["03", "RAD", "Market Intelligence Center", "READY", marketIntelligenceChildren, true],
   ["04", "SCAN", "20-Asset Universe Scanner", "", [["Scanner Dashboard", "/workspace/asset-scanner/dashboard"]]],

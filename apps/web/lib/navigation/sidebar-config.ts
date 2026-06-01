@@ -22,7 +22,7 @@ const page = (id: string, title: string, route: string, permission = "workspace:
 });
 
 export const sidebarFunctions: SidebarFunction[] = [
-  { id: "executive", number: "01", icon: "CMD", title: "Executive Command Center", status: "LIVE", children: [page("executive-dashboard", "Executive Dashboard", "/")] },
+  { id: "executive", number: "01", icon: "CMD", title: "Executive Command Center", status: "LIVE", defaultExpanded: true, children: [page("executive-dashboard", "Executive Dashboard", "/"), page("executive-workflow-dashboard", "Workflow Dashboard", "/executive-command-center/workflow-dashboard", "workflow.cards.test")] },
   { id: "workflow", number: "02", icon: "FLOW", title: "End-to-End Workflow", status: "LIVE", children: [page("workflow-dashboard", "Workflow Dashboard", "/workflow/end-to-end")] },
   {
     id: "market-intelligence", number: "03", icon: "RAD", title: "Market Intelligence Center", status: "READY", defaultExpanded: true,
@@ -34,11 +34,11 @@ export const sidebarFunctions: SidebarFunction[] = [
       page("economic-calendar", "Economic Calendar", "/workspace/market-intelligence/economic-calendar", "market-intelligence:view"),
       page("social-sentiment", "Social & Community Sentiment", "/workspace/market-intelligence/social-sentiment", "market-intelligence:view"),
       page("institutional-cot", "Institutional / COT Data", "/workspace/market-intelligence/institutional-cot", "market-intelligence:view"),
-      page("historical-data", "Historical Data", "/workspace/market-intelligence/historical-data", "market-intelligence:view"),
+      page("historical-data", "Historical Data", "/workspace/market-intelligence/historical-data", "market_intelligence.historical_data.view"),
       page("broker-data", "Broker Data", "/workspace/market-intelligence/broker-data", "market-intelligence:view"),
-      page("account-portfolio", "Account & Portfolio Data", "/workspace/market-intelligence/account-portfolio", "market-intelligence:view"),
-      page("prop-firm-rules", "Prop Firm Rules & Limits", "/workspace/market-intelligence/prop-firm-rules", "market-intelligence:view"),
-      page("data-quality-gate", "Data Quality Gate", "/workspace/market-intelligence/data-quality-gate", "market-intelligence:view")
+      page("account-portfolio", "Account Portfolio", "/workspace/market-intelligence/account-portfolio", "market_intelligence.account_portfolio.view"),
+      page("prop-firm-rules", "Prop Firm Rules", "/workspace/market-intelligence/prop-firm-rules", "market_intelligence.prop_firm_rules.view"),
+      page("data-quality-gate", "Data Quality Gate", "/workspace/market-intelligence/data-quality-gate", "market_intelligence.data_quality_gate.view")
     ]
   },
   { id: "asset-scanner", number: "04", icon: "SCAN", title: "20-Asset Universe Scanner", children: [page("scanner-dashboard", "Scanner Dashboard", "/workspace/asset-scanner/dashboard")] },

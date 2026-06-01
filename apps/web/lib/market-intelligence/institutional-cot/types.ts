@@ -1,0 +1,12 @@
+export type CotCurrency={currency_code:string;currency_name:string;contract_market_name:string;records_available:number;latest_bias:string;latest_net_position:number;latest_report_date:string};
+export type CotCurrencyMapping={currency_code:string;currency_name:string;contract_market_name:string;report_type:"FUTURES_ONLY";enabled:boolean};
+export type CotPosition={report_date:string;currency_code:string;long_positions:number;short_positions:number;change_long:number;change_short:number;percent_change:number;net_positions:number;open_interest:number;bias:string;bias_confidence:number};
+export type CotBiasScore={currency_code:string;bias:string;confidence:number;reason:string;warnings:string[]};
+export type CotSyncJob={job:string;cron:string;status:string;last_sync_at:string;next_scheduled_sync:string;retries:number};
+export type CotSyncLog={sync_id:string;started_at:string;completed_at:string;status:string;records_imported:number;duplicates_skipped:number;errors:number};
+export type CotComparisonRow=CotCurrency&{long:number;short:number;weekly_change:number;percentile_13w:number;percentile_52w:number;bias_confidence:number;workflow_impact:string};
+export type CotWorkflowImpact={stage:string;target:string;usage:string};
+export type CotDashboard={selected_currency:string;sync_status:string;latest_report_date:string;history:CotPosition[];currencies:CotCurrency[];comparison:CotComparisonRow[];sync:CotSyncJob;syncLogs:CotSyncLog[];workflowImpacts:CotWorkflowImpact[]};
+export type CotArchivePosition={date:string;code:string;name:string;market:string;long:number;short:number;changeLong:number;changeShort:number;percent:number;net:number;oi:number;longPct:number;shortPct:number;netPct:number;commercialLong:number;commercialShort:number;spreading:number;bias:string;confidence:number};
+export type CotArchiveMapping={code:string;name:string;market:string};
+export type CotArchivePayload={source:string;sourceUrl:string;reportType:string;archiveUrl:string;year:number;syncedAt:string;latestReportDate:string;mappings:CotArchiveMapping[];history:Record<string,CotArchivePosition[]>};

@@ -9,6 +9,7 @@ const types = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
   ".svg": "image/svg+xml"
 };
 
@@ -18,6 +19,10 @@ createServer((request, response) => {
     ? "index.html"
     : pathname === "/workflow/end-to-end"
       ? "workflow.html"
+      : pathname === "/executive-command-center/workflow-dashboard"
+        ? "executive-workflow-dashboard.html"
+      : pathname.startsWith("/data/")
+        ? `public${pathname}`
       : pathname === "/market-intelligence" || pathname.startsWith("/market-intelligence/") || pathname.startsWith("/workspace/market-intelligence/")
         ? "market-intelligence.html"
       : pathname.slice(1);

@@ -4,6 +4,11 @@ import { MarketDataProvidersPage } from "../../../../components/market-intellige
 import { NewsSentimentPage } from "../../../../components/market-intelligence/news-sentiment/NewsSentimentPage";
 import { EconomicCalendarPage } from "../../../../components/market-intelligence/economic-calendar/EconomicCalendarPage";
 import { SocialSentimentPage } from "../../../../components/market-intelligence/social-sentiment/SocialSentimentPage";
+import { InstitutionalCotPage } from "../../../../components/market-intelligence/institutional-cot/InstitutionalCotPage";
+import { HistoricalDataPage } from "../../../../components/market-intelligence/historical-data/HistoricalDataPage";
+import { BrokerDataPage } from "../../../../components/market-intelligence/broker-data/BrokerDataPage";
+import { AccountPortfolioPage } from "../../../../components/market-intelligence/account-portfolio/AccountPortfolioPage";
+import { PropFirmRulesPage } from "../../../../components/market-intelligence/prop-firm-rules/PropFirmRulesPage";
 
 const titles: Record<string, string> = {
   dashboard: "Intelligence Dashboard",
@@ -15,8 +20,8 @@ const titles: Record<string, string> = {
   "institutional-cot": "Institutional / COT Data",
   "historical-data": "Historical Data",
   "broker-data": "Broker Data",
-  "account-portfolio": "Account & Portfolio Data",
-  "prop-firm-rules": "Prop Firm Rules & Limits",
+  "account-portfolio": "Account Portfolio",
+  "prop-firm-rules": "Prop Firm Rules",
   "data-quality-gate": "Data Quality Gate"
 };
 
@@ -26,5 +31,10 @@ export default async function MarketIntelligenceWorkspacePage({ params }: { para
   if (source === "news-sentiment") return <NewsSentimentPage />;
   if (source === "economic-calendar") return <EconomicCalendarPage />;
   if (source === "social-sentiment") return <SocialSentimentPage />;
+  if (source === "institutional-cot") return <InstitutionalCotPage />;
+  if (source === "historical-data") return <HistoricalDataPage />;
+  if (source === "broker-data") return <BrokerDataPage />;
+  if (source === "account-portfolio") return <AccountPortfolioPage />;
+  if (source === "prop-firm-rules") return <PropFirmRulesPage />;
   return <main><h1>{titles[source] || "Market Intelligence Center"}</h1>{source === "data-quality-gate" ? <DataQualityGate /> : null}{source === "data-sources" ? <><DataQualityGate /><DataSourceHealthTable /></> : null}</main>;
 }
