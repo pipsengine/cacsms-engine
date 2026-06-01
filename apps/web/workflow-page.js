@@ -8,36 +8,36 @@ const dataSources = [
   ["historical-data","HIST","Historical Market Data","OHLCV, tick history, volatility history, pattern history and strategy history.","AVAILABLE",true,"#9333EA",["Stage 3","Stage 4","Stage 6","Stage 8","Stage 14"],"Historical comparison and learning become unavailable."],
   ["broker-data","BRK","Broker Data","Spread, slippage, liquidity, execution latency, symbol availability and server health.","LIVE",true,"#DC2626",["Stage 2","Stage 3","Stage 9","Stage 10","Stage 11"],"No execution allowed if broker data is unavailable."],
   ["portfolio-data","ACC","Account & Portfolio Data","Balance, equity, margin, exposure, open positions, drawdown and account limits.","LIVE",true,"#16A34A",["Stage 7","Stage 9","Stage 12","Stage 13","Stage 14"],"Risk validation cannot proceed."],
-  ["prop-rules","RULE","Prop Firm Rules & Limits","Daily loss, maximum drawdown, minimum days, trading restrictions and account rules.","ACTIVE",true,"#EA580C",["Stage 9","Stage 16 audit/compliance"],"Prop account trading must be blocked."]
+  ["prop-rules","RULE","Prop Firm Rules & Limits","Daily loss, maximum drawdown, minimum days, trading restrictions and account rules.","ACTIVE",true,"#EA580C",["Card 10","Audit / Compliance"],"Prop account trading must be blocked."]
 ];
 const infrastructure = [
   ["Multiple Machines", "Local, VPS, Cloud"], ["MT5 Terminals", "Per machine"], ["EA Bridge", "MQL5 Expert Advisor Bridge"],
   ["Secure Connection", "WSS, gRPC, ZeroMQ"], ["Smart Routing", "Best execution node"], ["Failover & Recovery", "Self-healing system"]
 ];
 const stages = [
-  ["MARKET INTELLIGENCE GATHERING", "Sources normalized | Quality scored", "Market Intelligence Package", "DATA OK"],
+  ["DATA SOURCES VALIDATION", "Availability | API | latency | freshness | quality", "Validated Intelligence Package", "DATA VALID"],
+  ["MARKET INTELLIGENCE GATHERING", "Aggregate | normalize | enrich | context", "Market Intelligence Package", "INTELLIGENCE READY"],
   ["20-ASSET UNIVERSE SCANNER", "20 instruments | Multi-session scan", "Asset Opportunity Scores", "SCAN OK"],
-  ["ASSET RANKING & PAIR SELECTION", "Rank scores | Liquidity filter", "Top 10 Assets Selected", "SELECTION OK"],
-  ["MARKET ANALYSIS & CONTEXT ENGINE (TOP 10)", "Structure | Regime | Momentum", "Market Analysis Report Top 10", "ANALYSIS OK"],
-  ["COMPUTER VISION & CHART ANALYSIS (TOP 5)", "Pattern vision | Setup quality", "Visual Confirmation Report Top 5", "SETUP VALID"],
-  ["AI DECISION ENGINE (TOP 5)", "Model ensemble | Explainability", "Trade Decision Proposal Top 5", "DECISION OK"],
-  ["AI DEBATE & CONSENSUS ENGINE (TOP 3)", "Agent challenge | Consensus vote", "Consensus Decision Top 3", "CONSENSUS OK"],
-  ["STRATEGY INTELLIGENCE CENTER (TOP 3)", "Strategy fit | Validation", "Selected Strategy Package", "STRATEGY OK"],
-  ["RISK INTELLIGENCE & CAPITAL PROTECTION (TOP 3)", "Exposure | Position size | Veto authority", "Risk Approval & Position Size", "RISK APPROVED", true],
-  ["EXECUTION PREPARATION (TOP 3)", "Node selection | Signed token", "Signed Execution Package", "PREPARED"],
-  ["TRADE EXECUTION & ORDER MANAGEMENT (BEST 1-2)", "Broker route | Fill validation", "Order Ticket / Execution Result", "EXECUTED"],
-  ["POSITION MANAGEMENT ENGINE", "SL/TP | Trailing stop | Health", "Managed Position State", "POSITION ACTIVE"],
-  ["EXIT MANAGEMENT ENGINE", "Exit signal | Close validation", "Closed Trade Result", "POSITION CLOSED"],
+  ["ASSET RANKING & PAIR SELECTION", "Rank scores | Liquidity filter", "Ranked Asset Selection", "SELECTION OK"],
+  ["MARKET ANALYSIS & CONTEXT ENGINE", "Structure | Regime | Momentum", "Market Context Package", "ANALYSIS OK"],
+  ["COMPUTER VISION & CHART ANALYSIS", "Pattern vision | Setup quality", "Visual Confirmation Package", "SETUP VALID"],
+  ["AI DECISION ENGINE", "Model ensemble | Explainability", "Trade Decision Proposal", "DECISION OK"],
+  ["AI DEBATE & CONSENSUS ENGINE", "Agent challenge | Consensus vote", "Consensus Decision Package", "CONSENSUS OK"],
+  ["STRATEGY INTELLIGENCE CENTER", "Strategy fit | Validation", "Selected Strategy Package", "STRATEGY OK"],
+  ["RISK INTELLIGENCE & CAPITAL PROTECTION", "Exposure | Position size | Veto authority", "Risk Approval Package", "RISK APPROVED", true],
+  ["EXECUTION PREPARATION", "Node selection | Signed token", "Signed Execution Package", "PREPARED"],
+  ["TRADE EXECUTION & ORDER MANAGEMENT", "Broker route | Fill validation", "Execution Result", "EXECUTED"],
+  ["POSITION MANAGEMENT", "SL/TP | trailing stop | exit state", "Managed Position State", "POSITION ACTIVE"],
   ["POST-TRADE ANALYTICS & LEARNING", "Outcome store | Feedback loop", "Learning Record Updated", "RECORD STORED"]
 ];
 const rejects = [
-  "Data feed failure | Critical data missing | Low data quality", "Scanner error | All assets low score | System unavailable",
-  "No assets meet threshold | Liquidity too low | Market not tradable", "Analysis error | High uncertainty | Market closed",
-  "No valid setup | Low visual confidence | Structure unclear", "Low AI confidence | Model conflict | Invalid signals",
-  "Consensus below threshold | Major agent rejection | Unresolved conflict", "Strategy not suitable | Poor performance | Blocked strategy",
-  "Risk limit breach | High exposure | Compliance violation", "Execution node down | Token generation fail | Invalid order parameters",
-  "Order rejected | Execution timeout | Broker connection fail", "Extreme drawdown | Volatility spike | Risk emergency",
-  "Exit failed | Order error | Position mismatch", "Data save failed | Analytics error | Sync failed"
+  "Data feed failure | Critical data missing | Low data quality", "Aggregation failed | Normalization error | Context incomplete",
+  "Scanner error | All assets low score | System unavailable", "No assets meet threshold | Liquidity too low | Market not tradable",
+  "Analysis error | High uncertainty | Market closed", "No valid setup | Low visual confidence | Structure unclear",
+  "Low AI confidence | Model conflict | Invalid signals", "Consensus below threshold | Major agent rejection | Unresolved conflict",
+  "Strategy not suitable | Poor performance | Blocked strategy", "Risk limit breach | High exposure | Compliance violation",
+  "Execution node down | Token generation fail | Invalid order parameters", "Order rejected | Execution timeout | Broker connection fail",
+  "Extreme drawdown | Volatility spike | Risk emergency", "Data save failed | Analytics error | Sync failed"
 ];
 const tier1 = ["XAUUSD","EURUSD","GBPUSD","USDJPY","AUDUSD","USDCAD","USDCHF","NZDUSD","NAS100","US30"];
 const tier2 = ["EURJPY","GBPJPY","AUDJPY","CADJPY","EURGBP","EURAUD","EURCAD","SPX500","GER40","USOIL"];
@@ -48,10 +48,10 @@ initEnterpriseSidebar("workflow-nav");
 document.querySelector("#data-sources").innerHTML = dataSources.map(([, , title, , , , , , ], index) => `<div class="workflow-data-source-item"><span>${compactSourceIcons[index]}</span><div><strong>${title.replace("Social & Community Sentiment","Social Media & Community").replace("Institutional / COT Data","On-Chain & Institutional Data").replace("Historical Market Data","Historical Data")}</strong><small>${["Real-time Prices, Ticks, Depth","News, RSS, AI Sentiment","Events, Indicators, Central Banks","Twitter, Reddit, Telegram","Whale Flow, COT, Volatility Index","OHLCV, Tick, Fundamentals","Spread, Depth, Liquidity","Balance, Equity, Positions, Risk","Drawdown, Daily Loss, Targets"][index]}</small></div></div>`).join("");
 document.querySelector("#infrastructure-layer").innerHTML = list(infrastructure);
 document.querySelector("#workflow-pipeline").innerHTML = stages.map(([title, bullets, output, status, veto], index) => `
-  <article class="pipeline-stage${index === 8 ? " current" : ""}">
+  <article class="pipeline-stage${index === 0 ? " current" : ""}">
     <div class="stage-number">${String(index + 1).padStart(2, "0")}</div>
     <div class="stage-body"><h2>${title}</h2><p>${bullets}</p><div class="stage-output"><small>OUTPUT</small><strong>${output}</strong></div>${veto ? '<b class="veto-note">RISK ENGINE HAS ABSOLUTE VETO AUTHORITY</b>' : ""}</div>
-    <div class="stage-state"><span>${status}</span><small>${index < 9 ? "COMPLETED" : "STANDBY"}</small></div>
+    <div class="stage-state"><span>${status}</span><small>${index === 0 ? "VALIDATING" : "STANDBY"}</small></div>
   </article>${index < 13 ? '<div class="continue-arrow">CONTINUE</div>' : ""}`).join("");
 document.querySelector("#reject-conditions").innerHTML = rejects.map((text, index) => `<div class="reject-item"><b>${String(index + 1).padStart(2, "0")}</b><span>${text}</span></div>`).join("");
 document.querySelector("#asset-universe").innerHTML = `<div class="asset-tier"><strong>TIER 1 - CORE ASSETS</strong><div>${tier1.map(x => `<span>${x}</span>`).join("")}</div></div><div class="asset-tier"><strong>TIER 2 - OPPORTUNITY ASSETS</strong><div>${tier2.map(x => `<span>${x}</span>`).join("")}</div></div>`;

@@ -1,29 +1,22 @@
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
 import { ASSET_SCORES, ASSET_UNIVERSE, MOCK_WORKFLOW, WORKFLOW_EVENTS } from "../../../packages/workflow/src/mock-data.js";
-import { CARD_ONE_SCENARIOS, createCardOneTestReport } from "../../../packages/workflow/src/card-one.js";
-import { DATA_SOURCES, evaluateDataQualityGate } from "../../../packages/market-intelligence/src/data-sources.js";
-import { DATA_QUALITY_GATE_EVENTS, DATA_QUALITY_GATE_RULES, getDataQualityGateDashboard } from "../../../packages/market-intelligence/src/data-quality-gate.js";
-import { BROKER_FEEDS, ECONOMIC_EVENTS, NEWS_SENTIMENT, TIMELINE_EVENTS, getMarketIntelligenceDashboard } from "../../../packages/market-intelligence/src/dashboard-mock.js";
-import { MARKET_DATA_COVERAGE, MARKET_DATA_EVENTS, MARKET_DATA_PROVIDERS, evaluateMarketDataQuality, getMarketDataProvidersDashboard } from "../../../packages/market-intelligence/src/market-data-providers.js";
-import { AI_HEADLINE_CLASSIFICATION, NEWS_ASSET_IMPACT, NEWS_HEADLINES, NEWS_RISK_EVENTS, NEWS_SOURCES, evaluateNewsSentiment, getNewsSentimentDashboard } from "../../../packages/market-intelligence/src/news-sentiment.js";
-import { CENTRAL_BANK_WATCH, CURRENCY_ASSET_IMPACT, ECONOMIC_CALENDAR_EVENTS, ECONOMIC_RESTRICTION_WINDOWS, evaluateEconomicCalendar, getEconomicCalendarDashboard } from "../../../packages/market-intelligence/src/economic-calendar.js";
-import { ASSET_CROWD_SENTIMENT, CONTRARIAN_SIGNALS, RETAIL_POSITIONING, SENTIMENT_SPIKES, SOCIAL_SENTIMENT_ITEMS, SOCIAL_SOURCE_HEALTH, evaluateSocialSentiment, getSocialSentimentDashboard } from "../../../packages/market-intelligence/src/social-sentiment.js";
+import { createCardOneTestReport } from "../../../packages/workflow/src/card-one.js";
+import { WORKFLOW_CARD_QUEUE } from "../../../packages/workflow/src/index.js";
+import { evaluateDataQualityGate } from "../../../packages/market-intelligence/src/data-sources.js";
+import { DATA_QUALITY_GATE_RULES, getDataQualityGateDashboard } from "../../../packages/market-intelligence/src/data-quality-gate.js";
 import { createCotSyncStatus, evaluateInstitutionalCot, getCotComparison, getInstitutionalCotDashboard } from "../../../packages/market-intelligence/src/institutional-cot.js";
-import { HISTORICAL_DATA, HISTORICAL_SOURCES, getHistoricalComparison, getHistoricalDashboard, getHistoricalSummary } from "../../../packages/market-intelligence/src/historical-data.js";
-import { BROKER_COMPARISON, BROKER_DATA_SOURCES, BROKER_MARKET_DATA, BROKER_VALIDATION_ISSUES, getBrokerDataDashboard } from "../../../packages/market-intelligence/src/broker-data.js";
-import { PORTFOLIO_CLOSED_TRADES, PORTFOLIO_EQUITY_CURVE, PORTFOLIO_POSITIONS, PORTFOLIO_RISK_METRICS, TRADING_ACCOUNTS, getAccountPortfolioDashboard } from "../../../packages/market-intelligence/src/account-portfolio.js";
-import { PROP_FIRM_BREACH_ALERTS, PROP_FIRM_COMPARISON, PROP_FIRM_COMPLIANCE_ACCOUNTS, PROP_FIRM_RULES, getPropFirmRulesDashboard } from "../../../packages/market-intelligence/src/prop-firm-rules.js";
 
 const port = Number(process.env.API_PORT || 8080);
 const root = fileURLToPath(new URL("../../../", import.meta.url));
 const cotCachePath = fileURLToPath(new URL("../../web/public/data/institutional-cot.json", import.meta.url));
 const cotSyncScriptPath = fileURLToPath(new URL("../../../scripts/sync-cftc-cot.ps1", import.meta.url));
 let workflow = { ...MOCK_WORKFLOW };
-let cardOneReport = createCardOneTestReport("pass");
+let cardOneReport;
+const sourceProbeLog = [];
 const eventLog = WORKFLOW_EVENTS.slice(0, 9).map((type, index) => ({
   id: index + 1, type, workflowId: workflow.workflowId, timestamp: new Date(Date.now() - (9 - index) * 60000).toISOString()
 }));
@@ -48,6 +41,97 @@ function readCotCache() {
   return JSON.parse(readFileSync(cotCachePath, "utf8").replace(/^\uFEFF/, ""));
 }
 
+const liveSourceDefinitions = [
+  ["market-data", "market-data", "Market Data Providers", "MARKET_DATA_LIVE_URL", true, "Configure MARKET_DATA_LIVE_URL for the pricing gateway."],
+  ["news-sentiment", "news-sentiment", "News & Sentiment Sources", "NEWS_SENTIMENT_LIVE_URL", true, "Configure NEWS_SENTIMENT_LIVE_URL for a licensed headline provider."],
+  ["economic-calendar", "economic-calendar", "Economic Calendar", "ECONOMIC_CALENDAR_LIVE_URL", true, "Configure ECONOMIC_CALENDAR_LIVE_URL for live macro-event ingestion."],
+  ["social-sentiment", "social-sentiment", "Social Media & Community", "SOCIAL_SENTIMENT_LIVE_URL", false, "Configure SOCIAL_SENTIMENT_LIVE_URL for optional community intelligence."],
+  ["institutional-cot-data", "institutional-cot", "Institutional / COT Data", "COT_SOURCE_URL", false, "Official CFTC Futures Only archive synchronized by cot_weekly_sync_job."],
+  ["historical-data", "historical-data", "Historical Data", "HISTORICAL_DATA_LIVE_URL", true, "Configure HISTORICAL_DATA_LIVE_URL or upload an OHLCV archive."],
+  ["broker-data", "broker-data", "Broker Data", "BROKER_DATA_LIVE_URL", true, "Configure BROKER_DATA_LIVE_URL for an MT5, cTrader, FIX or broker API bridge."],
+  ["account-portfolio-data", "account-portfolio", "Account & Portfolio Data", "ACCOUNT_PORTFOLIO_LIVE_URL", true, "Configure ACCOUNT_PORTFOLIO_LIVE_URL or connect a broker account."],
+  ["prop-firm-rules", "prop-firm-rules", "Prop Firm Rules & Limits", "PROP_FIRM_RULES_LIVE_URL", true, "Configure PROP_FIRM_RULES_LIVE_URL or import a validated rule catalog."]
+];
+
+function recordSourceProbe(sources, probedAt) {
+  sourceProbeLog.unshift({
+    id: `PROBE-${probedAt.replaceAll(/[-:.TZ]/g, "").slice(0, 14)}`,
+    probedAt,
+    live: sources.filter(source => ["ONLINE", "LIVE", "SYNCED"].includes(source.status)).length,
+    unavailable: sources.filter(source => !["ONLINE", "LIVE", "SYNCED"].includes(source.status)).length,
+    qualityScore: getDataQualityGateDashboard(sources).dataQualityScore
+  });
+  sourceProbeLog.splice(20);
+}
+
+async function probeConfiguredUrl(url) {
+  const started = performance.now();
+  try {
+    const response = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(5000), headers: { "User-Agent": "CACSMS-Data-Sources-Validation/1.0" } });
+    return { ok: response.ok, httpStatus: response.status, latencyMs: Math.round(performance.now() - started), error: response.ok ? null : `HTTP ${response.status}` };
+  } catch (reason) {
+    return { ok: false, httpStatus: null, latencyMs: Math.round(performance.now() - started), error: reason.message };
+  }
+}
+
+async function getLiveSourceSnapshots() {
+  let cot;
+  try { cot = readCotCache(); } catch {}
+  const snapshots = await Promise.all(liveSourceDefinitions.map(async ([id, routeSlug, name, envKey, required, configuration]) => {
+    const isCot = id === "institutional-cot-data";
+    const configuredUrl = process.env[envKey];
+    const cotReady = isCot && cot?.latestReportDate && existsSync(cotCachePath);
+    const configured = Boolean(configuredUrl || cotReady);
+    const modified = cotReady ? statSync(cotCachePath).mtime.toISOString() : null;
+    const probe = configuredUrl && !isCot ? await probeConfiguredUrl(configuredUrl) : null;
+    const status = cotReady ? "SYNCED" : probe?.ok ? "ONLINE" : configured ? "FAILED" : "NOT_CONFIGURED";
+    return {
+      id, routeSlug, name, category: id, subtitle: configuration,
+      provider: cotReady ? "CFTC Historical Compressed / Futures Only" : configuredUrl ? new URL(configuredUrl).host : "Not configured",
+      status,
+      required, lastSyncAt: modified || (probe?.ok ? new Date().toISOString() : null), freshnessSeconds: cotReady ? Math.max(0, Math.round((Date.now() - statSync(cotCachePath).mtimeMs) / 1000)) : 0,
+      freshness: cotReady ? `Official report ${cot.latestReportDate}` : probe?.ok ? "LIVE PROBE" : "UNAVAILABLE",
+      healthScore: cotReady || probe?.ok ? 100 : 0, latencyMs: probe?.latencyMs || 0, errorCount: cotReady || probe?.ok ? 0 : 1,
+      feedsStage: "Card 1", failureAction: required ? "block_card_1" : "reduce_confidence",
+      records: cotReady ? Object.values(cot.history || {}).reduce((sum, rows) => sum + rows.length, 0) : 0,
+      adapter: cotReady ? "official_cftc_cache" : probe?.ok ? "live_http_probe" : configured ? "configured_url_failed_probe" : "none",
+      configuration, envKey, httpStatus: probe?.httpStatus || null, probeError: probe?.error || null,
+      checks: {
+        configured, availability: cotReady || Boolean(probe?.ok), apiValidation: cotReady || Boolean(probe?.ok),
+        latency: probe ? `${probe.latencyMs} ms` : cotReady ? "ARCHIVE CACHE" : "NOT TESTED",
+        freshness: cotReady ? `Official report ${cot.latestReportDate}` : probe?.ok ? "LIVE" : "UNAVAILABLE",
+        quality: cotReady || probe?.ok ? "PASSED" : "FAILED"
+      }
+    };
+  }));
+  return snapshots;
+}
+
+async function getLiveMarketIntelligenceDashboard({ log = false } = {}) {
+  const sources = await getLiveSourceSnapshots();
+  const gate = getDataQualityGateDashboard(sources);
+  const probedAt = new Date().toISOString();
+  if (log) recordSourceProbe(sources, probedAt);
+  return {
+    probedAt, sourceMode: "LIVE_ADAPTERS_ONLY", sources, gate, probeLog: sourceProbeLog,
+    summary: {
+      live: sources.filter(source => ["ONLINE", "LIVE", "SYNCED"].includes(source.status)).length,
+      notConfigured: sources.filter(source => source.status === "NOT_CONFIGURED").length,
+      unavailable: sources.filter(source => !["ONLINE", "LIVE", "SYNCED"].includes(source.status)).length
+    }
+  };
+}
+
+async function liveSourcePayload(id) {
+  const source = (await getLiveSourceSnapshots()).find(item => item.id === id);
+  return { sourceMode: "LIVE_ADAPTERS_ONLY", status: source?.status || "NOT_CONFIGURED", source, records: [], warnings: source?.status === "SYNCED" ? [] : [source?.configuration || "Live adapter is not configured"] };
+}
+
+async function liveAction(type, id) {
+  const source = (await getLiveSourceSnapshots()).find(item => item.id === id);
+  return { type, status: source?.status === "SYNCED" ? "completed" : "NOT_CONFIGURED", source };
+}
+
 function startCotSync() {
   const child = spawn("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", cotSyncScriptPath], { cwd: root, stdio: "ignore", windowsHide: true });
   child.unref();
@@ -63,49 +147,50 @@ const routes = {
   }),
   "GET /api/workflow/current": () => workflow,
   "GET /api/workflow/events": () => ({ events: eventLog }),
-  "GET /api/workflow/cards/1": () => cardOneReport,
-  "GET /api/workflow/cards/1/scenarios": () => ({ scenarios: CARD_ONE_SCENARIOS }),
+  "GET /api/workflow/cards/1": async () => cardOneReport || createCardOneTestReport(await getLiveSourceSnapshots()),
+  "GET /api/workflow/cards": () => ({ cards: WORKFLOW_CARD_QUEUE }),
   "GET /api/assets/universe": () => ({ count: ASSET_UNIVERSE.length, assets: ASSET_UNIVERSE }),
   "GET /api/assets/scores": () => ({ workflowId: workflow.workflowId, scores: ASSET_SCORES }),
   "GET /api/infrastructure/status": () => ({
     status: "healthy", machines: 1248, mt5Terminals: 5672, accounts: 18420, averageLatencyMs: 42
   }),
-  "GET /api/market-intelligence/data-sources": () => ({ sources: DATA_SOURCES }),
-  "GET /api/market-intelligence/dashboard": () => getMarketIntelligenceDashboard(),
-  "GET /api/market-intelligence/data-sources/health": () => ({ sources: DATA_SOURCES.map(({ id, name, status, freshnessSeconds, healthScore, latencyMs, errorCount }) => ({ id, name, status, freshnessSeconds, healthScore, latencyMs, errorCount })) }),
-  "GET /api/market-intelligence/economic-events": () => ({ events: ECONOMIC_EVENTS }),
-  "GET /api/market-intelligence/news-sentiment": () => ({ sentimentScore: 62, mode: "Risk-On", items: NEWS_SENTIMENT }),
-  "GET /api/market-intelligence/broker-feeds": () => ({ brokerHealth: 97, portfolioSync: "Live", feeds: BROKER_FEEDS }),
-  "GET /api/market-intelligence/data-quality-gate": () => getDataQualityGateDashboard(),
-  "GET /api/market-intelligence/data-quality-gate/sources": () => ({ sources: getDataQualityGateDashboard().sources }),
-  "GET /api/market-intelligence/data-quality-gate/validations": () => ({ rules: getDataQualityGateDashboard().rules }),
-  "GET /api/market-intelligence/data-quality-gate/events": () => ({ events: DATA_QUALITY_GATE_EVENTS }),
+  "GET /api/market-intelligence/live/dashboard": () => getLiveMarketIntelligenceDashboard(),
+  "GET /api/market-intelligence/data-sources": async () => ({ sourceMode: "LIVE_ADAPTERS_ONLY", sources: await getLiveSourceSnapshots() }),
+  "GET /api/market-intelligence/dashboard": () => getLiveMarketIntelligenceDashboard(),
+  "GET /api/market-intelligence/data-sources/health": async () => ({ sourceMode: "LIVE_ADAPTERS_ONLY", sources: await getLiveSourceSnapshots() }),
+  "GET /api/market-intelligence/economic-events": () => ({ events: [], status: "NOT_CONFIGURED" }),
+  "GET /api/market-intelligence/news-sentiment": () => liveSourcePayload("news-sentiment"),
+  "GET /api/market-intelligence/broker-feeds": () => ({ feeds: [], status: "NOT_CONFIGURED" }),
+  "GET /api/market-intelligence/data-quality-gate": async () => getDataQualityGateDashboard(await getLiveSourceSnapshots()),
+  "GET /api/market-intelligence/data-quality-gate/sources": async () => ({ sources: getDataQualityGateDashboard(await getLiveSourceSnapshots()).sources }),
+  "GET /api/market-intelligence/data-quality-gate/validations": async () => ({ rules: getDataQualityGateDashboard(await getLiveSourceSnapshots()).rules }),
+  "GET /api/market-intelligence/data-quality-gate/events": () => ({ events: [], source_mode: "LIVE_ADAPTERS_ONLY" }),
   "GET /api/market-intelligence/data-quality-gate/export": () => ({ status: "ready", format: "csv", rules: DATA_QUALITY_GATE_RULES.length }),
-  "GET /api/market-intelligence/feed-events": () => ({ events: TIMELINE_EVENTS })
-  ,"GET /api/market-data/providers": () => getMarketDataProvidersDashboard()
-  ,"GET /api/market-data/providers/health": () => ({ providers: MARKET_DATA_PROVIDERS })
-  ,"GET /api/market-data/providers/latency": () => ({ averageLatencyMs: evaluateMarketDataQuality().latency_ms, providers: MARKET_DATA_PROVIDERS.map(({ id, name, latencyMs }) => ({ id, name, latencyMs })) })
-  ,"GET /api/market-data/providers/coverage": () => ({ symbolsOnline: MARKET_DATA_COVERAGE.length, assets: MARKET_DATA_COVERAGE })
-  ,"GET /api/market-data/providers/events": () => ({ events: MARKET_DATA_EVENTS })
-  ,"GET /api/market-data/providers/quality": () => evaluateMarketDataQuality()
-  ,"GET /api/market-intelligence/news-sentiment/dashboard": () => getNewsSentimentDashboard()
-  ,"GET /api/market-intelligence/news-sentiment/headlines": () => ({ headlines: NEWS_HEADLINES })
-  ,"GET /api/market-intelligence/news-sentiment/sources": () => ({ sources: NEWS_SOURCES })
-  ,"GET /api/market-intelligence/news-sentiment/asset-impact": () => ({ assets: NEWS_ASSET_IMPACT })
-  ,"GET /api/market-intelligence/news-sentiment/risk-panel": () => ({ ...evaluateNewsSentiment(), events: NEWS_RISK_EVENTS })
-  ,"GET /api/market-intelligence/economic-calendar/dashboard": () => getEconomicCalendarDashboard()
-  ,"GET /api/market-intelligence/economic-calendar/events": () => ({ events: ECONOMIC_CALENDAR_EVENTS })
-  ,"GET /api/market-intelligence/economic-calendar/high-impact": () => ({ event: ECONOMIC_CALENDAR_EVENTS[0], ...evaluateEconomicCalendar() })
-  ,"GET /api/market-intelligence/economic-calendar/restrictions": () => ({ restrictions: ECONOMIC_RESTRICTION_WINDOWS })
-  ,"GET /api/market-intelligence/economic-calendar/asset-impact": () => ({ assets: CURRENCY_ASSET_IMPACT })
-  ,"GET /api/market-intelligence/economic-calendar/central-banks": () => ({ centralBanks: CENTRAL_BANK_WATCH })
-  ,"GET /api/market-intelligence/social-sentiment/dashboard": () => getSocialSentimentDashboard()
-  ,"GET /api/market-intelligence/social-sentiment/feed": () => ({ items: SOCIAL_SENTIMENT_ITEMS })
-  ,"GET /api/market-intelligence/social-sentiment/asset-matrix": () => ({ assets: ASSET_CROWD_SENTIMENT })
-  ,"GET /api/market-intelligence/social-sentiment/retail-positioning": () => ({ positioning: RETAIL_POSITIONING })
-  ,"GET /api/market-intelligence/social-sentiment/spikes": () => ({ spikes: SENTIMENT_SPIKES })
-  ,"GET /api/market-intelligence/social-sentiment/contrarian": () => ({ signals: CONTRARIAN_SIGNALS })
-  ,"GET /api/market-intelligence/social-sentiment/source-health": () => ({ sources: SOCIAL_SOURCE_HEALTH })
+  "GET /api/market-intelligence/feed-events": () => ({ events: [] })
+  ,"GET /api/market-data/providers": () => liveSourcePayload("market-data")
+  ,"GET /api/market-data/providers/health": () => ({ providers: [] })
+  ,"GET /api/market-data/providers/latency": () => ({ averageLatencyMs: null, providers: [] })
+  ,"GET /api/market-data/providers/coverage": () => ({ symbolsOnline: 0, assets: [] })
+  ,"GET /api/market-data/providers/events": () => ({ events: [] })
+  ,"GET /api/market-data/providers/quality": () => liveSourcePayload("market-data")
+  ,"GET /api/market-intelligence/news-sentiment/dashboard": () => liveSourcePayload("news-sentiment")
+  ,"GET /api/market-intelligence/news-sentiment/headlines": () => ({ headlines: [] })
+  ,"GET /api/market-intelligence/news-sentiment/sources": () => ({ sources: [] })
+  ,"GET /api/market-intelligence/news-sentiment/asset-impact": () => ({ assets: [] })
+  ,"GET /api/market-intelligence/news-sentiment/risk-panel": () => liveSourcePayload("news-sentiment")
+  ,"GET /api/market-intelligence/economic-calendar/dashboard": () => liveSourcePayload("economic-calendar")
+  ,"GET /api/market-intelligence/economic-calendar/events": () => ({ events: [] })
+  ,"GET /api/market-intelligence/economic-calendar/high-impact": () => ({ event: null, status: "NOT_CONFIGURED" })
+  ,"GET /api/market-intelligence/economic-calendar/restrictions": () => ({ restrictions: [] })
+  ,"GET /api/market-intelligence/economic-calendar/asset-impact": () => ({ assets: [] })
+  ,"GET /api/market-intelligence/economic-calendar/central-banks": () => ({ centralBanks: [] })
+  ,"GET /api/market-intelligence/social-sentiment/dashboard": () => liveSourcePayload("social-sentiment")
+  ,"GET /api/market-intelligence/social-sentiment/feed": () => ({ items: [] })
+  ,"GET /api/market-intelligence/social-sentiment/asset-matrix": () => ({ assets: [] })
+  ,"GET /api/market-intelligence/social-sentiment/retail-positioning": () => ({ positioning: [] })
+  ,"GET /api/market-intelligence/social-sentiment/spikes": () => ({ spikes: [] })
+  ,"GET /api/market-intelligence/social-sentiment/contrarian": () => ({ signals: [] })
+  ,"GET /api/market-intelligence/social-sentiment/source-health": () => ({ sources: [] })
   ,"GET /api/market-intelligence/institutional-cot/dashboard": url => getInstitutionalCotDashboard(readCotCache(), url.searchParams.get("currency") || "EUR")
   ,"GET /api/market-intelligence/institutional-cot/currencies": () => ({ currencies: getCotComparison(readCotCache()) })
   ,"GET /api/market-intelligence/institutional-cot/history": url => ({ currency: url.searchParams.get("currency") || "EUR", range: url.searchParams.get("range") || "1Y", history: readCotCache().history[url.searchParams.get("currency") || "EUR"] || [] })
@@ -113,27 +198,27 @@ const routes = {
   ,"GET /api/market-intelligence/institutional-cot/comparison": () => ({ comparison: getCotComparison(readCotCache()) })
   ,"GET /api/market-intelligence/institutional-cot/sync/status": () => createCotSyncStatus(readCotCache())
   ,"GET /api/market-intelligence/institutional-cot/sync/logs": () => ({ logs: getInstitutionalCotDashboard(readCotCache()).syncLogs })
-  ,"GET /api/market-intelligence/historical-data": url => getHistoricalDashboard({ instrument: url.searchParams.get("instrument") || "EURUSD" })
-  ,"GET /api/market-intelligence/historical-data/export": url => ({ status: "ready", format: url.searchParams.get("format") || "csv", instrument: url.searchParams.get("instrument") || "EURUSD" })
-  ,"GET /api/market-intelligence/historical-data/summary": url => getHistoricalSummary(url.searchParams.get("instrument") || "EURUSD")
-  ,"GET /api/market-intelligence/historical-data/comparison": url => ({ comparison: getHistoricalComparison((url.searchParams.get("instruments") || "EURUSD,GBPUSD,XAUUSD").split(",")) })
-  ,"GET /api/market-intelligence/broker-data": () => getBrokerDataDashboard()
-  ,"GET /api/market-intelligence/broker-data/sources": () => ({ sources: BROKER_DATA_SOURCES })
-  ,"GET /api/market-intelligence/broker-data/compare": () => ({ comparison: BROKER_COMPARISON })
-  ,"GET /api/market-intelligence/broker-data/validation": () => ({ issues: BROKER_VALIDATION_ISSUES })
-  ,"GET /api/market-intelligence/broker-data/export": () => ({ status: "ready", format: "csv", records: BROKER_MARKET_DATA.length })
-  ,"GET /api/market-intelligence/account-portfolio": () => getAccountPortfolioDashboard()
-  ,"GET /api/market-intelligence/account-portfolio/accounts": () => ({ accounts: TRADING_ACCOUNTS })
-  ,"GET /api/market-intelligence/account-portfolio/positions/open": () => ({ positions: PORTFOLIO_POSITIONS })
-  ,"GET /api/market-intelligence/account-portfolio/trades/closed": () => ({ trades: PORTFOLIO_CLOSED_TRADES })
-  ,"GET /api/market-intelligence/account-portfolio/risk": () => ({ risk: PORTFOLIO_RISK_METRICS })
-  ,"GET /api/market-intelligence/account-portfolio/equity-curve": () => ({ curve: PORTFOLIO_EQUITY_CURVE })
-  ,"GET /api/market-intelligence/account-portfolio/export": () => ({ status: "ready", format: "csv", accounts: TRADING_ACCOUNTS.length })
-  ,"GET /api/market-intelligence/prop-firm-rules": () => getPropFirmRulesDashboard()
-  ,"GET /api/market-intelligence/prop-firm-rules/comparison": () => ({ comparison: PROP_FIRM_COMPARISON })
-  ,"GET /api/market-intelligence/prop-firm-rules/compliance": () => ({ accounts: PROP_FIRM_COMPLIANCE_ACCOUNTS })
-  ,"GET /api/market-intelligence/prop-firm-rules/breach-risk": () => ({ alerts: PROP_FIRM_BREACH_ALERTS })
-  ,"GET /api/market-intelligence/prop-firm-rules/export": () => ({ status: "ready", format: "csv", rules: PROP_FIRM_RULES.length })
+  ,"GET /api/market-intelligence/historical-data": () => liveSourcePayload("historical-data")
+  ,"GET /api/market-intelligence/historical-data/export": url => ({ status: "unavailable", format: url.searchParams.get("format") || "csv", records: 0 })
+  ,"GET /api/market-intelligence/historical-data/summary": () => ({ summary: null })
+  ,"GET /api/market-intelligence/historical-data/comparison": () => ({ comparison: [] })
+  ,"GET /api/market-intelligence/broker-data": () => liveSourcePayload("broker-data")
+  ,"GET /api/market-intelligence/broker-data/sources": () => ({ sources: [] })
+  ,"GET /api/market-intelligence/broker-data/compare": () => ({ comparison: [] })
+  ,"GET /api/market-intelligence/broker-data/validation": () => ({ issues: [] })
+  ,"GET /api/market-intelligence/broker-data/export": () => ({ status: "unavailable", format: "csv", records: 0 })
+  ,"GET /api/market-intelligence/account-portfolio": () => liveSourcePayload("account-portfolio-data")
+  ,"GET /api/market-intelligence/account-portfolio/accounts": () => ({ accounts: [] })
+  ,"GET /api/market-intelligence/account-portfolio/positions/open": () => ({ positions: [] })
+  ,"GET /api/market-intelligence/account-portfolio/trades/closed": () => ({ trades: [] })
+  ,"GET /api/market-intelligence/account-portfolio/risk": () => ({ risk: [] })
+  ,"GET /api/market-intelligence/account-portfolio/equity-curve": () => ({ curve: [] })
+  ,"GET /api/market-intelligence/account-portfolio/export": () => ({ status: "unavailable", format: "csv", accounts: 0 })
+  ,"GET /api/market-intelligence/prop-firm-rules": () => liveSourcePayload("prop-firm-rules")
+  ,"GET /api/market-intelligence/prop-firm-rules/comparison": () => ({ comparison: [] })
+  ,"GET /api/market-intelligence/prop-firm-rules/compliance": () => ({ accounts: [] })
+  ,"GET /api/market-intelligence/prop-firm-rules/breach-risk": () => ({ alerts: [] })
+  ,"GET /api/market-intelligence/prop-firm-rules/export": () => ({ status: "unavailable", format: "csv", rules: 0 })
 };
 
 const actions = {
@@ -157,67 +242,66 @@ const actions = {
     workflow = { ...workflow, status: "retrying", retryCount: workflow.retryCount + 1 };
     return record("workflow.stage.started", { stage: workflow.currentStage, retry: workflow.retryCount });
   },
-  "/api/workflow/cards/1/test-pass": () => ({ type: "workflow.card1.test.completed", report: cardOneReport = createCardOneTestReport("pass") }),
-  "/api/workflow/cards/1/test-warning": () => ({ type: "workflow.card1.test.completed", report: cardOneReport = createCardOneTestReport("warning") }),
-  "/api/workflow/cards/1/test-reject": () => ({ type: "workflow.card1.test.completed", report: cardOneReport = createCardOneTestReport("reject") }),
-  "/api/workflow/cards/1/test-missing": () => ({ type: "workflow.card1.test.completed", report: cardOneReport = createCardOneTestReport("missing") }),
-  "/api/market-intelligence/data-sources/test": () => ({ type: "market_intelligence.sources.tested", testedSources: DATA_SOURCES.length, status: "passed" }),
-  "/api/market-intelligence/data-sources/sync": () => ({ type: "market_intelligence.sources.synced", syncedSources: DATA_SOURCES.length, status: "completed" }),
-  "/api/market-intelligence/scan": () => ({ type: "market_intelligence.scan.completed", scannedSources: DATA_SOURCES.length, status: "completed" }),
-  "/api/market-intelligence/refresh-feeds": () => ({ type: "market_intelligence.feeds.refreshed", refreshedSources: DATA_SOURCES.length, status: "completed" }),
-  "/api/market-intelligence/test-sources": () => ({ type: "market_intelligence.sources.tested", testedSources: DATA_SOURCES.length, status: "passed" })
-  ,"/api/market-data/providers/validate": () => ({ type: "market_data.providers.validated", status: "passed", providers: MARKET_DATA_PROVIDERS.length, ...evaluateMarketDataQuality() })
-  ,"/api/market-data/providers/restart": () => ({ type: "market_data.provider.restarted", status: "completed" })
-  ,"/api/market-intelligence/news-sentiment/refresh": () => ({ type: "news_sentiment.refreshed", status: "completed", headlines: 128 })
-  ,"/api/market-intelligence/news-sentiment/classify": () => ({ type: "news_sentiment.headline.classified", status: "completed", classification: AI_HEADLINE_CLASSIFICATION })
-  ,"/api/market-intelligence/news-sentiment/create-alert": () => ({ type: "news_sentiment.risk_alert.created", status: "completed", permission: evaluateNewsSentiment().workflow_permission })
-  ,"/api/market-intelligence/economic-calendar/sync": () => ({ type: "economic_calendar.synced", status: "completed", events: 18 })
-  ,"/api/market-intelligence/economic-calendar/risk-scan": () => ({ type: "economic_calendar.risk_scan.completed", ...evaluateEconomicCalendar(), action_status: "completed" })
-  ,"/api/market-intelligence/economic-calendar/apply-restriction": () => ({ type: "economic_calendar.restriction.applied", status: "completed", permission: "RESTRICTED" })
-  ,"/api/market-intelligence/economic-calendar/release-restriction": () => ({ type: "economic_calendar.restriction.released", status: "completed" })
-  ,"/api/market-intelligence/social-sentiment/refresh": () => ({ type: "social_sentiment.refreshed", status: "completed", mentions: 12480 })
-  ,"/api/market-intelligence/social-sentiment/run-scan": () => ({ type: "social_sentiment.scan.completed", ...evaluateSocialSentiment(), action_status: "completed" })
-  ,"/api/market-intelligence/social-sentiment/generate-contrarian-signals": () => ({ type: "social_sentiment.contrarian.generated", status: "completed", signals: CONTRARIAN_SIGNALS })
+  "/api/workflow/cards/1/test-live": async () => ({ type: "workflow.card1.live_test.completed", report: cardOneReport = createCardOneTestReport(await getLiveSourceSnapshots()) }),
+  "/api/market-intelligence/data-sources/test": async () => ({ type: "market_intelligence.sources.live_probe.completed", ...await getLiveMarketIntelligenceDashboard({ log: true }) }),
+  "/api/market-intelligence/data-sources/sync": async () => ({ type: "market_intelligence.sources.live_probe.completed", ...await getLiveMarketIntelligenceDashboard({ log: true }) }),
+  "/api/market-intelligence/scan": async () => ({ type: "market_intelligence.scan.rejected", status: "NOT_READY", gate: getDataQualityGateDashboard(await getLiveSourceSnapshots()) }),
+  "/api/market-intelligence/refresh-feeds": async () => ({ type: "market_intelligence.sources.live_probe.completed", ...await getLiveMarketIntelligenceDashboard({ log: true }) }),
+  "/api/market-intelligence/test-sources": async () => ({ type: "market_intelligence.sources.live_probe.completed", ...await getLiveMarketIntelligenceDashboard({ log: true }) })
+  ,"/api/market-data/providers/validate": () => liveAction("market_data.providers.live_probe.completed", "market-data")
+  ,"/api/market-data/providers/restart": () => liveAction("restart", "market-data")
+  ,"/api/market-intelligence/news-sentiment/refresh": () => liveAction("news_sentiment.live_probe.completed", "news-sentiment")
+  ,"/api/market-intelligence/news-sentiment/classify": () => liveAction("news_sentiment.classification.unavailable", "news-sentiment")
+  ,"/api/market-intelligence/news-sentiment/create-alert": () => liveAction("news_sentiment.risk_alert.unavailable", "news-sentiment")
+  ,"/api/market-intelligence/economic-calendar/sync": () => liveAction("economic_calendar.live_probe.completed", "economic-calendar")
+  ,"/api/market-intelligence/economic-calendar/risk-scan": () => liveAction("economic_calendar.risk_scan.unavailable", "economic-calendar")
+  ,"/api/market-intelligence/economic-calendar/apply-restriction": () => liveAction("apply_restriction", "economic-calendar")
+  ,"/api/market-intelligence/economic-calendar/release-restriction": () => liveAction("release_restriction", "economic-calendar")
+  ,"/api/market-intelligence/social-sentiment/refresh": () => liveAction("social_sentiment.live_probe.completed", "social-sentiment")
+  ,"/api/market-intelligence/social-sentiment/run-scan": () => liveAction("social_sentiment.scan.unavailable", "social-sentiment")
+  ,"/api/market-intelligence/social-sentiment/generate-contrarian-signals": () => liveAction("social_sentiment.contrarian.unavailable", "social-sentiment")
   ,"/api/market-intelligence/institutional-cot/sync-now": () => startCotSync()
   ,"/api/market-intelligence/institutional-cot/sync-year": () => startCotSync()
   ,"/api/market-intelligence/institutional-cot/sync-all": () => startCotSync()
   ,"/api/market-intelligence/institutional-cot/recalculate-bias": () => ({ type: "institutional_cot.bias.recalculated", status: "completed", currencies: readCotCache().mappings.length })
   ,"/api/market-intelligence/institutional-cot/validate-latest": () => ({ type: "institutional_cot.latest.validated", status: "completed", latest_report_date: readCotCache().latestReportDate })
-  ,"/api/market-intelligence/historical-data/sync": () => ({ type: "historical_data.sync.accepted", status: "SYNCING", sources: HISTORICAL_SOURCES.length })
+  ,"/api/market-intelligence/historical-data/sync": () => liveAction("historical_data.live_probe.completed", "historical-data")
   ,"/api/market-intelligence/historical-data/upload": () => ({ type: "historical_data.upload.accepted", status: "PENDING_VALIDATION" })
   ,"/api/market-intelligence/broker-data/connect": () => ({ type: "broker_data.connect.accepted", status: "PENDING_VALIDATION" })
-  ,"/api/market-intelligence/broker-data/sync": () => ({ type: "broker_data.sync.accepted", status: "SYNCING", sources: BROKER_DATA_SOURCES.length })
+  ,"/api/market-intelligence/broker-data/sync": () => liveAction("broker_data.live_probe.completed", "broker-data")
   ,"/api/market-intelligence/broker-data/upload": () => ({ type: "broker_data.upload.accepted", status: "PENDING_VALIDATION" })
-  ,"/api/market-intelligence/account-portfolio/sync": () => ({ type: "account_portfolio.sync.accepted", status: "SYNCING", accounts: TRADING_ACCOUNTS.length })
+  ,"/api/market-intelligence/account-portfolio/sync": () => liveAction("account_portfolio.live_probe.completed", "account-portfolio-data")
   ,"/api/market-intelligence/account-portfolio/connect": () => ({ type: "account_portfolio.connect.accepted", status: "PENDING_VALIDATION" })
   ,"/api/market-intelligence/account-portfolio/upload": () => ({ type: "account_portfolio.statement_upload.accepted", status: "PENDING_VALIDATION" })
   ,"/api/market-intelligence/prop-firm-rules": () => ({ type: "prop_firm_rules.create.accepted", status: "PENDING_VALIDATION" })
   ,"/api/market-intelligence/prop-firm-rules/import": () => ({ type: "prop_firm_rules.import.accepted", status: "PENDING_VALIDATION" })
-  ,"/api/market-intelligence/prop-firm-rules/sync": () => ({ type: "prop_firm_rules.sync.accepted", status: "SYNCING", rules: PROP_FIRM_RULES.length })
-  ,"/api/market-intelligence/data-quality-gate/run": () => ({ type: "data_quality_gate.run.completed", ...getDataQualityGateDashboard() })
-  ,"/api/market-intelligence/data-quality-gate/refresh": () => ({ type: "data_quality_gate.sources.refreshed", status: "completed", sources: DATA_SOURCES.length })
-  ,"/api/market-intelligence/data-quality-gate/recalculate": () => ({ type: "data_quality_gate.score.recalculated", ...evaluateDataQualityGate() })
+  ,"/api/market-intelligence/prop-firm-rules/sync": () => liveAction("prop_firm_rules.live_probe.completed", "prop-firm-rules")
+  ,"/api/market-intelligence/data-quality-gate/run": async () => ({ type: "data_quality_gate.live_run.completed", ...getDataQualityGateDashboard(await getLiveSourceSnapshots()) })
+  ,"/api/market-intelligence/data-quality-gate/refresh": async () => ({ type: "data_quality_gate.sources.live_probe.completed", ...await getLiveMarketIntelligenceDashboard({ log: true }) })
+  ,"/api/market-intelligence/data-quality-gate/recalculate": async () => ({ type: "data_quality_gate.score.live_recalculated", ...evaluateDataQualityGate(await getLiveSourceSnapshots()) })
 };
 
-const server = createServer((request, response) => {
+const server = createServer(async (request, response) => {
   if (request.method === "OPTIONS") return json(response, 204, {});
   const url = new URL(request.url, `http://${request.headers.host}`);
   const route = routes[`${request.method} ${url.pathname}`];
-  if (route) return json(response, 200, route(url));
+  if (route) return json(response, 200, await route(url));
   if (request.method === "GET" && url.pathname.startsWith("/api/market-intelligence/data-sources/")) {
-    const source = DATA_SOURCES.find(({ id }) => id === url.pathname.split("/").at(-1));
+    const source = (await getLiveSourceSnapshots()).find(({ id }) => id === url.pathname.split("/").at(-1));
     return source ? json(response, 200, source) : json(response, 404, { error: "source_not_found" });
   }
   if (request.method === "GET" && url.pathname.startsWith("/api/market-intelligence/historical-data/")) {
     const id = url.pathname.split("/").at(-1);
-    const record = Object.values(HISTORICAL_DATA).flat().find(item => item.id === id);
-    return record ? json(response, 200, record) : json(response, 404, { error: "historical_record_not_found" });
+    return json(response, 404, { error: "historical_record_not_found", detail: "No live historical archive adapter is configured", id });
   }
   if (request.method === "DELETE" && url.pathname.startsWith("/api/market-intelligence/broker-data/sources/")) {
     const id = url.pathname.split("/").at(-1);
     return json(response, 200, { type: "broker_data.source.disconnect.accepted", status: "DISCONNECTING", source_id: id });
   }
-  if (request.method === "POST" && actions[url.pathname]) return json(response, 200, { accepted: true, event: actions[url.pathname](), workflow });
+  if (request.method === "POST" && url.pathname === "/api/workflow/cards/1/test-live") {
+    return json(response, 200, { accepted: true, event: await actions[url.pathname]() });
+  }
+  if (request.method === "POST" && actions[url.pathname]) return json(response, 200, { accepted: true, event: await actions[url.pathname](), workflow });
   return json(response, 404, { error: "not_found" });
 });
 

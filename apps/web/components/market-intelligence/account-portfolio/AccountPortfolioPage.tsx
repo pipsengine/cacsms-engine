@@ -1,16 +1,5 @@
-"use client";
-const accounts=[["CACSMS Live","IC Markets","Live","$84,620","$85,774","0.42%","823%","Healthy"],["FTMO Challenge","FTMO","Challenge","$25,000","$25,418","0.84%","945%","Watchlist"],["FundedNext Evaluation","FundedNext","Evaluation","$15,240","$15,220","0.31%","826%","Healthy"]];
-const positions=[["CACSMS Live","XAUUSD","Buy","0.42","+$316.68","0.72%"],["CACSMS Live","EURUSD","Sell","0.80","+$120.80","0.36%"],["FTMO Challenge","NAS100","Buy","0.35","+$310.80","0.84%"],["FundedNext Evaluation","USDJPY","Sell","0.48","-$27.21","0.28%"]];
-const risk=[["Current drawdown","1.36%","8.00%","Healthy"],["Daily loss limit","0.42%","3.00%","Healthy"],["Exposure per currency","33.8% USD","40.00%","Watchlist"],["Margin risk warning","824%","300% min","Healthy"]];
-const table=(heads:string[],rows:string[][])=><div className="icot-table-wrap"><table><thead><tr>{heads.map(x=><th key={x}>{x}</th>)}</tr></thead><tbody>{rows.map(row=><tr key={row.join("-")}>{row.map((x,i)=><td key={`${x}-${i}`}>{x}</td>)}</tr>)}</tbody></table></div>;
-export function AccountPortfolioPage(){return <main className="icot-dashboard portfolio-dashboard"><header className="icot-header"><div><span className="icot-eyebrow">MARKET INTELLIGENCE / ACCOUNT PORTFOLIO</span><h1>Account Portfolio</h1><p>Monitor account equity, portfolio exposure, open trades, risk concentration, and trading performance across all connected accounts.</p></div><div className="icot-header-actions"><button className="icot-button secondary">Export Portfolio Report</button><button className="icot-button secondary">Save View</button><button className="icot-button primary">Sync Accounts</button></div></header>
-<section className="icot-kpis">{[["Total Balance","$124,860"],["Total Equity","$126,412"],["Floating P/L","+$1,552"],["Realized P/L","+$9,368"],["Free Margin","$111,460"],["Margin Level","845%"],["Daily Drawdown","0.52%"],["Monthly Return","+5.24%"]].map(([a,b])=><article className="icot-kpi" key={a}><small>{a}</small><strong>{b}</strong><span>PORTFOLIO INTELLIGENCE</span></article>)}</section>
-<section className="icot-panel"><h2>Portfolio Filter Panel</h2><p>Broker / account / account type / currency / asset class / instrument / strategy / date range / risk / trade status</p></section>
-<section className="icot-panel"><h2>Portfolio Equity Chart</h2><p>Balance / Equity / Drawdown / Daily Return / Cumulative Return / Compare Accounts / Fullscreen</p></section>
-<section className="icot-panel"><h2>Account Allocation Section</h2><p>Instrument / currency / asset class / broker / strategy / long-short / winning-losing contribution</p></section>
-<section className="icot-panel"><h2>Open Positions Table</h2>{table(["Account","Instrument","Direction","Lot Size","Floating P/L","Risk %"],positions)}</section>
-<section className="icot-panel"><h2>Closed Trades Table</h2><p>Historical trade outcomes, R-multiple, commission, swap, strategy and close reason.</p></section>
-<section className="icot-panel"><h2>Risk & Drawdown Panel</h2>{table(["Control","Current","Limit","Status"],risk)}</section>
-<section className="icot-panel"><h2>Account Health Table</h2>{table(["Account","Broker","Type","Balance","Equity","Drawdown","Margin","Status"],accounts)}</section>
-<section className="icot-panel"><h2>Empty, Loading & Error States</h2><p>No trading account connected yet. / Loading account portfolio intelligence... / Account portfolio data could not be loaded.</p></section>
-<section className="icot-panel icot-actions"><h2>Account Portfolio Action Center</h2><div>{["Sync Accounts","Connect Account","Export Portfolio Report","Save View","Run Exposure Scan","Recalculate Risk","Upload Statement","View Sync Logs"].map((x,i)=><button className={`icot-button ${i<2?"primary":"secondary"}`} key={x}>{x}</button>)}</div></section></main>}
+import { LiveMarketIntelligencePage } from "../LiveMarketIntelligencePage";
+
+export function AccountPortfolioPage() {
+  return <LiveMarketIntelligencePage source="account-portfolio" />;
+}

@@ -44,7 +44,7 @@ function scenario() {
 function profile() {
   if (scenario() === "stale") return { status: "WARNING", permission: "ALLOWED WITH WARNING", score: 91, fresh: "STALE", blocks: 0, warnings: 2, mode: "RESTRICTED", note: "Economic calendar freshness exceeded the preferred tolerance. Stage 1 remains available with restricted trading mode." };
   if (scenario() === "blocked") return { status: "BLOCKED", permission: "RESTRICTED", score: 72, fresh: "DEGRADED", blocks: 2, warnings: 3, mode: "HALTED", note: "Primary market data is unavailable and aggregate quality is below threshold. Stage 1 permission has been withheld." };
-  return { status: "PASSED", permission: "ALLOWED", score: 98, fresh: "LIVE", blocks: 0, warnings: 0, mode: "NORMAL", note: "All critical source checks passed. CACSMS Engine may proceed to Stage 1 Market Intelligence Gathering." };
+  return { status: "PASSED", permission: "ALLOWED", score: 98, fresh: "LIVE", blocks: 0, warnings: 0, mode: "NORMAL", note: "All critical source checks passed. CACSMS Engine may proceed to Card 2 Market Intelligence Gathering." };
 }
 
 function badge(value) {
@@ -108,4 +108,3 @@ export function bindDataQualityGateCenter() {
     bindDataQualityGateCenter();
   }));
 }
-

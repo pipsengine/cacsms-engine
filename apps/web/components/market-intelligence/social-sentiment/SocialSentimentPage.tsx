@@ -1,1 +1,5 @@
-import{AssetCrowdSentimentMatrix}from"./AssetCrowdSentimentMatrix";import{CommunityTrendMonitor}from"./CommunityTrendMonitor";import{ContrarianSignalPanel}from"./ContrarianSignalPanel";import{RetailPositioningPanel}from"./RetailPositioningPanel";import{SentimentSpikeDetectionPanel}from"./SentimentSpikeDetectionPanel";import{SocialSentimentActionCenter}from"./SocialSentimentActionCenter";import{SocialSentimentFeed}from"./SocialSentimentFeed";import{SocialSentimentHeader}from"./SocialSentimentHeader";import{SocialSentimentKpiCards}from"./SocialSentimentKpiCards";import{SocialSentimentStatusStrip}from"./SocialSentimentStatusStrip";import{SocialSourceHealthPanel}from"./SocialSourceHealthPanel";import{SocialWorkflowImpactPanel}from"./SocialWorkflowImpactPanel";export function SocialSentimentPage(){return <main><SocialSentimentHeader/><SocialSentimentStatusStrip/><SocialSentimentKpiCards/><SocialSentimentFeed/><AssetCrowdSentimentMatrix/><RetailPositioningPanel/><CommunityTrendMonitor/><SentimentSpikeDetectionPanel/><ContrarianSignalPanel/><SocialSourceHealthPanel/><SocialWorkflowImpactPanel/><SocialSentimentActionCenter/></main>}
+import { LiveMarketIntelligencePage } from "../LiveMarketIntelligencePage";
+
+export function SocialSentimentPage() {
+  return <LiveMarketIntelligencePage source="social-sentiment" />;
+}

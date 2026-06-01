@@ -1,2 +1,5 @@
-import { AssetCoverageMatrix } from "./AssetCoverageMatrix";import { FeedEventTimeline } from "./FeedEventTimeline";import { FeedOperationsCenter } from "./FeedOperationsCenter";import { FeedQualityEngine } from "./FeedQualityEngine";import { MarketDataHeader } from "./MarketDataHeader";import { MarketFeedStatusStrip } from "./MarketFeedStatusStrip";import { ProviderHealthGrid } from "./ProviderHealthGrid";import { SpreadQualityMonitor } from "./SpreadQualityMonitor";import { TickLatencyMonitor } from "./TickLatencyMonitor";import { WorkflowDependencyPanel } from "./WorkflowDependencyPanel";
-export function MarketDataProvidersPage(){return <main className="md-dashboard"><MarketDataHeader/><MarketFeedStatusStrip/><div className="md-grid"><ProviderHealthGrid providers={[]}/><AssetCoverageMatrix assets={[]}/><TickLatencyMonitor/><SpreadQualityMonitor/><FeedQualityEngine/><FeedEventTimeline/><WorkflowDependencyPanel/><FeedOperationsCenter/></div></main>}
+import { LiveMarketIntelligencePage } from "./LiveMarketIntelligencePage";
+
+export function MarketDataProvidersPage() {
+  return <LiveMarketIntelligencePage source="market-data" />;
+}

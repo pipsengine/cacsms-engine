@@ -1,2 +1,2 @@
-import { MarketIntelligenceDashboard } from "../../../../../components/market-intelligence/MarketIntelligenceDashboard";
-export default function MarketIntelligenceDashboardPage() { return <MarketIntelligenceDashboard />; }
+import { LiveMarketIntelligencePage } from "../../../../../components/market-intelligence/LiveMarketIntelligencePage";
+export default function MarketIntelligenceDashboardPage() { return <LiveMarketIntelligencePage source="dashboard" />; }

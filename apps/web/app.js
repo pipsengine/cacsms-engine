@@ -10,10 +10,10 @@ const kpis = [
 ];
 
 const workflowStages = [
-  "Market Intelligence", "Asset Universe Scan", "Asset Ranking", "Market Analysis",
-  "Computer Vision", "AI Decision", "AI Debate", "Strategy Selection",
-  "Risk Validation", "Execution Preparation", "Trade Execution", "Position Management",
-  "Exit Management", "Learning Engine"
+  "Data Sources Validation", "Market Intelligence Gathering", "20-Asset Universe Scanner", "Asset Ranking",
+  "Market Analysis", "Computer Vision", "AI Decision", "AI Debate",
+  "Strategy Intelligence", "Risk Intelligence", "Execution Preparation", "Trade Execution",
+  "Position Management", "Post-Trade Learning"
 ];
 
 const opportunities = [

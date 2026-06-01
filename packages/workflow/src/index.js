@@ -2,22 +2,29 @@ export const WORKFLOW_STATUSES = Object.freeze([
   "pending", "running", "completed", "failed", "blocked", "retrying", "skipped", "escalated", "stopped"
 ]);
 
-export const WORKFLOW_STAGES = Object.freeze([
-  ["market-intelligence", "Market Intelligence Gathering"],
-  ["asset-universe-scan", "20-Asset Universe Scan"],
-  ["asset-ranking", "Asset Ranking & Pair Selection"],
-  ["market-analysis", "Market Analysis & Context Engine"],
-  ["computer-vision", "Computer Vision & Chart Analysis"],
-  ["ai-decision", "AI Decision Engine"],
-  ["ai-debate", "AI Debate & Consensus Engine"],
-  ["strategy-selection", "Strategy Intelligence Center"],
-  ["risk-validation", "Risk Intelligence & Capital Protection"],
-  ["execution-preparation", "Execution Preparation"],
-  ["trade-execution", "Trade Execution & Order Management"],
-  ["position-management", "Position Management Engine"],
-  ["exit-management", "Exit Management Engine"],
-  ["learning-engine", "Post-Trade Analytics & Learning"]
-].map(([key, name], index) => Object.freeze({ key, name, order: index + 1 })));
+export const WORKFLOW_CARD_QUEUE = Object.freeze([
+  ["data-sources-validation", "Data Sources Validation", "Live Source Adapter Snapshots", "Validated Intelligence Package"],
+  ["market-intelligence", "Market Intelligence Gathering", "Validated Intelligence Package", "Market Intelligence Package"],
+  ["asset-universe-scan", "20-Asset Universe Scan", "Market Intelligence Package", "Asset Opportunity Scores"],
+  ["asset-ranking", "Asset Ranking & Pair Selection", "Asset Opportunity Scores", "Ranked Asset Selection"],
+  ["market-analysis", "Market Analysis & Context Engine", "Ranked Asset Selection", "Market Context Package"],
+  ["computer-vision", "Computer Vision & Chart Analysis", "Market Context Package", "Visual Confirmation Package"],
+  ["ai-decision", "AI Decision Engine", "Visual Confirmation Package", "Trade Decision Proposal"],
+  ["ai-debate", "AI Debate & Consensus Engine", "Trade Decision Proposal", "Consensus Decision Package"],
+  ["strategy-selection", "Strategy Intelligence Center", "Consensus Decision Package", "Selected Strategy Package"],
+  ["risk-validation", "Risk Intelligence & Capital Protection", "Selected Strategy Package", "Risk Approval Package"],
+  ["execution-preparation", "Execution Preparation", "Risk Approval Package", "Signed Execution Package"],
+  ["trade-execution", "Trade Execution & Order Management", "Signed Execution Package", "Execution Result"],
+  ["position-management", "Position Management", "Execution Result", "Managed Position State"],
+  ["learning-engine", "Post-Trade Analytics & Learning", "Managed Position State", "Learning Record"]
+].map(([key, title, inputPackage, outputPackage], index, cards) => Object.freeze({
+  cardNumber: index + 1, key, title, inputPackage, outputPackage,
+  nextCard: cards[index + 1]?.[1] || "Workflow Complete",
+  status: index === 0 ? "READY_FOR_TESTING" : "LOCKED",
+  acceptanceScore: null, dataQualityScore: null, workflowPermission: index === 0 ? "TEST_REQUIRED" : "LOCKED"
+})));
+
+export const WORKFLOW_STAGES = Object.freeze(WORKFLOW_CARD_QUEUE.map(({ key, title }, index) => Object.freeze({ key, name: title, order: index + 1 })));
 
 const allowedTransitions = Object.freeze({
   pending: new Set(["running", "skipped", "blocked", "stopped"]),

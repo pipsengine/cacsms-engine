@@ -1,1 +1,2 @@
-import{EconomicCalendarPage}from"../../../../../components/market-intelligence/economic-calendar/EconomicCalendarPage";export default function Page(){return <EconomicCalendarPage/>}
+import { LiveMarketIntelligencePage } from "../../../../../components/market-intelligence/LiveMarketIntelligencePage";
+export default function Page() { return <LiveMarketIntelligencePage source="economic-calendar" />; }

@@ -1,13 +1,26 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { WORKFLOW_STAGES, WORKFLOW_STATUSES, assertRiskApproval, canTransition, createWorkflowRun, nextPendingStage, transition } from "../src/index.js";
+import { WORKFLOW_CARD_QUEUE, WORKFLOW_STAGES, WORKFLOW_STATUSES, assertRiskApproval, canTransition, createWorkflowRun, nextPendingStage, transition } from "../src/index.js";
 import { ASSET_SCORES, ASSET_UNIVERSE, MOCK_WORKFLOW, WORKFLOW_EVENTS } from "../src/mock-data.js";
 
 test("defines the complete 14-stage orchestration pipeline in order", () => {
   assert.equal(WORKFLOW_STAGES.length, 14);
-  assert.equal(WORKFLOW_STAGES[0].name, "Market Intelligence Gathering");
+  assert.equal(WORKFLOW_STAGES[0].name, "Data Sources Validation");
+  assert.equal(WORKFLOW_STAGES[1].name, "Market Intelligence Gathering");
+  assert.equal(WORKFLOW_STAGES[2].name, "20-Asset Universe Scan");
   assert.equal(WORKFLOW_STAGES[13].name, "Post-Trade Analytics & Learning");
   assert.deepEqual(WORKFLOW_STAGES.map(({ order }) => order), Array.from({ length: 14 }, (_, index) => index + 1));
+});
+
+test("defines card contracts for sequential independent verification", () => {
+  assert.equal(WORKFLOW_CARD_QUEUE.length, 14);
+  assert.equal(WORKFLOW_CARD_QUEUE[0].title, "Data Sources Validation");
+  assert.equal(WORKFLOW_CARD_QUEUE[0].outputPackage, "Validated Intelligence Package");
+  assert.equal(WORKFLOW_CARD_QUEUE[1].title, "Market Intelligence Gathering");
+  assert.equal(WORKFLOW_CARD_QUEUE[1].inputPackage, "Validated Intelligence Package");
+  for (const card of WORKFLOW_CARD_QUEUE) {
+    for (const field of ["status", "inputPackage", "outputPackage", "acceptanceScore", "dataQualityScore", "workflowPermission", "nextCard"]) assert.ok(field in card, `${card.title}: ${field}`);
+  }
 });
 
 test("defines every supported workflow status", () => {

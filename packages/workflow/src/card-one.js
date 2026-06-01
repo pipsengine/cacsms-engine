@@ -1,12 +1,4 @@
-import { DATA_SOURCES } from "../../market-intelligence/src/data-sources.js";
 import { getDataQualityGateDashboard } from "../../market-intelligence/src/data-quality-gate.js";
-
-export const CARD_ONE_SCENARIOS = Object.freeze({
-  pass: "Production baseline",
-  warning: "Economic calendar stale",
-  reject: "Primary market feed failed",
-  missing: "Critical market feed missing"
-});
 
 export const CARD_ONE_ACCEPTANCE_CHECKS = Object.freeze([
   ["card1-check-01", "Primary market feed is available", "Critical", "Reject workflow when real-time pricing is unavailable."],
@@ -14,15 +6,8 @@ export const CARD_ONE_ACCEPTANCE_CHECKS = Object.freeze([
   ["card1-check-03", "Aggregate source quality is at least 85%", "Critical", "Reject low-quality intelligence packages."],
   ["card1-check-04", "Economic calendar freshness is acceptable", "High", "Restrict trading mode when macro-event context is stale."],
   ["card1-check-05", "Optional intelligence feeds are monitored", "Advisory", "Reduce confidence without blocking the workflow."],
-  ["card1-check-06", "Market Intelligence package is emitted", "Critical", "Create the normalized Stage 1 output package for Stage 2."]
+  ["card1-check-06", "Validated intelligence package is emitted", "Critical", "Create the source validation package required by Card 2."]
 ].map(([id, name, severity, policy]) => Object.freeze({ id, name, severity, policy })));
-
-function sourcesForScenario(scenario) {
-  if (scenario === "warning") return DATA_SOURCES.map(source => source.id === "economic-calendar" ? { ...source, status: "STALE" } : source);
-  if (scenario === "reject") return DATA_SOURCES.map(source => source.id === "market-data" ? { ...source, status: "FAILED", healthScore: 42, errorCount: 3 } : source);
-  if (scenario === "missing") return DATA_SOURCES.filter(source => source.id !== "market-data");
-  return DATA_SOURCES;
-}
 
 function evaluateChecks(gate, sources) {
   const marketData = sources.find(source => source.id === "market-data");
@@ -37,27 +22,40 @@ function evaluateChecks(gate, sources) {
   ];
 }
 
-export function createCardOneTestReport(scenario = "pass", timestamp = new Date().toISOString()) {
-  if (!CARD_ONE_SCENARIOS[scenario]) throw new Error(`Unknown Card 1 test scenario: ${scenario}`);
-  const sources = sourcesForScenario(scenario);
+export function createCardOneTestReport(sources, timestamp = new Date().toISOString()) {
+  if (!Array.isArray(sources)) throw new Error("Live source snapshots are required");
   const gate = getDataQualityGateDashboard(sources);
   const statuses = evaluateChecks(gate, sources);
   const checks = CARD_ONE_ACCEPTANCE_CHECKS.map((check, index) => ({ ...check, status: statuses[index] }));
-  const rejected = !gate.proceedToStageOne;
+  const rejected = !gate.proceedToStageOne || !gate.requiredSourcesOnline;
   const warning = !rejected && checks.some(check => check.status === "WARNING");
+  const validatedIntelligencePackage = rejected ? null : {
+    market_data: statuses[0] === "PASSED",
+    news_sentiment: sourceHealthy(sources, "news-sentiment"),
+    economic_calendar: sourceHealthy(sources, "economic-calendar"),
+    social_sentiment: sourceHealthy(sources, "social-sentiment"),
+    institutional_cot: sourceHealthy(sources, "institutional-cot-data"),
+    historical_data: sourceHealthy(sources, "historical-data"),
+    broker_data: sourceHealthy(sources, "broker-data"),
+    portfolio_data: sourceHealthy(sources, "account-portfolio-data"),
+    prop_firm_rules: sourceHealthy(sources, "prop-firm-rules"),
+    quality_score: gate.dataQualityScore,
+    status: warning ? "PASSED_WITH_WARNING" : "PASSED"
+  };
 
   return {
     testRunId: `CARD1-${timestamp.replaceAll(/[-:.TZ]/g, "").slice(0, 14)}`,
     cardNumber: 1,
-    cardKey: "market-intelligence-gathering",
-    cardTitle: "Market Intelligence Gathering",
-    scenario,
-    scenarioLabel: CARD_ONE_SCENARIOS[scenario],
+    cardKey: "data-sources-validation",
+    cardTitle: "Data Sources Validation",
+    sourceMode: "LIVE_ADAPTERS_ONLY",
     executedAt: timestamp,
     status: rejected ? "REJECTED" : warning ? "PASSED_WITH_WARNING" : "PASSED",
     workflowPermission: rejected ? "STOP" : "CONTINUE",
-    nextCard: rejected ? null : { cardNumber: 2, cardTitle: "20-Asset Universe Scanner", status: "READY_FOR_TESTING" },
-    output: rejected ? null : "Market Intelligence Package",
+    nextCard: rejected ? null : { cardNumber: 2, cardTitle: "Market Intelligence Gathering", status: "READY_FOR_TESTING" },
+    inputPackage: "Live Source Adapter Snapshots",
+    output: rejected ? null : "Validated Intelligence Package",
+    outputPackage: validatedIntelligencePackage,
     acceptanceScore: Math.round(checks.filter(check => check.status === "PASSED").length / checks.length * 100),
     dataQualityScore: gate.dataQualityScore,
     requiredHealthyCount: gate.requiredHealthyCount,
@@ -76,3 +74,6 @@ export function createCardOneTestReport(scenario = "pass", timestamp = new Date(
   };
 }
 
+function sourceHealthy(sources, id) {
+  return ["ONLINE", "LIVE", "SYNCED", "SCHEDULED", "OPTIONAL"].includes(sources.find(source => source.id === id)?.status);
+}

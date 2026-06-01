@@ -1,1 +1,5 @@
-import{CentralBankWatchPanel}from"./CentralBankWatchPanel";import{CurrencyAssetImpactMatrix}from"./CurrencyAssetImpactMatrix";import{EconomicCalendarActionCenter}from"./EconomicCalendarActionCenter";import{EconomicCalendarHeader}from"./EconomicCalendarHeader";import{EconomicCalendarStatusStrip}from"./EconomicCalendarStatusStrip";import{EconomicEventTable}from"./EconomicEventTable";import{EconomicEventTimeline}from"./EconomicEventTimeline";import{EconomicWorkflowImpactPanel}from"./EconomicWorkflowImpactPanel";import{EventSurpriseAnalytics}from"./EventSurpriseAnalytics";import{HighImpactEventPanel}from"./HighImpactEventPanel";import{MacroEventKpiCards}from"./MacroEventKpiCards";import{TradingRestrictionWindowPanel}from"./TradingRestrictionWindowPanel";export function EconomicCalendarPage(){return <main><EconomicCalendarHeader/><EconomicCalendarStatusStrip/><MacroEventKpiCards/><EconomicEventTable/><HighImpactEventPanel/><CurrencyAssetImpactMatrix/><TradingRestrictionWindowPanel/><CentralBankWatchPanel/><EventSurpriseAnalytics/><EconomicEventTimeline/><EconomicWorkflowImpactPanel/><EconomicCalendarActionCenter/></main>}
+import { LiveMarketIntelligencePage } from "../LiveMarketIntelligencePage";
+
+export function EconomicCalendarPage() {
+  return <LiveMarketIntelligencePage source="economic-calendar" />;
+}

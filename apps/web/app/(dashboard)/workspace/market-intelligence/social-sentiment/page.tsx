@@ -1,1 +1,2 @@
-import{SocialSentimentPage}from"../../../../../components/market-intelligence/social-sentiment/SocialSentimentPage";export default function Page(){return <SocialSentimentPage/>}
+import { LiveMarketIntelligencePage } from "../../../../../components/market-intelligence/LiveMarketIntelligencePage";
+export default function Page() { return <LiveMarketIntelligencePage source="social-sentiment" />; }

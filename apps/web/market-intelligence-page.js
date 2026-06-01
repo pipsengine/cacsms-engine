@@ -7,7 +7,7 @@ const sources = [
   ["historical-data","HIST","Historical Market Data","OHLCV, tick history, volatility history, pattern history and strategy history.","AVAILABLE",true,"#9333EA",["Stage 3","Stage 4","Stage 6","Stage 8","Stage 14"],"Historical comparison and learning become unavailable."],
   ["broker-data","BRK","Broker Data","Spread, slippage, liquidity, execution latency, symbol availability and server health.","LIVE",true,"#DC2626",["Stage 2","Stage 3","Stage 9","Stage 10","Stage 11"],"No execution allowed if broker data is unavailable."],
   ["account-portfolio","ACC","Account Portfolio","Balance, equity, margin, exposure, open positions, drawdown and account limits.","LIVE",true,"#16A34A",["Stage 7","Stage 9","Stage 12","Stage 13","Stage 14"],"Risk validation cannot proceed."],
-  ["prop-firm-rules","RULE","Prop Firm Rules","Daily loss, maximum drawdown, minimum days, trading restrictions and account rules.","ACTIVE",true,"#EA580C",["Stage 9","Stage 16 audit/compliance"],"Prop account trading must be blocked."]
+  ["prop-firm-rules","RULE","Prop Firm Rules","Daily loss, maximum drawdown, minimum days, trading restrictions and account rules.","ACTIVE",true,"#EA580C",["Card 10","Audit / Compliance"],"Prop account trading must be blocked."]
 ];
 const pathParts = location.pathname.split("/").filter(Boolean);
 const requestedSlug = pathParts[0] === "workspace" ? pathParts[2] : pathParts[1];
@@ -247,49 +247,14 @@ function propFirmRulesPage(){
  <section class="icot-panel icot-workflow hdata-workflow"><div class="icot-section-heading"><div><h2>Workflow Impact & Compliance Controls</h2><p>How prop-firm rules impose non-negotiable gates on risk and execution.</p></div><span class="icot-chip success">5 CONNECTED STAGES</span></div><div>${workflow.map(([a,b,c,d])=>`<article><b>${a}</b><strong>${b}</strong><p>${c}</p><span class="icot-chip success">${d}</span></article>`).join("")}</div></section>
  <section class="icot-panel icot-actions"><div class="icot-section-heading"><div><h2>Prop Firm Compliance Action Center</h2><p>Operator controls for rule synchronization, risk scans, restriction windows and audit reporting.</p></div></div><div>${["Validate All Rules","Sync Prop Account Limits","Run Compliance Scan","Arm Restriction Windows","Refresh Challenge Objectives","Export Compliance Audit","Review Warning Queue","Configure Rule Policies"].map((x,i)=>`<button class="icot-button ${i<3?"primary":"secondary"}">${x}</button>`).join("")}</div></section></section>`;
 }
-if (slug === "dashboard" || !slug) {
-  document.querySelector(".intelligence-header").remove();
-  document.querySelector("#intelligence-content").innerHTML = dashboardPage();
-} else if (slug === "market-data") {
-  document.querySelector(".intelligence-header").remove();
-  document.querySelector("#intelligence-content").innerHTML = marketDataProvidersPage();
-} else if (slug === "news-sentiment") {
-  document.querySelector(".intelligence-header").remove();
-  document.querySelector("#intelligence-content").innerHTML = newsSentimentPage();
-} else if (slug === "economic-calendar") {
-  document.querySelector(".intelligence-header").remove();
-  document.querySelector("#intelligence-content").innerHTML = economicCalendarPage();
-} else if (slug === "social-sentiment") {
-  document.querySelector(".intelligence-header").remove();
-  document.querySelector("#intelligence-content").innerHTML = socialSentimentPage();
-} else if (slug === "institutional-cot") {
+if (slug === "institutional-cot") {
   document.querySelector(".intelligence-header").remove();
   document.querySelector("#intelligence-content").innerHTML = renderInstitutionalCotCenter();
   bindInstitutionalCotCenter();
-} else if (slug === "historical-data") {
+} else if (["dashboard","data-sources","data-sources-feed-health","market-data","news-sentiment","economic-calendar","social-sentiment","historical-data","broker-data","account-portfolio","prop-firm-rules","data-quality-gate"].includes(slug) || !slug) {
   document.querySelector(".intelligence-header").remove();
-  document.querySelector("#intelligence-content").innerHTML = renderHistoricalDataCenter();
-  bindHistoricalDataCenter();
-} else if (slug === "broker-data") {
-  document.querySelector(".intelligence-header").remove();
-  document.querySelector("#intelligence-content").innerHTML = renderBrokerDataCenter();
-  bindBrokerDataCenter();
-} else if (slug === "account-portfolio") {
-  document.querySelector(".intelligence-header").remove();
-  document.querySelector("#intelligence-content").innerHTML = renderAccountPortfolioCenter();
-  bindAccountPortfolioCenter();
-} else if (slug === "prop-firm-rules") {
-  document.querySelector(".intelligence-header").remove();
-  document.querySelector("#intelligence-content").innerHTML = renderPropFirmRulesCenter();
-  bindPropFirmRulesCenter();
-} else if (slug === "data-sources" || slug === "data-sources-feed-health") {
-  document.querySelector("#page-title").textContent = "Data Sources & Feed Health";
-  document.querySelector("#page-description").textContent = "Operational source health, freshness, latency, synchronization, and error monitoring.";
-  document.querySelector("#intelligence-content").innerHTML = feedHealthPage();
-} else if (slug === "data-quality-gate") {
-  document.querySelector(".intelligence-header").remove();
-  document.querySelector("#intelligence-content").innerHTML = renderDataQualityGateCenter();
-  bindDataQualityGateCenter();
+  document.querySelector("#intelligence-content").innerHTML = renderLiveMarketIntelligencePage(slug || "dashboard");
+  bindLiveMarketIntelligencePage(slug || "dashboard");
 } else if (selected) {
   document.querySelector("#page-title").textContent = selected[2];
   document.querySelector("#page-description").textContent = "Market Intelligence Center sub-function page. Operational feed health, workflow dependencies, and failure impact.";
@@ -302,6 +267,7 @@ setInterval(()=>document.querySelector("#utc-clock").textContent=`UTC ${new Date
 installMarketIntelligenceActions();
 import { initEnterpriseSidebar } from "./enterprise-sidebar.js";
 import { installMarketIntelligenceActions } from "./market-intelligence-actions.js";
+import { bindLiveMarketIntelligencePage, renderLiveMarketIntelligencePage } from "./live-market-intelligence-page.js";
 import { bindInstitutionalCotCenter, renderInstitutionalCotCenter } from "./institutional-cot-page.js";
 import { bindHistoricalDataCenter, renderHistoricalDataCenter } from "./historical-data-page.js";
 import { bindBrokerDataCenter, renderBrokerDataCenter } from "./broker-data-page.js";

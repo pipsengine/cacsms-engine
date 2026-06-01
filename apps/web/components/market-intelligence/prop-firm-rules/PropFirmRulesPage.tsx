@@ -1,14 +1,5 @@
-"use client";
-const rules=[["FTMO","$100,000","Phase 1","10%","5%","10%","4","90%","Active"],["FundedNext","$50,000","Phase 1","8%","5%","10%","5","95%","Active"],["The5ers","$100,000","Funded","-","5%","10%","0","100%","Active"],["E8 Markets","$50,000","Phase 2","5%","5%","8%","0","80%","Under Review"]];
-const compliance=[["PROP-FTMO-02","FTMO","16%","14%","74%","Low","Compliant"],["PROP-FN-03","FundedNext","12%","13%","45%","Medium","Watchlist"],["PROP-E8-04","E8 Markets","72%","61%","62%","High","At Risk"]];
-const alerts=[["Daily loss close to limit","High","PROP-E8-04"],["Max drawdown close to limit","High","PROP-E8-04"],["News trading restriction","Medium","PROP-E8-04"],["Consistency rule warning","Medium","PROP-FN-03"]];
-const table=(heads:string[],rows:string[][])=><div className="icot-table-wrap"><table><thead><tr>{heads.map(x=><th key={x}>{x}</th>)}</tr></thead><tbody>{rows.map(row=><tr key={row.join("-")}>{row.map((x,i)=><td key={`${x}-${i}`}>{x}</td>)}</tr>)}</tbody></table></div>;
-export function PropFirmRulesPage(){return <main className="icot-dashboard rules-dashboard"><header className="icot-header"><div><span className="icot-eyebrow">MARKET INTELLIGENCE / PROP FIRM RULES</span><h1>Prop Firm Rules</h1><p>Track prop firm trading rules, drawdown limits, payout conditions, challenge requirements, and breach risks.</p></div><div className="icot-header-actions"><button className="icot-button secondary">Import Rules</button><button className="icot-button secondary">Export Comparison</button><button className="icot-button primary">Add Prop Firm</button></div></header>
-<section className="icot-kpis">{[["Total Prop Firms","4"],["Active Accounts","3"],["Accounts Near Breach","1"],["Breached Accounts","0"],["Avg Daily Loss","5.0%"],["Avg Max Drawdown","9.5%"],["Minimum Trading Days","4"],["Next Payout Due","Jun 14"]].map(([a,b])=><article className="icot-kpi" key={a}><small>{a}</small><strong>{b}</strong><span>COMPLIANCE INTELLIGENCE</span></article>)}</section>
-<section className="icot-panel"><h2>Filter Panel</h2><p>Firm / account size / type / phase / category / risk / country / platform</p></section>
-<section className="icot-panel"><h2>Prop Firm Rules Table</h2>{table(["Firm","Account Size","Phase","Profit Target","Daily Loss","Max Drawdown","Min Days","Payout","Status"],rules)}</section>
-<section className="icot-panel"><h2>Rule Comparison Matrix</h2><p>Fees, drawdown, scaling, payout, refund, news, weekend, consistency, leverage and instruments.</p></section>
-<section className="icot-panel"><h2>Account Compliance Monitor</h2>{table(["Account","Firm","Daily Loss Used","Drawdown Used","Target Progress","Risk","Status"],compliance)}</section>
-<section className="icot-panel"><h2>Breach Risk Panel</h2>{table(["Alert","Severity","Account"],alerts)}</section>
-<section className="icot-panel"><h2>Empty, Loading & Error States</h2><p>No prop firm rules added yet. / Loading prop firm rules... / Prop firm rules could not be loaded.</p></section>
-<section className="icot-panel icot-actions"><h2>Prop Firm Rules Action Center</h2><div>{["Add Prop Firm","Import Rules","Sync Rules","Export Comparison","Run Compliance Scan","Review Breach Alerts","Configure Payout Policies","View Sync Logs"].map((x,i)=><button className={`icot-button ${i<3?"primary":"secondary"}`} key={x}>{x}</button>)}</div></section></main>}
+import { LiveMarketIntelligencePage } from "../LiveMarketIntelligencePage";
+
+export function PropFirmRulesPage() {
+  return <LiveMarketIntelligencePage source="prop-firm-rules" />;
+}

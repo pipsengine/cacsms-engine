@@ -7,8 +7,7 @@ body { font-size: 14px; line-height: 1.45; }
 .operator small, .operator strong, .statusbar, .eyebrow { font-size: 11px; }
 .nav-item { font-size: 14px; }
 .nav-subitem, .enterprise-sidebar-child { font-size: 12px; line-height: 1.35; }
-.nav-subgroup small, .enterprise-sidebar-parent .function-number,
-.enterprise-sidebar-parent .function-icon, .enterprise-sidebar-parent b { font-size: 10px; }
+.nav-subgroup small, .enterprise-sidebar-parent b { font-size: 10px; }
 .enterprise-sidebar-parent strong { font-size: 13px; }
 .global-search input, .subtitle { font-size: 14px; }
 .topbar-actions strong, .header-meta strong { font-size: 12px; }

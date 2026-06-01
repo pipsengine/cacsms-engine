@@ -13,13 +13,13 @@ export const COT_CURRENCY_MAPPINGS = Object.freeze([
   ["XAU", "Gold", "GOLD - COMMODITY EXCHANGE INC."],
 ].map(([currency_code, currency_name, contract_market_name]) => ({ currency_code, currency_name, contract_market_name, report_type: COT_REPORT_TYPE, enabled: true })));
 export const COT_WORKFLOW_IMPACTS = Object.freeze([
-  ["Stage 1", "Market Intelligence", "Institutional market context"],
-  ["Stage 3", "Asset Ranking", "Improves relative currency ranking"],
-  ["Stage 4", "Market Analysis", "Validates directional bias"],
-  ["Stage 6", "AI Decision", "Modifies decision confidence"],
-  ["Stage 7", "AI Debate", "Adds positioning evidence"],
-  ["Stage 8", "Strategy Intelligence", "Guides strategy suitability"],
-  ["Stage 9", "Risk Validation", "Identifies crowded-position risk"],
+  ["Card 2", "Market Intelligence", "Institutional market context"],
+  ["Card 4", "Asset Ranking", "Improves relative currency ranking"],
+  ["Card 5", "Market Analysis", "Validates directional bias"],
+  ["Card 7", "AI Decision", "Modifies decision confidence"],
+  ["Card 8", "AI Debate", "Adds positioning evidence"],
+  ["Card 9", "Strategy Intelligence", "Guides strategy suitability"],
+  ["Card 10", "Risk Validation", "Identifies crowded-position risk"],
 ].map(([stage, target, usage]) => ({ stage, target, usage })));
 
 export function createCotSyncStatus(payload) {

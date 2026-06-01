@@ -1,1 +1,2 @@
-import{HistoricalDataPage}from"../../../../../components/market-intelligence/historical-data/HistoricalDataPage";export default function Page(){return <HistoricalDataPage/>}
+import { LiveMarketIntelligencePage } from "../../../../../components/market-intelligence/LiveMarketIntelligencePage";
+export default function Page() { return <LiveMarketIntelligencePage source="historical-data" />; }
