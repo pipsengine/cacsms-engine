@@ -24,3 +24,12 @@ test("EA deployment statuses include lifecycle states", () => {
     assert.ok(EA_DEPLOY_STATUSES.includes(status));
   }
 });
+
+test("machine agent compiles the executable bridge and verifies EX5 freshness", () => {
+  const manager = readFileSync(fileURLToPath(new URL("../../../apps/machine-agent/agent/deployment_manager.py", import.meta.url)), "utf8");
+  const repository = readFileSync(fileURLToPath(new URL("../src/ea-deployment.js", import.meta.url)), "utf8");
+  assert.match(manager, /def compile_bridge/);
+  assert.match(manager, /MetaEditor64\.exe/);
+  assert.match(manager, /binary\.stat\(\)\.st_mtime >= source\.stat\(\)\.st_mtime/);
+  assert.match(repository, /statSync\(binaryPath\)\.mtimeMs >= statSync\(sourcePath\)\.mtimeMs/);
+});

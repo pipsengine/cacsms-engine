@@ -527,10 +527,23 @@ export async function detectSymbols(input) {
   };
 }
 
-function buildMt5Diagnostics(input, probe) {
+const MT5_BRIDGE_PENDING_REASONS = new Set([
+  "mt5_bridge_not_connected",
+  "probe_unavailable",
+  "No Terminal",
+  "No EA",
+  "No Heartbeat",
+  "No Live Prices"
+]);
+
+function isMt5BridgePending(probe) {
+  return !probe?.ok && MT5_BRIDGE_PENDING_REASONS.has(probe?.reason);
+}
+
+export function buildMt5Diagnostics(input, probe) {
   const normalized = applyWizardPreset(input);
   const symbols = parseSymbolsFromInput(normalized);
-  const bridgeOffline = !probe?.ok && (probe?.reason === "mt5_bridge_not_connected" || probe?.reason === "probe_unavailable");
+  const bridgeOffline = isMt5BridgePending(probe);
   const checks = [
     { label: "Terminal exists", status: normalized.terminalId || normalized.dataPath || normalized.terminalName ? "PASS" : "WARNING" },
     { label: "Account available", status: normalized.accountNumber ? "PASS" : "WARNING" },
@@ -555,7 +568,7 @@ export async function testProviderConfiguration(input, { liveProbe = null, probe
 
   let diagnostics = null;
   let result = probe.ok ? "PASS" : "FAIL";
-  const bridgeOffline = !probe?.ok && (probe?.reason === "mt5_bridge_not_connected" || probe?.reason === "probe_unavailable");
+  const bridgeOffline = isMt5BridgePending(probe);
   if (wizard && (normalized.wizardCategory === "mt5_terminal" || normalized.category === "mt5_terminal")) {
     diagnostics = buildMt5Diagnostics(normalized, probe);
     result = diagnostics.result;
@@ -591,7 +604,7 @@ export async function testProviderConfiguration(input, { liveProbe = null, probe
       ? "Connection successful"
       : result === "WARNING"
         ? bridgeOffline
-          ? "Configuration valid. Connect your MT5 terminal and complete onboarding to verify live pricing."
+          ? "Configuration valid. Register the provider, connect the CACSMS EA with its token, and wait for a live heartbeat to verify pricing."
           : "Connection passed with warnings"
         : probe.reason || "Connection failed",
     diagnostics

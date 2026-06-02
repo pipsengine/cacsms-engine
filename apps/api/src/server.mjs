@@ -171,6 +171,51 @@ const liveSourceDefinitions = [
   ["prop-firm-rules", "prop-firm-rules", "Prop Firm Rules & Limits", "PROP_FIRM_RULES_LIVE_URL", true, "Import a validated prop firm rule catalog."]
 ];
 
+const HEALTHY_LIVE_SOURCE_STATUSES = new Set(["ONLINE", "LIVE", "SYNCED"]);
+
+function configuredSourceUrl(routeSlug, envKey) {
+  if (envKey && process.env[envKey]) return process.env[envKey];
+  const sourceKey = routeSlug === "account-portfolio" ? "account-portfolio" : routeSlug;
+  const provider = getSourceProviders().providers.find(item => item.sourceKey === sourceKey && item.enabled && item.apiUrl);
+  return provider?.apiUrl || null;
+}
+
+function configuredSourceProvider(configuredUrl) {
+  if (!configuredUrl) return "Provider Not Connected";
+  try { return new URL(configuredUrl).host; } catch { return "Configured Adapter"; }
+}
+
+function latestRecordedTickEvidence(ticks) {
+  const observedAt = ticks.reduce((latest, tick) => {
+    const value = tick.observed_at ? new Date(tick.observed_at).toISOString() : null;
+    return value && (!latest || value > latest) ? value : latest;
+  }, null);
+  return {
+    ticks,
+    observedAt,
+    freshnessSeconds: observedAt ? Math.max(0, Math.round((Date.now() - new Date(observedAt).getTime()) / 1000)) : 0
+  };
+}
+
+function buildLocalSnapshot({ id, routeSlug, name, required, configuration, provider, status, adapter, ticks, observedAt, freshnessSeconds, latencyMs = 0 }) {
+  const healthy = HEALTHY_LIVE_SOURCE_STATUSES.has(status);
+  return {
+    id, routeSlug, name, category: id, subtitle: configuration,
+    provider, status, required, lastSyncAt: observedAt, freshnessSeconds,
+    freshness: observedAt ? `${freshnessSeconds}s since recorded MT5 tick` : "UNAVAILABLE",
+    healthScore: healthy ? 100 : 0, latencyMs, errorCount: healthy ? 0 : 1,
+    feedsStage: "Card 1", failureAction: required ? "block_card_1" : "reduce_confidence",
+    records: ticks.length, adapter, configuration, connectionLabel: "Repository Adapter", envKey: null,
+    httpStatus: null, probeError: healthy ? null : configuration,
+    checks: {
+      configured: healthy, availability: healthy, apiValidation: healthy,
+      latency: latencyMs ? `${latencyMs} ms` : "LOCAL REPOSITORY",
+      freshness: observedAt ? `${freshnessSeconds}s since recorded MT5 tick` : "UNAVAILABLE",
+      quality: healthy ? "PASSED" : "FAILED"
+    }
+  };
+}
+
 function recordSourceProbe(sources, probedAt) {
   sourceProbeLog.unshift({
     id: `PROBE-${probedAt.replaceAll(/[-:.TZ]/g, "").slice(0, 14)}`,
@@ -203,10 +248,27 @@ async function getLiveSourceSnapshots({ skipRuntimeSync = false } = {}) {
   let cot;
   try { cot = readCotCache(); } catch {}
   const marketDataSnapshot = await buildMarketDataLiveSourceSnapshot();
+  let recordedTicks = [];
+  try { recordedTicks = await getLatestTicks(40); } catch {}
+  const tickEvidence = latestRecordedTickEvidence(recordedTicks);
   const snapshots = await Promise.all(liveSourceDefinitions.map(async ([id, routeSlug, name, envKey, required, configuration]) => {
     if (id === "market-data") return marketDataSnapshot;
+    if (id === "historical-data" && tickEvidence.ticks.length) {
+      return buildLocalSnapshot({
+        id, routeSlug, name, required, configuration,
+        provider: "CACSMS MT5 Tick Archive", status: "SYNCED", adapter: "local_mt5_tick_archive",
+        ...tickEvidence
+      });
+    }
+    if (id === "broker-data" && HEALTHY_LIVE_SOURCE_STATUSES.has(marketDataSnapshot.status)) {
+      return buildLocalSnapshot({
+        id, routeSlug, name, required, configuration,
+        provider: "CACSMS MT5 Broker Bridge", status: "LIVE", adapter: "mt5_broker_bridge",
+        latencyMs: marketDataSnapshot.latencyMs, ...tickEvidence
+      });
+    }
     const isCot = id === "institutional-cot-data";
-    const configuredUrl = envKey ? process.env[envKey] : null;
+    const configuredUrl = configuredSourceUrl(routeSlug, envKey);
     const cotReady = isCot && cot?.latestReportDate && existsSync(cotCachePath);
     const configured = Boolean(configuredUrl || cotReady);
     const modified = cotReady ? statSync(cotCachePath).mtime.toISOString() : null;
@@ -214,7 +276,7 @@ async function getLiveSourceSnapshots({ skipRuntimeSync = false } = {}) {
     const status = cotReady ? "SYNCED" : probe?.ok ? "ONLINE" : configured ? "FAILED" : "NOT_CONFIGURED";
     return {
       id, routeSlug, name, category: id, subtitle: configuration,
-      provider: cotReady ? "CFTC Historical Compressed / Futures Only" : configuredUrl ? new URL(configuredUrl).host : "Provider Not Connected",
+      provider: cotReady ? "CFTC Historical Compressed / Futures Only" : configuredSourceProvider(configuredUrl),
       status,
       required, lastSyncAt: modified || (probe?.ok ? new Date().toISOString() : null), freshnessSeconds: cotReady ? Math.max(0, Math.round((Date.now() - statSync(cotCachePath).mtimeMs) / 1000)) : 0,
       freshness: cotReady ? `Official report ${cot.latestReportDate}` : probe?.ok ? "LIVE PROBE" : "UNAVAILABLE",
@@ -252,7 +314,8 @@ async function getLiveMarketIntelligenceDashboard({ log = false } = {}) {
 
 async function liveSourcePayload(id) {
   const source = (await getLiveSourceSnapshots()).find(item => item.id === id);
-  return { sourceMode: "LIVE_ADAPTERS_ONLY", status: source?.status || "NOT_CONFIGURED", source, records: [], warnings: source?.status === "SYNCED" ? [] : [source?.configuration || "Live adapter is not configured"] };
+  const records = ["historical-data", "broker-data"].includes(id) ? await getLatestTicks(40) : [];
+  return { sourceMode: "LIVE_ADAPTERS_ONLY", status: source?.status || "NOT_CONFIGURED", source, records, warnings: HEALTHY_LIVE_SOURCE_STATUSES.has(source?.status) ? [] : [source?.configuration || "Live adapter is not configured"] };
 }
 
 async function liveAction(type, id) {

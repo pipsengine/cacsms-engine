@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isDatabaseConfigured, query } from "./db.js";
@@ -107,17 +107,49 @@ function backupFile(filePath, backupRoot) {
   return { original: filePath, backup: backupPath, checksum: sha256File(filePath) };
 }
 
-function navigatorExpertCandidates(dataPath) {
-  return [
-    join(dataPath, "MQL5", "Experts", "CACSMS", "CACSMS_Engine_Bridge.ex5"),
-    join(dataPath, "MQL5", "Experts", "CACSMS", "CACSMS_Engine_Bridge.mq5"),
-    join(dataPath, "MQL5", "Experts", "CACSMS_Engine_Bridge.ex5"),
-    join(dataPath, "MQL5", "Experts", "CACSMS_Engine_Bridge.mq5")
-  ];
+function verifyNavigatorAvailability(dataPath) {
+  const sourcePath = join(dataPath, "MQL5", "Experts", "CACSMS", "CACSMS_Engine_Bridge.mq5");
+  const binaryPath = join(dataPath, "MQL5", "Experts", "CACSMS", "CACSMS_Engine_Bridge.ex5");
+  return existsSync(sourcePath) && existsSync(binaryPath) && statSync(binaryPath).mtimeMs >= statSync(sourcePath).mtimeMs;
 }
 
-function verifyNavigatorAvailability(dataPath) {
-  return navigatorExpertCandidates(dataPath).some((path) => existsSync(path));
+function findMetaEditor() {
+  if (process.platform !== "win32") return null;
+  for (const root of [process.env.ProgramFiles, process.env["ProgramFiles(x86)"]].filter(Boolean)) {
+    if (!existsSync(root)) continue;
+    for (const entry of readdirSync(root, { withFileTypes: true })) {
+      if (!entry.isDirectory() || !entry.name.toLowerCase().startsWith("metatrader")) continue;
+      const candidate = join(root, entry.name, "MetaEditor64.exe");
+      if (existsSync(candidate)) return candidate;
+    }
+  }
+  return null;
+}
+
+function compileBridge(dataPath) {
+  const sourcePath = join(dataPath, "MQL5", "Experts", "CACSMS", "CACSMS_Engine_Bridge.mq5");
+  const editor = findMetaEditor();
+  if (!existsSync(sourcePath)) return { ok: false, error: `Missing bridge source: ${sourcePath}` };
+  if (!editor) return { ok: false, error: "MetaEditor64.exe not found" };
+  const logPath = join(dirname(sourcePath), `CACSMS_Engine_Bridge.compile-${Date.now()}.log`);
+  const result = spawnSync(editor, [`/compile:"${sourcePath}"`, `/log:"${logPath}"`], {
+    encoding: "utf8",
+    timeout: 60000,
+    windowsHide: true,
+    windowsVerbatimArguments: true
+  });
+  const compilerLogBytes = existsSync(logPath) ? readFileSync(logPath) : Buffer.alloc(0);
+  const compilerLog = compilerLogBytes[0] === 0xff && compilerLogBytes[1] === 0xfe
+    ? compilerLogBytes.toString("utf16le")
+    : compilerLogBytes.toString("utf8");
+  const compiled = verifyNavigatorAvailability(dataPath) && /Result:\s+0 errors?,\s+0 warnings?/i.test(compilerLog);
+  return {
+    ok: compiled,
+    error: result.error?.message || (compiled ? null : "Compiled bridge binary was not refreshed"),
+    editor,
+    logPath,
+    exitCode: result.status
+  };
 }
 
 function tryRefreshMt5() {
@@ -208,6 +240,12 @@ function executeLocalFileDeployment({ dataPath, backupRoot, manifest, action, ro
     if (!ok) errors.push(`Post-copy checksum mismatch: ${row.target}`);
   }
 
+  let compilation = null;
+  if ((action === "deploy" || action === "update") && !errors.length) {
+    compilation = compileBridge(dataPath);
+    if (!compilation.ok) errors.push(compilation.error);
+  }
+
   const navigatorVerified = verifyNavigatorAvailability(dataPath);
   const refresh = action === "deploy" || action === "update" ? tryRefreshMt5() : { refreshed: false };
   return {
@@ -216,6 +254,7 @@ function executeLocalFileDeployment({ dataPath, backupRoot, manifest, action, ro
     deployedFiles,
     snapshots,
     navigatorVerified,
+    compilation,
     refresh,
     detectedVersion: manifest.version
   };

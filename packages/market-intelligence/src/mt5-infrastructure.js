@@ -46,6 +46,7 @@ function emptyInfra() {
 }
 
 function mapTerminal(row) {
+  const connectionStatus = effectiveTerminalConnectionStatus(row);
   return {
     id: row.id,
     providerId: row.provider_id,
@@ -59,9 +60,7 @@ function mapTerminal(row) {
     serverName: row.server_name,
     environment: row.environment,
     eaStatus: row.ea_status,
-    connectionStatus: heartbeatStatus(row.last_heartbeat_at) === "OFFLINE" && row.connection_status === "ONLINE"
-      ? "OFFLINE"
-      : row.connection_status || heartbeatStatus(row.last_heartbeat_at),
+    connectionStatus,
     lastHeartbeat: row.last_heartbeat_at,
     lastHeartbeatAgeSec: row.last_heartbeat_at ? Math.round((Date.now() - new Date(row.last_heartbeat_at).getTime()) / 1000) : null,
     latencyMs: row.latency_ms,
@@ -84,12 +83,38 @@ function initialOnboarding(completed = {}) {
   return onboarding;
 }
 
-function heartbeatStatus(lastHeartbeatAt) {
+export function heartbeatStatus(lastHeartbeatAt) {
   if (!lastHeartbeatAt) return "OFFLINE";
   const ageSec = (Date.now() - new Date(lastHeartbeatAt).getTime()) / 1000;
   if (ageSec < 30) return "ONLINE";
   if (ageSec <= 60) return "WARNING";
   return "OFFLINE";
+}
+
+export function effectiveTerminalConnectionStatus(terminal) {
+  const heartbeat = heartbeatStatus(terminal.last_heartbeat_at);
+  if (heartbeat !== "ONLINE") return heartbeat;
+  return terminal.connection_status === "ONLINE" ? "ONLINE" : terminal.connection_status || heartbeat;
+}
+
+export function summarizeTerminalHealth(terminals) {
+  const online = terminals.filter((terminal) =>
+    effectiveTerminalConnectionStatus(terminal) === "ONLINE" && terminal.ea_status === "CONNECTED"
+  );
+  const liveSymbols = online.reduce((sum, terminal) => sum + Number(terminal.live_symbol_count || 0), 0);
+  const latencies = online.map((terminal) => terminal.latency_ms).filter((value) => value != null);
+  const averageLatencyMs = latencies.length ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) : 0;
+  return {
+    connectedTerminals: online.length,
+    disconnectedTerminals: terminals.length - online.length,
+    onlineAccounts: online.length,
+    offlineAccounts: terminals.length - online.length,
+    liveSymbols,
+    averageTickDelayMs: averageLatencyMs,
+    averageSpread: online.length ? 0.8 : 0,
+    averageLatencyMs,
+    mt5HealthScore: terminals.length ? Math.round((online.length / terminals.length) * 60 + Math.min(liveSymbols, 20) / 20 * 40) : 0
+  };
 }
 
 function generateTokenValue() {
@@ -548,7 +573,7 @@ export async function listMt5Heartbeats(limit = 50) {
     terminal: row.terminal_name,
     broker: row.broker_name,
     lastHeartbeat: row.observed_at,
-    status: row.status,
+    status: heartbeatStatus(row.observed_at),
     latencyMs: row.latency_ms
   }));
 }
@@ -556,23 +581,7 @@ export async function listMt5Heartbeats(limit = 50) {
 export async function getMt5TerminalHealthDashboard() {
   if (!isDatabaseConfigured()) return emptyInfra().health;
   const { rows: terminals } = await query(`SELECT connection_status, ea_status, live_symbol_count, latency_ms, last_heartbeat_at FROM infrastructure.mt5_terminals`);
-  const connected = terminals.filter((t) => t.connection_status === "ONLINE").length;
-  const disconnected = terminals.length - connected;
-  const liveSymbols = terminals.reduce((sum, t) => sum + Number(t.live_symbol_count || 0), 0);
-  const latencies = terminals.map((t) => t.latency_ms).filter((v) => v != null);
-  const avgLatency = latencies.length ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) : 0;
-  const score = terminals.length ? Math.round((connected / terminals.length) * 60 + Math.min(liveSymbols, 20) / 20 * 40) : 0;
-  return {
-    connectedTerminals: connected,
-    disconnectedTerminals: disconnected,
-    onlineAccounts: terminals.filter((t) => t.ea_status === "CONNECTED").length,
-    offlineAccounts: terminals.filter((t) => t.ea_status !== "CONNECTED").length,
-    liveSymbols,
-    averageTickDelayMs: avgLatency,
-    averageSpread: 0.8,
-    averageLatencyMs: avgLatency,
-    mt5HealthScore: score
-  };
+  return summarizeTerminalHealth(terminals);
 }
 
 export async function getMt5InfrastructureDashboard() {
@@ -687,12 +696,15 @@ export async function listConnectionMonitor() {
      ) h ON true
      ORDER BY t.terminal_name ASC`
   );
-  return rows.map((row) => ({
-    terminal: row.terminal_name,
-    connectionState: row.connection_status,
-    latency: row.latency_ms,
-    heartbeat: row.last_heartbeat_at,
-    packetLoss: row.packet_loss,
-    status: row.heartbeat_status || heartbeatStatus(row.last_heartbeat_at)
-  }));
+  return rows.map((row) => {
+    const status = effectiveTerminalConnectionStatus(row);
+    return {
+      terminal: row.terminal_name,
+      connectionState: status,
+      latency: row.latency_ms,
+      heartbeat: row.last_heartbeat_at,
+      packetLoss: row.packet_loss,
+      status
+    };
+  });
 }

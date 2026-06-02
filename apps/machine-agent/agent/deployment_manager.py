@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
+import subprocess
+import time
 from pathlib import Path
 from typing import Any
 
@@ -22,17 +25,70 @@ def load_manifest(repo_root: Path) -> dict[str, Any]:
     return json.loads(manifest_path.read_text(encoding="utf-8"))
 
 
+def bridge_source(data_path: Path) -> Path:
+    return data_path / "MQL5" / "Experts" / "CACSMS" / "CACSMS_Engine_Bridge.mq5"
+
+
+def bridge_binary(data_path: Path) -> Path:
+    return data_path / "MQL5" / "Experts" / "CACSMS" / "CACSMS_Engine_Bridge.ex5"
+
+
 def navigator_candidates(data_path: Path) -> list[Path]:
     return [
-        data_path / "MQL5" / "Experts" / "CACSMS" / "CACSMS_Engine_Bridge.ex5",
-        data_path / "MQL5" / "Experts" / "CACSMS" / "CACSMS_Engine_Bridge.mq5",
+        bridge_binary(data_path),
+        bridge_source(data_path),
         data_path / "MQL5" / "Experts" / "CACSMS_Engine_Bridge.ex5",
         data_path / "MQL5" / "Experts" / "CACSMS_Engine_Bridge.mq5",
     ]
 
 
-def verify_navigator(data_path: Path) -> bool:
-    return any(path.exists() for path in navigator_candidates(data_path))
+def verify_compiled_bridge(data_path: Path) -> bool:
+    source = bridge_source(data_path)
+    binary = bridge_binary(data_path)
+    return source.exists() and binary.exists() and binary.stat().st_mtime >= source.stat().st_mtime
+
+
+def find_metaeditor() -> Path | None:
+    roots = [Path(os.environ.get("ProgramFiles", r"C:\Program Files"))]
+    program_files_x86 = os.environ.get("ProgramFiles(x86)")
+    if program_files_x86:
+        roots.append(Path(program_files_x86))
+    for root in roots:
+        for pattern in ("MetaTrader*/*MetaEditor64.exe", "MetaTrader*/MetaEditor64.exe"):
+            matches = sorted(root.glob(pattern))
+            if matches:
+                return matches[0]
+    return None
+
+
+def compile_bridge(data_path: Path) -> dict[str, Any]:
+    source = bridge_source(data_path)
+    editor = find_metaeditor()
+    if not source.exists():
+        return {"ok": False, "error": f"Missing bridge source: {source}"}
+    if not editor:
+        return {"ok": False, "error": "MetaEditor64.exe not found"}
+    log_path = source.with_name(f"{source.stem}.compile-{time.time_ns()}.log")
+    binary = bridge_binary(data_path)
+    try:
+        result = subprocess.run(
+            [str(editor), f'/compile:"{source}"', f'/log:"{log_path}"'],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        return {"ok": False, "error": f"MetaEditor compilation failed: {error}"}
+    compiler_log = log_path.read_text(encoding="utf-16", errors="ignore") if log_path.exists() else ""
+    compiled = verify_compiled_bridge(data_path) and "Result: 0 errors, 0 warnings" in compiler_log
+    return {
+        "ok": compiled,
+        "error": None if compiled else f"Compiled bridge binary was not refreshed: {bridge_binary(data_path)}",
+        "editor": str(editor),
+        "exitCode": result.returncode,
+        "logPath": str(log_path),
+    }
 
 
 def backup_file(source: Path, backup_root: Path) -> dict[str, Any] | None:
@@ -67,7 +123,7 @@ def deploy_files(repo_root: Path, data_path: Path, action: str, rollback_snapsho
             "errors": [],
             "deployedFiles": [],
             "snapshots": rollback_snapshots or [],
-            "navigatorVerified": verify_navigator(data),
+            "navigatorVerified": verify_compiled_bridge(data),
             "detectedVersion": manifest.get("version"),
         }
 
@@ -113,11 +169,18 @@ def deploy_files(repo_root: Path, data_path: Path, action: str, rollback_snapsho
         if status != "DEPLOYED":
             errors.append(f"Post-copy checksum mismatch: {entry['target']}")
 
+    compilation = None
+    if action in {"deploy", "update"} and not errors:
+        compilation = compile_bridge(data)
+        if not compilation["ok"]:
+            errors.append(compilation["error"])
+
     return {
         "ok": not errors,
         "errors": errors,
         "deployedFiles": deployed_files,
         "snapshots": snapshots,
-        "navigatorVerified": verify_navigator(data),
+        "navigatorVerified": verify_compiled_bridge(data),
+        "compilation": compilation,
         "detectedVersion": manifest.get("version"),
     }

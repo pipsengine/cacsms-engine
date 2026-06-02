@@ -22,6 +22,25 @@ test("market data quality blocks workflow when a provider fails", () => {
   assert.equal(output.workflow_ready, false);
 });
 
+test("MT5 wizard treats a disconnected EA as an onboarding warning", async () => {
+  const { buildMt5Diagnostics } = await import("../src/market-data-providers.js");
+  const diagnostics = buildMt5Diagnostics({
+    wizardCategory: "mt5_terminal",
+    terminalName: "IC Markets MT5",
+    accountNumber: "123456",
+    serverName: "ICMarketsSC-MT5-6",
+    supportedSymbols: ["EURUSD"]
+  }, {
+    ok: false,
+    latencyMs: null,
+    reason: "No EA"
+  });
+
+  assert.equal(diagnostics.result, "WARNING");
+  assert.equal(diagnostics.checks.find((item) => item.label === "Live pricing available")?.status, "WARNING");
+  assert.equal(diagnostics.checks.find((item) => item.label === "Latency acceptable")?.status, "WARNING");
+});
+
 test("operations dashboard exposes output contract without mock providers", async () => {
   const dashboard = await getMarketDataOperationsDashboard({ liveProbe: null });
   assert.equal(dashboard.source, "market_data");
@@ -207,6 +226,21 @@ test("broker server catalog exposes verified IC Markets MT5 servers", async () =
   assert.equal(servers.servers.find((item) => item.isDefault)?.serverName, "ICMarketsSC-MT5-6");
   assert.ok(servers.servers.every((item) => item.verificationStatus === "VERIFIED"));
   assert.doesNotMatch(JSON.stringify(servers.servers), /Live26|Live01|Live02/);
+});
+
+test("broker server catalog fills missing official IC Markets servers from the reference list", async () => {
+  const { mergeCatalogServers } = await import("../src/mt5-broker-servers.js");
+  const databaseServer = {
+    id: "database-server",
+    brokerName: "IC Markets",
+    serverName: "ICMarketsSC-MT5-6",
+    verificationStatus: "ADMIN_DEFINED"
+  };
+  const servers = mergeCatalogServers("IC Markets", [databaseServer]);
+
+  assert.equal(servers.length, 6);
+  assert.equal(servers.find((item) => item.serverName === "ICMarketsSC-MT5-6"), databaseServer);
+  assert.ok(servers.some((item) => item.serverName === "ICMarketsSC-Demo"));
 });
 
 test("API exposes MT5 broker server endpoints", () => {

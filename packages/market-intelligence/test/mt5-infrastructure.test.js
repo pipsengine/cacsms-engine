@@ -3,7 +3,9 @@ import test from "node:test";
 import {
   buildLiveFeedDiagnostics,
   buildOnboardingView,
-  evaluateMt5WorkflowReadiness
+  effectiveTerminalConnectionStatus,
+  evaluateMt5WorkflowReadiness,
+  summarizeTerminalHealth
 } from "../src/mt5-infrastructure.js";
 
 test("onboarding view includes nine lifecycle steps", () => {
@@ -37,4 +39,27 @@ test("live feed diagnostics explain blocked workflow for disconnected terminal",
   );
   assert.equal(diagnostics.workflowImpact, "BLOCKED");
   assert.match(diagnostics.expectedAction, /EA/i);
+});
+
+test("expired heartbeat is reported offline across MT5 health summaries", () => {
+  const terminal = {
+    connection_status: "ONLINE",
+    ea_status: "CONNECTED",
+    last_heartbeat_at: new Date(Date.now() - 61_000).toISOString(),
+    live_symbol_count: 20,
+    latency_ms: 12
+  };
+
+  assert.equal(effectiveTerminalConnectionStatus(terminal), "OFFLINE");
+  assert.deepEqual(summarizeTerminalHealth([terminal]), {
+    connectedTerminals: 0,
+    disconnectedTerminals: 1,
+    onlineAccounts: 0,
+    offlineAccounts: 1,
+    liveSymbols: 0,
+    averageTickDelayMs: 0,
+    averageSpread: 0,
+    averageLatencyMs: 0,
+    mt5HealthScore: 0
+  });
 });

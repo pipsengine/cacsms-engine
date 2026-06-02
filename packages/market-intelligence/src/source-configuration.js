@@ -177,12 +177,18 @@ function mergeRegistryEntry(provider, liveSnapshots) {
 }
 
 function computeSummary(registry) {
-  const total = registry.length;
-  const configured = registry.filter((row) => row.enabled && (row.apiUrl || row.sourceKey === "institutional-cot" || row.sourceKey === "prop-firm-rules")).length;
-  const healthy = registry.filter((row) => row.health === "HEALTHY").length;
-  const failed = registry.filter((row) => row.health === "FAILED").length;
-  const healthScore = total ? Math.round(registry.reduce((sum, row) => sum + (row.health === "HEALTHY" ? 100 : row.health === "UNCONFIGURED" ? 40 : row.health === "WARNING" ? 70 : 0), 0) / total) : 0;
-  const requiredFailures = registry.filter((row) => row.required && row.health !== "HEALTHY").length;
+  const rowsBySource = new Map();
+  for (const row of registry) {
+    const current = rowsBySource.get(row.sourceKey);
+    if (!current || row.health === "HEALTHY" || current.health === "UNCONFIGURED") rowsBySource.set(row.sourceKey, row);
+  }
+  const sources = [...rowsBySource.values()];
+  const total = sources.length;
+  const configured = sources.filter((row) => row.enabled && (row.apiUrl || row.health === "HEALTHY")).length;
+  const healthy = sources.filter((row) => row.health === "HEALTHY").length;
+  const failed = sources.filter((row) => row.health === "FAILED").length;
+  const healthScore = total ? Math.round(sources.reduce((sum, row) => sum + (row.health === "HEALTHY" ? 100 : row.health === "UNCONFIGURED" ? 40 : row.health === "WARNING" ? 70 : 0), 0) / total) : 0;
+  const requiredFailures = sources.filter((row) => row.required && row.health !== "HEALTHY").length;
   return {
     totalSources: total,
     configuredSources: configured,
@@ -197,7 +203,7 @@ export function getSourceConfigurationDashboard(liveSnapshots = []) {
   const store = loadStore();
   const registry = store.providers.map((provider) => mergeRegistryEntry(provider, liveSnapshots));
   const summary = computeSummary(registry);
-  const connectedSources = registry.filter((row) => row.health === "HEALTHY").length;
+  const connectedSources = summary.healthySources;
   const lastValidation = store.testResults[0]?.testedAt || store.updatedAt;
   return {
     environment: store.environment,
@@ -210,7 +216,7 @@ export function getSourceConfigurationDashboard(liveSnapshots = []) {
       environment: store.environment
     },
     connectivity: summary,
-    summaryCards: registry.map(({ sourceKey, source, provider, health, lastSync, latencyMs, records, status }) => ({
+    summaryCards: SOURCE_CATEGORIES.map(({ id }) => registry.find((row) => row.sourceKey === id && row.health === "HEALTHY") || registry.find((row) => row.sourceKey === id)).filter(Boolean).map(({ sourceKey, source, provider, health, lastSync, latencyMs, records, status }) => ({
       sourceKey,
       label: source,
       status,

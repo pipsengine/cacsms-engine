@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   createSourceProvider,
+  deleteSourceProvider,
   getSourceConfigurationDashboard,
   getSourceProviders,
   loadStore,
@@ -19,15 +20,17 @@ test("builds source configuration dashboard with registry and connectivity summa
   assert.equal(dashboard.registry.length, providerCount);
   assert.ok("totalSources" in dashboard.connectivity);
   assert.ok("configurationHealthScore" in dashboard.connectivity);
-  assert.equal(dashboard.summaryCards.length, providerCount);
+  assert.equal(dashboard.summaryCards.length, SOURCE_CATEGORIES.length);
   assert.ok(dashboard.credentials.every((item) => item.display.includes("Stored Securely")));
 });
 test("creates providers and persists them to the configuration store", () => {
   const before = getSourceProviders().providers.length;
-  createSourceProvider({ sourceKey: "market-data", providerName: "Polygon" });
+  const provider = createSourceProvider({ sourceKey: "market-data", providerName: "Polygon" });
   assert.equal(getSourceProviders().providers.length, before + 1);
   const store = loadStore();
   assert.ok(store.auditLogs.some((log) => log.event === "Provider Added"));
+  deleteSourceProvider(provider.id);
+  assert.equal(getSourceProviders().providers.length, before);
 });
 test("API server exposes source configuration administration routes", () => {
   const server = readFileSync("apps/api/src/server.mjs", "utf8");

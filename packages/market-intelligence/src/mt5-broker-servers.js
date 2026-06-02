@@ -95,16 +95,23 @@ function dedupeServers(servers) {
   });
 }
 
+export function mergeCatalogServers(brokerName, servers) {
+  const fallbackServers = FALLBACK_VERIFIED_SERVERS.filter(
+    (item) => item.brokerName.toLowerCase() === String(brokerName || "").toLowerCase()
+  );
+  return dedupeServers([...servers, ...fallbackServers]);
+}
+
 export async function listBrokerServers(brokerName) {
   const broker = resolveBrokerOption(brokerName);
   if (!broker && brokerName !== "Custom Broker") {
     return { brokerName, brokerSearchName: "", servers: [], message: "Unknown broker." };
   }
-  const servers = await queryCatalogServers(brokerName);
+  const servers = mergeCatalogServers(brokerName, await queryCatalogServers(brokerName));
   return {
     brokerName,
     brokerSearchName: broker?.brokerSearchName || "",
-    servers: dedupeServers(servers),
+    servers,
     message: servers.length ? null : "No verified servers found. Use Detect Servers or Enter Custom Server."
   };
 }
@@ -161,7 +168,7 @@ export async function detectBrokerServers(input, { actor = "system.admin" } = {}
     terminalId: input.terminal_id || input.terminalId || null
   });
 
-  const servers = dedupeServers([...catalogServers, ...discovered]);
+  const servers = mergeCatalogServers(brokerName, [...catalogServers, ...discovered]);
   const discoveredOnly = discovered.filter((item) => item.verificationStatus === "DISCOVERED");
   const searchLabel = brokerSearchName || brokerName;
 
