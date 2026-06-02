@@ -166,6 +166,7 @@
 .mdoc-form-grid select { padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 10px; background: #fff; font-size: 12px; }
 .mdoc-state.partially_configured, .mdoc-state.degraded { color: #a16207; }
 .mdoc-state.active { color: #166534; }
+.mdoc-help code { display: block; margin-top: 8px; padding: 10px 12px; background: #f8fafc; border-radius: 8px; font-size: 11px; word-break: break-all; }
 @media (max-width: 1400px) {
   .mdoc-banner, .mdoc-kpi-grid { grid-template-columns: repeat(3, 1fr); }
   .mdoc-grid-2, .mdoc-action-grid { grid-template-columns: 1fr 1fr; }

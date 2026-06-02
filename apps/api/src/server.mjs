@@ -82,6 +82,7 @@ import {
   getOrCreateRegistrationToken,
   recordHeartbeat,
   importMarketWatch,
+  triggerTerminalHeartbeat,
   getProviderMt5Details,
   listEaDeployments,
   listConnectionMonitor
@@ -598,6 +599,14 @@ const server = createServer(async (request, response) => {
       if (message === "database_not_configured") return json(response, 503, { error: message });
       if (message === "invalid_or_expired_token" || message === "terminal_not_found") return json(response, 404, { error: message });
       return json(response, 400, { error: message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/mt5/terminals/trigger-heartbeat") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, { accepted: true, ...(await triggerTerminalHeartbeat(body.terminalId)) });
+    } catch (reason) {
+      return mt5EaError(response, reason);
     }
   }
   if (request.method === "POST" && url.pathname === "/api/mt5/terminals/import-market-watch") {

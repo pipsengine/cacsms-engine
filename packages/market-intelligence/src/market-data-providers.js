@@ -64,7 +64,8 @@ export {
   recordHeartbeat,
   validateLivePrices,
   evaluateAndActivateProvider,
-  listConnectionMonitor
+  listConnectionMonitor,
+  triggerTerminalHeartbeat
 } from "./mt5-infrastructure.js";
 export {
   deployEa,

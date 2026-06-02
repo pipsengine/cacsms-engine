@@ -38,17 +38,23 @@ function renderMt5Sections(data) {
   const heartbeatsHtml = `<section class="mdoc-panel"><div class="mdoc-panel-head"><h2>Heartbeat Monitor</h2><b>10s EXPECTED</b></div>${table(["Terminal","Last Heartbeat","Status","Latency"], mt5.heartbeats.map((row) => [esc(row.terminal), formatAge(row.lastHeartbeat), `<b class="mdoc-state ${esc(String(row.status).toLowerCase())}">${esc(row.status)}</b>`, row.latencyMs != null ? `${row.latencyMs} ms` : "—"]))}</section>`;
 
   const readiness = mt5.readiness || {};
-  const waitingHeartbeat = (mt5.terminals || []).some((row) => row.eaStatus === "INSTALLED" && row.connectionStatus === "OFFLINE");
+  const waitingHeartbeat = (mt5.terminals || []).some((row) => ["INSTALLED", "CONNECTED", "DISCONNECTED"].includes(row.eaStatus) && row.connectionStatus === "OFFLINE");
+  const offlineTerminal = (mt5.terminals || []).find((row) => row.connectionStatus === "OFFLINE");
   const nextStepHtml = waitingHeartbeat
     ? `<section class="mdoc-panel mdoc-setup-cta" id="mdoc-heartbeat-help">
         <div class="mdoc-panel-head"><h2>Waiting for EA Heartbeat</h2><b>STEP 4–6</b></div>
-        <p>Files are deployed and symbols are imported, but CACSMS has not received a heartbeat from MT5 yet. Complete these checks in MetaTrader 5:</p>
-        <ol class="mdoc-onboarding">
-          <li class="mdoc-onboarding-step in_progress"><span>1</span><div><strong>Update EA to v1.0.1</strong><small>EA Deployment Center → Update EA, then compile in MetaEditor (F7)</small></div></li>
-          <li class="mdoc-onboarding-step in_progress"><span>2</span><div><strong>Allow WebRequest</strong><small>Tools → Options → Expert Advisors → add http://localhost:8080</small></div></li>
-          <li class="mdoc-onboarding-step in_progress"><span>3</span><div><strong>Attach EA with token</strong><small>Paste RegistrationToken, enable Algo Trading, check Experts tab for "heartbeat sent"</small></div></li>
-        </ol>
-        <div class="mdoc-header-actions"><a class="mdoc-button primary" href="/workspace/mt5-infrastructure/ea-deployments">Update EA</a><button class="mdoc-button secondary" data-action="refresh">Refresh Status</button></div>
+        <p>MT5 only allows a small WebRequest URL list and URLs must be entered <strong>without brackets</strong>. Use exactly:</p>
+        <p class="mdoc-token-field"><input readonly value="http://127.0.0.1:8080" id="mdoc-webrequest-url" /></p>
+        <p class="mdoc-help">In MT5: Tools → Options → Expert Advisors → select an old URL → click <strong>Delete</strong> → add the URL above → OK → restart MT5.</p>
+        <p class="mdoc-help mdoc-warning">Do not type [http://localhost:8080] — square brackets will be rejected.</p>
+        <p class="mdoc-help"><strong>WebRequest list full?</strong> Use the relay below instead — no MT5 URL changes required.</p>
+        <div class="mdoc-header-actions">
+          ${offlineTerminal ? `<button class="mdoc-button primary" data-action="trigger-heartbeat" data-terminal-id="${esc(offlineTerminal.id)}">Send Heartbeat Now</button>` : ""}
+          <button class="mdoc-button secondary" data-action="copy-webrequest-url">Copy URL</button>
+          <a class="mdoc-button secondary" href="/workspace/mt5-infrastructure/ea-deployments">Update EA</a>
+          <button class="mdoc-button secondary" data-action="refresh">Refresh Status</button>
+        </div>
+        <p class="mdoc-help">Local relay (keep this terminal open): <code>node scripts/mt5-local-heartbeat.mjs --token YOUR_TOKEN</code></p>
       </section>`
     : "";
   const setupCta = pendingProviders.length
@@ -90,7 +96,7 @@ function renderTokenModal({ token, expiresAt, created = true }) {
     <section class="mdoc-modal mdoc-token-modal">
       <header class="mdoc-modal-head"><h2>Registration Token</h2><button type="button" class="mdoc-button secondary" data-action="close-token-modal">Close</button></header>
       <p class="mdoc-help">${created ? "New token generated." : "Active pending token retrieved."} Paste this into the CACSMS EA inputs on your MT5 chart.</p>
-      <p class="mdoc-help mdoc-warning">In MT5, add <strong>${esc(typeof window !== "undefined" ? "http://localhost:8080" : "http://localhost:8080")}</strong> to Tools → Options → Expert Advisors → Allow WebRequest for listed URL.</p>
+      <p class="mdoc-help mdoc-warning">In MT5, add <strong>http://127.0.0.1:8080</strong> (no brackets) to Tools → Options → Expert Advisors → Allow WebRequest. Select an existing URL and click Delete if the list is full.</p>
       <label class="mdoc-token-field">Token<input id="mdoc-token-value" type="text" readonly value="${esc(value)}" /></label>
       <p class="mdoc-token-meta"><span>Expires</span><strong>${esc(expiry)}</strong></p>
       <div class="mdoc-header-actions">
@@ -565,6 +571,26 @@ export function bindMarketDataOperationsCenter() {
       alert(reason.message);
     }
   }));
+
+  root.querySelectorAll('[data-action="trigger-heartbeat"]').forEach((button) => button.addEventListener("click", async () => {
+    try {
+      await post("/api/mt5/terminals/trigger-heartbeat", { terminalId: button.dataset.terminalId });
+      await refresh();
+    } catch (reason) {
+      alert(reason.message);
+    }
+  }));
+
+  root.querySelector('[data-action="copy-webrequest-url"]')?.addEventListener("click", async () => {
+    const input = document.querySelector("#mdoc-webrequest-url");
+    try {
+      await copyToClipboard(input?.value || "http://127.0.0.1:8080");
+      alert("Copied http://127.0.0.1:8080 — paste into MT5 WebRequest list without brackets.");
+    } catch {
+      input?.select();
+      alert("Select the URL and press Ctrl+C.");
+    }
+  });
 
   root.querySelectorAll('[data-action="import-market-watch"]').forEach((button) => button.addEventListener("click", async () => {
     try {

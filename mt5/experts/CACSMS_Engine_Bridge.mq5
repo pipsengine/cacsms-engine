@@ -13,7 +13,7 @@
 #include <CACSMS/CommandProcessor.mqh>
 
 input string RegistrationToken = "";
-input string ApiBaseUrl = "http://localhost:8080";
+input string ApiBaseUrl = "http://127.0.0.1:8080";
 input int HeartbeatSeconds = 10;
 
 CConnectionManager *g_connection = NULL;
