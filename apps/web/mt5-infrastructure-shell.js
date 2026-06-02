@@ -64,4 +64,5 @@ const slug = parts[0] === "workspace" && parts[1] === "mt5-infrastructure" ? par
 initEnterpriseSidebar("market-nav");
 document.querySelector(".intelligence-header")?.remove();
 mountMt5InfrastructurePage(slug);
-setInterval(() => document.querySelector("#utc-clock") && (document.querySelector("#utc-clock").textContent = `UTC ${new Date().toISOString().slice(11, 19)}`), 1000);
+const nigeriaTime = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZone: "Africa/Lagos" });
+setInterval(() => document.querySelector("#utc-clock") && (document.querySelector("#utc-clock").textContent = `WAT ${nigeriaTime.format(new Date())}`), 1000);

@@ -71,8 +71,22 @@ const legacyRoutes = {
   "/market-intelligence/account-portfolio-data": "/workspace/market-intelligence/account-portfolio"
 };
 
+const sidebarStateKey = "cacsms-enterprise-sidebar";
+
 function activeRoute() {
   return legacyRoutes[location.pathname] || location.pathname;
+}
+
+function readSidebarState() {
+  try {
+    return JSON.parse(sessionStorage.getItem(sidebarStateKey) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function writeSidebarState(state) {
+  sessionStorage.setItem(sidebarStateKey, JSON.stringify(state));
 }
 
 function escapeAttribute(value) {
@@ -83,14 +97,23 @@ function icon(name) {
   return `<svg aria-hidden="true" viewBox="0 0 24 24">${iconPaths[name]}</svg>`;
 }
 
-export function initEnterpriseSidebar(navId) {
+export function initEnterpriseSidebar(navId, { onNavigate } = {}) {
   const nav = document.querySelector(`#${navId}`);
   const shell = document.querySelector(".app-shell");
   const collapse = document.querySelector("#collapse-sidebar");
-  const expanded = new Set(sidebarFunctions.filter(([, , , , , open]) => open).map(([id]) => id));
-  const current = activeRoute();
+  const savedState = readSidebarState();
+  const defaultExpanded = sidebarFunctions.filter(([, , , , , open]) => open).map(([id]) => id);
+  const expanded = new Set(Array.isArray(savedState.expanded) ? savedState.expanded : defaultExpanded);
+
+  if (savedState.collapsed) shell.classList.add("sidebar-collapsed");
+
+  function saveState(scrollTop = nav.querySelector(".enterprise-navigation")?.scrollTop || 0) {
+    writeSidebarState({ collapsed: shell.classList.contains("sidebar-collapsed"), expanded: [...expanded], scrollTop });
+  }
 
   function render(query = "") {
+    const previousScrollTop = nav.querySelector(".enterprise-navigation")?.scrollTop ?? savedState.scrollTop ?? 0;
+    const current = activeRoute();
     const normalizedQuery = query.trim().toLowerCase();
     const visible = sidebarFunctions.filter(([, , title, , children]) => `${title} ${children.map(([child]) => child).join(" ")}`.toLowerCase().includes(normalizedQuery));
     nav.innerHTML = `<label class="enterprise-sidebar-search"><span>SRCH</span><input type="search" placeholder="Search functions..." value="${escapeAttribute(query)}"></label><div class="enterprise-navigation">${visible.map(([id, iconName, title, status, children]) => {
@@ -103,14 +126,30 @@ export function initEnterpriseSidebar(navId) {
         ${isExpanded ? `<div class="enterprise-sidebar-children">${children.map(([child, route]) => `<a class="enterprise-sidebar-child${route === current ? " active" : ""}" href="${route}">${child}</a>`).join("")}</div>` : ""}
       </section>`;
     }).join("")}</div>`;
+    const navigation = nav.querySelector(".enterprise-navigation");
+    navigation.scrollTop = previousScrollTop;
+    navigation.addEventListener("scroll", () => saveState(navigation.scrollTop), { passive: true });
+    nav.querySelectorAll(".enterprise-sidebar-child").forEach(link => link.addEventListener("click", event => {
+      saveState(navigation.scrollTop);
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !onNavigate) return;
+      const route = link.getAttribute("href");
+      if (onNavigate(route, event) === false) return;
+      event.preventDefault();
+      render(query);
+    }));
     nav.querySelector("input").addEventListener("input", event => render(event.target.value));
     nav.querySelectorAll(".enterprise-sidebar-parent").forEach(button => button.addEventListener("click", () => {
       const id = button.dataset.function;
       expanded.has(id) ? expanded.delete(id) : expanded.add(id);
+      saveState(navigation.scrollTop);
       render(query);
     }));
   }
 
-  collapse.addEventListener("click", () => shell.classList.toggle("sidebar-collapsed"));
+  collapse.addEventListener("click", () => {
+    shell.classList.toggle("sidebar-collapsed");
+    saveState();
+  });
   render();
+  return { render };
 }

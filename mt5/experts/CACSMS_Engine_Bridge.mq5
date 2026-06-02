@@ -2,10 +2,10 @@
 //| CACSMS Engine Bridge                                             |
 //+------------------------------------------------------------------+
 #property copyright "CACSMS Engine"
-#property version   "1.01"
+#property version   "1.02"
 #property strict
 
-#define CACSMS_EA_VERSION "1.0.1"
+#define CACSMS_EA_VERSION "1.0.2"
 
 #include <CACSMS/SecurityManager.mqh>
 #include <CACSMS/ConnectionManager.mqh>
@@ -30,7 +30,7 @@ int OnInit()
    g_connection = new CConnectionManager(ApiBaseUrl);
    g_heartbeat = new CHeartbeatManager(g_connection, RegistrationToken, CACSMS_EA_VERSION);
 
-   if(!g_heartbeat.SendHeartbeat())
+   if(!g_heartbeat.SendHeartbeat(true))
       Print("CACSMS Engine Bridge: initial heartbeat failed. Check WebRequest URL whitelist for ", ApiBaseUrl);
 
    EventSetTimer(MathMax(HeartbeatSeconds, 5));
@@ -49,9 +49,11 @@ void OnDeinit(const int reason)
 void OnTimer()
 {
    if(g_heartbeat != NULL)
-      g_heartbeat.SendHeartbeat();
+      g_heartbeat.SendHeartbeat(true);
 }
 
 void OnTick()
 {
+   if(g_heartbeat != NULL)
+      g_heartbeat.SendHeartbeat();
 }

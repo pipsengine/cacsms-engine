@@ -25,6 +25,7 @@ const path = (values, w = 560, h = 120) => {
 const chart = (title, detail, series) => `<section class="cot-card cot-chart"><div class="cot-title"><div><h2>${title}</h2><p>${detail}</p></div><div class="cot-ranges"><b>3M</b><span>6M</span><span>1Y</span><span>ALL</span></div></div><svg viewBox="0 0 560 145" preserveAspectRatio="none"><line x1="0" y1="124" x2="560" y2="124"/><line x1="0" y1="70" x2="560" y2="70"/><line x1="0" y1="16" x2="560" y2="16"/>${series.map(([name, values, color], index) => `<path class="cot-chart-line" d="${path(values.slice().reverse())}" style="stroke:${color}"/><text x="${12 + index * 150}" y="141" fill="${color}">${name}</text>`).join("")}</svg></section>`;
 
 function rerender() {
+  if (!location.pathname.endsWith("/institutional-cot")) return;
   document.querySelector("#intelligence-content").innerHTML = renderInstitutionalCotCenter();
   bindInstitutionalCotCenter();
 }

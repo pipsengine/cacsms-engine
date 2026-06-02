@@ -291,6 +291,7 @@ export async function recordHeartbeat(input) {
     [resolvedTerminalId, providerId, input.eaVersion || "1.0.0"]
   );
 
+  const ticksReceived = await recordLiveTicks(resolvedTerminalId, providerId, input.ticks || input.prices || []);
   const onboarding = {
     ...(terminals[0].onboarding || {}),
     ea_installed: "completed",
@@ -310,7 +311,40 @@ export async function recordHeartbeat(input) {
     await evaluateAndActivateProvider(providerId);
   }
 
-  return { terminalId: resolvedTerminalId, status, latencyMs, onboarding: buildOnboardingView(onboarding) };
+  return { terminalId: resolvedTerminalId, status, latencyMs, ticksReceived, onboarding: buildOnboardingView(onboarding) };
+}
+
+async function recordLiveTicks(terminalId, providerId, ticks) {
+  if (!Array.isArray(ticks) || !ticks.length) return 0;
+  let recorded = 0;
+  for (const tick of ticks) {
+    const symbol = String(tick.symbol || "").trim().toUpperCase();
+    const bid = Number(tick.bid);
+    const ask = Number(tick.ask);
+    if (!symbol || !Number.isFinite(bid) || !Number.isFinite(ask) || ask < bid) continue;
+    const spread = Number.isFinite(Number(tick.spread)) ? Number(tick.spread) : Number((ask - bid).toFixed(8));
+    await query(
+      `INSERT INTO infrastructure.mt5_live_prices (terminal_id, provider_id, symbol, bid, ask, spread, observed_at)
+       VALUES ($1, $2, $3, $4, $5, $6, now())
+       ON CONFLICT (terminal_id, symbol) DO UPDATE SET bid = EXCLUDED.bid, ask = EXCLUDED.ask, spread = EXCLUDED.spread, observed_at = now()`,
+      [terminalId, providerId, symbol, bid, ask, spread]
+    );
+    await query(
+      `INSERT INTO market.market_data_ticks (symbol, provider_id, bid, ask, spread, observed_at)
+       VALUES ($1, $2, $3, $4, $5, now())`,
+      [symbol, providerId, bid, ask, spread]
+    );
+    recorded += 1;
+  }
+  if (recorded) {
+    await query(
+      `UPDATE infrastructure.mt5_terminals SET live_symbol_count = (
+        SELECT COUNT(*)::int FROM infrastructure.mt5_live_prices WHERE terminal_id = $1
+      ), updated_at = now() WHERE id = $1`,
+      [terminalId]
+    );
+  }
+  return recorded;
 }
 
 export async function importMarketWatch(terminalId, { symbols = null } = {}) {

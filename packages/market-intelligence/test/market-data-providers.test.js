@@ -76,6 +76,20 @@ test("API server exposes market data provider contract", () => {
   ]) assert.match(api, new RegExp(route.replaceAll("/", "\\/")));
 });
 
+test("API exposes recorded MT5 ticks for real-time browser updates", () => {
+  const api = readFileSync("apps/api/src/server.mjs", "utf8");
+  const mt5 = readFileSync("packages/market-intelligence/src/mt5-infrastructure.js", "utf8");
+  const ea = readFileSync("mt5/experts/CACSMS_Engine_Bridge.mq5", "utf8");
+  const serializer = readFileSync("mt5/include/MessageSerializer.mqh", "utf8");
+  assert.match(api, /GET \/api\/market-data\/ticks\/latest/);
+  assert.match(api, /getLatestTicks\(limit\)/);
+  assert.match(mt5, /input\.ticks \|\| input\.prices/);
+  assert.match(mt5, /INSERT INTO market\.market_data_ticks/);
+  assert.match(ea, /void OnTick\(\)[\s\S]*SendHeartbeat\(\)/);
+  assert.match(serializer, /CacsmsBuildLiveTicksJson/);
+  assert.match(serializer, /\\"ticks\\":%s/);
+});
+
 test("migration defines all market feed operations tables", () => {
   const migration = readFileSync("database/migrations/005_market_data_providers.sql", "utf8");
   for (const table of ["feed_providers", "feed_health", "feed_latency", "feed_events", "feed_quality", "feed_coverage", "feed_statistics"]) assert.match(migration, new RegExp(`market\\.${table}`));

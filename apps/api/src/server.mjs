@@ -48,6 +48,7 @@ import {
   saveCustomBrokerServer
 } from "../../../packages/market-intelligence/src/mt5-broker-servers.js";
 import { getDatabaseConfig, testDatabaseConnection } from "../../../packages/market-intelligence/src/db.js";
+import { getLatestTicks } from "../../../packages/market-intelligence/src/market-data-repository.js";
 import {
   createMarketDataProvider,
   deleteMarketDataProvider,
@@ -325,6 +326,15 @@ const routes = {
     return { symbolsOnline: dashboard.symbols, assets: dashboard.coverage };
   }
   ,"GET /api/market-data/providers/events": () => getMarketDataLogsDashboard()
+  ,"GET /api/market-data/ticks/latest": async url => {
+    const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 8), 1), 40);
+    const ticks = await getLatestTicks(limit);
+    const observedAt = ticks.reduce((latest, tick) => {
+      const value = tick.observed_at ? new Date(tick.observed_at).toISOString() : null;
+      return value && (!latest || value > latest) ? value : latest;
+    }, null);
+    return { source: "recorded_mt5_ticks", observedAt, ticks };
+  }
   ,"GET /api/market-data/providers/export": async () => {
     const payload = await exportMarketDataStatus({ liveProbe: await getMarketDataLiveProbe() });
     return { format: "csv", csv: exportMarketDataStatusCsv(payload), ...payload };

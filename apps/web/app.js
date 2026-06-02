@@ -66,10 +66,10 @@ document.querySelector("#alerts").innerHTML = alerts.map(([type, title, detail])
 
 function updateClock() {
   const time = new Intl.DateTimeFormat("en-GB", {
-    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZone: "UTC"
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZone: "Africa/Lagos"
   }).format(new Date());
-  document.querySelector("#utc-clock").textContent = `UTC ${time}`;
-  document.querySelector("#last-sync").textContent = `${time} UTC`;
+  document.querySelector("#utc-clock").textContent = `WAT ${time}`;
+  document.querySelector("#last-sync").textContent = `${time} WAT`;
 }
 
 updateClock();

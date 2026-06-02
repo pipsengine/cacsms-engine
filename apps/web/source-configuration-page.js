@@ -2,6 +2,17 @@ const API = "http://localhost:8080";
 const AUTO_REFRESH_MS = 30000;
 let sourceConfigRefreshTimer = null;
 
+function ownsCurrentRoute() {
+  return location.pathname.endsWith("/source-configuration");
+}
+
+export function unmountSourceConfigurationCenter() {
+  if (sourceConfigRefreshTimer) {
+    clearInterval(sourceConfigRefreshTimer);
+    sourceConfigRefreshTimer = null;
+  }
+}
+
 function esc(value) {
   return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 }
@@ -74,7 +85,9 @@ async function put(path, body = {}) {
 export function bindSourceConfigurationCenter() {
   const root = document.querySelector("#intelligence-content");
   const refresh = async () => {
-    root.innerHTML = renderSourceConfigurationCenter(await loadDashboard());
+    const dashboard = await loadDashboard();
+    if (!ownsCurrentRoute()) return;
+    root.innerHTML = renderSourceConfigurationCenter(dashboard);
     bindSourceConfigurationCenter();
   };
 
@@ -107,7 +120,9 @@ export function bindSourceConfigurationCenter() {
 export async function mountSourceConfigurationCenter() {
   const root = document.querySelector("#intelligence-content");
   try {
-    root.innerHTML = renderSourceConfigurationCenter(await loadDashboard());
+    const dashboard = await loadDashboard();
+    if (!ownsCurrentRoute()) return;
+    root.innerHTML = renderSourceConfigurationCenter(dashboard);
     bindSourceConfigurationCenter();
   } catch (reason) {
     root.innerHTML = `<section class="sc-dashboard sc-panel"><h1>Source Configuration Center</h1><p>${esc(reason.message)}</p><button class="sc-button primary" id="sc-retry">Retry</button></section>`;

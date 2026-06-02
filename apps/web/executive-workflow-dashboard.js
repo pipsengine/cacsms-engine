@@ -90,4 +90,5 @@ function draw() {
 
 initEnterpriseSidebar("workflow-test-nav");
 run();
-setInterval(() => document.querySelector("#utc-clock").textContent = `UTC ${new Date().toISOString().slice(11,19)}`, 1000);
+const nigeriaTime = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZone: "Africa/Lagos" });
+setInterval(() => document.querySelector("#utc-clock").textContent = `WAT ${nigeriaTime.format(new Date())}`, 1000);

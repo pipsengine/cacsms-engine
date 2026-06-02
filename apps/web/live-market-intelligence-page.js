@@ -25,6 +25,11 @@ let error = "";
 let refreshTimer = null;
 let activeSlug = "data-sources";
 
+function isCurrentSlug(slug) {
+  const parts = location.pathname.split("/").filter(Boolean);
+  return (parts[0] === "workspace" ? parts[2] : parts[1] || "dashboard") === slug;
+}
+
 function parseLiveDashboardPayload(payload) {
   if (!payload || typeof payload !== "object") return null;
   if (Array.isArray(payload.sources) && payload.gate) return payload;
@@ -63,6 +68,10 @@ function stopAutoRefresh() {
     clearInterval(refreshTimer);
     refreshTimer = null;
   }
+}
+
+export function unmountLiveMarketIntelligencePage() {
+  stopAutoRefresh();
 }
 
 function startAutoRefresh(slug) {
@@ -137,8 +146,10 @@ async function load(slug, { silent = false } = {}) {
   } finally {
     setLiveButtonsBusy(false);
   }
-  document.querySelector("#intelligence-content").innerHTML = render(slug);
-  bindLiveMarketIntelligencePage(slug);
+  if (isCurrentSlug(slug)) {
+    document.querySelector("#intelligence-content").innerHTML = render(slug);
+    bindLiveMarketIntelligencePage(slug);
+  }
 }
 
 export function bindLiveMarketIntelligencePage(slug) {
@@ -178,6 +189,8 @@ async function runLiveValidation(slug) {
   } finally {
     setLiveButtonsBusy(false);
   }
-  document.querySelector("#intelligence-content").innerHTML = render(slug);
-  bindLiveMarketIntelligencePage(slug);
+  if (isCurrentSlug(slug)) {
+    document.querySelector("#intelligence-content").innerHTML = render(slug);
+    bindLiveMarketIntelligencePage(slug);
+  }
 }

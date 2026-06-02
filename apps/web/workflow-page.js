@@ -59,9 +59,9 @@ document.querySelector("#audit-items").innerHTML = ["Decision Logs","Risk Logs",
 document.querySelector("#final-outcome").innerHTML = ["Trade Completed","Profit / Loss Realized","All Records Stored","System Learning Updated"].map(x => `<span>${x}</span>`).join("");
 document.querySelector("#key-points").innerHTML = ["Risk Engine Has Absolute Veto","Every Step Is Logged","Multi-Agent Governance","End-to-End Encryption","Self-Healing Infrastructure","100% Audit Traceable"].map(x => `<span>${x}</span>`).join("");
 function updateWorkflowClock() {
-  const time = new Date().toISOString().slice(11,19);
-  document.querySelector("#utc-clock").textContent = `UTC ${time}`;
-  document.querySelector("#workflow-last-updated").textContent = `${time} UTC`;
+  const time = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZone: "Africa/Lagos" }).format(new Date());
+  document.querySelector("#utc-clock").textContent = `WAT ${time}`;
+  document.querySelector("#workflow-last-updated").textContent = `${time} WAT`;
 }
 updateWorkflowClock();
 setInterval(updateWorkflowClock, 1000);

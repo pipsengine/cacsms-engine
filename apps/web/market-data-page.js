@@ -9,6 +9,17 @@ import {
 const API = "http://localhost:8080";
 const AUTO_REFRESH_MS = 30000;
 let marketDataRefreshTimer = null;
+
+function ownsCurrentRoute() {
+  return location.pathname.endsWith("/market-data");
+}
+
+export function unmountMarketDataOperationsCenter() {
+  if (marketDataRefreshTimer) {
+    clearInterval(marketDataRefreshTimer);
+    marketDataRefreshTimer = null;
+  }
+}
 const esc = (value) => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 const table = (headers, rows) => `<div class="mdoc-table-wrap"><table><thead><tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 
@@ -540,7 +551,9 @@ async function openAddProviderModal(refresh) {
 export function bindMarketDataOperationsCenter() {
   const root = document.querySelector("#intelligence-content");
   const refresh = async (notification = null) => {
-    root.innerHTML = renderMarketDataOperationsCenter(await loadDashboard(), notification);
+    const dashboard = await loadDashboard();
+    if (!ownsCurrentRoute()) return;
+    root.innerHTML = renderMarketDataOperationsCenter(dashboard, notification);
     bindMarketDataOperationsCenter();
   };
 
@@ -639,7 +652,9 @@ export function bindMarketDataOperationsCenter() {
 export async function mountMarketDataOperationsCenter() {
   const root = document.querySelector("#intelligence-content");
   try {
-    root.innerHTML = renderMarketDataOperationsCenter(await loadDashboard());
+    const dashboard = await loadDashboard();
+    if (!ownsCurrentRoute()) return;
+    root.innerHTML = renderMarketDataOperationsCenter(dashboard);
     bindMarketDataOperationsCenter();
   } catch (reason) {
     root.innerHTML = `<section class="mdoc-dashboard mdoc-panel"><h1>Market Data Providers</h1><p>${esc(reason.message)}</p><button class="mdoc-button primary" id="mdoc-retry">Retry</button></section>`;

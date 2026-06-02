@@ -21,13 +21,17 @@ public:
       m_lastSent = 0;
    }
 
-   bool SendHeartbeat()
+   bool SendHeartbeat(const bool force = false)
    {
       if(StringLen(m_token) == 0)
       {
          Print("CACSMS heartbeat skipped: RegistrationToken is empty.");
          return false;
       }
+
+      const datetime now = TimeCurrent();
+      if(!force && m_lastSent == now)
+         return true;
 
       const int latencyMs = 12;
       string body = CacsmsBuildHeartbeatJson(m_token, m_eaVersion, latencyMs);
@@ -40,7 +44,7 @@ public:
          return false;
       }
 
-      m_lastSent = TimeCurrent();
+      m_lastSent = now;
       Print("CACSMS heartbeat sent. HTTP=", httpStatus);
       return true;
    }

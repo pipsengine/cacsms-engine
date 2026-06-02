@@ -1,17 +1,20 @@
 /* Site-wide readability floor. Loaded after page-specific styles. */
 html { font-size: 16px; }
-body { font-size: 14px; line-height: 1.45; }
+body { font-size: 15px; line-height: 1.5; }
+button, input, select, textarea { font-size: 13px; line-height: 1.35; }
 
 .brand strong { font-size: 17px; line-height: 18px; }
 .brand small, .sidebar-heading, .topbar-actions small, .header-meta small,
 .operator small, .operator strong, .statusbar, .eyebrow { font-size: 11px; }
 .nav-item { font-size: 14px; }
-.nav-subitem, .enterprise-sidebar-child { font-size: 12px; line-height: 1.35; }
-.nav-subgroup small, .enterprise-sidebar-parent b { font-size: 10px; }
-.enterprise-sidebar-parent strong { font-size: 13px; }
+.nav-subitem, .enterprise-sidebar-child { font-size: 13px; line-height: 1.4; }
+.nav-subgroup small, .enterprise-sidebar-parent b { font-size: 11px; }
+.enterprise-sidebar-parent strong { font-size: 14px; }
+.enterprise-sidebar-search span { font-size: 11px; }
+.enterprise-sidebar-search input { font-size: 13px; }
 .global-search input, .subtitle { font-size: 14px; }
 .topbar-actions strong, .header-meta strong { font-size: 12px; }
-.primary-button, .text-button, button { font-size: 12px; }
+.primary-button, .text-button, button { font-size: 13px; }
 h1 { font-size: 29px; }
 h2 { font-size: 17px; }
 
@@ -22,15 +25,15 @@ h2 { font-size: 17px; }
 .alert-row strong, .infra-grid span, .ai-core p { font-size: 12px; }
 .asset strong, .position-row > strong, .infra-grid strong { font-size: 14px; }
 
-.intelligence-workspace small, .workflow-workspace small { font-size: 11px; }
+.intelligence-workspace small, .workflow-workspace small { font-size: 12px; }
 .mi-panel table, .md-panel table, .ns-panel table, .ec-panel table, .ss-panel table,
-.feed-health-panel table, .icot-table-wrap td, .cot-table-wrap td, .hd-table-wrap td { font-size: 11px; }
+.feed-health-panel table, .icot-table-wrap td, .cot-table-wrap td, .hd-table-wrap td { font-size: 12px; }
 .mi-panel th, .md-panel th, .ns-panel th, .ec-panel th, .ss-panel th,
-.icot-table-wrap th, .cot-table-wrap th, .hd-table-wrap th { font-size: 10px; }
+.icot-table-wrap th, .cot-table-wrap th, .hd-table-wrap th { font-size: 11px; }
 .mi-panel p, .md-panel p, .ns-panel p, .ec-panel p, .ss-panel p,
 .icot-section-heading p, .cot-title p, .hd-title p { font-size: 12px; }
 .mi-panel-head h2, .cot-title h2, .hd-title h2 { font-size: 15px; }
-.mi-panel-head b, .mi-panel-head .warning, .icot-chip, .cot-bias, .hd-bias { font-size: 10px; }
+.mi-panel-head b, .mi-panel-head .warning, .icot-chip, .cot-bias, .hd-bias { font-size: 11px; }
 
 .icot-status-strip small, .icot-kpi small, .icot-timeline time, .icot-timeline small,
 .icot-workflow b, .cot-status small, .cot-kpis small, .cot-sync-grid small,
@@ -41,11 +44,71 @@ h2 { font-size: 17px; }
 .icot-timeline strong, .icot-workflow p, .cot-dashboard button, .cot-selector button span,
 .cot-kpis span, .cot-workflow span, .hd-dashboard button, .hd-dashboard select,
 .hd-dashboard input, .hd-state-library p { font-size: 12px; }
-.cot-selector button small { font-size: 10px; }
+.cot-selector button small { font-size: 11px; }
 .cot-status strong, .icot-workflow strong, .cot-interpretation-grid strong { font-size: 13px; }
-.hd-metrics small, .hd-metrics span { font-size: 10px; }
+.hd-metrics small, .hd-metrics span { font-size: 11px; }
 .hd-metrics strong { font-size: 17px; }
 .hd-pagination, .cot-history footer { font-size: 11px; }
 
 .workflow-panel, .workflow-data-sources-card, .mission-control-banner { font-size: 13px; }
 .workflow-panel p, .mission-control-banner p { font-size: 12px; }
+
+/* Standard-size operational dashboards */
+.live-header small, .live-kpis small, .live-source-card small, .live-source-card dt,
+.live-badge, .ct-header small, .ct-kpis small, .ct-badge, .ct-table th,
+.sc-badges small, .sc-connectivity-banner small, .sc-summary-card small,
+.mdoc-badges small, .mdoc-banner small, .mdoc-kpi small { font-size: 11px; }
+.live-header aside, .live-table th, .live-source-card dd, .ct-header aside b,
+.ct-header aside span, .ct-pipeline span, .ct-decision-grid span,
+.sc-summary-meta span, .sc-summary-meta b, .sc-panel-head b, .sc-table-wrap th,
+.sc-form-grid label, .sc-vault-grid small, .sc-vault-grid span, .sc-dependency-map span,
+.mdoc-panel-head b, .mdoc-table-wrap th, .mdoc-metrics strong, .mdoc-workflow small,
+.mdoc-help, .mdoc-form-grid label, .mdoc-chip, .mdoc-wizard-step,
+.mdoc-wizard-card p, .mdoc-wizard-card small { font-size: 12px; }
+.live-title h2, .live-card h2, .live-source-card h2, .ct-title h2,
+.sc-panel-head h2, .mdoc-panel-head h2 { font-size: 16px; }
+.live-table td, .live-source-card p, .ct-table td, .ct-pipeline strong,
+.sc-table-wrap table, .sc-config-form p, .sc-vault-note, .sc-vault-grid strong,
+.sc-dependency-map strong, .mdoc-table-wrap table, .mdoc-metrics span,
+.mdoc-workflow span, .mdoc-error, .mdoc-form-grid input, .mdoc-form-grid select,
+.mdoc-form-grid textarea, .mdoc-test-banner span, .mdoc-test-banner small,
+.mdoc-terminal-card span, .mdoc-terminal-card small, .mdoc-symbol-list span,
+.mdoc-diagnostics, .mdoc-checks { font-size: 13px; }
+.sc-button, .sc-actions button, .sc-config-nav button, .mdoc-button,
+.ct-dashboard button, .ct-dashboard a, .live-actions button, .live-actions a { font-size: 13px; }
+
+/* Dense intelligence terminals */
+.mi-dashboard-header p, .mi-panel-head small, .mi-status-strip small, .mi-kpi-grid small,
+.mi-kpi-grid span, .ap-header p, .ap-header aside b, .ap-header aside small,
+.ap-metrics small, .ap-metrics span, .ap-filters label, .ap-table th, .ap-flag,
+.pf-header p, .pf-header aside b, .pf-header aside small, .pf-metrics small,
+.pf-metrics span, .pf-filters label, .pf-table th, .pf-flag { font-size: 11px; }
+.mi-panel table, .ap-table td, .pf-table td, .ap-drawer small, .pf-drawer small,
+.ap-allocation p, .ap-states p, .pf-states p { font-size: 12px; }
+.mi-header-actions button, .mi-action-center button, .ap-dashboard button,
+.pf-dashboard button, .ap-filters select, .pf-filters select { font-size: 13px; }
+
+/* Workflow cards remain compact but readable. */
+.panel-title, .source-item strong, .source-item small, .pipeline-heading,
+.pipeline-heading small, .stage-body h2, .stage-body p, .stage-output small,
+.stage-output strong, .stage-state span, .stage-state small, .veto-note,
+.reject-item b, .reject-item span, .asset-tier > strong, .asset-tier span,
+.audit-engine span, .outcome-panel span, .key-points strong, .key-points span,
+.mission-banner-classification, .mission-banner-meta, .mission-banner-actions button,
+.market-intelligence-icon, .market-intelligence-header p, .market-intelligence-live,
+.market-intelligence-toggle, .market-source-icon, .market-source-row em,
+.market-source-detail, .market-source-detail b, .data-quality-gate b,
+.feeds-stage-one, .workflow-data-source-item > span, .workflow-data-source-item small {
+  font-size: 11px;
+}
+.stage-body p, .market-source-copy small, .market-intelligence-description,
+.data-quality-gate span, .workflow-data-source-item strong { font-size: 12px; }
+
+.live-tick-status { min-width: 0; }
+.live-tick-status > span:last-child { overflow: hidden; max-width: 540px; color: #475569; text-overflow: ellipsis; white-space: nowrap; }
+.live-tick-status.live strong { color: #15803d; }
+.live-tick-status.live .dot { background: #22c55e; box-shadow: 0 0 0 3px #dcfce7; }
+.live-tick-status.stale strong, .live-tick-status.waiting strong { color: #b45309; }
+.live-tick-status.stale .dot, .live-tick-status.waiting .dot { background: #f59e0b; box-shadow: 0 0 0 3px #fef3c7; }
+.live-tick-status.offline strong { color: #b91c1c; }
+.live-tick-status.offline .dot { background: #dc2626; box-shadow: 0 0 0 3px #fee2e2; }
