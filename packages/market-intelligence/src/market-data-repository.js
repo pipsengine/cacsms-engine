@@ -1,4 +1,4 @@
-import { isDatabaseConfigured, query, withTransaction } from "./db.js";
+import { assertDatabaseReady, isDatabaseConfigured, query, withTransaction } from "./db.js";
 import { applyWizardPreset } from "./provider-wizard-catalog.js";
 
 export const TARGET_ASSETS = Object.freeze([
@@ -87,7 +87,8 @@ function mapProvider(row) {
     phase: row.phase,
     lastSyncAt: row.last_sync_at,
     createdAt: row.created_at,
-    updatedAt: row.updated_at
+    updatedAt: row.updated_at,
+    config: row.config || {}
   };
 }
 
@@ -169,6 +170,68 @@ export async function assertNoDuplicateUrl(baseUrl, websocketUrl, excludeId = nu
   }
 }
 
+export function extractMt5Identity(input) {
+  const normalized = applyWizardPreset(input);
+  const method = normalizeConnectionMethod(normalized.connectionMethod);
+  const isMt5 = method === "MT5 Bridge"
+    || normalized.wizardCategory === "mt5_terminal"
+    || normalized.category === "mt5_terminal"
+    || normalized.providerType === "MT5";
+  if (!isMt5) return null;
+
+  const brokerName = String(normalized.brokerName || normalized.customBrokerName || normalized.name || "").trim();
+  const serverName = String(
+    normalized.customServer
+      ? (normalized.customServerName || normalized.serverName || "")
+      : (normalized.serverName || "")
+  ).trim();
+  const environment = String(normalized.environment || "Production").trim();
+  if (!brokerName) return null;
+  return { brokerName, serverName, environment };
+}
+
+export async function findDuplicateMt5Provider(identity, excludeId = null) {
+  if (!identity?.brokerName || !isDatabaseConfigured()) return null;
+  const params = [
+    identity.brokerName.toLowerCase(),
+    identity.serverName.toLowerCase(),
+    identity.environment.toLowerCase()
+  ];
+  const excludeClause = excludeId ? "AND id <> $4" : "";
+  if (excludeId) params.push(excludeId);
+  const { rows } = await query(
+    `SELECT id, name, provider_code
+     FROM market.market_data_providers
+     WHERE archived = false
+       AND connection_method = 'MT5 Bridge'
+       AND lower(environment) = $3
+       AND lower(coalesce(config->'mt5'->>'brokerName', name)) = $1
+       AND lower(coalesce(config->'mt5'->>'serverName', '')) = $2
+       ${excludeClause}
+     ORDER BY created_at ASC
+     LIMIT 1`,
+    params
+  );
+  return rows[0] || null;
+}
+
+export async function assertNoDuplicateMt5TerminalProvider(input, excludeId = null) {
+  const identity = extractMt5Identity(input);
+  if (!identity) return identity;
+  const duplicate = await findDuplicateMt5Provider(identity, excludeId);
+  if (!duplicate) return identity;
+  const error = new Error("duplicate_mt5_terminal_provider");
+  error.details = {
+    existingId: duplicate.id,
+    existingName: duplicate.name,
+    existingCode: duplicate.provider_code,
+    brokerName: identity.brokerName,
+    serverName: identity.serverName,
+    environment: identity.environment
+  };
+  throw error;
+}
+
 export function validateProviderInput(input, { partial = false, draft = false, wizard = false } = {}) {
   const errors = [];
   const normalized = applyWizardPreset(input);
@@ -247,11 +310,13 @@ export async function getProviderById(id) {
 }
 
 export async function createProvider(input, { createdBy = "system.admin", draft = false, wizard = false } = {}) {
-  if (!isDatabaseConfigured()) throw new Error("database_not_configured");
+  await assertDatabaseReady();
   const normalized = validateProviderInput(input, { draft, wizard });
   await assertNoDuplicateName(normalized.name);
   if (normalized.wizardCategory !== "mt5_terminal" && normalized.category !== "mt5_terminal") {
     await assertNoDuplicateUrl(normalized.baseUrl, normalized.websocketUrl);
+  } else if (!draft) {
+    await assertNoDuplicateMt5TerminalProvider(normalized);
   }
 
   const providerCode = await generateProviderCode(normalized.providerType);

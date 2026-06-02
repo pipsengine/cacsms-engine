@@ -15,22 +15,29 @@ export const MT5_BROKER_OPTIONS = Object.freeze([
   { brokerName: "Custom Broker", brokerSearchName: "", isCustom: true }
 ]);
 
-const FALLBACK_VERIFIED_SERVERS = Object.freeze([
-  {
-    id: "fallback-ic-markets-mt5-6",
-    brokerName: "IC Markets",
-    brokerSearchName: "Raw Trading Ltd",
-    serverName: "ICMarketsSC-MT5-6",
-    platform: "MT5",
-    environment: "Production",
-    serverType: "Live",
-    verificationStatus: "VERIFIED",
-    source: "official_reference",
-    isDefault: true,
-    isActive: true,
-    lastVerifiedAt: "2026-01-01T00:00:00.000Z"
-  }
-]);
+const IC_MARKETS_VERIFIED_SERVERS = Object.freeze([
+  ["ICMarketsSC-Demo", "Demo", "Demo", false],
+  ["ICMarketsSC-MT5", "Production", "Live", false],
+  ["ICMarketsSC-MT5-2", "Production", "Live", false],
+  ["ICMarketsSC-MT5-3", "Production", "Live", false],
+  ["ICMarketsSC-MT5-4", "Production", "Live", false],
+  ["ICMarketsSC-MT5-6", "Production", "Live", true]
+].map(([serverName, environment, serverType, isDefault]) => ({
+  id: `fallback-ic-markets-${serverName.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-")}`,
+  brokerName: "IC Markets",
+  brokerSearchName: "Raw Trading Ltd",
+  serverName,
+  platform: "MT5",
+  environment,
+  serverType,
+  verificationStatus: "VERIFIED",
+  source: "official_reference",
+  isDefault,
+  isActive: true,
+  lastVerifiedAt: "2026-01-01T00:00:00.000Z"
+})));
+
+const FALLBACK_VERIFIED_SERVERS = IC_MARKETS_VERIFIED_SERVERS;
 
 function mapServerRow(row) {
   return {

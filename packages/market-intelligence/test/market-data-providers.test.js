@@ -135,14 +135,63 @@ test("wizard catalog exposes provider categories and vendor presets", async () =
   }
 });
 
-test("broker server catalog exposes verified IC Markets default only", async () => {
+test("extractMt5Identity normalizes broker server and environment", async () => {
+  const { extractMt5Identity } = await import("../src/market-data-repository.js");
+  assert.deepEqual(extractMt5Identity({
+    wizardCategory: "mt5_terminal",
+    connectionMethod: "MT5 Bridge",
+    brokerName: "IC Markets",
+    serverName: "ICMarketsSC-Demo",
+    environment: "Demo"
+  }), {
+    brokerName: "IC Markets",
+    serverName: "ICMarketsSC-Demo",
+    environment: "Demo"
+  });
+  assert.equal(extractMt5Identity({ connectionMethod: "REST API", baseUrl: "https://example.com" }), null);
+});
+
+test("API rejects duplicate MT5 terminal provider errors with 409", () => {
+  const api = readFileSync("apps/api/src/server.mjs", "utf8");
+  assert.match(api, /duplicate_mt5_terminal_provider/);
+});
+
+test("runtime sync module exports automatic sync helpers", async () => {
+  const runtime = await import("../src/runtime-sync.js");
+  assert.equal(typeof runtime.runMarketDataRuntimeSync, "function");
+  assert.equal(typeof runtime.startMarketDataRuntimeSyncLoop, "function");
+});
+
+test("market data Card 1 snapshot uses MT5 bridge instead of env URL", async () => {
+  const { buildMarketDataLiveSourceSnapshot } = await import("../src/market-data-source-validation.js");
+  const snapshot = await buildMarketDataLiveSourceSnapshot();
+  assert.equal(snapshot.id, "market-data");
+  assert.equal(snapshot.envKey, null);
+  assert.equal(snapshot.connectionLabel, "MT5 Bridge");
+  assert.match(snapshot.configuration, /Market Data Providers|MT5 terminal connected/i);
+  if (snapshot.status === "LIVE" || snapshot.status === "ONLINE") {
+    assert.equal(snapshot.checks.quality, "PASSED");
+    assert.ok(snapshot.records > 0);
+  }
+});
+
+test("broker server catalog exposes verified IC Markets MT5 servers", async () => {
   const { listBrokerServers, listMt5Brokers } = await import("../src/mt5-broker-servers.js");
   const brokers = await listMt5Brokers();
   assert.ok(brokers.brokers.some((item) => item.brokerName === "IC Markets" && item.brokerSearchName === "Raw Trading Ltd"));
   const servers = await listBrokerServers("IC Markets");
-  assert.equal(servers.servers.length, 1);
-  assert.equal(servers.servers[0].serverName, "ICMarketsSC-MT5-6");
-  assert.equal(servers.servers[0].verificationStatus, "VERIFIED");
+  const expected = [
+    "ICMarketsSC-Demo",
+    "ICMarketsSC-MT5",
+    "ICMarketsSC-MT5-2",
+    "ICMarketsSC-MT5-3",
+    "ICMarketsSC-MT5-4",
+    "ICMarketsSC-MT5-6"
+  ];
+  assert.equal(servers.servers.length, expected.length);
+  assert.deepEqual(servers.servers.map((item) => item.serverName).sort(), [...expected].sort());
+  assert.equal(servers.servers.find((item) => item.isDefault)?.serverName, "ICMarketsSC-MT5-6");
+  assert.ok(servers.servers.every((item) => item.verificationStatus === "VERIFIED"));
   assert.doesNotMatch(JSON.stringify(servers.servers), /Live26|Live01|Live02/);
 });
 

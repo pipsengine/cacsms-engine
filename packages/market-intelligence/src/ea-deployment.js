@@ -221,6 +221,94 @@ function executeLocalFileDeployment({ dataPath, backupRoot, manifest, action, ro
   };
 }
 
+function normalizeOrigin(origin = "") {
+  return origin.replaceAll("\u0000", "").replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function terminalMatchesFolder(terminal, folder) {
+  const origin = normalizeOrigin(folder.origin);
+  const broker = String(terminal.broker_name || terminal.provider_name || "").toLowerCase();
+  if (origin && broker && origin.includes("ic markets") && broker.includes("ic markets")) return true;
+  if (origin && broker && origin.includes(broker.split(" ")[0])) return true;
+  return false;
+}
+
+function pickTerminalForFolder(unlinkedTerminals, folder) {
+  if (!unlinkedTerminals.length) return null;
+  const matched = unlinkedTerminals.filter((terminal) => terminalMatchesFolder(terminal, folder));
+  const preferred = matched.find((terminal) => !String(terminal.provider_name || "").toLowerCase().includes("test"))
+    || matched[0];
+  if (preferred) return preferred;
+  return unlinkedTerminals.find((terminal) => !String(terminal.provider_name || "").toLowerCase().includes("test"))
+    || unlinkedTerminals[0];
+}
+
+function resolveTerminalInstallId(dataPath, storedInstallId) {
+  if (storedInstallId) return storedInstallId;
+  if (!dataPath) return null;
+  return basename(dataPath);
+}
+
+async function backfillMissingTerminalInstallIds() {
+  const { rows } = await query(
+    `SELECT terminal_id, data_path
+     FROM infrastructure.mt5_terminal_paths
+     WHERE terminal_install_id IS NULL AND data_path IS NOT NULL`
+  );
+  for (const row of rows) {
+    await query(
+      `UPDATE infrastructure.mt5_terminal_paths
+       SET terminal_install_id = $1, updated_at = now()
+       WHERE terminal_id = $2`,
+      [basename(row.data_path), row.terminal_id]
+    );
+  }
+  return rows.length;
+}
+
+export async function ensureTerminalPathLinks() {
+  if (!isDatabaseConfigured()) {
+    return { discovered: discoverMt5TerminalPaths(), linked: [], synced: 0 };
+  }
+
+  await backfillMissingTerminalInstallIds();
+  const discovered = discoverWindowsMt5DataFolders();
+  const { rows: unlinkedTerminals } = await query(
+    `SELECT t.id, t.terminal_name, t.broker_name, t.machine_id, p.name AS provider_name
+     FROM infrastructure.mt5_terminals t
+     LEFT JOIN infrastructure.mt5_terminal_paths path ON path.terminal_id = t.id
+     LEFT JOIN market.market_data_providers p ON p.id = t.provider_id
+     WHERE path.terminal_id IS NULL
+     ORDER BY t.created_at DESC`
+  );
+
+  const linked = [];
+  const remaining = [...unlinkedTerminals];
+
+  for (const folder of discovered) {
+    const { rows: existing } = await query(
+      `SELECT terminal_id FROM infrastructure.mt5_terminal_paths WHERE terminal_install_id = $1`,
+      [folder.terminalInstallId]
+    );
+    if (existing.length) continue;
+
+    const terminal = pickTerminalForFolder(remaining, folder);
+    if (!terminal?.machine_id) continue;
+
+    await upsertTerminalPaths(terminal.id, terminal.machine_id, folder);
+    linked.push({
+      terminalId: terminal.id,
+      terminalName: terminal.terminal_name,
+      terminalInstallId: folder.terminalInstallId,
+      dataPath: folder.dataPath
+    });
+    const index = remaining.findIndex((item) => item.id === terminal.id);
+    if (index >= 0) remaining.splice(index, 1);
+  }
+
+  return { discovered, linked, synced: linked.length };
+}
+
 async function upsertTerminalPaths(terminalId, machineId, folder) {
   await query(
     `INSERT INTO infrastructure.mt5_terminal_paths (
@@ -490,11 +578,14 @@ export async function rollbackEa(input) {
 }
 
 export async function syncDiscoveredTerminalPaths({ machineId, terminalId } = {}) {
-  const discovered = discoverWindowsMt5DataFolders();
-  if (terminalId && machineId && discovered[0]) {
-    await upsertTerminalPaths(terminalId, machineId, discovered[0]);
+  if (terminalId && machineId) {
+    const discovered = discoverWindowsMt5DataFolders();
+    const folder = discovered.find((item) => item.terminalInstallId)
+      || discovered[0];
+    if (folder) await upsertTerminalPaths(terminalId, machineId, folder);
+    return { discovered, synced: Boolean(folder), linked: folder ? [{ terminalId, terminalInstallId: folder.terminalInstallId, dataPath: folder.dataPath }] : [] };
   }
-  return { discovered, synced: Boolean(terminalId && discovered.length) };
+  return ensureTerminalPathLinks();
 }
 
 function mapDeployment(row) {
@@ -578,13 +669,14 @@ export async function listEaDeploymentLogs(deploymentId = null, { limit = 100 } 
 }
 
 export async function getEaDeploymentDashboard() {
+  await ensureTerminalPathLinks();
   const [deployments, logs, versions, machines, terminals, discovered] = await Promise.all([
     listEaDeployments(),
     listEaDeploymentLogs(null, { limit: 50 }),
     isDatabaseConfigured() ? query(`SELECT version, active, created_at FROM infrastructure.ea_versions ORDER BY created_at DESC`).then((r) => r.rows) : [],
     isDatabaseConfigured() ? query(`SELECT id, name, status FROM infrastructure.machines ORDER BY name`).then((r) => r.rows.map((row) => ({ id: row.id, name: row.name, status: row.status }))) : [],
     isDatabaseConfigured()
-      ? query(`SELECT t.id, t.terminal_name, t.machine_id, t.ea_version, t.ea_status, p.data_path
+      ? query(`SELECT t.id, t.terminal_name, t.machine_id, t.ea_version, t.ea_status, p.data_path, p.terminal_install_id
                FROM infrastructure.mt5_terminals t
                LEFT JOIN infrastructure.mt5_terminal_paths p ON p.terminal_id = t.id
                ORDER BY t.created_at DESC`).then((r) => r.rows.map((row) => ({
@@ -593,7 +685,8 @@ export async function getEaDeploymentDashboard() {
           machineId: row.machine_id,
           eaVersion: row.ea_version,
           eaStatus: row.ea_status,
-          dataPath: row.data_path
+          dataPath: row.data_path,
+          terminalInstallId: resolveTerminalInstallId(row.data_path, row.terminal_install_id)
         })))
       : [],
     Promise.resolve(discoverMt5TerminalPaths())

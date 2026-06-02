@@ -1,4 +1,6 @@
 const API = "http://localhost:8080";
+const AUTO_REFRESH_MS = 30000;
+let sourceConfigRefreshTimer = null;
 
 function esc(value) {
   return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
@@ -38,7 +40,7 @@ export function renderSourceConfigurationCenter(data) {
     ["Health Score", `${data.connectivity.configurationHealthScore}%`]
   ];
   return `<section class="sc-dashboard">
-    <header class="sc-header"><div><p class="eyebrow">MARKET INTELLIGENCE / MASTER CONNECTIVITY</p><h1>Source Configuration Center</h1><p class="subtitle">Centralized management, configuration, testing and monitoring of all market intelligence data providers.</p><div class="sc-badges">${badges.map(([label, value]) => `<span><small>${label}</small><strong>${esc(value)}</strong></span>`).join("")}</div></div><div class="sc-header-actions"><button class="sc-button secondary" data-action="add-provider">Add Provider</button><button class="sc-button primary" data-action="test-all">Test All Connections</button><button class="sc-button secondary" data-action="sync-all">Sync All Sources</button><button class="sc-button secondary" data-action="export-config">Export Configuration</button></div></header>
+    <header class="sc-header"><div><p class="eyebrow">MARKET INTELLIGENCE / MASTER CONNECTIVITY</p><h1>Source Configuration Center</h1><p class="subtitle">Centralized management with automatic connection testing and sync every 30 seconds.</p><div class="sc-badges">${badges.map(([label, value]) => `<span><small>${label}</small><strong>${esc(value)}</strong></span>`).join("")}</div></div><div class="sc-header-actions"><button class="sc-button secondary" data-action="add-provider">Add Provider</button><button class="sc-button primary" data-action="test-all">Test All Connections</button><button class="sc-button secondary" data-action="sync-all">Sync All Sources</button><button class="sc-button secondary" data-action="export-config">Export Configuration</button></div></header>
     <section class="sc-connectivity-banner">${connectivity.map(([label, value]) => `<article class="${label === "Readiness" && value === "RESTRICTED" ? "warning" : label === "Failed" && Number(value) > 0 ? "danger" : ""}"><small>${label}</small><strong>${esc(value)}</strong></article>`).join("")}</section>
     <section class="sc-summary-grid">${data.summaryCards.map((card) => `<article class="sc-summary-card ${healthClass(card.health)}"><small>${esc(card.label)}</small><strong>${esc(card.provider)}</strong><div class="sc-summary-meta"><span>Status <b>${esc(card.status)}</b></span><span>Health <b>${esc(card.health)}</b></span><span>Last Sync <b>${card.lastSync ? esc(new Date(card.lastSync).toLocaleString()) : "—"}</b></span><span>Latency <b>${esc(card.latency)}</b></span><span>Records <b>${esc(card.records)}</b></span></div></article>`).join("")}</section>
     <section class="sc-panel"><div class="sc-panel-head"><h2>Source Registry</h2><b>${data.registry.length} SOURCES</b></div>${table(["Source","Provider","Provider Type","Status","Health","Last Sync","Latency","Records","Authentication","Environment","Actions"], data.registry.map((row) => [esc(row.source), esc(row.provider), esc(row.providerType), `<b class="sc-state ${esc(row.status.toLowerCase())}">${esc(row.status)}</b>`, esc(row.health), row.lastSync ? esc(new Date(row.lastSync).toLocaleString()) : "—", row.latencyMs != null ? `${row.latencyMs} ms` : "—", esc(row.records), esc(row.authentication), esc(row.environment), `<span class="sc-actions"><button data-action="configure" data-id="${esc(row.id)}">Configure</button><button data-action="test" data-id="${esc(row.id)}">Test</button><button data-action="toggle" data-id="${esc(row.id)}" data-enabled="${row.enabled}">${row.enabled ? "Disable" : "Enable"}</button><button data-action="sync" data-id="${esc(row.id)}">Sync</button></span>`]))}</section>
@@ -75,6 +77,11 @@ export function bindSourceConfigurationCenter() {
     root.innerHTML = renderSourceConfigurationCenter(await loadDashboard());
     bindSourceConfigurationCenter();
   };
+
+  if (sourceConfigRefreshTimer) clearInterval(sourceConfigRefreshTimer);
+  sourceConfigRefreshTimer = setInterval(() => {
+    if (!document.hidden) refresh();
+  }, AUTO_REFRESH_MS);
 
   root.querySelector('[data-action="test-all"]')?.addEventListener("click", () => post("/api/source-configuration/test-all").then(refresh));
   root.querySelector('[data-action="sync-all"]')?.addEventListener("click", () => post("/api/source-configuration/sync-all").then(refresh));

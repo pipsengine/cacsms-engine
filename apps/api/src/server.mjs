@@ -24,6 +24,8 @@ import { createCardOneTestReport } from "../../../packages/workflow/src/card-one
 import { WORKFLOW_CARD_QUEUE } from "../../../packages/workflow/src/index.js";
 import { evaluateDataQualityGate } from "../../../packages/market-intelligence/src/data-sources.js";
 import { DATA_QUALITY_GATE_RULES, getDataQualityGateDashboard } from "../../../packages/market-intelligence/src/data-quality-gate.js";
+import { buildMarketDataLiveSourceSnapshot, probeMarketDataBridge } from "../../../packages/market-intelligence/src/market-data-source-validation.js";
+import { getLastRuntimeSyncResult, runMarketDataRuntimeSync, startMarketDataRuntimeSyncLoop } from "../../../packages/market-intelligence/src/runtime-sync.js";
 import { createCotSyncStatus, evaluateInstitutionalCot, getCotComparison, getInstitutionalCotDashboard } from "../../../packages/market-intelligence/src/institutional-cot.js";
 import {
   createSourceProvider,
@@ -45,6 +47,7 @@ import {
   listMt5Brokers,
   saveCustomBrokerServer
 } from "../../../packages/market-intelligence/src/mt5-broker-servers.js";
+import { getDatabaseConfig, testDatabaseConnection } from "../../../packages/market-intelligence/src/db.js";
 import {
   createMarketDataProvider,
   deleteMarketDataProvider,
@@ -156,15 +159,15 @@ function readCotCache() {
 }
 
 const liveSourceDefinitions = [
-  ["market-data", "market-data", "Market Data Providers", "MARKET_DATA_LIVE_URL", true, "Configure MARKET_DATA_LIVE_URL for the pricing gateway."],
-  ["news-sentiment", "news-sentiment", "News & Sentiment Sources", "NEWS_SENTIMENT_LIVE_URL", true, "Configure NEWS_SENTIMENT_LIVE_URL for a licensed headline provider."],
-  ["economic-calendar", "economic-calendar", "Economic Calendar", "ECONOMIC_CALENDAR_LIVE_URL", true, "Configure ECONOMIC_CALENDAR_LIVE_URL for live macro-event ingestion."],
-  ["social-sentiment", "social-sentiment", "Social Media & Community", "SOCIAL_SENTIMENT_LIVE_URL", false, "Configure SOCIAL_SENTIMENT_LIVE_URL for optional community intelligence."],
+  ["market-data", "market-data", "Market Data Providers", null, true, "Connect an MT5 terminal through Market Data Providers."],
+  ["news-sentiment", "news-sentiment", "News & Sentiment Sources", "NEWS_SENTIMENT_LIVE_URL", true, "Configure a licensed headline provider in Source Configuration."],
+  ["economic-calendar", "economic-calendar", "Economic Calendar", "ECONOMIC_CALENDAR_LIVE_URL", true, "Configure live macro-event ingestion in Source Configuration."],
+  ["social-sentiment", "social-sentiment", "Social Media & Community", "SOCIAL_SENTIMENT_LIVE_URL", false, "Configure optional community intelligence in Source Configuration."],
   ["institutional-cot-data", "institutional-cot", "Institutional / COT Data", "COT_SOURCE_URL", false, "Official CFTC Futures Only archive synchronized by cot_weekly_sync_job."],
-  ["historical-data", "historical-data", "Historical Data", "HISTORICAL_DATA_LIVE_URL", true, "Configure HISTORICAL_DATA_LIVE_URL or upload an OHLCV archive."],
-  ["broker-data", "broker-data", "Broker Data", "BROKER_DATA_LIVE_URL", true, "Configure BROKER_DATA_LIVE_URL for an MT5, cTrader, FIX or broker API bridge."],
-  ["account-portfolio-data", "account-portfolio", "Account & Portfolio Data", "ACCOUNT_PORTFOLIO_LIVE_URL", true, "Configure ACCOUNT_PORTFOLIO_LIVE_URL or connect a broker account."],
-  ["prop-firm-rules", "prop-firm-rules", "Prop Firm Rules & Limits", "PROP_FIRM_RULES_LIVE_URL", true, "Configure PROP_FIRM_RULES_LIVE_URL or import a validated rule catalog."]
+  ["historical-data", "historical-data", "Historical Data", "HISTORICAL_DATA_LIVE_URL", true, "Configure an OHLCV archive adapter or upload historical data."],
+  ["broker-data", "broker-data", "Broker Data", "BROKER_DATA_LIVE_URL", true, "Configure an MT5, cTrader, FIX or broker API bridge."],
+  ["account-portfolio-data", "account-portfolio", "Account & Portfolio Data", "ACCOUNT_PORTFOLIO_LIVE_URL", true, "Connect a broker account or portfolio ledger adapter."],
+  ["prop-firm-rules", "prop-firm-rules", "Prop Firm Rules & Limits", "PROP_FIRM_RULES_LIVE_URL", true, "Import a validated prop firm rule catalog."]
 ];
 
 function recordSourceProbe(sources, probedAt) {
@@ -190,15 +193,19 @@ async function probeConfiguredUrl(url) {
 
 async function getMarketDataLiveProbe() {
   const url = process.env.MARKET_DATA_LIVE_URL;
-  return url ? probeConfiguredUrl(url) : null;
+  if (url) return probeConfiguredUrl(url);
+  return probeMarketDataBridge();
 }
 
-async function getLiveSourceSnapshots() {
+async function getLiveSourceSnapshots({ skipRuntimeSync = false } = {}) {
+  if (!skipRuntimeSync) await runMarketDataRuntimeSync();
   let cot;
   try { cot = readCotCache(); } catch {}
+  const marketDataSnapshot = await buildMarketDataLiveSourceSnapshot();
   const snapshots = await Promise.all(liveSourceDefinitions.map(async ([id, routeSlug, name, envKey, required, configuration]) => {
+    if (id === "market-data") return marketDataSnapshot;
     const isCot = id === "institutional-cot-data";
-    const configuredUrl = process.env[envKey];
+    const configuredUrl = envKey ? process.env[envKey] : null;
     const cotReady = isCot && cot?.latestReportDate && existsSync(cotCachePath);
     const configured = Boolean(configuredUrl || cotReady);
     const modified = cotReady ? statSync(cotCachePath).mtime.toISOString() : null;
@@ -206,7 +213,7 @@ async function getLiveSourceSnapshots() {
     const status = cotReady ? "SYNCED" : probe?.ok ? "ONLINE" : configured ? "FAILED" : "NOT_CONFIGURED";
     return {
       id, routeSlug, name, category: id, subtitle: configuration,
-      provider: cotReady ? "CFTC Historical Compressed / Futures Only" : configuredUrl ? new URL(configuredUrl).host : "Not configured",
+      provider: cotReady ? "CFTC Historical Compressed / Futures Only" : configuredUrl ? new URL(configuredUrl).host : "Provider Not Connected",
       status,
       required, lastSyncAt: modified || (probe?.ok ? new Date().toISOString() : null), freshnessSeconds: cotReady ? Math.max(0, Math.round((Date.now() - statSync(cotCachePath).mtimeMs) / 1000)) : 0,
       freshness: cotReady ? `Official report ${cot.latestReportDate}` : probe?.ok ? "LIVE PROBE" : "UNAVAILABLE",
@@ -214,7 +221,8 @@ async function getLiveSourceSnapshots() {
       feedsStage: "Card 1", failureAction: required ? "block_card_1" : "reduce_confidence",
       records: cotReady ? Object.values(cot.history || {}).reduce((sum, rows) => sum + rows.length, 0) : 0,
       adapter: cotReady ? "official_cftc_cache" : probe?.ok ? "live_http_probe" : configured ? "configured_url_failed_probe" : "none",
-      configuration, envKey, httpStatus: probe?.httpStatus || null, probeError: probe?.error || null,
+      configuration, connectionLabel: envKey ? "External Adapter" : "Official Archive", envKey: null,
+      httpStatus: probe?.httpStatus || null, probeError: probe?.error || null,
       checks: {
         configured, availability: cotReady || Boolean(probe?.ok), apiValidation: cotReady || Boolean(probe?.ok),
         latency: probe ? `${probe.latencyMs} ms` : cotReady ? "ARCHIVE CACHE" : "NOT TESTED",
@@ -259,10 +267,30 @@ function startCotSync() {
 
 const routes = {
   "GET /health": () => ({ service: "cacsms-api", status: "healthy", timestamp: new Date().toISOString() }),
-  "GET /api/system/health": () => ({
-    status: "healthy", environment: "foundation", services: {
-      api: "online", database: "ready", websocket: "online", redis: "ready", rabbitmq: "ready"
-    }
+  "GET /api/system/health": async () => {
+    const database = await testDatabaseConnection();
+    const dbConfig = getDatabaseConfig();
+    return {
+      status: database.connected ? "healthy" : database.configured ? "degraded" : "healthy",
+      environment: "foundation",
+      services: {
+        api: "online",
+        database: database.connected ? "ready" : database.configured ? "error" : "not_configured",
+        websocket: "online",
+        redis: "ready",
+        rabbitmq: "ready"
+      },
+      database: { ...dbConfig, ...database },
+      runtimeSync: getLastRuntimeSyncResult()
+    };
+  },
+  "GET /api/system/runtime-sync": async () => ({
+    ...(getLastRuntimeSyncResult() || { syncedAt: null, skipped: true, reason: "not_run_yet" }),
+    autoSyncMs: Number(process.env.CACSMS_AUTO_SYNC_MS || 30000)
+  }),
+  "GET /api/system/database": async () => ({
+    ...(await testDatabaseConnection()),
+    config: getDatabaseConfig()
   }),
   "GET /api/workflow/current": () => workflow,
   "GET /api/workflow/events": () => ({ events: eventLog }),
@@ -576,6 +604,16 @@ const server = createServer(async (request, response) => {
       const message = reason instanceof Error ? reason.message : String(reason);
       if (message === "database_not_configured") return json(response, 503, { error: message });
       if (message === "provider_not_found") return json(response, 404, { error: message });
+      if (message === "duplicate_mt5_terminal_provider") {
+        return json(response, 409, {
+          error: message,
+          existingProvider: reason?.details?.existingName || null,
+          hint: reason?.details?.existingName
+            ? `Terminal already covered by ${reason.details.existingName}. Use that provider instead.`
+            : "An MT5 provider already exists for this broker, server, and environment."
+        });
+      }
+      if (message === "terminal_already_registered") return json(response, 409, { error: message, hint: "This provider already has a registered terminal." });
       return json(response, 400, { error: message });
     }
   }
@@ -684,9 +722,31 @@ const server = createServer(async (request, response) => {
       return json(response, body.draft ? 200 : 201, { accepted: true, ...payload });
     } catch (reason) {
       const message = reason instanceof Error ? reason.message : String(reason);
-      if (message === "database_not_configured") return json(response, 503, { error: message });
+      const details = reason?.details;
+      if (message === "database_not_configured") {
+        return json(response, 503, {
+          error: message,
+          hint: details?.message || "Copy .env.example to .env, run npm run db:setup, then restart npm run dev."
+        });
+      }
+      if (message === "database_connection_failed") {
+        return json(response, 503, {
+          error: message,
+          hint: details?.hint || details?.message || "PostgreSQL connection failed."
+        });
+      }
       if (message === "duplicate_provider_name") return json(response, 409, { error: message });
       if (message === "duplicate_provider_url") return json(response, 409, { error: message });
+      if (message === "duplicate_mt5_terminal_provider") {
+        return json(response, 409, {
+          error: message,
+          existingProvider: reason?.details?.existingName || null,
+          existingCode: reason?.details?.existingCode || null,
+          hint: reason?.details?.existingName
+            ? `An MT5 provider already exists for this broker, server, and environment (${reason.details.existingName}). Use the existing provider instead of creating a duplicate.`
+            : "An MT5 provider already exists for this broker, server, and environment."
+        });
+      }
       return json(response, 400, { error: message });
     }
   }
@@ -783,4 +843,21 @@ server.on("upgrade", (request, socket) => {
   socket.write(Buffer.concat([header, Buffer.from(payload)]));
 });
 
-server.listen(port, () => console.log(`CACSMS API listening on http://localhost:${port}`));
+server.listen(port, async () => {
+  console.log(`CACSMS API listening on http://localhost:${port}`);
+  const database = await testDatabaseConnection();
+  if (database.connected) {
+    console.log(`[database] connected as ${database.user}@${database.database}`);
+  } else if (database.configured) {
+    console.warn(`[database] ${database.message}${database.hint ? ` — ${database.hint}` : ""}`);
+  } else {
+    console.warn("[database] DATABASE_URL not set — provider registration and persistence are disabled.");
+  }
+  startMarketDataRuntimeSyncLoop({
+    onSync: async () => {
+      const sources = await getLiveSourceSnapshots({ skipRuntimeSync: true });
+      recordSourceProbe(sources, new Date().toISOString());
+    }
+  });
+  console.log(`[runtime-sync] automatic MT5 sync every ${Number(process.env.CACSMS_AUTO_SYNC_MS || 30000)}ms`);
+});

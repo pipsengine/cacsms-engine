@@ -3,6 +3,7 @@ import { isDatabaseConfigured, query } from "./db.js";
 import { WORKFLOW_DEPENDENCY_CARDS } from "./provider-wizard-catalog.js";
 import {
   appendLog,
+  findDuplicateMt5Provider,
   getProviderById,
   insertHealth,
   insertLatency,
@@ -100,8 +101,31 @@ export async function registerTerminalForProvider(providerId, input = {}) {
   const provider = await getProviderById(providerId);
   if (!provider) throw new Error("provider_not_found");
 
+  const { rows: existingTerminals } = await query(
+    `SELECT id FROM infrastructure.mt5_terminals WHERE provider_id = $1 LIMIT 1`,
+    [providerId]
+  );
+  if (existingTerminals[0]) throw new Error("terminal_already_registered");
+
   const config = provider.config || {};
   const mt5 = config.mt5 || {};
+  const brokerName = input.brokerName || mt5.brokerName || provider.name;
+  const serverName = input.serverName || mt5.serverName || "";
+  const environment = input.environment || provider.environment || "Production";
+  const duplicate = await findDuplicateMt5Provider({ brokerName, serverName, environment }, providerId);
+  if (duplicate) {
+    const error = new Error("duplicate_mt5_terminal_provider");
+    error.details = {
+      existingId: duplicate.id,
+      existingName: duplicate.name,
+      existingCode: duplicate.provider_code,
+      brokerName,
+      serverName,
+      environment
+    };
+    throw error;
+  }
+
   const machineName = input.machineName || mt5.machineName || "LOCAL-WORKSTATION";
   const { rows: machines } = await query(
     `INSERT INTO infrastructure.machines (name, hostname, operating_system, agent_version, status, last_seen_at)
@@ -143,6 +167,9 @@ export async function registerTerminalForProvider(providerId, input = {}) {
     action: "Terminal Registered",
     message: `MT5 terminal registered for ${provider.name}`
   });
+
+  const { syncDiscoveredTerminalPaths } = await import("./ea-deployment.js");
+  await syncDiscoveredTerminalPaths({ terminalId: rows[0].id, machineId: machines[0].id });
 
   return mapTerminal({ ...rows[0], machine_name: machines[0].name, provider_name: provider.name });
 }

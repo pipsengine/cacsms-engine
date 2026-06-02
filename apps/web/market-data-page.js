@@ -7,6 +7,8 @@ import {
 } from "./market-data-provider-wizard.js";
 
 const API = "http://localhost:8080";
+const AUTO_REFRESH_MS = 30000;
+let marketDataRefreshTimer = null;
 const esc = (value) => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 const table = (headers, rows) => `<div class="mdoc-table-wrap"><table><thead><tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 
@@ -14,7 +16,9 @@ function renderMt5Sections(data) {
   const mt5 = data.mt5 || { terminals: [], machines: [], heartbeats: [], health: {}, readiness: {} };
   const providers = data.providers || [];
   const pendingProviders = providers.filter((provider) => !provider.mt5TerminalId && (provider.connectionMethod === "MT5 Bridge" || String(provider.providerType || provider.type || "").includes("MT5")));
-  const onboarding = (mt5.onboarding || [])[0];
+  const onboarding = (mt5.onboarding || []).find((item) => item.terminalId)
+    || (mt5.onboarding || []).find((item) => (item.steps || []).some((step) => step.status === "completed"))
+    || (mt5.onboarding || [])[0];
   const steps = onboarding?.steps || [];
   const formatAge = (value) => {
     if (!value) return "—";
@@ -175,7 +179,7 @@ async function openRegistrationToken(providerId, terminalId, refresh) {
 }
 
 export function renderMarketDataOperationsCenter(data, notification = null) {
-  const header = `<header class="mdoc-header"><div><p class="eyebrow">MARKET INTELLIGENCE / MARKET DATA OPERATIONS</p><h1>Market Data Providers</h1><p class="subtitle">Manage, validate and monitor all market data providers powering CACSMS Engine.</p><div class="mdoc-badges">${[["Connected Providers", data.header.connectedProviders], ["Healthy Providers", data.header.healthyProviders], ["Live Symbols", data.header.liveSymbols], ["Workflow Status", data.header.workflowStatus], ["Data Confidence", data.header.dataConfidence]].map(([label, value]) => `<span><small>${label}</small><strong>${esc(value)}</strong></span>`).join("")}</div></div><div class="mdoc-header-actions"><button class="mdoc-button primary mdoc-add-provider-btn" data-action="add-provider">Add Provider</button><button class="mdoc-button secondary" data-action="test-all">Test Providers</button><button class="mdoc-button secondary" data-action="sync">Sync Symbols</button><button class="mdoc-button secondary" data-action="refresh">Refresh</button><button class="mdoc-button secondary" data-action="export">Export Status</button></div></header>`;
+  const header = `<header class="mdoc-header"><div><p class="eyebrow">MARKET INTELLIGENCE / MARKET DATA OPERATIONS</p><h1>Market Data Providers</h1><p class="subtitle">Automatic validation and sync every 30 seconds. Manual actions are optional overrides.</p><div class="mdoc-badges">${[["Connected Providers", data.header.connectedProviders], ["Healthy Providers", data.header.healthyProviders], ["Live Symbols", data.header.liveSymbols], ["Workflow Status", data.header.workflowStatus], ["Data Confidence", data.header.dataConfidence]].map(([label, value]) => `<span><small>${label}</small><strong>${esc(value)}</strong></span>`).join("")}</div></div><div class="mdoc-header-actions"><button class="mdoc-button primary mdoc-add-provider-btn" data-action="add-provider">Add Provider</button><button class="mdoc-button secondary" data-action="test-all">Test Providers</button><button class="mdoc-button secondary" data-action="sync">Sync Symbols</button><button class="mdoc-button secondary" data-action="refresh">Refresh</button><button class="mdoc-button secondary" data-action="export">Export Status</button></div></header>`;
 
   if (data.empty) {
     return `<section class="mdoc-dashboard">${header}${renderEmptyState()}${renderSuccessToast(notification)}</section>`;
@@ -208,7 +212,10 @@ async function loadDashboard() {
 async function request(path, init = {}) {
   const response = await fetch(`${API}${path}`, { headers: { "Content-Type": "application/json" }, ...init });
   const payload = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(payload.error ? String(payload.error).replaceAll("_", " ") : `Request failed (${response.status})`);
+  if (!response.ok) {
+    const detail = payload.hint || payload.message || (payload.error ? String(payload.error).replaceAll("_", " ") : `Request failed (${response.status})`);
+    throw new Error(detail);
+  }
   return payload;
 }
 
@@ -536,6 +543,11 @@ export function bindMarketDataOperationsCenter() {
     root.innerHTML = renderMarketDataOperationsCenter(await loadDashboard(), notification);
     bindMarketDataOperationsCenter();
   };
+
+  if (marketDataRefreshTimer) clearInterval(marketDataRefreshTimer);
+  marketDataRefreshTimer = setInterval(() => {
+    if (!document.hidden) refresh();
+  }, AUTO_REFRESH_MS);
 
   root.querySelectorAll('[data-action="add-provider"]').forEach((button) => {
     button.addEventListener("click", () => openAddProviderModal(refresh));

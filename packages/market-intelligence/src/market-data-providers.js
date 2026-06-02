@@ -30,6 +30,8 @@
   validateProviderInput
 } from "./market-data-repository.js";
 import { isDatabaseConfigured } from "./db.js";
+import { probeMarketDataBridge } from "./market-data-source-validation.js";
+import { runMarketDataRuntimeSync } from "./runtime-sync.js";
 import {
   MT5_DEFAULT_SYMBOLS,
   MT5_KNOWN_TERMINALS,
@@ -297,6 +299,7 @@ function buildEmptyDashboard(reason = "empty") {
 }
 
 export async function getMarketDataOperationsDashboard({ liveProbe = null } = {}) {
+  await runMarketDataRuntimeSync({ liveProbe, skipThrottle: false });
   if (!isDatabaseConfigured()) return buildEmptyDashboard("database_not_configured");
   const [providersRaw, healthMap, coverageRows, symbols, ticks, logs] = await Promise.all([
     listProviders(),
@@ -588,7 +591,7 @@ export async function testProviderConfiguration(input, { liveProbe = null, probe
       ? "Connection successful"
       : result === "WARNING"
         ? bridgeOffline
-          ? "Configuration valid. Live MT5 bridge unavailable — connect MARKET_DATA_LIVE_URL to verify pricing."
+          ? "Configuration valid. Connect your MT5 terminal and complete onboarding to verify live pricing."
           : "Connection passed with warnings"
         : probe.reason || "Connection failed",
     diagnostics
@@ -610,8 +613,10 @@ async function probeConfiguration(input, { liveProbe, probeFn } = {}) {
   const target = buildProbeTarget(input);
   const method = input.connectionMethod;
   if (method === "MT5 Bridge") {
+    const bridgeProbe = await probeMarketDataBridge();
+    if (bridgeProbe.ok) return bridgeProbe;
     const probe = liveProbe || (target && probeFn ? await probeFn(target) : null);
-    return probe || { ok: Boolean(liveProbe?.ok), latencyMs: liveProbe?.latencyMs ?? null, reason: "mt5_bridge_not_connected" };
+    return probe || bridgeProbe;
   }
   if (probeFn && target) return probeFn(target);
   if (!target) return { ok: false, latencyMs: null, reason: "url_not_configured" };

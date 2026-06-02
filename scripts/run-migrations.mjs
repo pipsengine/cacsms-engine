@@ -1,7 +1,10 @@
 import { readFileSync, readdirSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import pg from "pg";
+import { loadEnvFile } from "./load-env.mjs";
+
+loadEnvFile();
 
 const migrationsDir = fileURLToPath(new URL("../database/migrations/", import.meta.url));
 const files = readdirSync(migrationsDir).filter((name) => name.endsWith(".sql")).sort();

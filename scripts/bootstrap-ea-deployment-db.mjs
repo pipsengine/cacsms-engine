@@ -1,6 +1,9 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import pg from "pg";
+import { loadEnvFile } from "./load-env.mjs";
+
+loadEnvFile();
 
 const sqlPath = fileURLToPath(new URL("../database/bootstrap/ea-deployment-postgres.sql", import.meta.url));
 const sql = readFileSync(sqlPath, "utf8");

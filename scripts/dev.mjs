@@ -1,8 +1,11 @@
 import { spawn } from "node:child_process";
 import { createServer } from "node:net";
+import { loadEnvFile } from "./load-env.mjs";
+
+loadEnvFile();
 
 const services = [
-  { name: "WEB", port: Number(process.env.PORT || 4173), entry: "apps/web/server.mjs" },
+  { name: "WEB", port: Number(process.env.WEB_PORT || process.env.PORT || 4173), entry: "apps/web/server.mjs" },
   { name: "API", port: Number(process.env.API_PORT || 8080), entry: "apps/api/src/server.mjs" }
 ];
 const children = [];
@@ -35,7 +38,10 @@ for (const service of services) {
 
 console.log("[CACSMS] Starting foundation system...");
 for (const service of services) {
-  const child = spawn(process.execPath, [service.entry], { stdio: ["ignore", "pipe", "pipe"] });
+  const child = spawn(process.execPath, [service.entry], {
+    stdio: ["ignore", "pipe", "pipe"],
+    env: { ...process.env }
+  });
   children.push(child);
   child.stdout.on("data", (chunk) => process.stdout.write(`[${service.name}] ${chunk}`));
   child.stderr.on("data", (chunk) => process.stderr.write(`[${service.name}] ${chunk}`));

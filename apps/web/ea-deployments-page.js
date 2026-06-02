@@ -1,11 +1,24 @@
 const API = "http://localhost:8080";
+const AUTO_REFRESH_MS = 30000;
+let eaDeploymentRefreshTimer = null;
 const esc = (value) => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+const installIdFromPath = (dataPath) => {
+  if (!dataPath) return "";
+  const parts = String(dataPath).split(/[/\\]/).filter(Boolean);
+  return parts.at(-1) || "";
+};
+const resolveInstallId = (row) => row.terminalInstallId || installIdFromPath(row.dataPath);
 const table = (headers, rows) => `<div class="mdoc-table-wrap"><table><thead><tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr></thead><tbody>${rows.length ? rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${headers.length}">No records</td></tr>`}</tbody></table></div>`;
 
 let dashboardState = null;
 
 async function request(path, init = {}) {
-  const response = await fetch(`${API}${path}`, { headers: { "Content-Type": "application/json" }, cache: "no-store", ...init });
+  let response;
+  try {
+    response = await fetch(`${API}${path}`, { headers: { "Content-Type": "application/json" }, cache: "no-store", ...init });
+  } catch {
+    throw new Error("API unavailable. Start the backend with npm run dev and confirm http://localhost:8080/api/system/health responds.");
+  }
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(payload.error ? String(payload.error).replaceAll("_", " ") : `Request failed (${response.status})`);
   return payload;
@@ -20,7 +33,10 @@ function renderPage(data) {
   const terminals = data.terminals || [];
   const discovered = data.discovered || [];
   const machineOptions = machines.map((row) => `<option value="${esc(row.id)}">${esc(row.name)} (${esc(row.status)})</option>`).join("");
-  const terminalOptions = terminals.map((row) => `<option value="${esc(row.id)}" data-machine-id="${esc(row.machineId || "")}">${esc(row.terminalName)}${row.eaVersion ? ` — v${esc(row.eaVersion)}` : ""}</option>`).join("");
+  const terminalOptions = terminals.map((row) => {
+    const installId = resolveInstallId(row);
+    return `<option value="${esc(row.id)}" data-machine-id="${esc(row.machineId || "")}" data-install-id="${esc(installId)}">${esc(row.terminalName)}${installId ? ` — ${esc(installId)}` : ""}${row.eaVersion ? ` — v${esc(row.eaVersion)}` : ""}</option>`;
+  }).join("");
   const discoveredHtml = discovered.length
     ? `<ul class="mdoc-list">${discovered.map((row) => `<li><strong>${esc(row.terminalInstallId)}</strong> — ${esc(row.dataPath)}</li>`).join("")}</ul>`
     : `<p class="mdoc-help">No local MT5 terminals detected. Install MT5 on this machine or run the machine agent on the trading VPS.</p>`;
@@ -41,6 +57,15 @@ function renderPage(data) {
         <button class="mdoc-button secondary" data-action="rollback-ea">Rollback EA</button>
         <button class="mdoc-button secondary" data-action="discover-paths">Detect MT5 Paths</button>
       </div>
+    </section>
+
+    <section class="mdoc-panel"><div class="mdoc-panel-head"><h2>Registered MT5 Terminals</h2><b>${terminals.length} RECORDS</b></div>
+      ${table(["Terminal","Install ID","Data Path","EA Status"], terminals.map((row) => [
+        esc(row.terminalName),
+        esc(resolveInstallId(row) || "Not linked"),
+        esc(row.dataPath || "—"),
+        `<b class="mdoc-state ${esc(String(row.eaStatus || "disconnected").toLowerCase())}">${esc(row.eaStatus || "DISCONNECTED")}</b>`
+      ]))}
     </section>
 
     <section class="mdoc-panel"><div class="mdoc-panel-head"><h2>Detected MT5 Data Folders</h2><b>${discovered.length} FOUND</b></div>${discoveredHtml}</section>
@@ -88,6 +113,11 @@ async function runAction(action) {
 }
 
 function bindPage() {
+  if (eaDeploymentRefreshTimer) clearInterval(eaDeploymentRefreshTimer);
+  eaDeploymentRefreshTimer = setInterval(() => {
+    if (!document.hidden) mountEaDeploymentsPage();
+  }, AUTO_REFRESH_MS);
+
   document.querySelector('[data-action="refresh"]')?.addEventListener("click", mountEaDeploymentsPage);
   document.querySelector('[data-action="deploy-ea"]')?.addEventListener("click", () => runAction("deploy").catch((error) => alert(error.message)));
   document.querySelector('[data-action="update-ea"]')?.addEventListener("click", () => runAction("update").catch((error) => alert(error.message)));

@@ -2,9 +2,9 @@ services:
   postgres:
     image: timescale/timescaledb-ha:pg16
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-cacsms}
+      POSTGRES_DB: ${POSTGRES_DB:-db_cacsms-engine}
       POSTGRES_USER: ${POSTGRES_USER:-cacsms}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-replace-me}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-Adm1n.c0m}
     ports: ["5432:5432"]
     volumes:
       - postgres-data:/var/lib/postgresql/data

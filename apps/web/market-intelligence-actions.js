@@ -29,7 +29,7 @@ const postActions = [
   [["sync rules", "validate prop rules", "validate rules", "validate all rules", "run compliance scan", "refresh challenge objectives", "arm restriction windows"], "/api/market-intelligence/prop-firm-rules/sync"],
   [["add prop firm"], "/api/market-intelligence/prop-firm-rules"],
   [["import rules"], "/api/market-intelligence/prop-firm-rules/import"],
-  [["run validation"], "/api/market-intelligence/data-quality-gate/run"],
+  [["run validation", "run quality check"], "/api/market-intelligence/data-quality-gate/run"],
   [["refresh sources"], "/api/market-intelligence/data-quality-gate/refresh"],
   [["recalculate score", "recalculate quality score"], "/api/market-intelligence/data-quality-gate/recalculate"],
   [["sync"], "/api/market-intelligence/data-sources/sync"]
@@ -166,6 +166,7 @@ function handledByPage(button) {
 
 async function act(button) {
   if (handledByPage(button)) return;
+  if (button.hasAttribute("data-live-test") || button.hasAttribute("data-live-refresh")) return;
   const label = normalize(button.textContent);
   if (!label) return;
   if (includesAny(label, ["open data quality gate"])) return location.assign("/workspace/market-intelligence/data-quality-gate");
