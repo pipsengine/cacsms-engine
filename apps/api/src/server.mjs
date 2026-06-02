@@ -3,12 +3,63 @@ import { spawn } from "node:child_process";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
+
+function loadEnvFile() {
+  const envPath = fileURLToPath(new URL("../../../.env", import.meta.url));
+  if (!existsSync(envPath)) return;
+  for (const line of readFileSync(envPath, "utf8").split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const index = trimmed.indexOf("=");
+    if (index === -1) continue;
+    const key = trimmed.slice(0, index).trim();
+    const value = trimmed.slice(index + 1).trim();
+    if (!process.env[key]) process.env[key] = value;
+  }
+}
+
+loadEnvFile();
 import { ASSET_SCORES, ASSET_UNIVERSE, MOCK_WORKFLOW, WORKFLOW_EVENTS } from "../../../packages/workflow/src/mock-data.js";
 import { createCardOneTestReport } from "../../../packages/workflow/src/card-one.js";
 import { WORKFLOW_CARD_QUEUE } from "../../../packages/workflow/src/index.js";
 import { evaluateDataQualityGate } from "../../../packages/market-intelligence/src/data-sources.js";
 import { DATA_QUALITY_GATE_RULES, getDataQualityGateDashboard } from "../../../packages/market-intelligence/src/data-quality-gate.js";
 import { createCotSyncStatus, evaluateInstitutionalCot, getCotComparison, getInstitutionalCotDashboard } from "../../../packages/market-intelligence/src/institutional-cot.js";
+import {
+  createSourceProvider,
+  deleteSourceProvider,
+  exportSourceConfiguration,
+  getSourceConfigurationDashboard,
+  getSourceHealth,
+  getSourceLogs,
+  getSourceProviders,
+  syncAllSourceProviders,
+  syncSourceProvider,
+  testAllSourceProviders,
+  testSourceProvider,
+  updateSourceProvider
+} from "../../../packages/market-intelligence/src/source-configuration.js";
+import {
+  createMarketDataProvider,
+  deleteMarketDataProvider,
+  disableMarketDataProvider,
+  enableMarketDataProvider,
+  exportMarketDataStatus,
+  exportMarketDataStatusCsv,
+  getMarketDataConfidenceDashboard,
+  getMarketDataHealthDashboard,
+  getMarketDataLatencyDashboard,
+  getMarketDataLogsDashboard,
+  getMarketDataOperationsDashboard,
+  getMarketDataProviderById,
+  getMarketDataSymbolsDashboard,
+  syncAllMarketDataProviderSymbols,
+  syncMarketDataProviderSymbols,
+  syncMarketDataSymbols,
+  testAllMarketDataProviders,
+  testMarketDataProvider,
+  updateMarketDataProvider
+} from "../../../packages/market-intelligence/src/market-data-providers.js";
 
 const port = Number(process.env.API_PORT || 8080);
 const root = fileURLToPath(new URL("../../../", import.meta.url));
@@ -25,10 +76,26 @@ function json(response, status, body) {
   response.writeHead(status, {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
     "Content-Type": "application/json"
   });
   response.end(JSON.stringify(body));
+}
+
+function readBody(request) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    request.on("data", (chunk) => chunks.push(chunk));
+    request.on("end", () => {
+      if (!chunks.length) return resolve({});
+      try {
+        resolve(JSON.parse(Buffer.concat(chunks).toString("utf8")));
+      } catch (reason) {
+        reject(reason);
+      }
+    });
+    request.on("error", reject);
+  });
 }
 
 function record(type, payload = {}) {
@@ -72,6 +139,11 @@ async function probeConfiguredUrl(url) {
   } catch (reason) {
     return { ok: false, httpStatus: null, latencyMs: Math.round(performance.now() - started), error: reason.message };
   }
+}
+
+async function getMarketDataLiveProbe() {
+  const url = process.env.MARKET_DATA_LIVE_URL;
+  return url ? probeConfiguredUrl(url) : null;
 }
 
 async function getLiveSourceSnapshots() {
@@ -167,12 +239,21 @@ const routes = {
   "GET /api/market-intelligence/data-quality-gate/events": () => ({ events: [], source_mode: "LIVE_ADAPTERS_ONLY" }),
   "GET /api/market-intelligence/data-quality-gate/export": () => ({ status: "ready", format: "csv", rules: DATA_QUALITY_GATE_RULES.length }),
   "GET /api/market-intelligence/feed-events": () => ({ events: [] })
-  ,"GET /api/market-data/providers": () => liveSourcePayload("market-data")
-  ,"GET /api/market-data/providers/health": () => ({ providers: [] })
-  ,"GET /api/market-data/providers/latency": () => ({ averageLatencyMs: null, providers: [] })
-  ,"GET /api/market-data/providers/coverage": () => ({ symbolsOnline: 0, assets: [] })
-  ,"GET /api/market-data/providers/events": () => ({ events: [] })
-  ,"GET /api/market-data/providers/quality": () => liveSourcePayload("market-data")
+  ,"GET /api/market-data/providers": async () => getMarketDataOperationsDashboard({ liveProbe: await getMarketDataLiveProbe() })
+  ,"GET /api/market-data/providers/health": async () => getMarketDataHealthDashboard({ liveProbe: await getMarketDataLiveProbe() })
+  ,"GET /api/market-data/providers/latency": async () => getMarketDataLatencyDashboard({ liveProbe: await getMarketDataLiveProbe() })
+  ,"GET /api/market-data/providers/symbols": async () => getMarketDataSymbolsDashboard({ liveProbe: await getMarketDataLiveProbe() })
+  ,"GET /api/market-data/providers/logs": () => getMarketDataLogsDashboard()
+  ,"GET /api/market-data/providers/confidence": async () => getMarketDataConfidenceDashboard({ liveProbe: await getMarketDataLiveProbe() })
+  ,"GET /api/market-data/providers/coverage": async () => {
+    const dashboard = await getMarketDataOperationsDashboard({ liveProbe: await getMarketDataLiveProbe() });
+    return { symbolsOnline: dashboard.symbols, assets: dashboard.coverage };
+  }
+  ,"GET /api/market-data/providers/events": () => getMarketDataLogsDashboard()
+  ,"GET /api/market-data/providers/export": async () => {
+    const payload = await exportMarketDataStatus({ liveProbe: await getMarketDataLiveProbe() });
+    return { format: "csv", csv: exportMarketDataStatusCsv(payload), ...payload };
+  }
   ,"GET /api/market-intelligence/news-sentiment/dashboard": () => liveSourcePayload("news-sentiment")
   ,"GET /api/market-intelligence/news-sentiment/headlines": () => ({ headlines: [] })
   ,"GET /api/market-intelligence/news-sentiment/sources": () => ({ sources: [] })
@@ -219,6 +300,11 @@ const routes = {
   ,"GET /api/market-intelligence/prop-firm-rules/compliance": () => ({ accounts: [] })
   ,"GET /api/market-intelligence/prop-firm-rules/breach-risk": () => ({ alerts: [] })
   ,"GET /api/market-intelligence/prop-firm-rules/export": () => ({ status: "unavailable", format: "csv", rules: 0 })
+  ,"GET /api/source-configuration": async () => getSourceConfigurationDashboard(await getLiveSourceSnapshots())
+  ,"GET /api/source-configuration/providers": () => getSourceProviders()
+  ,"GET /api/source-configuration/health": async () => getSourceHealth(await getLiveSourceSnapshots())
+  ,"GET /api/source-configuration/logs": () => getSourceLogs()
+  ,"GET /api/source-configuration/export": () => exportSourceConfiguration()
 };
 
 const actions = {
@@ -297,6 +383,117 @@ const server = createServer(async (request, response) => {
   if (request.method === "DELETE" && url.pathname.startsWith("/api/market-intelligence/broker-data/sources/")) {
     const id = url.pathname.split("/").at(-1);
     return json(response, 200, { type: "broker_data.source.disconnect.accepted", status: "DISCONNECTING", source_id: id });
+  }
+  if (url.pathname.startsWith("/api/source-configuration/provider")) {
+    const providerId = url.pathname.split("/").at(-1);
+    const liveSnapshots = await getLiveSourceSnapshots();
+    const probeContext = { liveSnapshots, probeFn: probeConfiguredUrl };
+    try {
+      if (request.method === "POST" && url.pathname === "/api/source-configuration/provider") {
+        const body = await readBody(request);
+        return json(response, 201, { accepted: true, provider: createSourceProvider(body) });
+      }
+      if (request.method === "PUT" && providerId && providerId !== "provider") {
+        const body = await readBody(request);
+        return json(response, 200, { accepted: true, provider: updateSourceProvider(providerId, body) });
+      }
+      if (request.method === "DELETE" && providerId && providerId !== "provider") {
+        return json(response, 200, { accepted: true, ...deleteSourceProvider(providerId) });
+      }
+    } catch (reason) {
+      return json(response, reason.message === "provider_not_found" ? 404 : 400, { error: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/source-configuration/test") {
+    const body = await readBody(request);
+    const liveSnapshots = await getLiveSourceSnapshots();
+    try {
+      return json(response, 200, { accepted: true, result: await testSourceProvider(body.providerId, { liveSnapshots, probeFn: probeConfiguredUrl }) });
+    } catch (reason) {
+      return json(response, reason.message === "provider_not_found" ? 404 : 400, { error: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/source-configuration/test-all") {
+    return json(response, 200, { accepted: true, ...(await testAllSourceProviders({ liveSnapshots: await getLiveSourceSnapshots(), probeFn: probeConfiguredUrl })) });
+  }
+  if (request.method === "POST" && url.pathname === "/api/source-configuration/sync") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, { accepted: true, sync: await syncSourceProvider(body.providerId, { liveSnapshots: await getLiveSourceSnapshots() }) });
+    } catch (reason) {
+      return json(response, reason.message === "provider_not_found" ? 404 : 400, { error: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/source-configuration/sync-all") {
+    return json(response, 200, { accepted: true, ...(await syncAllSourceProviders({ liveSnapshots: await getLiveSourceSnapshots() })) });
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-data/providers/test") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, { accepted: true, result: await testMarketDataProvider(body.providerId, { liveProbe: await getMarketDataLiveProbe(), probeFn: probeConfiguredUrl }) });
+    } catch (reason) {
+      return json(response, reason.message === "provider_not_found" ? 404 : 400, { error: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-data/providers/sync") {
+    return json(response, 200, { accepted: true, sync: await syncMarketDataSymbols({ liveProbe: await getMarketDataLiveProbe(), probeFn: probeConfiguredUrl }) });
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-data/providers") {
+    try {
+      const body = await readBody(request);
+      return json(response, 201, { accepted: true, provider: await createMarketDataProvider(body) });
+    } catch (reason) {
+      const message = reason instanceof Error ? reason.message : String(reason);
+      if (message === "database_not_configured") return json(response, 503, { error: message });
+      return json(response, 400, { error: message });
+    }
+  }
+  if (url.pathname.startsWith("/api/market-data/providers/")) {
+    const segments = url.pathname.split("/");
+    const providerId = segments[4];
+    const action = segments[5];
+    const reserved = new Set(["health", "latency", "symbols", "logs", "confidence", "coverage", "events", "quality", "export", "test", "test-all", "sync", "sync-all-symbols"]);
+    if (reserved.has(providerId)) {
+      // fall through to 404 below unless handled earlier via routes map
+    } else {
+      const liveProbe = await getMarketDataLiveProbe();
+      const probeContext = { liveProbe, probeFn: probeConfiguredUrl };
+      try {
+        if (request.method === "GET" && providerId && !action) {
+          return json(response, 200, await getMarketDataProviderById(providerId));
+        }
+        if (request.method === "PUT" && providerId && !action) {
+          const body = await readBody(request);
+          return json(response, 200, { accepted: true, provider: await updateMarketDataProvider(providerId, body) });
+        }
+        if (request.method === "DELETE" && providerId && !action) {
+          return json(response, 200, { accepted: true, ...(await deleteMarketDataProvider(providerId)) });
+        }
+        if (request.method === "POST" && providerId && action === "test") {
+          return json(response, 200, { accepted: true, result: await testMarketDataProvider(providerId, probeContext) });
+        }
+        if (request.method === "POST" && providerId && action === "sync-symbols") {
+          return json(response, 200, { accepted: true, sync: await syncMarketDataProviderSymbols(providerId, probeContext) });
+        }
+        if (request.method === "POST" && providerId && action === "enable") {
+          return json(response, 200, { accepted: true, provider: await enableMarketDataProvider(providerId) });
+        }
+        if (request.method === "POST" && providerId && action === "disable") {
+          return json(response, 200, { accepted: true, provider: await disableMarketDataProvider(providerId) });
+        }
+      } catch (reason) {
+        const message = reason instanceof Error ? reason.message : String(reason);
+        if (message === "database_not_configured") return json(response, 503, { error: message });
+        if (message === "provider_not_found") return json(response, 404, { error: message });
+        return json(response, 400, { error: message });
+      }
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-data/providers/test-all") {
+    return json(response, 200, { accepted: true, ...(await testAllMarketDataProviders({ liveProbe: await getMarketDataLiveProbe(), probeFn: probeConfiguredUrl })) });
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-data/providers/sync-all-symbols") {
+    return json(response, 200, { accepted: true, ...(await syncAllMarketDataProviderSymbols({ liveProbe: await getMarketDataLiveProbe(), probeFn: probeConfiguredUrl })) });
   }
   if (request.method === "POST" && url.pathname === "/api/workflow/cards/1/test-live") {
     return json(response, 200, { accepted: true, event: await actions[url.pathname]() });

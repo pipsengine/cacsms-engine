@@ -1,5 +1,7 @@
 @import "../styles.css";
 @import "../workflow.css";
 @import "../readability.css";
+@import "../source-configuration.css";
+@import "../market-data.css";
 
 body { background: #f8fafc; color: #0f172a; }

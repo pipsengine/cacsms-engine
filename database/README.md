@@ -9,6 +9,8 @@ psql "$DATABASE_URL" -f database/migrations/001_foundation.sql
 psql "$DATABASE_URL" -f database/migrations/002_level_1_architecture.sql
 psql "$DATABASE_URL" -f database/migrations/003_operational_workflow_foundation.sql
 psql "$DATABASE_URL" -f database/migrations/004_market_intelligence_data_sources.sql
+psql "$DATABASE_URL" -f database/migrations/016_market_data_operations.sql
+psql "$DATABASE_URL" -f database/migrations/017_market_data_provider_fields.sql
 psql "$DATABASE_URL" -f database/seeds/001_asset_universe.sql
 psql "$DATABASE_URL" -f database/seeds/002_operational_defaults.sql
 ```

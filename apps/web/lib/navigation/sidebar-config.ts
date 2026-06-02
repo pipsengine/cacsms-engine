@@ -24,24 +24,22 @@ export const sidebarFunctions: SidebarFunction[] = [
   { id: "executive", icon: "LayoutDashboard", title: "Executive Command Center", status: "LIVE", defaultExpanded: true, children: [page("executive-dashboard", "Executive Dashboard", "/"), page("executive-workflow-dashboard", "Workflow Dashboard", "/executive-command-center/workflow-dashboard", "workflow.cards.test")] },
   { id: "workflow", icon: "Workflow", title: "End-to-End Workflow", status: "LIVE", children: [page("workflow-dashboard", "Workflow Dashboard", "/workflow/end-to-end")] },
   {
-    id: "data-sources-validation", icon: "ClipboardCheck", title: "Data Sources Validation", status: "WARNING", defaultExpanded: true,
-    children: [
-      page("data-sources", "Data Sources & Feed Health", "/workspace/market-intelligence/data-sources", "market-intelligence:view"),
-      page("market-data", "Market Data Providers", "/workspace/market-intelligence/market-data", "market-intelligence:view"),
-      page("news-sentiment", "News & Sentiment Sources", "/workspace/market-intelligence/news-sentiment", "market-intelligence:view"),
-      page("economic-calendar", "Economic Calendar", "/workspace/market-intelligence/economic-calendar", "market-intelligence:view"),
-      page("social-sentiment", "Social & Community Sentiment", "/workspace/market-intelligence/social-sentiment", "market-intelligence:view"),
-      page("institutional-cot", "Institutional / COT Data", "/workspace/market-intelligence/institutional-cot", "market-intelligence:view"),
-      page("historical-data", "Historical Data", "/workspace/market-intelligence/historical-data", "market_intelligence.historical_data.view"),
-      page("broker-data", "Broker Data", "/workspace/market-intelligence/broker-data", "market-intelligence:view"),
-      page("account-portfolio", "Account Portfolio", "/workspace/market-intelligence/account-portfolio", "market_intelligence.account_portfolio.view"),
-      page("prop-firm-rules", "Prop Firm Rules", "/workspace/market-intelligence/prop-firm-rules", "market_intelligence.prop_firm_rules.view"),
-      page("data-quality-gate", "Data Quality Gate", "/workspace/market-intelligence/data-quality-gate", "market_intelligence.data_quality_gate.view")
-    ]
-  },
-  {
     id: "market-intelligence", icon: "Radar", title: "Market Intelligence Center", status: "READY", defaultExpanded: true,
-    children: [page("intelligence-dashboard", "Intelligence Gathering Dashboard", "/workspace/market-intelligence/dashboard", "market-intelligence:view")]
+    children: [
+      page("intelligence-dashboard", "Intelligence Gathering Dashboard", "/workspace/market-intelligence/dashboard", "market-intelligence:view"),
+      page("data-sources-validation", "Data Sources Validation", "/workspace/market-intelligence/data-sources", "market-intelligence:view"),
+      page("source-configuration", "Source Configuration Center", "/workspace/market-intelligence/source-configuration", "market-intelligence:admin"),
+      page("market-data-mi", "Market Data Providers", "/workspace/market-intelligence/market-data", "market-intelligence:view"),
+      page("news-sentiment-mi", "News & Sentiment Sources", "/workspace/market-intelligence/news-sentiment", "market-intelligence:view"),
+      page("economic-calendar-mi", "Economic Calendar", "/workspace/market-intelligence/economic-calendar", "market-intelligence:view"),
+      page("social-sentiment-mi", "Social & Community Sentiment", "/workspace/market-intelligence/social-sentiment", "market-intelligence:view"),
+      page("institutional-cot-mi", "Institutional / COT Data", "/workspace/market-intelligence/institutional-cot", "market-intelligence:view"),
+      page("historical-data-mi", "Historical Data", "/workspace/market-intelligence/historical-data", "market_intelligence.historical_data.view"),
+      page("broker-data-mi", "Broker Data", "/workspace/market-intelligence/broker-data", "market-intelligence:view"),
+      page("account-portfolio-mi", "Account Portfolio", "/workspace/market-intelligence/account-portfolio", "market_intelligence.account_portfolio.view"),
+      page("prop-firm-rules-mi", "Prop Firm Rules", "/workspace/market-intelligence/prop-firm-rules", "market_intelligence.prop_firm_rules.view"),
+      page("data-quality-gate-mi", "Data Quality Gate", "/workspace/market-intelligence/data-quality-gate", "market_intelligence.data_quality_gate.view")
+    ]
   },
   { id: "asset-scanner", icon: "ScanSearch", title: "20-Asset Universe Scanner", children: [page("scanner-dashboard", "Scanner Dashboard", "/workspace/asset-scanner/dashboard")] },
   { id: "market-analysis", icon: "LineChart", title: "Market Analysis", children: [page("analysis-dashboard", "Analysis Dashboard", "/workspace/market-analysis/dashboard")] },

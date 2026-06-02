@@ -1,0 +1,1038 @@
+{
+  "version": 1,
+  "environment": "foundation",
+  "updatedAt": "2026-06-01T20:27:34.823Z",
+  "providers": [
+    {
+      "id": "src-market-data",
+      "sourceKey": "market-data",
+      "sourceLabel": "Market Data",
+      "category": "market_data",
+      "providerName": "MT5",
+      "providerType": "API",
+      "apiUrl": "",
+      "websocketUrl": "",
+      "authenticationType": "api_key",
+      "credentialRef": "MARKET_DATA_API_KEY",
+      "enabled": true,
+      "required": true,
+      "environment": "foundation",
+      "config": {}
+    },
+    {
+      "id": "src-news-sentiment",
+      "sourceKey": "news-sentiment",
+      "sourceLabel": "News & Sentiment",
+      "category": "news_sentiment",
+      "providerName": "NewsAPI",
+      "providerType": "API",
+      "apiUrl": "",
+      "websocketUrl": "",
+      "authenticationType": "api_key",
+      "credentialRef": "NEWS_SENTIMENT_API_KEY",
+      "enabled": true,
+      "required": true,
+      "environment": "foundation",
+      "config": {}
+    },
+    {
+      "id": "src-economic-calendar",
+      "sourceKey": "economic-calendar",
+      "sourceLabel": "Economic Calendar",
+      "category": "economic_calendar",
+      "providerName": "Trading Economics",
+      "providerType": "API",
+      "apiUrl": "",
+      "websocketUrl": "",
+      "authenticationType": "api_key",
+      "credentialRef": "ECONOMIC_CALENDAR_API_KEY",
+      "enabled": true,
+      "required": true,
+      "environment": "foundation",
+      "config": {}
+    },
+    {
+      "id": "src-social-sentiment",
+      "sourceKey": "social-sentiment",
+      "sourceLabel": "Social Sentiment",
+      "category": "social_sentiment",
+      "providerName": "Twitter/X",
+      "providerType": "API",
+      "apiUrl": "",
+      "websocketUrl": "",
+      "authenticationType": "api_key",
+      "credentialRef": "SOCIAL_SENTIMENT_API_KEY",
+      "enabled": true,
+      "required": false,
+      "environment": "foundation",
+      "config": {}
+    },
+    {
+      "id": "src-institutional-cot",
+      "sourceKey": "institutional-cot",
+      "sourceLabel": "Institutional COT",
+      "category": "institutional_cot",
+      "providerName": "CFTC Futures Only Reports",
+      "providerType": "Official Archive",
+      "apiUrl": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/HistoricalCompressed/index.htm",
+      "websocketUrl": "",
+      "authenticationType": "none",
+      "credentialRef": null,
+      "enabled": true,
+      "required": false,
+      "environment": "foundation",
+      "config": {
+        "reportType": "FUTURES_ONLY",
+        "syncSchedule": "Saturday 12:00am",
+        "currencyMapping": "CFTC Legacy"
+      }
+    },
+    {
+      "id": "src-historical-data",
+      "sourceKey": "historical-data",
+      "sourceLabel": "Historical Data",
+      "category": "historical_data",
+      "providerName": "MT5 History",
+      "providerType": "API",
+      "apiUrl": "",
+      "websocketUrl": "",
+      "authenticationType": "api_key",
+      "credentialRef": "HISTORICAL_DATA_API_KEY",
+      "enabled": true,
+      "required": true,
+      "environment": "foundation",
+      "config": {}
+    },
+    {
+      "id": "src-broker-data",
+      "sourceKey": "broker-data",
+      "sourceLabel": "Broker Data",
+      "category": "broker_data",
+      "providerName": "MT5",
+      "providerType": "API",
+      "apiUrl": "",
+      "websocketUrl": "",
+      "authenticationType": "api_key",
+      "credentialRef": "BROKER_DATA_API_KEY",
+      "enabled": true,
+      "required": true,
+      "environment": "foundation",
+      "config": {}
+    },
+    {
+      "id": "src-account-portfolio",
+      "sourceKey": "account-portfolio",
+      "sourceLabel": "Portfolio Data",
+      "category": "account_portfolio",
+      "providerName": "MT5 Account",
+      "providerType": "API",
+      "apiUrl": "",
+      "websocketUrl": "",
+      "authenticationType": "api_key",
+      "credentialRef": "ACCOUNT_PORTFOLIO_API_KEY",
+      "enabled": true,
+      "required": true,
+      "environment": "foundation",
+      "config": {}
+    },
+    {
+      "id": "src-prop-firm-rules",
+      "sourceKey": "prop-firm-rules",
+      "sourceLabel": "Prop Rules",
+      "category": "prop_firm_rules",
+      "providerName": "Internal Rule Database",
+      "providerType": "Internal Database",
+      "apiUrl": "",
+      "websocketUrl": "",
+      "authenticationType": "none",
+      "credentialRef": null,
+      "enabled": true,
+      "required": true,
+      "environment": "foundation",
+      "config": {
+        "supportedFirms": [
+          "FTMO",
+          "FundedNext",
+          "5ers",
+          "E8",
+          "Custom"
+        ]
+      }
+    },
+    {
+      "id": "src-market-data-1780343127539",
+      "sourceKey": "market-data",
+      "sourceLabel": "Market Data",
+      "category": "market_data",
+      "providerName": "Polygon",
+      "providerType": "API",
+      "apiUrl": "",
+      "websocketUrl": "",
+      "authenticationType": "api_key",
+      "credentialRef": "MARKET_DATA_API_KEY",
+      "enabled": true,
+      "required": true,
+      "environment": "foundation",
+      "config": {}
+    },
+    {
+      "id": "src-market-data-1780343968040",
+      "sourceKey": "market-data",
+      "sourceLabel": "Market Data",
+      "category": "market_data",
+      "providerName": "Polygon",
+      "providerType": "API",
+      "apiUrl": "",
+      "websocketUrl": "",
+      "authenticationType": "api_key",
+      "credentialRef": "MARKET_DATA_API_KEY",
+      "enabled": true,
+      "required": true,
+      "environment": "foundation",
+      "config": {}
+    },
+    {
+      "id": "src-market-data-1780343999964",
+      "sourceKey": "market-data",
+      "sourceLabel": "Market Data",
+      "category": "market_data",
+      "providerName": "Polygon",
+      "providerType": "API",
+      "apiUrl": "",
+      "websocketUrl": "",
+      "authenticationType": "api_key",
+      "credentialRef": "MARKET_DATA_API_KEY",
+      "enabled": true,
+      "required": true,
+      "environment": "foundation",
+      "config": {}
+    },
+    {
+      "id": "src-market-data-1780345545092",
+      "sourceKey": "market-data",
+      "sourceLabel": "Market Data",
+      "category": "market_data",
+      "providerName": "Polygon",
+      "providerType": "API",
+      "apiUrl": "",
+      "websocketUrl": "",
+      "authenticationType": "api_key",
+      "credentialRef": "MARKET_DATA_API_KEY",
+      "enabled": true,
+      "required": true,
+      "environment": "foundation",
+      "config": {}
+    },
+    {
+      "id": "src-market-data-1780345654807",
+      "sourceKey": "market-data",
+      "sourceLabel": "Market Data",
+      "category": "market_data",
+      "providerName": "Polygon",
+      "providerType": "API",
+      "apiUrl": "",
+      "websocketUrl": "",
+      "authenticationType": "api_key",
+      "credentialRef": "MARKET_DATA_API_KEY",
+      "enabled": true,
+      "required": true,
+      "environment": "foundation",
+      "config": {}
+    }
+  ],
+  "credentials": [
+    {
+      "id": "cred-market-data",
+      "vaultRef": "MARKET_DATA_API_KEY",
+      "sourceKey": "market-data",
+      "status": "stored_securely",
+      "lastRotatedAt": null
+    },
+    {
+      "id": "cred-news-sentiment",
+      "vaultRef": "NEWS_SENTIMENT_API_KEY",
+      "sourceKey": "news-sentiment",
+      "status": "stored_securely",
+      "lastRotatedAt": null
+    },
+    {
+      "id": "cred-economic-calendar",
+      "vaultRef": "ECONOMIC_CALENDAR_API_KEY",
+      "sourceKey": "economic-calendar",
+      "status": "stored_securely",
+      "lastRotatedAt": null
+    },
+    {
+      "id": "cred-social-sentiment",
+      "vaultRef": "SOCIAL_SENTIMENT_API_KEY",
+      "sourceKey": "social-sentiment",
+      "status": "stored_securely",
+      "lastRotatedAt": null
+    },
+    {
+      "id": "cred-historical-data",
+      "vaultRef": "HISTORICAL_DATA_API_KEY",
+      "sourceKey": "historical-data",
+      "status": "stored_securely",
+      "lastRotatedAt": null
+    },
+    {
+      "id": "cred-broker-data",
+      "vaultRef": "BROKER_DATA_API_KEY",
+      "sourceKey": "broker-data",
+      "status": "stored_securely",
+      "lastRotatedAt": null
+    },
+    {
+      "id": "cred-account-portfolio",
+      "vaultRef": "ACCOUNT_PORTFOLIO_API_KEY",
+      "sourceKey": "account-portfolio",
+      "status": "stored_securely",
+      "lastRotatedAt": null
+    }
+  ],
+  "syncJobs": [
+    {
+      "id": "sync-market-data",
+      "sourceKey": "market-data",
+      "sourceLabel": "Market Data",
+      "schedule": "0 */15 * * *",
+      "lastSyncAt": null,
+      "nextSyncAt": null,
+      "recordsImported": 0,
+      "syncDurationMs": 0,
+      "status": "IDLE"
+    },
+    {
+      "id": "sync-news-sentiment",
+      "sourceKey": "news-sentiment",
+      "sourceLabel": "News & Sentiment",
+      "schedule": "0 */15 * * *",
+      "lastSyncAt": null,
+      "nextSyncAt": null,
+      "recordsImported": 0,
+      "syncDurationMs": 0,
+      "status": "IDLE"
+    },
+    {
+      "id": "sync-economic-calendar",
+      "sourceKey": "economic-calendar",
+      "sourceLabel": "Economic Calendar",
+      "schedule": "0 */15 * * *",
+      "lastSyncAt": null,
+      "nextSyncAt": null,
+      "recordsImported": 0,
+      "syncDurationMs": 0,
+      "status": "IDLE"
+    },
+    {
+      "id": "sync-social-sentiment",
+      "sourceKey": "social-sentiment",
+      "sourceLabel": "Social Sentiment",
+      "schedule": "0 */15 * * *",
+      "lastSyncAt": null,
+      "nextSyncAt": null,
+      "recordsImported": 0,
+      "syncDurationMs": 0,
+      "status": "IDLE"
+    },
+    {
+      "id": "sync-institutional-cot",
+      "sourceKey": "institutional-cot",
+      "sourceLabel": "Institutional COT",
+      "schedule": "0 0 * * 6",
+      "lastSyncAt": null,
+      "nextSyncAt": null,
+      "recordsImported": 0,
+      "syncDurationMs": 0,
+      "status": "IDLE"
+    },
+    {
+      "id": "sync-historical-data",
+      "sourceKey": "historical-data",
+      "sourceLabel": "Historical Data",
+      "schedule": "0 */15 * * *",
+      "lastSyncAt": null,
+      "nextSyncAt": null,
+      "recordsImported": 0,
+      "syncDurationMs": 0,
+      "status": "IDLE"
+    },
+    {
+      "id": "sync-broker-data",
+      "sourceKey": "broker-data",
+      "sourceLabel": "Broker Data",
+      "schedule": "0 */15 * * *",
+      "lastSyncAt": null,
+      "nextSyncAt": null,
+      "recordsImported": 0,
+      "syncDurationMs": 0,
+      "status": "IDLE"
+    },
+    {
+      "id": "sync-account-portfolio",
+      "sourceKey": "account-portfolio",
+      "sourceLabel": "Portfolio Data",
+      "schedule": "0 */15 * * *",
+      "lastSyncAt": null,
+      "nextSyncAt": null,
+      "recordsImported": 0,
+      "syncDurationMs": 0,
+      "status": "IDLE"
+    },
+    {
+      "id": "sync-prop-firm-rules",
+      "sourceKey": "prop-firm-rules",
+      "sourceLabel": "Prop Rules",
+      "schedule": "0 */15 * * *",
+      "lastSyncAt": null,
+      "nextSyncAt": null,
+      "recordsImported": 0,
+      "syncDurationMs": 0,
+      "status": "IDLE"
+    }
+  ],
+  "testResults": [
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-market-data"
+    },
+    {
+      "sourceKey": "news-sentiment",
+      "source": "News & Sentiment",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-news-sentiment"
+    },
+    {
+      "sourceKey": "economic-calendar",
+      "source": "Economic Calendar",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-economic-calendar"
+    },
+    {
+      "sourceKey": "social-sentiment",
+      "source": "Social Sentiment",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-social-sentiment"
+    },
+    {
+      "sourceKey": "institutional-cot",
+      "source": "Institutional COT",
+      "result": "PASS",
+      "latencyMs": 42,
+      "details": "Connection validated",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-institutional-cot"
+    },
+    {
+      "sourceKey": "historical-data",
+      "source": "Historical Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-historical-data"
+    },
+    {
+      "sourceKey": "broker-data",
+      "source": "Broker Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-broker-data"
+    },
+    {
+      "sourceKey": "account-portfolio",
+      "source": "Portfolio Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-account-portfolio"
+    },
+    {
+      "sourceKey": "prop-firm-rules",
+      "source": "Prop Rules",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-prop-firm-rules"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-market-data-1780343127539"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-market-data-1780343968040"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-market-data-1780343999964"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-market-data-1780345545092"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:27:34.823Z",
+      "providerId": "src-market-data-1780345654807"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:25:45.117Z",
+      "providerId": "src-market-data"
+    },
+    {
+      "sourceKey": "news-sentiment",
+      "source": "News & Sentiment",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:25:45.117Z",
+      "providerId": "src-news-sentiment"
+    },
+    {
+      "sourceKey": "economic-calendar",
+      "source": "Economic Calendar",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:25:45.117Z",
+      "providerId": "src-economic-calendar"
+    },
+    {
+      "sourceKey": "social-sentiment",
+      "source": "Social Sentiment",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:25:45.117Z",
+      "providerId": "src-social-sentiment"
+    },
+    {
+      "sourceKey": "institutional-cot",
+      "source": "Institutional COT",
+      "result": "PASS",
+      "latencyMs": 42,
+      "details": "Connection validated",
+      "testedAt": "2026-06-01T20:25:45.117Z",
+      "providerId": "src-institutional-cot"
+    },
+    {
+      "sourceKey": "historical-data",
+      "source": "Historical Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:25:45.117Z",
+      "providerId": "src-historical-data"
+    },
+    {
+      "sourceKey": "broker-data",
+      "source": "Broker Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:25:45.117Z",
+      "providerId": "src-broker-data"
+    },
+    {
+      "sourceKey": "account-portfolio",
+      "source": "Portfolio Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:25:45.117Z",
+      "providerId": "src-account-portfolio"
+    },
+    {
+      "sourceKey": "prop-firm-rules",
+      "source": "Prop Rules",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:25:45.117Z",
+      "providerId": "src-prop-firm-rules"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:25:45.117Z",
+      "providerId": "src-market-data-1780343127539"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:25:45.117Z",
+      "providerId": "src-market-data-1780343968040"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:25:45.117Z",
+      "providerId": "src-market-data-1780343999964"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T20:25:45.117Z",
+      "providerId": "src-market-data-1780345545092"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:59.987Z",
+      "providerId": "src-market-data"
+    },
+    {
+      "sourceKey": "news-sentiment",
+      "source": "News & Sentiment",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:59.987Z",
+      "providerId": "src-news-sentiment"
+    },
+    {
+      "sourceKey": "economic-calendar",
+      "source": "Economic Calendar",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:59.987Z",
+      "providerId": "src-economic-calendar"
+    },
+    {
+      "sourceKey": "social-sentiment",
+      "source": "Social Sentiment",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:59.987Z",
+      "providerId": "src-social-sentiment"
+    },
+    {
+      "sourceKey": "institutional-cot",
+      "source": "Institutional COT",
+      "result": "PASS",
+      "latencyMs": 42,
+      "details": "Connection validated",
+      "testedAt": "2026-06-01T19:59:59.987Z",
+      "providerId": "src-institutional-cot"
+    },
+    {
+      "sourceKey": "historical-data",
+      "source": "Historical Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:59.987Z",
+      "providerId": "src-historical-data"
+    },
+    {
+      "sourceKey": "broker-data",
+      "source": "Broker Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:59.987Z",
+      "providerId": "src-broker-data"
+    },
+    {
+      "sourceKey": "account-portfolio",
+      "source": "Portfolio Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:59.987Z",
+      "providerId": "src-account-portfolio"
+    },
+    {
+      "sourceKey": "prop-firm-rules",
+      "source": "Prop Rules",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:59.987Z",
+      "providerId": "src-prop-firm-rules"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:59.987Z",
+      "providerId": "src-market-data-1780343127539"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:59.987Z",
+      "providerId": "src-market-data-1780343968040"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:59.987Z",
+      "providerId": "src-market-data-1780343999964"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:28.071Z",
+      "providerId": "src-market-data"
+    },
+    {
+      "sourceKey": "news-sentiment",
+      "source": "News & Sentiment",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:28.071Z",
+      "providerId": "src-news-sentiment"
+    },
+    {
+      "sourceKey": "economic-calendar",
+      "source": "Economic Calendar",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:28.071Z",
+      "providerId": "src-economic-calendar"
+    },
+    {
+      "sourceKey": "social-sentiment",
+      "source": "Social Sentiment",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:28.071Z",
+      "providerId": "src-social-sentiment"
+    },
+    {
+      "sourceKey": "institutional-cot",
+      "source": "Institutional COT",
+      "result": "PASS",
+      "latencyMs": 42,
+      "details": "Connection validated",
+      "testedAt": "2026-06-01T19:59:28.071Z",
+      "providerId": "src-institutional-cot"
+    },
+    {
+      "sourceKey": "historical-data",
+      "source": "Historical Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:28.071Z",
+      "providerId": "src-historical-data"
+    },
+    {
+      "sourceKey": "broker-data",
+      "source": "Broker Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:28.071Z",
+      "providerId": "src-broker-data"
+    },
+    {
+      "sourceKey": "account-portfolio",
+      "source": "Portfolio Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:28.071Z",
+      "providerId": "src-account-portfolio"
+    },
+    {
+      "sourceKey": "prop-firm-rules",
+      "source": "Prop Rules",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:28.071Z",
+      "providerId": "src-prop-firm-rules"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:28.071Z",
+      "providerId": "src-market-data-1780343127539"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:59:28.072Z",
+      "providerId": "src-market-data-1780343968040"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:45:27.555Z",
+      "providerId": "src-market-data"
+    },
+    {
+      "sourceKey": "news-sentiment",
+      "source": "News & Sentiment",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:45:27.555Z",
+      "providerId": "src-news-sentiment"
+    },
+    {
+      "sourceKey": "economic-calendar",
+      "source": "Economic Calendar",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:45:27.555Z",
+      "providerId": "src-economic-calendar"
+    },
+    {
+      "sourceKey": "social-sentiment",
+      "source": "Social Sentiment",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:45:27.555Z",
+      "providerId": "src-social-sentiment"
+    },
+    {
+      "sourceKey": "institutional-cot",
+      "source": "Institutional COT",
+      "result": "PASS",
+      "latencyMs": 42,
+      "details": "Connection validated",
+      "testedAt": "2026-06-01T19:45:27.555Z",
+      "providerId": "src-institutional-cot"
+    },
+    {
+      "sourceKey": "historical-data",
+      "source": "Historical Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:45:27.555Z",
+      "providerId": "src-historical-data"
+    },
+    {
+      "sourceKey": "broker-data",
+      "source": "Broker Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:45:27.555Z",
+      "providerId": "src-broker-data"
+    },
+    {
+      "sourceKey": "account-portfolio",
+      "source": "Portfolio Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:45:27.555Z",
+      "providerId": "src-account-portfolio"
+    },
+    {
+      "sourceKey": "prop-firm-rules",
+      "source": "Prop Rules",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:45:27.555Z",
+      "providerId": "src-prop-firm-rules"
+    },
+    {
+      "sourceKey": "market-data",
+      "source": "Market Data",
+      "result": "FAIL",
+      "latencyMs": null,
+      "details": "Provider not configured",
+      "testedAt": "2026-06-01T19:45:27.555Z",
+      "providerId": "src-market-data-1780343127539"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "AUD-1780345654823",
+      "timestamp": "2026-06-01T20:27:34.823Z",
+      "sourceKey": "all",
+      "event": "Test All Connections",
+      "severity": "info",
+      "user": "operator",
+      "result": "PARTIAL"
+    },
+    {
+      "id": "AUD-1780345654807",
+      "timestamp": "2026-06-01T20:27:34.807Z",
+      "sourceKey": "market-data",
+      "event": "Provider Added",
+      "severity": "info",
+      "user": "operator",
+      "result": "SUCCESS"
+    },
+    {
+      "id": "AUD-1780345545117",
+      "timestamp": "2026-06-01T20:25:45.117Z",
+      "sourceKey": "all",
+      "event": "Test All Connections",
+      "severity": "info",
+      "user": "operator",
+      "result": "PARTIAL"
+    },
+    {
+      "id": "AUD-1780345545092",
+      "timestamp": "2026-06-01T20:25:45.092Z",
+      "sourceKey": "market-data",
+      "event": "Provider Added",
+      "severity": "info",
+      "user": "operator",
+      "result": "SUCCESS"
+    },
+    {
+      "id": "AUD-1780343999987",
+      "timestamp": "2026-06-01T19:59:59.987Z",
+      "sourceKey": "all",
+      "event": "Test All Connections",
+      "severity": "info",
+      "user": "operator",
+      "result": "PARTIAL"
+    },
+    {
+      "id": "AUD-1780343999964",
+      "timestamp": "2026-06-01T19:59:59.964Z",
+      "sourceKey": "market-data",
+      "event": "Provider Added",
+      "severity": "info",
+      "user": "operator",
+      "result": "SUCCESS"
+    },
+    {
+      "id": "AUD-1780343968072",
+      "timestamp": "2026-06-01T19:59:28.072Z",
+      "sourceKey": "all",
+      "event": "Test All Connections",
+      "severity": "info",
+      "user": "operator",
+      "result": "PARTIAL"
+    },
+    {
+      "id": "AUD-1780343968040",
+      "timestamp": "2026-06-01T19:59:28.040Z",
+      "sourceKey": "market-data",
+      "event": "Provider Added",
+      "severity": "info",
+      "user": "operator",
+      "result": "SUCCESS"
+    },
+    {
+      "id": "AUD-1780343127555",
+      "timestamp": "2026-06-01T19:45:27.555Z",
+      "sourceKey": "all",
+      "event": "Test All Connections",
+      "severity": "info",
+      "user": "operator",
+      "result": "PARTIAL"
+    },
+    {
+      "id": "AUD-1780343127539",
+      "timestamp": "2026-06-01T19:45:27.539Z",
+      "sourceKey": "market-data",
+      "event": "Provider Added",
+      "severity": "info",
+      "user": "operator",
+      "result": "SUCCESS"
+    },
+    {
+      "id": "AUD-INIT-001",
+      "timestamp": "2026-06-01T19:40:28.977Z",
+      "sourceKey": "system",
+      "event": "Source Configuration Center initialized",
+      "severity": "info",
+      "user": "system.bootstrap",
+      "result": "SUCCESS"
+    }
+  ]
+}

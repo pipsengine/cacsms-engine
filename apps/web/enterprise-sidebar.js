@@ -1,5 +1,7 @@
-const dataSourcesValidationChildren = [
-  ["Data Sources & Feed Health", "/workspace/market-intelligence/data-sources"],
+const marketIntelligenceChildren = [
+  ["Intelligence Gathering Dashboard", "/workspace/market-intelligence/dashboard"],
+  ["Data Sources Validation", "/workspace/market-intelligence/data-sources"],
+  ["Source Configuration Center", "/workspace/market-intelligence/source-configuration"],
   ["Market Data Providers", "/workspace/market-intelligence/market-data"],
   ["News & Sentiment Sources", "/workspace/market-intelligence/news-sentiment"],
   ["Economic Calendar", "/workspace/market-intelligence/economic-calendar"],
@@ -10,10 +12,6 @@ const dataSourcesValidationChildren = [
   ["Account Portfolio", "/workspace/market-intelligence/account-portfolio"],
   ["Prop Firm Rules", "/workspace/market-intelligence/prop-firm-rules"],
   ["Data Quality Gate", "/workspace/market-intelligence/data-quality-gate"]
-];
-
-const marketIntelligenceChildren = [
-  ["Intelligence Gathering Dashboard", "/workspace/market-intelligence/dashboard"]
 ];
 
 const iconPaths = {
@@ -42,7 +40,6 @@ const iconPaths = {
 export const sidebarFunctions = [
   ["executive", "LayoutDashboard", "Executive Command Center", "LIVE", [["Executive Dashboard", "/"], ["Workflow Dashboard", "/executive-command-center/workflow-dashboard"]], true],
   ["workflow", "Workflow", "End-to-End Workflow", "LIVE", [["Workflow Dashboard", "/workflow/end-to-end"]]],
-  ["data-sources-validation", "ClipboardCheck", "Data Sources Validation", "WARNING", dataSourcesValidationChildren, true],
   ["market-intelligence", "Radar", "Market Intelligence Center", "READY", marketIntelligenceChildren, true],
   ["asset-scanner", "ScanSearch", "20-Asset Universe Scanner", "", [["Scanner Dashboard", "/workspace/asset-scanner/dashboard"]]],
   ["market-analysis", "LineChart", "Market Analysis", "", [["Analysis Dashboard", "/workspace/market-analysis/dashboard"]]],

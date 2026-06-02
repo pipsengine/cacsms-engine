@@ -1,5 +1,10 @@
-import { LiveMarketIntelligencePage } from "./LiveMarketIntelligencePage";
+import { MarketDataPage } from "../market-data/MarketDataPage";
+import { MarketDataQueryProvider } from "../market-data/QueryProvider";
 
 export function MarketDataProvidersPage() {
-  return <LiveMarketIntelligencePage source="market-data" />;
+  return (
+    <MarketDataQueryProvider>
+      <MarketDataPage />
+    </MarketDataQueryProvider>
+  );
 }
