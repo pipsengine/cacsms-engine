@@ -15,12 +15,15 @@ import {
   fetchMarketDataProvider,
   fetchMarketDataProviders,
   marketDataKeys,
+  previewProviderCoverage,
   syncAllMarketDataSymbols,
   syncMarketDataProviderSymbols,
   testAllMarketDataProviders,
   testMarketDataProvider,
+  testProviderConfiguration,
   updateMarketDataProvider,
-  type ProviderFormValues
+  validateProviderConfiguration,
+  type AddProviderFormValues
 } from "../../lib/market-data/types";
 
 function invalidateMarketData(queryClient: ReturnType<typeof useQueryClient>) {
@@ -69,15 +72,31 @@ export function useMarketDataProviderDetails(id: string | null) {
 export function useCreateMarketDataProvider() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: ProviderFormValues) => createMarketDataProvider(body),
-    onSuccess: () => invalidateMarketData(queryClient)
+    mutationFn: ({ values, draft }: { values: AddProviderFormValues; draft?: boolean }) =>
+      createMarketDataProvider({ ...values, draft, testOnSave: !draft }),
+    onSuccess: (payload) => {
+      if (payload.dashboard) queryClient.setQueryData(marketDataKeys.providers(), payload.dashboard);
+      return invalidateMarketData(queryClient);
+    }
   });
+}
+
+export function useTestProviderConfiguration() {
+  return useMutation({ mutationFn: (values: AddProviderFormValues) => testProviderConfiguration(values) });
+}
+
+export function useValidateProviderConfiguration() {
+  return useMutation({ mutationFn: (values: AddProviderFormValues) => validateProviderConfiguration(values) });
+}
+
+export function usePreviewProviderCoverage() {
+  return useMutation({ mutationFn: (values: AddProviderFormValues) => previewProviderCoverage(values) });
 }
 
 export function useUpdateMarketDataProvider() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, body }: { id: string; body: Partial<ProviderFormValues> }) => updateMarketDataProvider(id, body),
+    mutationFn: ({ id, body }: { id: string; body: Partial<AddProviderFormValues> }) => updateMarketDataProvider(id, body),
     onSuccess: (_data, variables) => Promise.all([
       invalidateMarketData(queryClient),
       queryClient.invalidateQueries({ queryKey: marketDataKeys.provider(variables.id) })

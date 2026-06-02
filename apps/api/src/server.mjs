@@ -53,12 +53,19 @@ import {
   getMarketDataOperationsDashboard,
   getMarketDataProviderById,
   getMarketDataSymbolsDashboard,
+  detectMt5Terminals,
+  detectSymbols,
+  getWizardCatalog,
+  loadMarketWatch,
+  previewProviderCoverage,
   syncAllMarketDataProviderSymbols,
   syncMarketDataProviderSymbols,
   syncMarketDataSymbols,
   testAllMarketDataProviders,
   testMarketDataProvider,
-  updateMarketDataProvider
+  testProviderConfiguration,
+  updateMarketDataProvider,
+  validateProviderConfiguration
 } from "../../../packages/market-intelligence/src/market-data-providers.js";
 
 const port = Number(process.env.API_PORT || 8080);
@@ -254,6 +261,8 @@ const routes = {
     const payload = await exportMarketDataStatus({ liveProbe: await getMarketDataLiveProbe() });
     return { format: "csv", csv: exportMarketDataStatusCsv(payload), ...payload };
   }
+  ,"GET /api/market-data/providers/catalog": () => getWizardCatalog()
+  ,"GET /api/market-data/providers/detect-mt5-terminals": () => detectMt5Terminals()
   ,"GET /api/market-intelligence/news-sentiment/dashboard": () => liveSourcePayload("news-sentiment")
   ,"GET /api/market-intelligence/news-sentiment/headlines": () => ({ headlines: [] })
   ,"GET /api/market-intelligence/news-sentiment/sources": () => ({ sources: [] })
@@ -429,10 +438,48 @@ const server = createServer(async (request, response) => {
   }
   if (request.method === "POST" && url.pathname === "/api/market-data/providers/test") {
     const body = await readBody(request);
+    const probeContext = { liveProbe: await getMarketDataLiveProbe(), probeFn: probeConfiguredUrl };
     try {
-      return json(response, 200, { accepted: true, result: await testMarketDataProvider(body.providerId, { liveProbe: await getMarketDataLiveProbe(), probeFn: probeConfiguredUrl }) });
+      if (body.providerId) {
+        return json(response, 200, { accepted: true, result: await testMarketDataProvider(body.providerId, probeContext) });
+      }
+      return json(response, 200, await testProviderConfiguration(body, probeContext));
     } catch (reason) {
-      return json(response, reason.message === "provider_not_found" ? 404 : 400, { error: reason.message });
+      const message = reason instanceof Error ? reason.message : String(reason);
+      if (message === "provider_not_found") return json(response, 404, { error: message });
+      return json(response, 400, { error: message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-data/providers/validate") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, await validateProviderConfiguration(body));
+    } catch (reason) {
+      return json(response, 400, { error: reason instanceof Error ? reason.message : String(reason) });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-data/providers/preview-coverage") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, await previewProviderCoverage(body));
+    } catch (reason) {
+      return json(response, 400, { error: reason instanceof Error ? reason.message : String(reason) });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-data/providers/market-watch") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, await loadMarketWatch(body));
+    } catch (reason) {
+      return json(response, 400, { error: reason instanceof Error ? reason.message : String(reason) });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-data/providers/detect-symbols") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, await detectSymbols(body));
+    } catch (reason) {
+      return json(response, 400, { error: reason instanceof Error ? reason.message : String(reason) });
     }
   }
   if (request.method === "POST" && url.pathname === "/api/market-data/providers/sync") {
@@ -441,10 +488,19 @@ const server = createServer(async (request, response) => {
   if (request.method === "POST" && url.pathname === "/api/market-data/providers") {
     try {
       const body = await readBody(request);
-      return json(response, 201, { accepted: true, provider: await createMarketDataProvider(body) });
+      const payload = await createMarketDataProvider(body, {
+        liveProbe: await getMarketDataLiveProbe(),
+        probeFn: probeConfiguredUrl,
+        createdBy: body.createdBy || "system.admin",
+        draft: Boolean(body.draft),
+        testOnSave: body.testOnSave !== false
+      });
+      return json(response, body.draft ? 200 : 201, { accepted: true, ...payload });
     } catch (reason) {
       const message = reason instanceof Error ? reason.message : String(reason);
       if (message === "database_not_configured") return json(response, 503, { error: message });
+      if (message === "duplicate_provider_name") return json(response, 409, { error: message });
+      if (message === "duplicate_provider_url") return json(response, 409, { error: message });
       return json(response, 400, { error: message });
     }
   }
@@ -452,7 +508,7 @@ const server = createServer(async (request, response) => {
     const segments = url.pathname.split("/");
     const providerId = segments[4];
     const action = segments[5];
-    const reserved = new Set(["health", "latency", "symbols", "logs", "confidence", "coverage", "events", "quality", "export", "test", "test-all", "sync", "sync-all-symbols"]);
+    const reserved = new Set(["health", "latency", "symbols", "logs", "confidence", "coverage", "events", "quality", "export", "test", "test-all", "sync", "sync-all-symbols", "validate", "preview-coverage", "catalog", "detect-mt5-terminals", "market-watch", "detect-symbols"]);
     if (reserved.has(providerId)) {
       // fall through to 404 below unless handled earlier via routes map
     } else {

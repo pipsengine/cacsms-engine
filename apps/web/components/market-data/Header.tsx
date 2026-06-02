@@ -1,5 +1,6 @@
 "use client";
 
+import { Plus } from "lucide-react";
 import type { MarketDataDashboard } from "../../lib/market-data/types";
 
 type Props = {
@@ -29,9 +30,9 @@ export function Header({ header, onAddProvider, onTestProviders, onSyncSymbols, 
         <div className="mdoc-badges">{badges.map(([label, value]) => <span key={label}><small>{label}</small><strong>{value}</strong></span>)}</div>
       </div>
       <div className="mdoc-header-actions">
-        <button className="mdoc-button secondary" disabled={busy} onClick={onAddProvider}>Add Provider</button>
-        <button className="mdoc-button primary" disabled={busy} onClick={onTestProviders}>Test All</button>
-        <button className="mdoc-button secondary" disabled={busy} onClick={onSyncSymbols}>Sync All Symbols</button>
+        <button className="mdoc-button primary mdoc-add-provider-btn" disabled={busy} onClick={onAddProvider}><Plus size={14} /> Add Provider</button>
+        <button className="mdoc-button secondary" disabled={busy} onClick={onTestProviders}>Test Providers</button>
+        <button className="mdoc-button secondary" disabled={busy} onClick={onSyncSymbols}>Sync Symbols</button>
         <button className="mdoc-button secondary" disabled={busy} onClick={onRefresh}>Refresh</button>
         <button className="mdoc-button secondary" disabled={busy} onClick={onExport}>Export Status</button>
       </div>

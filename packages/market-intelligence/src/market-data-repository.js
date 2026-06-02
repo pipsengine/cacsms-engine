@@ -1,4 +1,5 @@
 import { isDatabaseConfigured, query, withTransaction } from "./db.js";
+import { applyWizardPreset } from "./provider-wizard-catalog.js";
 
 export const TARGET_ASSETS = Object.freeze([
   "EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "USDCHF", "NZDUSD",
@@ -7,22 +8,51 @@ export const TARGET_ASSETS = Object.freeze([
 ]);
 
 export const PROVIDER_TYPES = Object.freeze([
-  "MT5", "Broker Price Feed", "TwelveData", "Polygon", "Finnhub",
-  "AlphaVantage", "TradingView", "Custom Feed"
+  "MT5", "Broker Feed", "TwelveData", "Polygon", "Finnhub",
+  "AlphaVantage", "TradingView", "DXFeed", "Bloomberg", "Refinitiv", "Custom Feed"
 ]);
 
 export const CONNECTION_METHODS = Object.freeze([
-  "REST", "WebSocket", "MT5 Bridge", "FIX", "Manual Upload", "Hybrid"
+  "REST API", "WebSocket", "MT5 Bridge", "FIX", "Database", "Manual Upload", "Hybrid"
 ]);
 
 export const AUTH_TYPES = Object.freeze([
   "None", "API Key", "Bearer Token", "OAuth", "Vault Secret"
 ]);
 
+export const ENVIRONMENTS = Object.freeze([
+  "Development", "Testing", "Staging", "Production"
+]);
+
+export const CAPABILITY_KEYS = Object.freeze([
+  "realTimePrices", "historicalData", "tickData", "spreadData", "volumeData",
+  "depthOfMarket", "newsData", "sentimentData", "economicData", "cotData"
+]);
+
+export const ASSET_COVERAGE_OPTIONS = Object.freeze([
+  "Forex", "Indices", "Metals", "Commodities", "Crypto", "Bonds", "Equities"
+]);
+
+const PROVIDER_CODE_PREFIX = Object.freeze({
+  MT5: "MT5",
+  "Broker Feed": "BROKER",
+  "TwelveData": "TWELVEDATA",
+  Polygon: "POLYGON",
+  Finnhub: "FINNHUB",
+  AlphaVantage: "ALPHAVANTAGE",
+  TradingView: "TRADINGVIEW",
+  DXFeed: "DXFEED",
+  Bloomberg: "BLOOMBERG",
+  Refinitiv: "REFINITIV",
+  "Custom Feed": "CUSTOM"
+});
+
 const PROVIDER_COLUMNS = `
-  id, provider_key, name, provider_type, connection_method, base_url, websocket_url,
-  auth_type, vault_secret_ref, status, enabled, environment, archived, notes,
-  supported_asset_classes, phase, api_url, config, last_sync_at, created_at, updated_at
+  id, provider_key, provider_code, name, provider_type, connection_method, base_url, websocket_url,
+  port, auth_type, vault_secret_ref, status, enabled, environment, archived, description,
+  vendor_website, contact_info, notes, supported_asset_classes, asset_coverage, supported_symbols,
+  capabilities, health_score, last_tested_at, created_by, phase, api_url, config, last_sync_at,
+  created_at, updated_at
 `;
 
 function mapProvider(row) {
@@ -30,20 +60,30 @@ function mapProvider(row) {
   return {
     id: row.id,
     providerKey: row.provider_key,
+    providerCode: row.provider_code || row.provider_key,
     name: row.name,
     providerType: row.provider_type,
     type: row.provider_type,
     connectionMethod: row.connection_method,
     baseUrl: row.base_url || row.api_url || "",
     websocketUrl: row.websocket_url || "",
-    authType: row.auth_type || "None",
+    port: row.port,
+    authType: formatAuthType(row.auth_type),
     vaultSecretRef: row.vault_secret_ref || "",
     status: row.status,
     enabled: row.enabled,
     environment: row.environment,
     archived: row.archived,
+    description: row.description || "",
+    vendorWebsite: row.vendor_website || "",
+    contactInfo: row.contact_info || "",
     notes: row.notes || "",
-    supportedAssetClasses: row.supported_asset_classes || [],
+    supportedAssetClasses: row.asset_coverage || row.supported_asset_classes || [],
+    supportedSymbols: row.supported_symbols || [],
+    capabilities: row.capabilities || {},
+    healthScore: row.health_score != null ? Number(row.health_score) : null,
+    lastTestedAt: row.last_tested_at,
+    createdBy: row.created_by || "system.admin",
     phase: row.phase,
     lastSyncAt: row.last_sync_at,
     createdAt: row.created_at,
@@ -51,12 +91,134 @@ function mapProvider(row) {
   };
 }
 
-function slugify(name) {
-  return String(name || "provider")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 48) || "provider";
+function formatAuthType(value) {
+  const map = {
+    none: "None",
+    api_key: "API Key",
+    bearer_token: "Bearer Token",
+    oauth: "OAuth",
+    vault_secret: "Vault Secret"
+  };
+  return map[String(value || "none").toLowerCase()] || "None";
+}
+
+function normalizeAuthType(value) {
+  const normalized = String(value || "None").toLowerCase().replace(/\s+/g, "_");
+  if (normalized === "api_key") return "api_key";
+  if (normalized === "bearer_token") return "bearer_token";
+  if (normalized === "oauth") return "oauth";
+  if (normalized === "vault_secret") return "vault_secret";
+  return "none";
+}
+
+export function normalizeConnectionMethod(value) {
+  const map = {
+    rest: "REST API",
+    "rest api": "REST API",
+    websocket: "WebSocket",
+    "mt5 bridge": "MT5 Bridge",
+    fix: "FIX",
+    database: "Database",
+    "manual upload": "Manual Upload",
+    hybrid: "Hybrid"
+  };
+  return map[String(value || "").toLowerCase()] || value;
+}
+
+export function parseSymbols(input) {
+  if (Array.isArray(input)) return input.map((item) => String(item).trim().toUpperCase()).filter(Boolean);
+  return String(input || "")
+    .split(/[\n,;]+/)
+    .map((item) => item.trim().toUpperCase())
+    .filter(Boolean);
+}
+
+export async function generateProviderCode(providerType) {
+  const prefix = PROVIDER_CODE_PREFIX[providerType] || "CUSTOM";
+  const { rows } = await query(
+    `SELECT COUNT(*)::int AS count FROM market.market_data_providers
+     WHERE provider_type = $1 AND archived = false`,
+    [providerType]
+  );
+  return `${prefix}_${String(rows[0].count + 1).padStart(3, "0")}`;
+}
+
+export async function assertNoDuplicateName(name, excludeId = null) {
+  const { rows } = await query(
+    `SELECT id FROM market.market_data_providers
+     WHERE lower(name) = lower($1) AND archived = false
+     ${excludeId ? "AND id <> $2" : ""}
+     LIMIT 1`,
+    excludeId ? [name, excludeId] : [name]
+  );
+  if (rows[0]) throw new Error("duplicate_provider_name");
+}
+
+export async function assertNoDuplicateUrl(baseUrl, websocketUrl, excludeId = null) {
+  const urls = [baseUrl, websocketUrl].map((item) => String(item || "").trim()).filter(Boolean);
+  for (const url of urls) {
+    const params = excludeId ? [url, excludeId] : [url];
+    const { rows } = await query(
+      `SELECT id FROM market.market_data_providers
+       WHERE archived = false AND (base_url = $1 OR websocket_url = $1 OR api_url = $1)
+       ${excludeId ? "AND id <> $2" : ""}
+       LIMIT 1`,
+      params
+    );
+    if (rows[0]) throw new Error("duplicate_provider_url");
+  }
+}
+
+export function validateProviderInput(input, { partial = false, draft = false, wizard = false } = {}) {
+  const errors = [];
+  const normalized = applyWizardPreset(input);
+  const method = normalizeConnectionMethod(normalized.connectionMethod);
+  const auth = String(normalized.authType || "None");
+  const category = normalized.wizardCategory || normalized.category;
+
+  if (!partial || normalized.name != null) {
+    if (!String(normalized.name || "").trim()) errors.push("name_required");
+  }
+  if (!partial || normalized.providerType != null) {
+    if (!PROVIDER_TYPES.includes(normalized.providerType)) errors.push("provider_type_invalid");
+  }
+  if (!partial || normalized.connectionMethod != null) {
+    if (!CONNECTION_METHODS.includes(method)) errors.push("connection_method_invalid");
+  }
+  if (!partial || normalized.environment != null) {
+    if (!ENVIRONMENTS.includes(normalized.environment) && !String(normalized.environment || "").trim()) {
+      errors.push("environment_required");
+    }
+  }
+
+  if (!draft && wizard) {
+    if (category === "mt5_terminal") {
+      if (!String(normalized.brokerName || "").trim()) errors.push("broker_name_required");
+      if (!String(normalized.serverName || "").trim()) errors.push("server_name_required");
+    }
+    if (category === "external_vendor" && !normalized.vendorKey?.includes("custom")) {
+      if (!String(normalized.apiKey || normalized.vaultSecretRef || "").trim()) errors.push("api_key_required");
+    }
+  }
+
+  if (!draft && !wizard) {
+    if (method === "REST API" && !String(normalized.baseUrl || "").trim()) errors.push("base_url_required");
+    if (method === "WebSocket" && !String(normalized.websocketUrl || "").trim()) errors.push("websocket_url_required");
+    if (method === "Hybrid" && !String(normalized.baseUrl || "").trim() && !String(normalized.websocketUrl || "").trim()) {
+      errors.push("url_required");
+    }
+    if (auth !== "None" && !String(normalized.vaultSecretRef || "").trim()) errors.push("vault_secret_ref_required");
+  }
+
+  if (!draft && category === "custom_provider") {
+    if (method === "REST API" && !String(normalized.baseUrl || "").trim()) errors.push("base_url_required");
+    if (auth !== "None" && !String(normalized.vaultSecretRef || "").trim() && !String(normalized.apiKey || "").trim()) {
+      errors.push("vault_secret_ref_required");
+    }
+  }
+
+  if (errors.length) throw new Error(errors[0]);
+  return { ...normalized, connectionMethod: method };
 }
 
 export async function listProviders({ includeArchived = false } = {}) {
@@ -77,30 +239,71 @@ export async function getProviderById(id) {
   return mapProvider(rows[0]);
 }
 
-export async function createProvider(input) {
-  const providerKey = `${slugify(input.name)}-${Date.now().toString(36)}`;
+export async function createProvider(input, { createdBy = "system.admin", draft = false, wizard = false } = {}) {
+  const normalized = validateProviderInput(input, { draft, wizard });
+  await assertNoDuplicateName(normalized.name);
+  if (normalized.wizardCategory !== "mt5_terminal" && normalized.category !== "mt5_terminal") {
+    await assertNoDuplicateUrl(normalized.baseUrl, normalized.websocketUrl);
+  }
+
+  const providerCode = await generateProviderCode(normalized.providerType);
+  const supportedSymbols = parseSymbols(normalized.supportedSymbols);
+  const assetCoverage = normalized.assetCoverage || normalized.supportedAssetClasses || [];
+  const capabilities = normalized.capabilities || {};
+  const status = draft ? "DRAFT" : normalized.enabled === false ? "DISABLED" : "NOT_CONFIGURED";
+
+  const config = {
+    internalNotes: normalized.notes || "",
+    wizardCategory: normalized.wizardCategory || normalized.category || null,
+    providerTemplateId: normalized.providerTemplateId || null,
+    vendorKey: normalized.vendorKey || null,
+    mt5: normalized.wizardCategory === "mt5_terminal" || normalized.category === "mt5_terminal" ? {
+      brokerName: normalized.brokerName || "",
+      terminalName: normalized.terminalName || "",
+      accountNumber: normalized.accountNumber || "",
+      serverName: normalized.serverName || "",
+      terminalLocation: normalized.terminalLocation || "",
+      terminalId: normalized.terminalId || null,
+      dataPath: normalized.dataPath || "",
+      buildVersion: normalized.buildVersion || ""
+    } : null,
+    advanced: normalized.advanced || null
+  };
+
+  const vaultRef = normalized.vaultSecretRef
+    || (normalized.apiKey ? normalized.vaultSecretRef || `MARKETDATA_${String(normalized.vendorKey || normalized.providerType).toUpperCase()}_API_KEY` : null);
+
   const { rows } = await query(
     `INSERT INTO market.market_data_providers (
-      provider_key, name, provider_type, connection_method, base_url, websocket_url,
-      auth_type, vault_secret_ref, status, enabled, environment, notes,
-      supported_asset_classes, api_url, config
-    ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$5,$14::jsonb)
+      provider_key, provider_code, name, provider_type, connection_method, base_url, websocket_url, port,
+      auth_type, vault_secret_ref, status, enabled, environment, description, vendor_website, contact_info,
+      notes, supported_asset_classes, asset_coverage, supported_symbols, capabilities, created_by, api_url, config
+    ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$6,$23::jsonb)
     RETURNING ${PROVIDER_COLUMNS}`,
     [
-      providerKey,
-      input.name,
-      input.providerType,
-      input.connectionMethod,
-      input.baseUrl || null,
-      input.websocketUrl || null,
-      normalizeAuthType(input.authType),
-      input.vaultSecretRef || null,
-      input.enabled === false ? "DISABLED" : "NOT_CONFIGURED",
-      input.enabled !== false,
-      input.environment,
-      input.notes || null,
-      JSON.stringify(input.supportedAssetClasses || []),
-      JSON.stringify({ notes: input.notes || "" })
+      providerCode,
+      providerCode,
+      normalized.name.trim(),
+      normalized.providerType,
+      normalized.connectionMethod,
+      normalized.baseUrl || null,
+      normalized.websocketUrl || null,
+      normalized.port ? Number(normalized.port) : null,
+      normalizeAuthType(normalized.authType),
+      vaultRef || null,
+      status,
+      draft ? false : normalized.enabled !== false,
+      normalized.environment,
+      normalized.description || null,
+      normalized.vendorWebsite || null,
+      normalized.contactInfo || null,
+      normalized.notes || null,
+      JSON.stringify(assetCoverage),
+      JSON.stringify(assetCoverage),
+      JSON.stringify(supportedSymbols),
+      JSON.stringify(capabilities),
+      createdBy,
+      JSON.stringify(config)
     ]
   );
   return mapProvider(rows[0]);
@@ -109,6 +312,8 @@ export async function createProvider(input) {
 export async function updateProvider(id, input) {
   const existing = await getProviderById(id);
   if (!existing) throw new Error("provider_not_found");
+  if (input.name) await assertNoDuplicateName(input.name, id);
+  await assertNoDuplicateUrl(input.baseUrl ?? existing.baseUrl, input.websocketUrl ?? existing.websocketUrl, id);
 
   const { rows } = await query(
     `UPDATE market.market_data_providers SET
@@ -117,14 +322,21 @@ export async function updateProvider(id, input) {
       connection_method = COALESCE($4, connection_method),
       base_url = COALESCE($5, base_url),
       websocket_url = COALESCE($6, websocket_url),
-      auth_type = COALESCE($7, auth_type),
-      vault_secret_ref = COALESCE($8, vault_secret_ref),
-      enabled = COALESCE($9, enabled),
-      environment = COALESCE($10, environment),
-      notes = COALESCE($11, notes),
-      supported_asset_classes = COALESCE($12::jsonb, supported_asset_classes),
+      port = COALESCE($7, port),
+      auth_type = COALESCE($8, auth_type),
+      vault_secret_ref = COALESCE($9, vault_secret_ref),
+      enabled = COALESCE($10, enabled),
+      environment = COALESCE($11, environment),
+      description = COALESCE($12, description),
+      vendor_website = COALESCE($13, vendor_website),
+      contact_info = COALESCE($14, contact_info),
+      notes = COALESCE($15, notes),
+      asset_coverage = COALESCE($16::jsonb, asset_coverage),
+      supported_asset_classes = COALESCE($16::jsonb, supported_asset_classes),
+      supported_symbols = COALESCE($17::jsonb, supported_symbols),
+      capabilities = COALESCE($18::jsonb, capabilities),
       api_url = COALESCE($5, api_url),
-      status = CASE WHEN $9 = false THEN 'DISABLED' WHEN enabled = false AND $9 = true THEN 'NOT_CONFIGURED' ELSE status END,
+      status = CASE WHEN $10 = false THEN 'DISABLED' WHEN status = 'DRAFT' AND $10 = true THEN 'NOT_CONFIGURED' ELSE status END,
       updated_at = now()
     WHERE id = $1 AND archived = false
     RETURNING ${PROVIDER_COLUMNS}`,
@@ -132,15 +344,21 @@ export async function updateProvider(id, input) {
       id,
       input.name ?? null,
       input.providerType ?? null,
-      input.connectionMethod ?? null,
+      input.connectionMethod ? normalizeConnectionMethod(input.connectionMethod) : null,
       input.baseUrl ?? null,
       input.websocketUrl ?? null,
+      input.port != null ? Number(input.port) : null,
       input.authType != null ? normalizeAuthType(input.authType) : null,
       input.vaultSecretRef ?? null,
       input.enabled ?? null,
       input.environment ?? null,
+      input.description ?? null,
+      input.vendorWebsite ?? null,
+      input.contactInfo ?? null,
       input.notes ?? null,
-      input.supportedAssetClasses != null ? JSON.stringify(input.supportedAssetClasses) : null
+      input.assetCoverage != null ? JSON.stringify(input.assetCoverage) : null,
+      input.supportedSymbols != null ? JSON.stringify(parseSymbols(input.supportedSymbols)) : null,
+      input.capabilities != null ? JSON.stringify(input.capabilities) : null
     ]
   );
   return mapProvider(rows[0]);
@@ -168,19 +386,38 @@ export async function setProviderEnabled(id, enabled) {
   return mapProvider(rows[0]);
 }
 
-export async function appendLog({ providerId = null, providerName = "system", event, severity = "info", message }) {
+export async function appendLog({
+  providerId = null,
+  providerName = "system",
+  event,
+  action = null,
+  actor = "system.admin",
+  result = "SUCCESS",
+  severity = "info",
+  message
+}) {
   const { rows } = await query(
-    `INSERT INTO market.market_data_logs (provider_id, provider_name, event, severity, message)
-     VALUES ($1, $2, $3, $4, $5) RETURNING id, provider_id, provider_name, event, severity, message, created_at`,
-    [providerId, providerName, event, severity, message]
+    `INSERT INTO market.market_data_logs (provider_id, provider_name, event, action, actor, result, severity, message)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+     RETURNING id, provider_id, provider_name, event, action, actor, result, severity, message, created_at`,
+    [providerId, providerName, event, action || event, actor, result, severity, message]
   );
   return rows[0];
+}
+
+export async function updateProviderHealthMeta(providerId, { healthScore, status, lastTestedAt = new Date().toISOString() }) {
+  await query(
+    `UPDATE market.market_data_providers
+     SET health_score = $2, status = $3, last_tested_at = $4, updated_at = now()
+     WHERE id = $1`,
+    [providerId, healthScore, status, lastTestedAt]
+  );
 }
 
 export async function listLogs(limit = 100) {
   if (!isDatabaseConfigured()) return [];
   const { rows } = await query(
-    `SELECT id, provider_id, provider_name, event, severity, message, created_at
+    `SELECT id, provider_id, provider_name, event, action, actor, result, severity, message, created_at
      FROM market.market_data_logs ORDER BY created_at DESC LIMIT $1`,
     [limit]
   );
@@ -189,6 +426,9 @@ export async function listLogs(limit = 100) {
     providerId: row.provider_id,
     provider: row.provider_name || "system",
     event: row.event,
+    action: row.action,
+    actor: row.actor,
+    result: row.result,
     severity: row.severity,
     message: row.message,
     timestamp: row.created_at,
@@ -242,23 +482,6 @@ export async function getLatestHealthByProvider() {
      ORDER BY h.provider_id, h.observed_at DESC`
   );
   return new Map(rows.map((row) => [row.provider_id, row]));
-}
-
-export async function getLatestIntegrity() {
-  if (!isDatabaseConfigured()) return null;
-  const { rows } = await query(
-    `SELECT integrity_score, checks, observed_at FROM market.market_data_integrity ORDER BY observed_at DESC LIMIT 1`
-  );
-  return rows[0] || null;
-}
-
-export async function getLatestConfidence() {
-  if (!isDatabaseConfigured()) return null;
-  const { rows } = await query(
-    `SELECT confidence_score, integrity_score, workflow_permission, factors, observed_at
-     FROM market.market_data_confidence ORDER BY observed_at DESC LIMIT 1`
-  );
-  return rows[0] || null;
 }
 
 export async function listSymbols() {
@@ -339,16 +562,6 @@ export async function replaceProviderCoverage(providerId, rows) {
   });
 }
 
-export async function insertTicks(ticks) {
-  if (!ticks.length) return;
-  for (const tick of ticks) {
-    await query(
-      `INSERT INTO market.market_data_ticks (symbol, provider_id, bid, ask, spread) VALUES ($1,$2,$3,$4,$5)`,
-      [tick.symbol, tick.providerId, tick.bid, tick.ask, tick.spread]
-    );
-  }
-}
-
 export async function updateProviderStatus(providerId, status) {
   await query(
     `UPDATE market.market_data_providers SET status = $2, updated_at = now() WHERE id = $1`,
@@ -356,38 +569,98 @@ export async function updateProviderStatus(providerId, status) {
   );
 }
 
-function normalizeAuthType(value) {
-  const normalized = String(value || "None").toLowerCase().replace(/\s+/g, "_");
-  if (normalized === "api_key") return "api_key";
-  if (normalized === "bearer_token") return "bearer_token";
-  if (normalized === "oauth") return "oauth";
-  if (normalized === "vault_secret") return "vault_secret";
-  return "none";
+export function previewCoverageFromInput(input) {
+  const symbols = parseSymbols(input.supportedSymbols);
+  const universe = symbols.length ? symbols : TARGET_ASSETS;
+  const assetCoverage = input.assetCoverage || [];
+  return {
+    assetCoverage,
+    symbols: universe,
+    estimatedCoverage: universe.length,
+    coveragePct: Math.round((universe.length / TARGET_ASSETS.length) * 100)
+  };
 }
 
-export function validateProviderInput(input, { partial = false } = {}) {
-  const errors = [];
-  if (!partial || input.name != null) {
-    if (!String(input.name || "").trim()) errors.push("name_required");
+export function buildProbeTarget(input) {
+  const normalized = applyWizardPreset(input);
+  const method = normalizeConnectionMethod(normalized.connectionMethod);
+  if (method === "WebSocket") return normalized.websocketUrl || normalized.baseUrl;
+  if (method === "MT5 Bridge") {
+    return normalized.baseUrl || process.env.MARKET_DATA_LIVE_URL || "";
   }
-  if (!partial || input.providerType != null) {
-    if (!PROVIDER_TYPES.includes(input.providerType)) errors.push("provider_type_invalid");
-  }
-  if (!partial || input.connectionMethod != null) {
-    if (!CONNECTION_METHODS.includes(input.connectionMethod)) errors.push("connection_method_invalid");
-  }
-  if (!partial || input.environment != null) {
-    if (!String(input.environment || "").trim()) errors.push("environment_required");
-  }
-  const method = input.connectionMethod;
-  if (["REST", "WebSocket", "Hybrid"].includes(method)) {
-    if (!String(input.baseUrl || "").trim() && !String(input.websocketUrl || "").trim()) {
-      errors.push("url_required");
+  return normalized.baseUrl || normalized.websocketUrl || "";
+}
+
+export async function insertProviderTest({ providerId = null, testType, result, latencyMs = null, diagnostics = {}, actor = "system.admin" }) {
+  if (!isDatabaseConfigured()) return null;
+  const { rows } = await query(
+    `INSERT INTO market.market_data_provider_tests (provider_id, test_type, result, latency_ms, diagnostics, actor)
+     VALUES ($1, $2, $3, $4, $5::jsonb, $6)
+     RETURNING id, provider_id, test_type, result, latency_ms, diagnostics, created_at`,
+    [providerId, testType, result, latencyMs, JSON.stringify(diagnostics), actor]
+  );
+  return rows[0];
+}
+
+export async function saveProviderSymbols(providerId, symbols, { source = "detected" } = {}) {
+  if (!isDatabaseConfigured() || !symbols?.length) return [];
+  const saved = [];
+  await withTransaction(async (client) => {
+    for (const symbol of symbols) {
+      const value = String(symbol).trim().toUpperCase();
+      if (!value) continue;
+      const { rows } = await client.query(
+        `INSERT INTO market.market_data_provider_symbols (provider_id, symbol, source)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (provider_id, symbol) DO UPDATE SET enabled = true, source = EXCLUDED.source
+         RETURNING symbol`,
+        [providerId, value, source]
+      );
+      if (rows[0]) saved.push(rows[0].symbol);
     }
+  });
+  return saved;
+}
+
+export async function createProviderDependencies(providerId, cards) {
+  if (!isDatabaseConfigured()) return [];
+  const rows = [];
+  for (const item of cards) {
+    const { rows: inserted } = await query(
+      `INSERT INTO market.market_data_provider_dependencies (provider_id, workflow_card, target, impact)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (provider_id, workflow_card) DO UPDATE SET target = EXCLUDED.target, impact = EXCLUDED.impact
+       RETURNING workflow_card, target, impact`,
+      [providerId, item.card, item.target, item.impact]
+    );
+    if (inserted[0]) rows.push(inserted[0]);
   }
-  const auth = String(input.authType || "None");
-  if (auth !== "None" && !String(input.vaultSecretRef || "").trim()) {
-    errors.push("vault_secret_ref_required");
+  return rows;
+}
+
+export async function listDetectedMt5Terminals() {
+  if (!isDatabaseConfigured()) return [];
+  try {
+    const { rows } = await query(
+      `SELECT t.id, t.terminal_key, t.installation_path, t.mt5_build, t.status,
+              b.name AS broker_name, a.account_number
+       FROM infrastructure.mt5_terminals t
+       LEFT JOIN infrastructure.mt5_accounts a ON a.terminal_id = t.id
+       LEFT JOIN infrastructure.brokers b ON b.id = a.broker_id
+       ORDER BY t.created_at DESC
+       LIMIT 20`
+    );
+    return rows.map((row) => ({
+      id: row.id,
+      broker: row.broker_name || "Unknown Broker",
+      server: row.terminal_key,
+      account: row.account_number || "",
+      buildVersion: row.mt5_build || "",
+      dataPath: row.installation_path,
+      terminalName: row.terminal_key,
+      status: row.status
+    }));
+  } catch {
+    return [];
   }
-  if (errors.length) throw new Error(errors[0]);
 }

@@ -1,3 +1,7 @@
+import type { AddProviderFormValues, CoveragePreview, ProviderCreateResponse, ProviderTestResult } from "./provider-schema";
+
+export type { AddProviderFormValues, CoveragePreview, ProviderCreateResponse, ProviderTestResult } from "./provider-schema";
+
 export type MarketDataOutput = {
   source: string;
   status: string;
@@ -12,6 +16,7 @@ export type MarketDataOutput = {
 
 export type MarketDataProvider = {
   id: string;
+  providerCode?: string;
   name: string;
   providerType: string;
   type: string;
@@ -62,19 +67,8 @@ export type MarketDataDashboard = MarketDataOutput & {
   output: MarketDataOutput;
 };
 
-export type ProviderFormValues = {
-  name: string;
-  providerType: string;
-  connectionMethod: string;
-  baseUrl: string;
-  websocketUrl: string;
-  authType: string;
-  vaultSecretRef: string;
-  environment: string;
-  enabled: boolean;
-  supportedAssetClasses: string[];
-  notes: string;
-};
+/** @deprecated use AddProviderFormValues */
+export type ProviderFormValues = AddProviderFormValues;
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
@@ -130,11 +124,23 @@ export function fetchMarketDataProvider(id: string) {
   return request<{ provider: MarketDataProvider; coverage: Array<Record<string, unknown>>; logs: Array<Record<string, unknown>> }>(`/api/market-data/providers/${id}`);
 }
 
-export function createMarketDataProvider(body: ProviderFormValues) {
-  return request<{ provider: MarketDataProvider }>("/api/market-data/providers", { method: "POST", body: JSON.stringify(body) });
+export function createMarketDataProvider(body: AddProviderFormValues & { draft?: boolean; testOnSave?: boolean; createdBy?: string }) {
+  return request<ProviderCreateResponse>("/api/market-data/providers", { method: "POST", body: JSON.stringify(body) });
 }
 
-export function updateMarketDataProvider(id: string, body: Partial<ProviderFormValues>) {
+export function testProviderConfiguration(body: AddProviderFormValues) {
+  return request<ProviderTestResult>("/api/market-data/providers/test", { method: "POST", body: JSON.stringify(body) });
+}
+
+export function validateProviderConfiguration(body: AddProviderFormValues) {
+  return request<{ valid: boolean; message: string }>("/api/market-data/providers/validate", { method: "POST", body: JSON.stringify(body) });
+}
+
+export function previewProviderCoverage(body: AddProviderFormValues) {
+  return request<CoveragePreview>("/api/market-data/providers/preview-coverage", { method: "POST", body: JSON.stringify(body) });
+}
+
+export function updateMarketDataProvider(id: string, body: Partial<AddProviderFormValues>) {
   return request<{ provider: MarketDataProvider }>(`/api/market-data/providers/${id}`, { method: "PUT", body: JSON.stringify(body) });
 }
 

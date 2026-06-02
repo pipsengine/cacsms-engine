@@ -80,9 +80,48 @@ test("migration defines all market feed operations tables", () => {
   assert.match(fields, /vault_secret_ref/);
 });
 
-test("react page uses tanstack query hooks", () => {
+test("react page uses tanstack query hooks and add provider modal", () => {
   const page = readFileSync("apps/web/components/market-data/MarketDataPage.tsx", "utf8");
   assert.match(page, /useMarketDataProviders/);
+  assert.match(page, /AddMarketDataProviderModal/);
   assert.match(page, /useCreateMarketDataProvider/);
   assert.doesNotMatch(page, /mock-data/);
+});
+
+test("add provider modal uses react hook form and zod", () => {
+  const modal = readFileSync("apps/web/components/market-data/AddMarketDataProviderModal.tsx", "utf8");
+  assert.match(modal, /useForm/);
+  assert.match(modal, /zodResolver/);
+  assert.match(modal, /Add Market Data Provider/);
+});
+
+test("API server exposes provider onboarding routes", () => {
+  const api = readFileSync("apps/api/src/server.mjs", "utf8");
+  for (const route of [
+    "/api/market-data/providers/validate",
+    "/api/market-data/providers/preview-coverage",
+    "/api/market-data/providers/catalog",
+    "/api/market-data/providers/detect-mt5-terminals",
+    "/api/market-data/providers/market-watch",
+    "/api/market-data/providers/detect-symbols"
+  ]) assert.match(api, new RegExp(route.replaceAll("/", "\\/")));
+});
+
+test("legacy add provider uses guided onboarding wizard", () => {
+  const wizard = readFileSync("apps/web/market-data-provider-wizard.js", "utf8");
+  const page = readFileSync("apps/web/market-data-page.js", "utf8");
+  for (const text of [
+    "Source Category", "Detect Installed MT5 Terminals", "Register Provider",
+    "MARKET DATA ONBOARDING WIZARD", "buildWizardPayload"
+  ]) {
+    assert.match(wizard + page, new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+});
+
+test("wizard catalog exposes provider categories and vendor presets", async () => {
+  const { getWizardCatalog, resolveVendorPreset } = await import("../src/provider-wizard-catalog.js");
+  const catalog = getWizardCatalog();
+  assert.equal(catalog.categories.length, 4);
+  assert.ok(catalog.providers.mt5_terminal.length >= 5);
+  assert.ok(resolveVendorPreset("TwelveData")?.baseUrl);
 });

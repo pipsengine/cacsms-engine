@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { AddMarketDataProviderModal } from "./AddMarketDataProviderModal";
 import { ActionCenter } from "./ActionCenter";
 import { AssetCoverageMatrix } from "./AssetCoverageMatrix";
 import { DataIntegrityEngine } from "./DataIntegrityEngine";
@@ -16,6 +17,7 @@ import { ProviderComparisonCenter } from "./ProviderComparisonCenter";
 import { ProviderDetailsDrawer } from "./ProviderDetailsDrawer";
 import { ProviderFormModal } from "./ProviderFormModal";
 import { ProviderRegistry } from "./ProviderRegistry";
+import { ProviderSuccessToast } from "./ProviderSuccessToast";
 import { SpreadQualityCenter } from "./SpreadQualityCenter";
 import { StatusBanner } from "./StatusBanner";
 import { SymbolAvailabilityMatrix } from "./SymbolAvailabilityMatrix";
@@ -30,12 +32,16 @@ import {
   useMarketDataLogs,
   useMarketDataProviderDetails,
   useMarketDataProviders,
+  usePreviewProviderCoverage,
   useSyncAllMarketDataSymbols,
   useSyncMarketDataProviderSymbols,
   useTestAllMarketDataProviders,
   useTestMarketDataProvider,
-  useUpdateMarketDataProvider
+  useTestProviderConfiguration,
+  useUpdateMarketDataProvider,
+  useValidateProviderConfiguration
 } from "../../lib/market-data/hooks";
+import type { AddProviderFormValues } from "../../lib/market-data/provider-schema";
 import type { MarketDataProvider, ProviderFormValues } from "../../lib/market-data/types";
 
 export function MarketDataPage() {
@@ -47,18 +53,28 @@ export function MarketDataPage() {
   const deleteProvider = useDeleteMarketDataProvider();
   const testProvider = useTestMarketDataProvider();
   const testAllProviders = useTestAllMarketDataProviders();
+  const testConfiguration = useTestProviderConfiguration();
+  const validateConfiguration = useValidateProviderConfiguration();
+  const previewCoverage = usePreviewProviderCoverage();
   const syncProviderSymbols = useSyncMarketDataProviderSymbols();
   const syncAllSymbols = useSyncAllMarketDataSymbols();
   const enableProvider = useEnableMarketDataProvider();
   const disableProvider = useDisableMarketDataProvider();
   const exportStatus = useExportMarketDataStatus();
 
-  const [modalMode, setModalMode] = useState<"create" | "edit">("create");
-  const [modalOpen, setModalOpen] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<MarketDataProvider | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [logsOpen, setLogsOpen] = useState(false);
   const [detailsId, setDetailsId] = useState<string | null>(null);
+  const [successNotification, setSuccessNotification] = useState<{
+    title: string;
+    providerName: string;
+    providerCode?: string;
+    status: string;
+    workflowImpact: string;
+  } | null>(null);
 
   const detailsQuery = useMarketDataProviderDetails(detailsId);
   const data = providersQuery.data;
@@ -69,16 +85,11 @@ export function MarketDataPage() {
 
   const error = providersQuery.error instanceof Error ? providersQuery.error.message : "";
 
-  const openCreate = () => {
-    setModalMode("create");
-    setSelectedProvider(null);
-    setModalOpen(true);
-  };
+  const openCreate = () => setAddModalOpen(true);
 
   const openEdit = (provider: MarketDataProvider) => {
-    setModalMode("edit");
     setSelectedProvider(provider);
-    setModalOpen(true);
+    setEditModalOpen(true);
   };
 
   const handleDelete = async (provider: MarketDataProvider) => {
@@ -97,9 +108,13 @@ export function MarketDataPage() {
     URL.revokeObjectURL(url);
   };
 
-  const handleSubmit = async (values: ProviderFormValues) => {
-    if (modalMode === "create") await createProvider.mutateAsync(values);
-    else if (selectedProvider) await updateProvider.mutateAsync({ id: selectedProvider.id, body: values });
+  const handleCreate = async (values: AddProviderFormValues, { draft }: { draft: boolean }) => {
+    const payload = await createProvider.mutateAsync({ values, draft });
+    if (!draft && payload.notification) setSuccessNotification(payload.notification);
+  };
+
+  const handleEditSubmit = async (values: ProviderFormValues) => {
+    if (selectedProvider) await updateProvider.mutateAsync({ id: selectedProvider.id, body: values });
   };
 
   const detailsProvider = useMemo(() => detailsQuery.data?.provider || selectedProvider, [detailsQuery.data?.provider, selectedProvider]);
@@ -120,6 +135,7 @@ export function MarketDataPage() {
         onExport={handleExport}
         onRefresh={() => providersQuery.refetch()}
       />
+      <ProviderSuccessToast notification={successNotification} onClose={() => setSuccessNotification(null)} />
       {error ? <p className="mdoc-error">{error}</p> : null}
       {data.empty ? (
         <EmptyState onAddProvider={openCreate} onOpenSourceConfig={() => router.push("/workspace/market-intelligence/source-configuration")} />
@@ -168,7 +184,24 @@ export function MarketDataPage() {
         onExport={handleExport}
         onOpenLogs={() => setLogsOpen(true)}
       />
-      <ProviderFormModal key={`${modalMode}-${selectedProvider?.id || "new"}`} open={modalOpen} mode={modalMode} initial={selectedProvider} busy={busy} onClose={() => setModalOpen(false)} onSubmit={handleSubmit} />
+      <AddMarketDataProviderModal
+        open={addModalOpen}
+        busy={busy || createProvider.isPending}
+        onClose={() => setAddModalOpen(false)}
+        onSave={handleCreate}
+        onTestConnection={(values) => testConfiguration.mutateAsync(values)}
+        onValidate={(values) => validateConfiguration.mutateAsync(values)}
+        onPreviewCoverage={(values) => previewCoverage.mutateAsync(values)}
+      />
+      <ProviderFormModal
+        key={selectedProvider?.id || "edit"}
+        open={editModalOpen}
+        mode="edit"
+        initial={selectedProvider}
+        busy={busy}
+        onClose={() => setEditModalOpen(false)}
+        onSubmit={handleEditSubmit}
+      />
       <ProviderDetailsDrawer open={detailsOpen} provider={detailsProvider} coverage={detailsQuery.data?.coverage || []} logs={detailsQuery.data?.logs || []} onClose={() => setDetailsOpen(false)} />
       <LogsDrawer open={logsOpen} logs={logs} onClose={() => setLogsOpen(false)} />
     </main>

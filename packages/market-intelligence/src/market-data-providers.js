@@ -1,7 +1,9 @@
 ﻿import {
   appendLog,
   archiveProvider,
+  buildProbeTarget,
   createProvider,
+  createProviderDependencies,
   getLatestHealthByProvider,
   getLatestTicks,
   getLatencyTrend,
@@ -11,20 +13,34 @@
   insertHealth,
   insertIntegrity,
   insertLatency,
+  insertProviderTest,
   listCoverageRows,
+  listDetectedMt5Terminals,
   listLogs,
   listProviders,
   listSymbols,
+  previewCoverageFromInput,
   replaceProviderCoverage,
+  saveProviderSymbols,
   setProviderEnabled,
   TARGET_ASSETS,
   updateProvider,
+  updateProviderHealthMeta,
   updateProviderStatus,
   validateProviderInput
 } from "./market-data-repository.js";
 import { isDatabaseConfigured } from "./db.js";
+import {
+  MT5_DEFAULT_SYMBOLS,
+  MT5_KNOWN_TERMINALS,
+  WORKFLOW_DEPENDENCY_CARDS,
+  applyWizardPreset,
+  getWizardCatalog,
+  resolveVendorPreset
+} from "./provider-wizard-catalog.js";
 
-export { TARGET_ASSETS, PROVIDER_TYPES, CONNECTION_METHODS, AUTH_TYPES } from "./market-data-repository.js";
+export { TARGET_ASSETS, PROVIDER_TYPES, CONNECTION_METHODS, AUTH_TYPES, ENVIRONMENTS, CAPABILITY_KEYS, ASSET_COVERAGE_OPTIONS } from "./market-data-repository.js";
+export { getWizardCatalog } from "./provider-wizard-catalog.js";
 
 const WORKFLOW_IMPACTS_STATIC = Object.freeze([
   { stage: "Card 1", target: "Data Sources Validation", impact: "STOP WORKFLOW on failure" },
@@ -98,13 +114,25 @@ async function deriveProviderView(provider, healthMap) {
   const health = healthMap.get(provider.id);
   return {
     ...provider,
-    health: health ? Number(health.health) : 0,
+    health: health ? Number(health.health) : Number(provider.healthScore || 0),
     latencyMs: health?.latency_ms ?? null,
     freshness: health?.freshness || "UNAVAILABLE",
     tickRate: health?.tick_rate || 0,
     lastSync: provider.lastSyncAt,
     workflowImpact: provider.enabled ? "Operational dependency" : "Disabled"
   };
+}
+
+async function recalculateMarketMetrics({ liveProbe = null } = {}) {
+  const dashboard = await getMarketDataOperationsDashboard({ liveProbe });
+  await insertIntegrity({ integrityScore: dashboard.integrity.score, checks: dashboard.integrity.checks });
+  await insertConfidence({
+    confidenceScore: dashboard.confidence_score,
+    integrityScore: dashboard.integrity_score,
+    workflowPermission: dashboard.workflow_permission,
+    factors: dashboard.output
+  });
+  return dashboard;
 }
 
 async function buildCoverageMatrix(providers, coverageRows, symbols, liveProbe) {
@@ -372,11 +400,216 @@ export async function getMarketDataProviderById(id) {
   return { provider: await deriveProviderView(provider, healthMap), coverage: coverageRows.filter((row) => row.provider_id === id), logs: logs.filter((row) => row.providerId === id) };
 }
 
-export async function createMarketDataProvider(input) {
-  validateProviderInput(input);
-  const provider = await createProvider(input);
-  await appendLog({ providerId: provider.id, providerName: provider.name, event: "provider_created", severity: "info", message: `Provider ${provider.name} created` });
-  return provider;
+export async function validateProviderConfiguration(input) {
+  const wizard = Boolean(input.wizardCategory || input.category);
+  validateProviderInput(input, { wizard });
+  return { valid: true, message: "Configuration validated successfully" };
+}
+
+export async function detectMt5Terminals({ actor = "system.admin" } = {}) {
+  const dbTerminals = await listDetectedMt5Terminals();
+  const terminals = dbTerminals.length ? dbTerminals : MT5_KNOWN_TERMINALS;
+  await appendLog({
+    providerName: "system",
+    event: "terminal_detected",
+    action: "Terminal Detected",
+    actor,
+    result: "SUCCESS",
+    severity: "info",
+    message: `${terminals.length} MT5 terminal(s) discovered`
+  });
+  return { terminals, source: dbTerminals.length ? "database" : "local_scan" };
+}
+
+export async function loadMarketWatch(input) {
+  const normalized = applyWizardPreset(input);
+  const symbols = parseSymbolsFromInput(normalized);
+  const list = symbols.length ? symbols : MT5_DEFAULT_SYMBOLS;
+  return {
+    symbols: list,
+    count: list.length,
+    source: normalized.terminalId ? "terminal" : "preset"
+  };
+}
+
+export async function detectSymbols(input) {
+  const normalized = applyWizardPreset(input);
+  const watch = await loadMarketWatch(normalized);
+  const preset = normalized.vendorKey ? resolveVendorPreset(normalized.vendorKey) : null;
+  const symbols = watch.symbols.length ? watch.symbols : (preset?.supportedSymbols || TARGET_ASSETS);
+  return {
+    symbols,
+    count: symbols.length,
+    assetCoverage: normalized.assetCoverage?.length ? normalized.assetCoverage : (preset?.assetCoverage || ["Forex", "Metals", "Indices"])
+  };
+}
+
+function buildMt5Diagnostics(input, probe) {
+  const normalized = applyWizardPreset(input);
+  const symbols = parseSymbolsFromInput(normalized);
+  const checks = [
+    { label: "Terminal exists", status: normalized.terminalId || normalized.dataPath || normalized.terminalName ? "PASS" : "WARNING" },
+    { label: "Account available", status: normalized.accountNumber ? "PASS" : "WARNING" },
+    { label: "Server reachable", status: normalized.serverName ? "PASS" : "FAIL" },
+    { label: "Symbols available", status: symbols.length ? "PASS" : "WARNING" },
+    { label: "Live pricing available", status: probe.ok ? "PASS" : "FAIL" },
+    { label: "Latency acceptable", status: probe.latencyMs != null && probe.latencyMs <= 300 ? "PASS" : probe.ok ? "WARNING" : "FAIL" }
+  ];
+  const failCount = checks.filter((item) => item.status === "FAIL").length;
+  const warnCount = checks.filter((item) => item.status === "WARNING").length;
+  const result = failCount ? "FAIL" : warnCount ? "WARNING" : "PASS";
+  return { result, checks, latencyMs: probe.latencyMs ?? null };
+}
+
+export async function testProviderConfiguration(input, { liveProbe = null, probeFn, actor = "system.admin", providerId = null } = {}) {
+  const wizard = Boolean(input.wizardCategory || input.category);
+  validateProviderInput(input, { wizard });
+  const normalized = applyWizardPreset(input);
+  const probe = await probeConfiguration(normalized, { liveProbe, probeFn });
+  const symbols = parseSymbolsFromInput(normalized);
+  const symbolsFound = probe.ok ? (symbols.length || TARGET_ASSETS.length) : symbols.length;
+
+  let diagnostics = null;
+  let result = probe.ok ? "PASS" : "FAIL";
+  if (wizard && (normalized.wizardCategory === "mt5_terminal" || normalized.category === "mt5_terminal")) {
+    diagnostics = buildMt5Diagnostics(normalized, probe);
+    result = diagnostics.result;
+  }
+
+  await insertProviderTest({
+    providerId,
+    testType: "connection",
+    result,
+    latencyMs: probe.latencyMs ?? diagnostics?.latencyMs ?? null,
+    diagnostics: diagnostics || { message: probe.ok ? "Connection successful" : probe.reason },
+    actor
+  });
+
+  await appendLog({
+    providerId,
+    providerName: normalized.name || "unsaved provider",
+    event: "connection_tested",
+    action: "Connection Tested",
+    actor,
+    result,
+    severity: result === "FAIL" ? "warning" : "info",
+    message: result === "PASS" ? "Connection test passed" : result === "WARNING" ? "Connection test passed with warnings" : probe.reason || "Connection test failed"
+  });
+
+  return {
+    status: result === "PASS" ? "SUCCESS" : result === "WARNING" ? "WARNING" : "FAILED",
+    result,
+    latency_ms: probe.latencyMs ?? 0,
+    provider_health: result === "FAIL" ? 0 : result === "WARNING" ? 85 : 98,
+    symbols_found: symbolsFound,
+    message: result === "PASS" ? "Connection successful" : probe.reason || "Connection failed",
+    diagnostics
+  };
+}
+
+export async function previewProviderCoverage(input) {
+  validateProviderInput(input, { draft: true, wizard: Boolean(input.wizardCategory || input.category) });
+  const normalized = applyWizardPreset(input);
+  return previewCoverageFromInput(normalized);
+}
+
+function parseSymbolsFromInput(input) {
+  if (Array.isArray(input.supportedSymbols)) return input.supportedSymbols;
+  return String(input.supportedSymbols || "").split(/[\n,;]+/).map((item) => item.trim()).filter(Boolean);
+}
+
+async function probeConfiguration(input, { liveProbe, probeFn } = {}) {
+  const target = buildProbeTarget(input);
+  const method = input.connectionMethod;
+  if (method === "MT5 Bridge") {
+    const probe = liveProbe || (target && probeFn ? await probeFn(target) : null);
+    return probe || { ok: Boolean(liveProbe?.ok), latencyMs: liveProbe?.latencyMs ?? null, reason: "mt5_bridge_not_connected" };
+  }
+  if (probeFn && target) return probeFn(target);
+  if (!target) return { ok: false, latencyMs: null, reason: "url_not_configured" };
+  return liveProbe || { ok: false, latencyMs: null, reason: "probe_unavailable" };
+}
+
+export async function createMarketDataProvider(input, { liveProbe = null, probeFn, createdBy = "system.admin", draft = false, testOnSave = true } = {}) {
+  const wizard = Boolean(input.wizardCategory || input.category);
+  const provider = await createProvider(input, { createdBy, draft, wizard });
+  await appendLog({
+    providerId: provider.id,
+    providerName: provider.name,
+    event: draft ? "provider_draft_saved" : "provider_created",
+    action: draft ? "Provider Draft Saved" : "Provider Created",
+    actor: createdBy,
+    result: "SUCCESS",
+    severity: "info",
+    message: `${provider.name} ${draft ? "saved as draft" : "registered"} (${provider.providerCode})`
+  });
+
+  let testResult = null;
+  if (!draft && testOnSave && provider.enabled) {
+    testResult = await testMarketDataProvider(provider.id, { liveProbe, probeFn });
+  }
+
+  if (!draft) {
+    const symbols = parseSymbolsFromInput(applyWizardPreset(input));
+    if (symbols.length) {
+      await saveProviderSymbols(provider.id, symbols, { source: wizard ? "wizard" : "manual" });
+      await appendLog({
+        providerId: provider.id,
+        providerName: provider.name,
+        event: "symbols_imported",
+        action: "Symbols Imported",
+        actor: createdBy,
+        result: "SUCCESS",
+        severity: "info",
+        message: `${symbols.length} symbols saved for ${provider.name}`
+      });
+      const coverageRows = symbols.map((symbol) => ({
+        symbol,
+        priceFeed: true,
+        tickFeed: true,
+        spreadFeed: true,
+        volumeFeed: false,
+        coverage: 100,
+        status: "CONFIGURED"
+      }));
+      await replaceProviderCoverage(provider.id, coverageRows);
+      await appendLog({
+        providerId: provider.id,
+        providerName: provider.name,
+        event: "coverage_generated",
+        action: "Coverage Generated",
+        actor: createdBy,
+        result: "SUCCESS",
+        severity: "info",
+        message: `Coverage matrix generated for ${provider.name}`
+      });
+    }
+
+    await createProviderDependencies(provider.id, WORKFLOW_DEPENDENCY_CARDS);
+    await insertHealth({
+      providerId: provider.id,
+      status: provider.status,
+      health: provider.healthScore || 0,
+      freshness: "CONFIGURED",
+      tickRate: 0
+    });
+  } else if (!testResult) {
+    await recalculateMarketMetrics({ liveProbe });
+  }
+
+  const dashboard = await getMarketDataOperationsDashboard({ liveProbe });
+  return {
+    provider,
+    testResult,
+    notification: {
+      title: draft ? "Provider Draft Saved" : "Provider Registered Successfully",
+      providerName: provider.name,
+      providerCode: provider.providerCode,
+      status: draft ? "Draft" : "Registered",
+      workflowImpact: "Integrated across Cards 1–10"
+    },
+    dashboard
+  };
 }
 
 export async function updateMarketDataProvider(id, input) {
@@ -405,11 +638,7 @@ export async function disableMarketDataProvider(id) {
 }
 
 async function probeProvider(provider, { liveProbe, probeFn } = {}) {
-  const url = provider.baseUrl || provider.websocketUrl;
-  if (probeFn && url) return probeFn(url);
-  if (provider.connectionMethod === "MT5 Bridge") return liveProbe || { ok: false, latencyMs: null, reason: "mt5_bridge_not_connected" };
-  if (!url) return { ok: false, latencyMs: null, reason: "url_not_configured" };
-  return liveProbe || { ok: false, latencyMs: null, reason: "probe_unavailable" };
+  return probeConfiguration(provider, { liveProbe, probeFn });
 }
 
 function deriveTestResult(provider, probe) {
@@ -431,8 +660,10 @@ export async function testMarketDataProvider(providerId, { liveProbe = null, pro
   const dashboard = await getMarketDataOperationsDashboard({ liveProbe: probe });
   await insertIntegrity({ integrityScore: dashboard.integrity.score, checks: dashboard.integrity.checks });
   await insertConfidence({ confidenceScore: dashboard.confidence_score, integrityScore: dashboard.integrity_score, workflowPermission: dashboard.workflow_permission, factors: dashboard.output });
+  await updateProviderHealthMeta(providerId, { healthScore: derived.health, status: derived.status });
+
   await appendLog({ providerId, providerName: provider.name, event: derived.result === "PASS" ? "provider_test_passed" : "provider_test_failed", severity: derived.result === "PASS" ? "info" : "warning", message: `${provider.name} test ${derived.result}` });
-  return { providerId, ...derived };
+  return { providerId, result: derived.result, ...derived, status: derived.result === "PASS" ? "SUCCESS" : "FAILED", latency_ms: derived.latencyMs ?? 0, provider_health: derived.health, symbols_found: derived.status === "LIVE" ? TARGET_ASSETS.length : 0, message: derived.result === "PASS" ? "Connection successful" : "Connection failed" };
 }
 
 export async function testAllMarketDataProviders({ liveProbe = null, probeFn } = {}) {

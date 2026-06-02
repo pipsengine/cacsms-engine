@@ -2,11 +2,11 @@
 
 import { useMemo, useState } from "react";
 import type { MarketDataProvider, ProviderFormValues } from "../../lib/market-data/types";
+import { defaultAddProviderValues } from "../../lib/market-data/provider-schema";
 
 const PROVIDER_TYPES = ["MT5", "Broker Price Feed", "TwelveData", "Polygon", "Finnhub", "AlphaVantage", "TradingView", "Custom Feed"];
-const CONNECTION_METHODS = ["REST", "WebSocket", "MT5 Bridge", "FIX", "Manual Upload", "Hybrid"];
+const CONNECTION_METHODS = ["REST API", "WebSocket", "MT5 Bridge", "FIX", "Manual Upload", "Hybrid"];
 const AUTH_TYPES = ["None", "API Key", "Bearer Token", "OAuth", "Vault Secret"];
-const ASSET_CLASSES = ["forex", "metals", "indices", "commodities", "crypto"];
 
 type Props = {
   open: boolean;
@@ -20,29 +20,41 @@ type Props = {
 const emptyValues: ProviderFormValues = {
   name: "",
   providerType: "MT5",
-  connectionMethod: "REST",
+  description: "",
+  vendorWebsite: "",
+  contactInfo: "",
+  notes: "",
+  connectionMethod: "MT5 Bridge",
   baseUrl: "",
   websocketUrl: "",
+  port: "",
+  environment: "Production",
+  enabled: true,
   authType: "None",
   vaultSecretRef: "",
-  environment: "foundation",
-  enabled: true,
-  supportedAssetClasses: ["forex"],
-  notes: ""
+  capabilities: defaultAddProviderValues.capabilities,
+  assetCoverage: ["Forex"],
+  supportedSymbols: ""
 };
 
 export function ProviderFormModal({ open, mode, initial, busy, onClose, onSubmit }: Props) {
   const [values, setValues] = useState<ProviderFormValues>(() => initial ? {
     name: initial.name,
     providerType: initial.providerType || initial.type,
-    connectionMethod: initial.connectionMethod || "REST",
+    description: "",
+    vendorWebsite: "",
+    contactInfo: "",
+    connectionMethod: initial.connectionMethod || "REST API",
     baseUrl: initial.baseUrl || "",
     websocketUrl: initial.websocketUrl || "",
+    port: "",
     authType: initial.authType || "None",
     vaultSecretRef: initial.vaultSecretRef || "",
-    environment: initial.environment || "foundation",
+    environment: initial.environment || "Production",
     enabled: initial.enabled,
-    supportedAssetClasses: initial.supportedAssetClasses || ["forex"],
+    assetCoverage: initial.supportedAssetClasses || ["Forex"],
+    supportedSymbols: "",
+    capabilities: defaultAddProviderValues.capabilities,
     notes: initial.notes || ""
   } : emptyValues);
   const [error, setError] = useState("");
@@ -77,15 +89,15 @@ export function ProviderFormModal({ open, mode, initial, busy, onClose, onSubmit
           <label>Authentication Type<select value={values.authType} onChange={(event) => update({ authType: event.target.value })}>{AUTH_TYPES.map((item) => <option key={item}>{item}</option>)}</select></label>
           <label>Vault Secret Reference<input value={values.vaultSecretRef} onChange={(event) => update({ vaultSecretRef: event.target.value })} placeholder="Vault reference only" /></label>
           <label className="mdoc-span-2">Supported Asset Classes
-            <div className="mdoc-chip-row">{ASSET_CLASSES.map((item) => (
+            <div className="mdoc-chip-row">{["Forex", "Indices", "Metals", "Commodities", "Crypto"].map((item) => (
               <button
                 key={item}
                 type="button"
-                className={`mdoc-chip ${values.supportedAssetClasses.includes(item) ? "active" : ""}`}
+                className={`mdoc-chip ${values.assetCoverage.includes(item) ? "active" : ""}`}
                 onClick={() => update({
-                  supportedAssetClasses: values.supportedAssetClasses.includes(item)
-                    ? values.supportedAssetClasses.filter((value) => value !== item)
-                    : [...values.supportedAssetClasses, item]
+                  assetCoverage: values.assetCoverage.includes(item)
+                    ? values.assetCoverage.filter((value) => value !== item)
+                    : [...values.assetCoverage, item]
                 })}
               >{item}</button>
             ))}</div>
