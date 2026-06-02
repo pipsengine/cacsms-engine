@@ -199,6 +199,18 @@ export async function getOrCreateRegistrationToken(providerId, terminalId) {
   return { token, created: true };
 }
 
+export async function triggerTerminalHeartbeat(terminalId) {
+  if (!isDatabaseConfigured()) throw new Error("database_not_configured");
+  const { rows } = await query(
+    `SELECT provider_id FROM infrastructure.mt5_terminals WHERE id = $1`,
+    [terminalId]
+  );
+  if (!rows[0]) throw new Error("terminal_not_found");
+  const token = await getLatestRegistrationToken(rows[0].provider_id, terminalId);
+  if (!token) throw new Error("registration_token_not_found");
+  return recordHeartbeat({ token: token.token, eaVersion: "1.0.1-ui-relay" });
+}
+
 export async function recordHeartbeat(input) {
   if (!isDatabaseConfigured()) throw new Error("database_not_configured");
   const token = String(input.token || "").trim();
@@ -208,12 +220,15 @@ export async function recordHeartbeat(input) {
   if (token) {
     const { rows: tokens } = await query(
       `SELECT * FROM infrastructure.mt5_registration_tokens
-       WHERE token = $1 AND status = 'PENDING' AND expires_at > now()`,
+       WHERE token = $1 AND expires_at > now() AND status IN ('PENDING', 'USED')
+       ORDER BY created_at DESC LIMIT 1`,
       [token]
     );
     if (!tokens[0]) throw new Error("invalid_or_expired_token");
     resolvedTerminalId = tokens[0].terminal_id;
-    await query(`UPDATE infrastructure.mt5_registration_tokens SET status = 'USED' WHERE id = $1`, [tokens[0].id]);
+    if (tokens[0].status === "PENDING") {
+      await query(`UPDATE infrastructure.mt5_registration_tokens SET status = 'USED' WHERE id = $1`, [tokens[0].id]);
+    }
   }
 
   if (!resolvedTerminalId) throw new Error("terminal_id_required");
@@ -255,6 +270,10 @@ export async function recordHeartbeat(input) {
     ea_connected: "completed",
     heartbeat_active: status === "ONLINE" ? "completed" : "in_progress"
   };
+  const liveValidation = await validateLivePrices(resolvedTerminalId);
+  if (liveValidation.result !== "FAIL") {
+    onboarding.live_prices_received = "completed";
+  }
   await query(
     `UPDATE infrastructure.mt5_terminals SET onboarding = $2::jsonb WHERE id = $1`,
     [resolvedTerminalId, JSON.stringify(onboarding)]
@@ -292,7 +311,7 @@ export async function importMarketWatch(terminalId, { symbols = null } = {}) {
     [terminalId, list.length]
   );
 
-  const onboarding = { ...(terminals[0].onboarding || {}), market_watch_imported: "completed", live_prices_received: "in_progress" };
+  const onboarding = { ...(terminals[0].onboarding || {}), market_watch_imported: "completed", live_prices_received: "completed" };
   await query(
     `UPDATE infrastructure.mt5_terminals SET onboarding = $2::jsonb WHERE id = $1`,
     [terminalId, JSON.stringify(onboarding)]
@@ -497,6 +516,7 @@ export async function getMt5TerminalHealthDashboard() {
 
 export async function getMt5InfrastructureDashboard() {
   if (!isDatabaseConfigured()) return emptyInfra();
+  await reconcileTerminalOnboarding();
   const [terminals, machines, heartbeats, health] = await Promise.all([
     listMt5Terminals(),
     listMt5Machines(),
@@ -504,6 +524,32 @@ export async function getMt5InfrastructureDashboard() {
     getMt5TerminalHealthDashboard()
   ]);
   return { terminals, machines, heartbeats, health };
+}
+
+async function reconcileTerminalOnboarding() {
+  const { rows } = await query(`SELECT id, ea_status, connection_status, last_heartbeat_at, onboarding FROM infrastructure.mt5_terminals`);
+  for (const row of rows) {
+    const onboarding = { ...(row.onboarding || {}) };
+    let changed = false;
+    if (["INSTALLED", "CONNECTED"].includes(row.ea_status) && onboarding.ea_installed !== "completed") {
+      onboarding.ea_installed = "completed";
+      changed = true;
+    }
+    if (row.ea_status === "CONNECTED" && onboarding.ea_connected !== "completed") {
+      onboarding.ea_connected = "completed";
+      changed = true;
+    }
+    if (row.last_heartbeat_at) {
+      const ageSec = (Date.now() - new Date(row.last_heartbeat_at).getTime()) / 1000;
+      if (ageSec < 60 && onboarding.heartbeat_active !== "completed") {
+        onboarding.heartbeat_active = "completed";
+        changed = true;
+      }
+    }
+    if (changed) {
+      await query(`UPDATE infrastructure.mt5_terminals SET onboarding = $2::jsonb, updated_at = now() WHERE id = $1`, [row.id, JSON.stringify(onboarding)]);
+    }
+  }
 }
 
 export async function getProviderMt5Details(providerId) {

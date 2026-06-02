@@ -38,6 +38,19 @@ function renderMt5Sections(data) {
   const heartbeatsHtml = `<section class="mdoc-panel"><div class="mdoc-panel-head"><h2>Heartbeat Monitor</h2><b>10s EXPECTED</b></div>${table(["Terminal","Last Heartbeat","Status","Latency"], mt5.heartbeats.map((row) => [esc(row.terminal), formatAge(row.lastHeartbeat), `<b class="mdoc-state ${esc(String(row.status).toLowerCase())}">${esc(row.status)}</b>`, row.latencyMs != null ? `${row.latencyMs} ms` : "—"]))}</section>`;
 
   const readiness = mt5.readiness || {};
+  const waitingHeartbeat = (mt5.terminals || []).some((row) => row.eaStatus === "INSTALLED" && row.connectionStatus === "OFFLINE");
+  const nextStepHtml = waitingHeartbeat
+    ? `<section class="mdoc-panel mdoc-setup-cta" id="mdoc-heartbeat-help">
+        <div class="mdoc-panel-head"><h2>Waiting for EA Heartbeat</h2><b>STEP 4–6</b></div>
+        <p>Files are deployed and symbols are imported, but CACSMS has not received a heartbeat from MT5 yet. Complete these checks in MetaTrader 5:</p>
+        <ol class="mdoc-onboarding">
+          <li class="mdoc-onboarding-step in_progress"><span>1</span><div><strong>Update EA to v1.0.1</strong><small>EA Deployment Center → Update EA, then compile in MetaEditor (F7)</small></div></li>
+          <li class="mdoc-onboarding-step in_progress"><span>2</span><div><strong>Allow WebRequest</strong><small>Tools → Options → Expert Advisors → add http://localhost:8080</small></div></li>
+          <li class="mdoc-onboarding-step in_progress"><span>3</span><div><strong>Attach EA with token</strong><small>Paste RegistrationToken, enable Algo Trading, check Experts tab for "heartbeat sent"</small></div></li>
+        </ol>
+        <div class="mdoc-header-actions"><a class="mdoc-button primary" href="/workspace/mt5-infrastructure/ea-deployments">Update EA</a><button class="mdoc-button secondary" data-action="refresh">Refresh Status</button></div>
+      </section>`
+    : "";
   const setupCta = pendingProviders.length
     ? `<section class="mdoc-panel mdoc-setup-cta" id="mdoc-register-terminal">
         <div class="mdoc-panel-head"><h2>MT5 Setup Required</h2><b>STEP 2</b></div>
@@ -47,7 +60,7 @@ function renderMt5Sections(data) {
     : "";
   const readinessHtml = `<section class="mdoc-panel mdoc-readiness"><div class="mdoc-panel-head"><h2>Workflow Readiness</h2><b>${esc(readiness.permission || "STOP")}</b></div><p>${esc(readiness.message || "Complete MT5 onboarding to enable workflow.")}</p>${readiness.reason ? `<small>Blocker: ${esc(readiness.reason)}</small>` : ""}</section>`;
 
-  return `${setupCta}${mt5Kpis}${readinessHtml}${onboardingHtml}${terminalsHtml}${machinesHtml}${heartbeatsHtml}`;
+  return `${setupCta}${nextStepHtml}${mt5Kpis}${readinessHtml}${onboardingHtml}${terminalsHtml}${machinesHtml}${heartbeatsHtml}`;
 }
 
 function renderProviderDetailsDrawer(details) {
@@ -76,7 +89,8 @@ function renderTokenModal({ token, expiresAt, created = true }) {
   return `<div class="mdoc-modal-backdrop" id="mdoc-token-modal">
     <section class="mdoc-modal mdoc-token-modal">
       <header class="mdoc-modal-head"><h2>Registration Token</h2><button type="button" class="mdoc-button secondary" data-action="close-token-modal">Close</button></header>
-      <p class="mdoc-help">${created ? "New token generated." : "Active pending token retrieved."} Paste this into the CACSMS EA on your MT5 chart.</p>
+      <p class="mdoc-help">${created ? "New token generated." : "Active pending token retrieved."} Paste this into the CACSMS EA inputs on your MT5 chart.</p>
+      <p class="mdoc-help mdoc-warning">In MT5, add <strong>${esc(typeof window !== "undefined" ? "http://localhost:8080" : "http://localhost:8080")}</strong> to Tools → Options → Expert Advisors → Allow WebRequest for listed URL.</p>
       <label class="mdoc-token-field">Token<input id="mdoc-token-value" type="text" readonly value="${esc(value)}" /></label>
       <p class="mdoc-token-meta"><span>Expires</span><strong>${esc(expiry)}</strong></p>
       <div class="mdoc-header-actions">

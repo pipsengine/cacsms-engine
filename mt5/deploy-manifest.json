@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "files": [
     { "source": "experts/CACSMS_Engine_Bridge.mq5", "target": "MQL5/Experts/CACSMS/CACSMS_Engine_Bridge.mq5" },
     { "source": "include/ConnectionManager.mqh", "target": "MQL5/Include/CACSMS/ConnectionManager.mqh" },
