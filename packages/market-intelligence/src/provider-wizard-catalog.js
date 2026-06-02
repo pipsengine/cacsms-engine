@@ -35,12 +35,12 @@ export const WIZARD_CATEGORIES = Object.freeze([
 
 export const WIZARD_PROVIDERS = Object.freeze({
   mt5_terminal: [
-    { id: "ic-markets", name: "IC Markets", brokerName: "IC Markets", serverName: "ICMarketsSC-Live26" },
-    { id: "exness", name: "Exness", brokerName: "Exness", serverName: "Exness-MT5Real" },
-    { id: "pepperstone", name: "Pepperstone", brokerName: "Pepperstone", serverName: "Pepperstone-Live" },
-    { id: "fp-markets", name: "FP Markets", brokerName: "FP Markets", serverName: "FPMarkets-Live" },
-    { id: "eightcap", name: "Eightcap", brokerName: "Eightcap", serverName: "Eightcap-Live" },
-    { id: "custom-mt5", name: "Custom MT5", brokerName: "", serverName: "", custom: true }
+    { id: "ic-markets", name: "IC Markets", brokerName: "IC Markets", brokerSearchName: "Raw Trading Ltd" },
+    { id: "exness", name: "Exness", brokerName: "Exness", brokerSearchName: "Exness" },
+    { id: "pepperstone", name: "Pepperstone", brokerName: "Pepperstone", brokerSearchName: "Pepperstone" },
+    { id: "fp-markets", name: "FP Markets", brokerName: "FP Markets", brokerSearchName: "FP Markets" },
+    { id: "eightcap", name: "Eightcap", brokerName: "Eightcap", brokerSearchName: "Eightcap" },
+    { id: "custom-mt5", name: "Custom MT5", brokerName: "Custom Broker", brokerSearchName: "", custom: true }
   ],
   broker_feed: [
     { id: "ic-markets-api", name: "IC Markets", vendorKey: "ICMarkets" },
@@ -174,28 +174,7 @@ export const MT5_DEFAULT_SYMBOLS = Object.freeze([
   "XAUUSD", "NAS100", "US30", "SPX500", "GER40", "USOIL"
 ]);
 
-export const MT5_KNOWN_TERMINALS = Object.freeze([
-  {
-    id: "mt5-local-icm",
-    broker: "IC Markets",
-    server: "ICMarketsSC-Live26",
-    account: "51234567",
-    buildVersion: "5.0.45",
-    dataPath: "C:\\Program Files\\MetaTrader 5 IC Markets Global",
-    terminalName: "IC Markets MT5",
-    marketWatchSymbols: MT5_DEFAULT_SYMBOLS
-  },
-  {
-    id: "mt5-local-exness",
-    broker: "Exness",
-    server: "Exness-MT5Real",
-    account: "87654321",
-    buildVersion: "5.0.44",
-    dataPath: "C:\\Program Files\\MetaTrader 5 Exness",
-    terminalName: "Exness MT5",
-    marketWatchSymbols: MT5_DEFAULT_SYMBOLS
-  }
-]);
+export const MT5_KNOWN_TERMINALS = Object.freeze([]);
 
 export const WORKFLOW_DEPENDENCY_CARDS = Object.freeze([
   { card: "Card 1", target: "Data Sources Validation", impact: "Provider required for source validation" },
@@ -229,7 +208,7 @@ export function resolveMt5ProviderPreset(providerId) {
   if (!match || match.custom) return null;
   return {
     brokerName: match.brokerName,
-    serverName: match.serverName,
+    brokerSearchName: match.brokerSearchName || "",
     assetCoverage: ["Forex", "Metals", "Indices"],
     supportedSymbols: MT5_DEFAULT_SYMBOLS,
     capabilities: {
@@ -260,7 +239,7 @@ export function applyWizardPreset(input) {
     const mt5 = resolveMt5ProviderPreset(input.providerTemplateId);
     if (mt5) {
       preset.brokerName = preset.brokerName || mt5.brokerName;
-      preset.serverName = preset.serverName || mt5.serverName;
+      preset.brokerSearchName = preset.brokerSearchName || mt5.brokerSearchName;
       preset.assetCoverage = preset.assetCoverage?.length ? preset.assetCoverage : mt5.assetCoverage;
       preset.supportedSymbols = preset.supportedSymbols || mt5.supportedSymbols;
       preset.capabilities = preset.capabilities || mt5.capabilities;

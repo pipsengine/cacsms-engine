@@ -1,0 +1,46 @@
+import { readFileSync, readdirSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import pg from "pg";
+
+const migrationsDir = fileURLToPath(new URL("../database/migrations/", import.meta.url));
+const files = readdirSync(migrationsDir).filter((name) => name.endsWith(".sql")).sort();
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+
+await pool.query(`
+  CREATE TABLE IF NOT EXISTS public.schema_migrations (
+    filename text PRIMARY KEY,
+    applied_at timestamptz NOT NULL DEFAULT now()
+  )
+`);
+
+const { rows: applied } = await pool.query("SELECT filename FROM public.schema_migrations");
+const done = new Set(applied.map((row) => row.filename));
+
+for (const file of files) {
+  if (done.has(file)) {
+    console.log(`skip ${file}`);
+    continue;
+  }
+  const content = readFileSync(join(migrationsDir, file), "utf8");
+  process.stdout.write(`apply ${file}... `);
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query(content);
+    await client.query("INSERT INTO public.schema_migrations (filename) VALUES ($1)", [file]);
+    await client.query("COMMIT");
+    console.log("ok");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    console.log("failed");
+    console.error(error.message);
+    client.release();
+    await pool.end();
+    process.exit(1);
+  }
+  client.release();
+}
+
+await pool.end();
+console.log("migrations complete");

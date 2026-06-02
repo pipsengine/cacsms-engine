@@ -40,6 +40,12 @@ import {
   updateSourceProvider
 } from "../../../packages/market-intelligence/src/source-configuration.js";
 import {
+  detectBrokerServers,
+  listBrokerServers,
+  listMt5Brokers,
+  saveCustomBrokerServer
+} from "../../../packages/market-intelligence/src/mt5-broker-servers.js";
+import {
   createMarketDataProvider,
   deleteMarketDataProvider,
   disableMarketDataProvider,
@@ -65,8 +71,31 @@ import {
   testMarketDataProvider,
   testProviderConfiguration,
   updateMarketDataProvider,
-  validateProviderConfiguration
+  validateProviderConfiguration,
+  listMt5Terminals,
+  listMt5Machines,
+  listMt5Heartbeats,
+  getMt5TerminalHealthDashboard,
+  registerTerminalForProvider,
+  generateRegistrationToken,
+  getLatestRegistrationToken,
+  getOrCreateRegistrationToken,
+  recordHeartbeat,
+  importMarketWatch,
+  getProviderMt5Details,
+  listEaDeployments,
+  listConnectionMonitor
 } from "../../../packages/market-intelligence/src/market-data-providers.js";
+import {
+  deployEa,
+  updateEa,
+  verifyEa,
+  rollbackEa,
+  getEaDeploymentDashboard,
+  listEaDeploymentLogs,
+  syncDiscoveredTerminalPaths,
+  ensureEaVersionCatalog
+} from "../../../packages/market-intelligence/src/ea-deployment.js";
 
 const port = Number(process.env.API_PORT || 8080);
 const root = fileURLToPath(new URL("../../../", import.meta.url));
@@ -87,6 +116,16 @@ function json(response, status, body) {
     "Content-Type": "application/json"
   });
   response.end(JSON.stringify(body));
+}
+
+function mt5EaError(response, reason) {
+  const message = reason instanceof Error ? reason.message : String(reason);
+  if (message === "database_not_configured") return json(response, 503, { error: message });
+  if (message === "terminal_not_found" || message === "rollback_snapshot_not_found" || message === "ea_version_not_found") {
+    return json(response, 404, { error: message });
+  }
+  if (message === "machine_not_linked" || message === "mt5_terminal_paths_not_found") return json(response, 400, { error: message });
+  return json(response, 400, { error: message });
 }
 
 function readBody(request) {
@@ -263,6 +302,7 @@ const routes = {
   }
   ,"GET /api/market-data/providers/catalog": () => getWizardCatalog()
   ,"GET /api/market-data/providers/detect-mt5-terminals": () => detectMt5Terminals()
+  ,"GET /api/mt5/brokers": () => listMt5Brokers()
   ,"GET /api/market-intelligence/news-sentiment/dashboard": () => liveSourcePayload("news-sentiment")
   ,"GET /api/market-intelligence/news-sentiment/headlines": () => ({ headlines: [] })
   ,"GET /api/market-intelligence/news-sentiment/sources": () => ({ sources: [] })
@@ -436,6 +476,142 @@ const server = createServer(async (request, response) => {
   if (request.method === "POST" && url.pathname === "/api/source-configuration/sync-all") {
     return json(response, 200, { accepted: true, ...(await syncAllSourceProviders({ liveSnapshots: await getLiveSourceSnapshots() })) });
   }
+  if (request.method === "GET" && url.pathname.startsWith("/api/mt5/brokers/") && url.pathname.endsWith("/servers")) {
+    const brokerName = decodeURIComponent(url.pathname.split("/")[4] || "");
+    try {
+      return json(response, 200, await listBrokerServers(brokerName));
+    } catch (reason) {
+      return json(response, 400, { error: reason instanceof Error ? reason.message : String(reason) });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/mt5/brokers/detect-servers") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, await detectBrokerServers(body));
+    } catch (reason) {
+      return json(response, 400, { error: reason instanceof Error ? reason.message : String(reason) });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/mt5/brokers/custom-server") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, await saveCustomBrokerServer(body));
+    } catch (reason) {
+      return json(response, 400, { error: reason instanceof Error ? reason.message : String(reason) });
+    }
+  }
+  if (request.method === "GET" && url.pathname === "/api/mt5/terminals") {
+    return json(response, 200, { terminals: await listMt5Terminals() });
+  }
+  if (request.method === "GET" && url.pathname === "/api/mt5/machines") {
+    return json(response, 200, { machines: await listMt5Machines() });
+  }
+  if (request.method === "GET" && url.pathname === "/api/mt5/heartbeats") {
+    return json(response, 200, { heartbeats: await listMt5Heartbeats() });
+  }
+  if (request.method === "GET" && url.pathname === "/api/mt5/terminal-health") {
+    return json(response, 200, { health: await getMt5TerminalHealthDashboard() });
+  }
+  if (request.method === "GET" && url.pathname === "/api/mt5/ea-deployments") {
+    return json(response, 200, await getEaDeploymentDashboard());
+  }
+  if (request.method === "GET" && url.pathname === "/api/mt5/ea/deployments") {
+    return json(response, 200, { deployments: await listEaDeployments() });
+  }
+  if (request.method === "GET" && url.pathname === "/api/mt5/ea/logs") {
+    const deploymentId = url.searchParams.get("deploymentId");
+    return json(response, 200, { logs: await listEaDeploymentLogs(deploymentId) });
+  }
+  if (request.method === "POST" && url.pathname === "/api/mt5/ea/deploy") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, { accepted: true, ...(await deployEa(body)) });
+    } catch (reason) {
+      return mt5EaError(response, reason);
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/mt5/ea/update") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, { accepted: true, ...(await updateEa(body)) });
+    } catch (reason) {
+      return mt5EaError(response, reason);
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/mt5/ea/verify") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, { accepted: true, ...(await verifyEa(body)) });
+    } catch (reason) {
+      return mt5EaError(response, reason);
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/mt5/ea/rollback") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, { accepted: true, ...(await rollbackEa(body)) });
+    } catch (reason) {
+      return mt5EaError(response, reason);
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/mt5/ea/discover") {
+    const body = await readBody(request);
+    try {
+      await ensureEaVersionCatalog();
+      return json(response, 200, { accepted: true, ...(await syncDiscoveredTerminalPaths(body)) });
+    } catch (reason) {
+      return mt5EaError(response, reason);
+    }
+  }
+  if (request.method === "GET" && url.pathname === "/api/mt5/connection-monitor") {
+    return json(response, 200, { connections: await listConnectionMonitor() });
+  }
+  if (request.method === "POST" && url.pathname === "/api/mt5/terminals/register") {
+    const body = await readBody(request);
+    try {
+      const terminal = await registerTerminalForProvider(body.providerId, body);
+      return json(response, 201, { accepted: true, terminal });
+    } catch (reason) {
+      const message = reason instanceof Error ? reason.message : String(reason);
+      if (message === "database_not_configured") return json(response, 503, { error: message });
+      if (message === "provider_not_found") return json(response, 404, { error: message });
+      return json(response, 400, { error: message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/mt5/terminals/generate-token") {
+    const body = await readBody(request);
+    try {
+      const token = await generateRegistrationToken(body.providerId, body.terminalId);
+      return json(response, 201, { accepted: true, token });
+    } catch (reason) {
+      const message = reason instanceof Error ? reason.message : String(reason);
+      if (message === "database_not_configured") return json(response, 503, { error: message });
+      return json(response, 400, { error: message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/mt5/terminals/heartbeat") {
+    const body = await readBody(request);
+    try {
+      return json(response, 200, { accepted: true, ...(await recordHeartbeat(body)) });
+    } catch (reason) {
+      const message = reason instanceof Error ? reason.message : String(reason);
+      if (message === "database_not_configured") return json(response, 503, { error: message });
+      if (message === "invalid_or_expired_token" || message === "terminal_not_found") return json(response, 404, { error: message });
+      return json(response, 400, { error: message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/mt5/terminals/import-market-watch") {
+    const body = await readBody(request);
+    try {
+      const result = await importMarketWatch(body.terminalId, { symbols: body.symbols });
+      return json(response, 200, { accepted: true, ...result, dashboard: await getMarketDataOperationsDashboard({ liveProbe: await getMarketDataLiveProbe() }) });
+    } catch (reason) {
+      const message = reason instanceof Error ? reason.message : String(reason);
+      if (message === "database_not_configured") return json(response, 503, { error: message });
+      if (message === "terminal_not_found") return json(response, 404, { error: message });
+      return json(response, 400, { error: message });
+    }
+  }
   if (request.method === "POST" && url.pathname === "/api/market-data/providers/test") {
     const body = await readBody(request);
     const probeContext = { liveProbe: await getMarketDataLiveProbe(), probeFn: probeConfiguredUrl };
@@ -447,6 +623,7 @@ const server = createServer(async (request, response) => {
     } catch (reason) {
       const message = reason instanceof Error ? reason.message : String(reason);
       if (message === "provider_not_found") return json(response, 404, { error: message });
+      if (message === "database_not_configured") return json(response, 503, { error: message });
       return json(response, 400, { error: message });
     }
   }
@@ -536,6 +713,28 @@ const server = createServer(async (request, response) => {
         }
         if (request.method === "POST" && providerId && action === "disable") {
           return json(response, 200, { accepted: true, provider: await disableMarketDataProvider(providerId) });
+        }
+        if (request.method === "GET" && providerId && action === "mt5-details") {
+          return json(response, 200, await getProviderMt5Details(providerId));
+        }
+        if (request.method === "GET" && providerId && action === "registration-token") {
+          const terminalId = url.searchParams.get("terminalId");
+          if (!terminalId) return json(response, 400, { error: "terminal_id_required" });
+          const token = await getLatestRegistrationToken(providerId, terminalId);
+          return json(response, 200, { token, available: Boolean(token) });
+        }
+        if (request.method === "POST" && providerId && action === "generate-token") {
+          const body = await readBody(request);
+          if (!body.terminalId) return json(response, 400, { error: "terminal_id_required" });
+          const result = body.forceNew
+            ? { token: await generateRegistrationToken(providerId, body.terminalId), created: true }
+            : await getOrCreateRegistrationToken(providerId, body.terminalId);
+          return json(response, result.created ? 201 : 200, { accepted: true, ...result });
+        }
+        if (request.method === "POST" && providerId && action === "import-market-watch") {
+          const body = await readBody(request);
+          const result = await importMarketWatch(body.terminalId, { symbols: body.symbols });
+          return json(response, 200, { accepted: true, ...result, dashboard: await getMarketDataOperationsDashboard({ liveProbe }) });
         }
       } catch (reason) {
         const message = reason instanceof Error ? reason.message : String(reason);

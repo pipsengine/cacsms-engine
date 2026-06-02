@@ -51,7 +51,12 @@ export const sidebarFunctions = [
   ["execution", "PlayCircle", "Execution Center", "", [["Execution Dashboard", "/workspace/execution/dashboard"]]],
   ["position", "Briefcase", "Position Management", "", [["Position Dashboard", "/workspace/position/dashboard"]]],
   ["learning", "DatabaseZap", "Learning & Memory", "", [["Learning Dashboard", "/workspace/learning/dashboard"]]],
-  ["mt5", "Server", "MT5 Infrastructure", "", [["MT5 Dashboard", "/workspace/mt5/dashboard"]]],
+  ["mt5", "Server", "MT5 Infrastructure", "", [
+    ["Agent Downloads", "/workspace/mt5-infrastructure/agent-downloads"],
+    ["EA Deployments", "/workspace/mt5-infrastructure/ea-deployments"],
+    ["Connection Monitor", "/workspace/mt5-infrastructure/connection-monitor"],
+    ["Market Data Providers", "/workspace/market-intelligence/market-data"]
+  ]],
   ["machines", "MonitorSmartphone", "Machine Registry", "", [["Machine Dashboard", "/workspace/machines/dashboard"]]],
   ["monitoring", "Activity", "Monitoring & Self-Healing", "", [["Monitoring Dashboard", "/workspace/monitoring/dashboard"]]],
   ["reports", "FileBarChart", "Reports & Audit", "", [["Reports Dashboard", "/workspace/reports/dashboard"]]],

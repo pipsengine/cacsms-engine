@@ -18,14 +18,27 @@ export function createWizardState() {
     vendorKey: "",
     name: "",
     brokerName: "",
+    brokerSearchName: "",
+    customBrokerName: "",
     terminalName: "",
     accountNumber: "",
     serverName: "",
+    customServer: false,
+    customServerName: "",
+    serverVerificationStatus: "",
+    serverSource: "",
+    serverCatalogId: "",
     environment: "Production",
     terminalLocation: "",
     terminalId: null,
+    machineId: "",
     dataPath: "",
     buildVersion: "",
+    brokers: [],
+    brokerServers: [],
+    selectedServer: null,
+    serversLoading: false,
+    serverListMessage: "",
     apiKey: "",
     enabled: true,
     assetCoverage: [],
@@ -52,16 +65,54 @@ function renderCategoryCards(catalog) {
 
 function renderProviderCards(category, catalog) {
   const list = catalog.providers[category] || [];
-  return `<div class="mdoc-wizard-cards compact">${list.map((item) => `<button type="button" class="mdoc-wizard-card" data-provider-id="${esc(item.id)}" data-vendor-key="${esc(item.vendorKey || "")}" data-name="${esc(item.name)}" data-broker="${esc(item.brokerName || item.name)}" data-server="${esc(item.serverName || "")}"><strong>${esc(item.name)}</strong>${item.custom ? "<small>Advanced manual setup</small>" : ""}</button>`).join("")}</div>`;
+  return `<div class="mdoc-wizard-cards compact">${list.map((item) => `<button type="button" class="mdoc-wizard-card" data-provider-id="${esc(item.id)}" data-vendor-key="${esc(item.vendorKey || "")}" data-name="${esc(item.name)}" data-broker="${esc(item.brokerName || item.name)}" data-broker-search="${esc(item.brokerSearchName || "")}"><strong>${esc(item.name)}</strong>${item.custom ? "<small>Advanced manual setup</small>" : ""}</button>`).join("")}</div>`;
+}
+
+function renderServerInfoPanel(state) {
+  const meta = state.selectedServer;
+  if (!meta || state.customServer) return "";
+  return `<aside class="mdoc-server-info">
+    <strong>${esc(meta.serverName)}</strong>
+    <span>Verification: ${esc(meta.verificationStatus)}</span>
+    <span>Source: ${esc(meta.source)}</span>
+    <span>Environment: ${esc(meta.environment)} · Type: ${esc(meta.serverType)}</span>
+    <span>Last verified: ${meta.lastVerifiedAt ? esc(new Date(meta.lastVerifiedAt).toLocaleString()) : "Not verified"}</span>
+  </aside>`;
 }
 
 function renderMt5Form(state) {
+  const brokerOptions = (state.brokers || []).map((item) => `<option value="${esc(item.brokerName)}">`).join("");
+  const customBroker = state.brokerName === "Custom Broker"
+    ? `<label class="mdoc-span-2">Custom Broker Name<input name="customBrokerName" value="${esc(state.customBrokerName)}" required placeholder="Enter broker name" /></label>`
+    : "";
+  const serverField = state.customServer
+    ? `<label class="mdoc-span-2">Custom Server Name<input name="customServerName" value="${esc(state.customServerName || state.serverName)}" required placeholder="Exact MT5 server name from broker" /></label>
+       <p class="mdoc-help mdoc-warning">Only use this if your broker provided the exact MT5 server name. Incorrect server names will cause connection failure.</p>`
+    : `<label class="mdoc-span-2">Server Name
+         <select name="serverName"${state.serversLoading ? " disabled" : ""} required>
+           <option value="">Select verified server...</option>
+           ${(state.brokerServers || []).map((item) => `<option value="${esc(item.serverName)}" data-id="${esc(item.id)}"${state.serverName === item.serverName ? " selected" : ""}>${esc(item.serverName)} · ${esc(item.verificationStatus)}</option>`).join("")}
+         </select>
+       </label>
+       ${state.serverListMessage ? `<p class="mdoc-help">${esc(state.serverListMessage)}</p>` : ""}`;
+
   return `<div class="mdoc-form-grid">
     <label>Provider Name<input name="name" value="${esc(state.name)}" placeholder="IC Markets Production Terminal" /></label>
-    <label>Broker Name<input name="brokerName" value="${esc(state.brokerName)}" required /></label>
+    <label>Broker Name
+      <input type="search" name="brokerName" list="mdoc-broker-options" value="${esc(state.brokerName)}" placeholder="Search broker..." required />
+      <datalist id="mdoc-broker-options">${brokerOptions}</datalist>
+    </label>
+    ${customBroker}
+    <input type="hidden" name="brokerSearchName" value="${esc(state.brokerSearchName)}" />
     <label>Terminal Name<input name="terminalName" value="${esc(state.terminalName)}" placeholder="IC Markets MT5" /></label>
     <label>Account Number<input name="accountNumber" value="${esc(state.accountNumber)}" /></label>
-    <label>Server Name<input name="serverName" value="${esc(state.serverName)}" required /></label>
+    ${serverField}
+    <label class="mdoc-checkbox mdoc-span-2"><input type="checkbox" name="customServer"${state.customServer ? " checked" : ""} /> Enter Custom Server</label>
+    <div class="mdoc-span-2 mdoc-server-actions">
+      <button type="button" class="mdoc-button secondary" data-action="detect-servers"${state.serversLoading ? " disabled" : ""}>Detect Servers</button>
+      <button type="button" class="mdoc-button secondary" data-action="refresh-servers"${state.serversLoading ? " disabled" : ""}>Refresh Servers</button>
+    </div>
+    ${renderServerInfoPanel(state)}
     <label>Environment<select name="environment"><option${state.environment === "Production" ? " selected" : ""}>Production</option><option${state.environment === "Demo" ? " selected" : ""}>Demo</option><option${state.environment === "Testing" ? " selected" : ""}>Testing</option></select></label>
     <label class="mdoc-span-2">Terminal Location<input name="terminalLocation" value="${esc(state.terminalLocation || state.dataPath)}" placeholder="Auto-detected path" readonly /></label>
   </div>
@@ -188,30 +239,56 @@ export function readWizardForm(modal, state) {
   if (!form) return state;
   const data = new FormData(form);
   const next = { ...state };
-  for (const key of ["name", "brokerName", "terminalName", "accountNumber", "serverName", "environment", "terminalLocation", "apiKey", "baseUrl", "websocketUrl", "port", "authType", "vaultSecretRef"]) {
+  for (const key of ["name", "brokerName", "brokerSearchName", "customBrokerName", "terminalName", "accountNumber", "serverName", "customServerName", "environment", "terminalLocation", "apiKey", "baseUrl", "websocketUrl", "port", "authType", "vaultSecretRef"]) {
     const value = data.get(key);
     if (value != null) next[key] = String(value);
   }
+  next.customServer = form.querySelector('[name="customServer"]')?.checked === true;
   next.enabled = form.querySelector('[name="enabled"]')?.checked !== false;
   next.assetCoverage = [...form.querySelectorAll(".mdoc-chip.active")].map((chip) => chip.dataset.asset);
   next.supportedSymbols = String(data.get("supportedSymbols") || "").split(/[\n,;]+/).map((item) => item.trim()).filter(Boolean);
+
+  const serverSelect = form.querySelector('select[name="serverName"]');
+  if (serverSelect && serverSelect.selectedIndex > 0) {
+    const option = serverSelect.options[serverSelect.selectedIndex];
+    next.serverCatalogId = option.dataset.id || "";
+    next.selectedServer = (next.brokerServers || []).find((item) => item.serverName === next.serverName) || null;
+    next.serverVerificationStatus = next.selectedServer?.verificationStatus || "";
+    next.serverSource = next.selectedServer?.source || "";
+  }
+  if (next.customServer) {
+    next.serverName = next.customServerName || next.serverName;
+    next.serverVerificationStatus = "UNVERIFIED";
+    next.serverSource = "custom_user_entry";
+    next.selectedServer = null;
+    next.serverCatalogId = "";
+  }
   return next;
 }
 
 export function buildWizardPayload(state) {
+  const brokerName = state.brokerName === "Custom Broker" ? (state.customBrokerName || state.brokerName) : state.brokerName;
   return {
     wizardCategory: state.category,
     category: state.category,
     providerTemplateId: state.providerTemplateId,
     vendorKey: state.vendorKey,
     name: state.name || state.providerName,
-    brokerName: state.brokerName,
+    brokerName,
+    brokerSearchName: state.brokerSearchName,
+    customBrokerName: state.customBrokerName,
     terminalName: state.terminalName,
     accountNumber: state.accountNumber,
-    serverName: state.serverName,
+    serverName: state.customServer ? (state.customServerName || state.serverName) : state.serverName,
+    customServer: state.customServer,
+    customServerName: state.customServerName,
+    serverVerificationStatus: state.serverVerificationStatus,
+    serverSource: state.serverSource,
+    serverCatalogId: state.serverCatalogId,
     environment: state.environment,
     terminalLocation: state.terminalLocation,
     terminalId: state.terminalId,
+    machineId: state.machineId,
     dataPath: state.dataPath,
     buildVersion: state.buildVersion,
     apiKey: state.apiKey,
@@ -224,4 +301,24 @@ export function buildWizardPayload(state) {
     authType: state.authType,
     vaultSecretRef: state.vaultSecretRef
   };
+}
+
+export async function loadBrokerServersForState(state, requestFn) {
+  const brokerName = state.brokerName;
+  if (!brokerName || brokerName === "Custom Broker") {
+    state.brokerServers = [];
+    state.serverListMessage = brokerName === "Custom Broker" ? "Enter custom broker and server details." : "Select a broker to load verified servers.";
+    return state;
+  }
+  state.serversLoading = true;
+  const payload = await requestFn(`/api/mt5/brokers/${encodeURIComponent(brokerName)}/servers`);
+  state.brokerServers = payload.servers || [];
+  state.brokerSearchName = payload.brokerSearchName || state.brokerSearchName;
+  state.serverListMessage = payload.message || (state.brokerServers.length ? `${state.brokerServers.length} verified server(s) available.` : "No verified servers found. Use Detect Servers or Enter Custom Server.");
+  state.serversLoading = false;
+  if (state.serverName && !state.brokerServers.some((item) => item.serverName === state.serverName)) {
+    state.serverName = "";
+    state.selectedServer = null;
+  }
+  return state;
 }

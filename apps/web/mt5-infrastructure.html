@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CACSMS Engine | MT5 Infrastructure</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/market-data.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/"><span class="brand-mark">C</span><span><strong>CACSMS</strong><small>ENGINE</small></span></a>
+        <label class="global-search"><span class="icon">?</span><input type="search" placeholder="Search MT5 infrastructure..." /><kbd>CTRL K</kbd></label>
+        <div class="topbar-actions"><div class="workflow-pill"><span class="pulse"></span><strong>MT5</strong><span>INFRA</span></div><div class="session"><small>CONNECTIVITY</small><strong>MONITOR</strong></div><button class="user-menu"><span>CA</span><i></i></button></div>
+      </header>
+      <aside class="sidebar">
+        <div class="sidebar-heading">CONTROL SYSTEMS</div>
+        <nav id="market-nav" aria-label="Primary navigation"></nav>
+        <div class="sidebar-footer"><div class="operator"><span class="operator-dot"></span><div><small>MT5 GATEWAY</small><strong>REGISTRATION REQUIRED</strong></div></div><button id="collapse-sidebar" class="collapse-button">&lt;</button></div>
+      </aside>
+      <main class="workspace intelligence-workspace">
+        <section id="intelligence-content"></section>
+      </main>
+      <footer class="statusbar"><div><span class="dot"></span> EA MODE <strong>TOKEN REGISTRATION</strong></div><div>HEARTBEAT <strong>10s</strong></div><div>TERMINALS <strong>LIVE</strong></div><div class="status-spacer"></div><div id="utc-clock">UTC</div></footer>
+    </div>
+    <script type="module" src="/mt5-infrastructure-shell.js"></script>
+  </body>
+</html>

@@ -27,10 +27,16 @@ test("operations dashboard exposes output contract without mock providers", asyn
   assert.equal(dashboard.source, "market_data");
   assert.ok("confidence_score" in dashboard);
   assert.ok("integrity_score" in dashboard);
-  assert.equal(dashboard.workflow_permission, "STOP");
   assert.equal(Array.isArray(dashboard.providers), true);
-  assert.equal(dashboard.providers.length, 0);
-  assert.equal(dashboard.empty, true);
+  assert.ok(dashboard.mt5);
+  assert.ok(dashboard.mt5.readiness);
+  if (dashboard.empty) {
+    assert.equal(dashboard.workflow_permission, "STOP");
+    assert.equal(dashboard.providers.length, 0);
+  } else {
+    assert.ok(["STOP", "RESTRICTED", "ALLOWED"].includes(dashboard.workflow_permission));
+    assert.ok(dashboard.providers.length > 0);
+  }
   assert.ok(dashboard.output);
 });
 
@@ -111,17 +117,40 @@ test("legacy add provider uses guided onboarding wizard", () => {
   const wizard = readFileSync("apps/web/market-data-provider-wizard.js", "utf8");
   const page = readFileSync("apps/web/market-data-page.js", "utf8");
   for (const text of [
-    "Source Category", "Detect Installed MT5 Terminals", "Register Provider",
-    "MARKET DATA ONBOARDING WIZARD", "buildWizardPayload"
+    "Source Category", "Detect Installed MT5 Terminals", "Detect Servers", "Refresh Servers",
+    "Enter Custom Server", "Register Provider", "MARKET DATA ONBOARDING WIZARD", "buildWizardPayload"
   ]) {
     assert.match(wizard + page, new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
 });
 
 test("wizard catalog exposes provider categories and vendor presets", async () => {
-  const { getWizardCatalog, resolveVendorPreset } = await import("../src/provider-wizard-catalog.js");
+  const { getWizardCatalog, resolveVendorPreset, WIZARD_PROVIDERS } = await import("../src/provider-wizard-catalog.js");
   const catalog = getWizardCatalog();
   assert.equal(catalog.categories.length, 4);
   assert.ok(catalog.providers.mt5_terminal.length >= 5);
   assert.ok(resolveVendorPreset("TwelveData")?.baseUrl);
+  for (const provider of WIZARD_PROVIDERS.mt5_terminal) {
+    assert.equal("serverName" in provider, false);
+  }
+});
+
+test("broker server catalog exposes verified IC Markets default only", async () => {
+  const { listBrokerServers, listMt5Brokers } = await import("../src/mt5-broker-servers.js");
+  const brokers = await listMt5Brokers();
+  assert.ok(brokers.brokers.some((item) => item.brokerName === "IC Markets" && item.brokerSearchName === "Raw Trading Ltd"));
+  const servers = await listBrokerServers("IC Markets");
+  assert.equal(servers.servers.length, 1);
+  assert.equal(servers.servers[0].serverName, "ICMarketsSC-MT5-6");
+  assert.equal(servers.servers[0].verificationStatus, "VERIFIED");
+  assert.doesNotMatch(JSON.stringify(servers.servers), /Live26|Live01|Live02/);
+});
+
+test("API exposes MT5 broker server endpoints", () => {
+  const api = readFileSync("apps/api/src/server.mjs", "utf8");
+  for (const route of [
+    "/api/mt5/brokers",
+    "/api/mt5/brokers/detect-servers",
+    "/api/mt5/brokers/custom-server"
+  ]) assert.match(api, new RegExp(route.replaceAll("/", "\\/")));
 });

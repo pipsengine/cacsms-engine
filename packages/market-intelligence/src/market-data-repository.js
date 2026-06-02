@@ -193,8 +193,15 @@ export function validateProviderInput(input, { partial = false, draft = false, w
 
   if (!draft && wizard) {
     if (category === "mt5_terminal") {
-      if (!String(normalized.brokerName || "").trim()) errors.push("broker_name_required");
-      if (!String(normalized.serverName || "").trim()) errors.push("server_name_required");
+      const brokerName = String(normalized.brokerName || "").trim();
+      const isCustomBroker = brokerName.toLowerCase() === "custom broker";
+      if (!brokerName) errors.push("broker_name_required");
+      if (isCustomBroker && !String(normalized.customBrokerName || "").trim()) errors.push("custom_broker_name_required");
+      if (normalized.customServer) {
+        if (!String(normalized.customServerName || normalized.serverName || "").trim()) errors.push("custom_server_name_required");
+      } else if (!String(normalized.serverName || "").trim()) {
+        errors.push("server_name_required");
+      }
     }
     if (category === "external_vendor" && !normalized.vendorKey?.includes("custom")) {
       if (!String(normalized.apiKey || normalized.vaultSecretRef || "").trim()) errors.push("api_key_required");
@@ -240,6 +247,7 @@ export async function getProviderById(id) {
 }
 
 export async function createProvider(input, { createdBy = "system.admin", draft = false, wizard = false } = {}) {
+  if (!isDatabaseConfigured()) throw new Error("database_not_configured");
   const normalized = validateProviderInput(input, { draft, wizard });
   await assertNoDuplicateName(normalized.name);
   if (normalized.wizardCategory !== "mt5_terminal" && normalized.category !== "mt5_terminal") {
@@ -258,12 +266,18 @@ export async function createProvider(input, { createdBy = "system.admin", draft 
     providerTemplateId: normalized.providerTemplateId || null,
     vendorKey: normalized.vendorKey || null,
     mt5: normalized.wizardCategory === "mt5_terminal" || normalized.category === "mt5_terminal" ? {
-      brokerName: normalized.brokerName || "",
+      brokerName: normalized.brokerName || normalized.customBrokerName || "",
+      brokerSearchName: normalized.brokerSearchName || "",
       terminalName: normalized.terminalName || "",
       accountNumber: normalized.accountNumber || "",
-      serverName: normalized.serverName || "",
+      serverName: normalized.customServer ? (normalized.customServerName || normalized.serverName || "") : (normalized.serverName || ""),
+      serverVerificationStatus: normalized.serverVerificationStatus || (normalized.customServer ? "UNVERIFIED" : ""),
+      serverSource: normalized.serverSource || (normalized.customServer ? "custom_user_entry" : ""),
+      serverCatalogId: normalized.serverCatalogId || null,
+      customServer: Boolean(normalized.customServer),
       terminalLocation: normalized.terminalLocation || "",
       terminalId: normalized.terminalId || null,
+      machineId: normalized.machineId || null,
       dataPath: normalized.dataPath || "",
       buildVersion: normalized.buildVersion || ""
     } : null,
@@ -396,6 +410,7 @@ export async function appendLog({
   severity = "info",
   message
 }) {
+  if (!isDatabaseConfigured()) return null;
   const { rows } = await query(
     `INSERT INTO market.market_data_logs (provider_id, provider_name, event, action, actor, result, severity, message)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -653,7 +668,6 @@ export async function listDetectedMt5Terminals() {
     return rows.map((row) => ({
       id: row.id,
       broker: row.broker_name || "Unknown Broker",
-      server: row.terminal_key,
       account: row.account_number || "",
       buildVersion: row.mt5_build || "",
       dataPath: row.installation_path,

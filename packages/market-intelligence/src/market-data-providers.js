@@ -38,9 +38,48 @@ import {
   getWizardCatalog,
   resolveVendorPreset
 } from "./provider-wizard-catalog.js";
+import {
+  buildLiveFeedDiagnostics,
+  buildOnboardingView,
+  evaluateMt5WorkflowReadiness,
+  getMt5InfrastructureDashboard,
+  registerTerminalForProvider
+} from "./mt5-infrastructure.js";
 
 export { TARGET_ASSETS, PROVIDER_TYPES, CONNECTION_METHODS, AUTH_TYPES, ENVIRONMENTS, CAPABILITY_KEYS, ASSET_COVERAGE_OPTIONS } from "./market-data-repository.js";
 export { getWizardCatalog } from "./provider-wizard-catalog.js";
+export {
+  getMt5InfrastructureDashboard,
+  getOnboardingStatus,
+  getProviderMt5Details,
+  importMarketWatch,
+  listMt5Terminals,
+  listMt5Machines,
+  listMt5Heartbeats,
+  getMt5TerminalHealthDashboard,
+  registerTerminalForProvider,
+  generateRegistrationToken,
+  getLatestRegistrationToken,
+  getOrCreateRegistrationToken,
+  recordHeartbeat,
+  validateLivePrices,
+  evaluateAndActivateProvider,
+  listConnectionMonitor
+} from "./mt5-infrastructure.js";
+export {
+  deployEa,
+  updateEa,
+  verifyEa,
+  rollbackEa,
+  getEaDeploymentDashboard,
+  listEaDeployments,
+  listEaDeploymentLogs,
+  syncDiscoveredTerminalPaths,
+  ensureEaVersionCatalog,
+  discoverMt5TerminalPaths,
+  buildManifestChecksums,
+  EA_DEPLOY_STATUSES
+} from "./ea-deployment.js";
 
 const WORKFLOW_IMPACTS_STATIC = Object.freeze([
   { stage: "Card 1", target: "Data Sources Validation", impact: "STOP WORKFLOW on failure" },
@@ -135,33 +174,38 @@ async function recalculateMarketMetrics({ liveProbe = null } = {}) {
   return dashboard;
 }
 
-async function buildCoverageMatrix(providers, coverageRows, symbols, liveProbe) {
+async function buildCoverageMatrix(providers, coverageRows, symbols, liveProbe, ticks = []) {
   const symbolList = symbols.length ? symbols.map((row) => row.symbol) : TARGET_ASSETS;
-  const liveProviders = providers.filter((item) => item.status === "LIVE");
+  const tickMap = new Map(ticks.map((row) => [row.symbol, row]));
+  const liveProviders = providers.filter((item) => ["LIVE", "ACTIVE"].includes(item.status));
   const primary = liveProviders[0] || providers.find((item) => item.enabled);
   return symbolList.map((symbol) => {
     const rows = coverageRows.filter((row) => row.symbol === symbol);
-    const liveRow = rows.find((row) => row.status === "LIVE");
-    const available = Boolean(liveRow?.price_feed);
+    const liveRow = rows.find((row) => row.status === "LIVE" || row.price_feed);
+    const tick = tickMap.get(symbol);
+    const tickFresh = tick?.observed_at && (Date.now() - new Date(tick.observed_at).getTime()) < 120000;
+    const available = Boolean(liveRow?.price_feed) || tickFresh;
     return {
       symbol,
-      provider: liveRow?.provider_name || primary?.name || "â€”",
+      provider: liveRow?.provider_name || primary?.name || "—",
       priceFeed: available,
-      tickFeed: Boolean(liveRow?.tick_feed),
-      spreadFeed: Boolean(liveRow?.spread_feed),
+      tickFeed: available || Boolean(liveRow?.tick_feed),
+      spreadFeed: available || Boolean(liveRow?.spread_feed),
       volumeFeed: Boolean(liveRow?.volume_feed),
       coverage: available ? Number(liveRow?.coverage || 100) : 0,
-      status: available ? "LIVE" : liveProbe && !liveProbe.ok && rows.length ? "DISCONNECTED" : "UNAVAILABLE"
+      status: available && tickFresh ? "LIVE" : available ? "CONFIGURED" : liveProbe && !liveProbe.ok && rows.length ? "DISCONNECTED" : "UNAVAILABLE"
     };
   });
 }
 
-async function buildLiveFeed(coverage, ticks) {
+async function buildLiveFeed(coverage, ticks, readiness = {}) {
   const tickMap = new Map(ticks.map((row) => [row.symbol, row]));
   return coverage.map((row) => {
     const tick = tickMap.get(row.symbol);
     const bid = tick?.bid != null ? Number(tick.bid) : null;
     const ask = tick?.ask != null ? Number(tick.ask) : null;
+    const status = row.status === "LIVE" ? "HEALTHY" : row.status === "DISCONNECTED" ? "DISCONNECTED" : "DELAYED";
+    const diagnostics = buildLiveFeedDiagnostics({ ...row, status }, readiness);
     return {
       symbol: row.symbol,
       bid,
@@ -169,7 +213,10 @@ async function buildLiveFeed(coverage, ticks) {
       spread: tick?.spread != null ? Number(tick.spread) : null,
       lastTick: tick?.observed_at || null,
       provider: row.provider,
-      status: row.status === "LIVE" ? "HEALTHY" : row.status === "DISCONNECTED" ? "DISCONNECTED" : "DELAYED"
+      status,
+      reason: diagnostics.reason,
+      expectedAction: diagnostics.expectedAction,
+      workflowImpact: diagnostics.workflowImpact
     };
   });
 }
@@ -265,22 +312,44 @@ export async function getMarketDataOperationsDashboard({ liveProbe = null } = {}
 async function buildComputedDashboard(providersRaw, healthMap, coverageRows, symbols, ticks, logs, liveProbe) {
   const symbolCount = symbols.length || TARGET_ASSETS.length;
   let providers = await Promise.all(providersRaw.map((provider) => deriveProviderView(provider, healthMap)));
+  const mt5 = isDatabaseConfigured() ? await getMt5InfrastructureDashboard() : { terminals: [], machines: [], heartbeats: [], health: {} };
+  for (const provider of providers) {
+    const terminal = mt5.terminals.find((item) => item.providerId === provider.id);
+    if (terminal) {
+      provider.mt5TerminalId = terminal.id;
+      provider.mt5Onboarding = terminal.onboarding;
+      if (terminal.connectionStatus === "OFFLINE" && ["ACTIVE", "LIVE"].includes(provider.status)) {
+        provider.status = "DEGRADED";
+      }
+    }
+  }
   providers = await buildProviderCoverageCounts(providers, coverageRows, symbolCount);
-  const coverage = await buildCoverageMatrix(providers, coverageRows, symbols, liveProbe);
-  const liveFeed = await buildLiveFeed(coverage, ticks);
-  const liveSymbols = coverage.filter((row) => row.status === "LIVE").length;
+  const coverage = await buildCoverageMatrix(providers, coverageRows, symbols, liveProbe, ticks);
   const enabledProviders = providers.filter((item) => item.enabled);
-  const onlineProviders = providers.filter((item) => ["LIVE", "ONLINE", "SCHEDULED"].includes(item.status)).length;
-  const offlineProviders = providers.filter((item) => ["FAILED", "NOT_CONFIGURED", "DISABLED", "ARCHIVED"].includes(item.status)).length;
+  const liveSymbols = coverage.filter((row) => row.status === "LIVE").length;
   const latencyValues = providers.map((item) => item.latencyMs).filter((value) => value != null);
   const avgLatency = latencyValues.length
     ? Math.round(latencyValues.reduce((sum, value) => sum + value, 0) / latencyValues.length)
     : liveProbe?.latencyMs ?? 0;
+  const mt5Readiness = evaluateMt5WorkflowReadiness({
+    terminals: mt5.terminals,
+    providers,
+    liveSymbols,
+    symbolCount,
+    avgLatency
+  });
+  const hasMt5Providers = providers.some((item) => item.connectionMethod === "MT5 Bridge" || String(item.providerType || item.type || "").includes("MT5"));
+  const liveFeed = await buildLiveFeed(coverage, ticks, mt5Readiness);
+  const onlineProviders = providers.filter((item) => ["LIVE", "ONLINE", "SCHEDULED", "ACTIVE"].includes(item.status)).length;
+  const offlineProviders = providers.filter((item) => ["FAILED", "NOT_CONFIGURED", "DISABLED", "ARCHIVED", "PARTIALLY_CONFIGURED"].includes(item.status)).length;
   const health = providers.length ? Math.round(providers.reduce((sum, item) => sum + Number(item.health || 0), 0) / providers.length) : 0;
   const coveragePct = symbolCount ? Math.round(liveSymbols / symbolCount * 100) : 0;
   const integrity = evaluateIntegrity({ liveSymbolCount: liveSymbols, totalSymbols: symbolCount, liveProbe });
   const confidenceScore = evaluateConfidence({ health, coveragePct, latencyMs: avgLatency, integrityScore: integrity.score, liveProbe, enabledCount: enabledProviders.length });
-  const workflowPermission = evaluateWorkflowPermission({ enabledCount: enabledProviders.length, liveSymbolCount: liveSymbols, health, coveragePct, latencyMs: avgLatency, integrityScore: integrity.score });
+  let workflowPermission = evaluateWorkflowPermission({ enabledCount: enabledProviders.length, liveSymbolCount: liveSymbols, health, coveragePct, latencyMs: avgLatency, integrityScore: integrity.score });
+  if (hasMt5Providers) {
+    workflowPermission = mt5Readiness.permission === "ALLOWED" ? "ALLOWED" : mt5Readiness.permission === "RESTRICTED" ? "RESTRICTED" : "STOP";
+  }
   const status = workflowStatusFromPermission(workflowPermission);
   const output = { source: "market_data", status, health, latency: avgLatency, coverage: coveragePct, integrity_score: integrity.score, confidence_score: confidenceScore, symbols: liveSymbols, workflow_permission: workflowPermission };
   const latencySummary = await getProviderLatencySummary();
@@ -310,11 +379,11 @@ async function buildComputedDashboard(providersRaw, healthMap, coverageRows, sym
       ["Online Providers", onlineProviders],
       ["Offline Providers", offlineProviders],
       ["Symbols Available", `${liveSymbols}/${symbolCount}`],
-      ["Average Tick Rate", liveSymbols > 0 ? `${Math.round(providers.reduce((sum, item) => sum + Number(item.tickRate || 0), 0) / Math.max(providers.length, 1))}/sec` : "Not Available"],
-      ["Average Spread", spreadRows.length ? "Available" : "Not Available"],
+      ["Connected Terminals", mt5.health?.connectedTerminals ?? 0],
+      ["Disconnected Terminals", mt5.health?.disconnectedTerminals ?? 0],
+      ["Live Symbols (MT5)", mt5.health?.liveSymbols ?? liveSymbols],
+      ["MT5 Health Score", mt5.health?.mt5HealthScore ? `${mt5.health.mt5HealthScore}%` : "Not Available"],
       ["Average Latency", avgLatency ? `${avgLatency}ms` : "Not Available"],
-      ["Data Quality Score", providers.length ? `${integrity.score}%` : "Not Available"],
-      ["Data Confidence Score", providers.length ? `${confidenceScore}%` : "Not Available"],
       ["Workflow Readiness", providers.length ? workflowPermission : "Not Available"]
     ],
     providers,
@@ -358,6 +427,16 @@ async function buildComputedDashboard(providersRaw, healthMap, coverageRows, sym
       coverage: item.coveragePct ?? 0, quality: item.health, availability: item.status
     })),
     workflowImpacts: WORKFLOW_IMPACTS_STATIC,
+    mt5: {
+      ...mt5,
+      readiness: mt5Readiness,
+      onboarding: providers.map((provider) => ({
+        providerId: provider.id,
+        providerName: provider.name,
+        terminalId: provider.mt5TerminalId || null,
+        steps: buildOnboardingView(provider.mt5Onboarding || {})
+      }))
+    },
     logs,
     output
   };
@@ -447,13 +526,14 @@ export async function detectSymbols(input) {
 function buildMt5Diagnostics(input, probe) {
   const normalized = applyWizardPreset(input);
   const symbols = parseSymbolsFromInput(normalized);
+  const bridgeOffline = !probe?.ok && (probe?.reason === "mt5_bridge_not_connected" || probe?.reason === "probe_unavailable");
   const checks = [
     { label: "Terminal exists", status: normalized.terminalId || normalized.dataPath || normalized.terminalName ? "PASS" : "WARNING" },
     { label: "Account available", status: normalized.accountNumber ? "PASS" : "WARNING" },
     { label: "Server reachable", status: normalized.serverName ? "PASS" : "FAIL" },
     { label: "Symbols available", status: symbols.length ? "PASS" : "WARNING" },
-    { label: "Live pricing available", status: probe.ok ? "PASS" : "FAIL" },
-    { label: "Latency acceptable", status: probe.latencyMs != null && probe.latencyMs <= 300 ? "PASS" : probe.ok ? "WARNING" : "FAIL" }
+    { label: "Live pricing available", status: probe.ok ? "PASS" : bridgeOffline ? "WARNING" : "FAIL" },
+    { label: "Latency acceptable", status: probe.latencyMs != null && probe.latencyMs <= 300 ? "PASS" : probe.ok ? "WARNING" : bridgeOffline ? "WARNING" : "FAIL" }
   ];
   const failCount = checks.filter((item) => item.status === "FAIL").length;
   const warnCount = checks.filter((item) => item.status === "WARNING").length;
@@ -471,6 +551,7 @@ export async function testProviderConfiguration(input, { liveProbe = null, probe
 
   let diagnostics = null;
   let result = probe.ok ? "PASS" : "FAIL";
+  const bridgeOffline = !probe?.ok && (probe?.reason === "mt5_bridge_not_connected" || probe?.reason === "probe_unavailable");
   if (wizard && (normalized.wizardCategory === "mt5_terminal" || normalized.category === "mt5_terminal")) {
     diagnostics = buildMt5Diagnostics(normalized, probe);
     result = diagnostics.result;
@@ -502,7 +583,13 @@ export async function testProviderConfiguration(input, { liveProbe = null, probe
     latency_ms: probe.latencyMs ?? 0,
     provider_health: result === "FAIL" ? 0 : result === "WARNING" ? 85 : 98,
     symbols_found: symbolsFound,
-    message: result === "PASS" ? "Connection successful" : probe.reason || "Connection failed",
+    message: result === "PASS"
+      ? "Connection successful"
+      : result === "WARNING"
+        ? bridgeOffline
+          ? "Configuration valid. Live MT5 bridge unavailable — connect MARKET_DATA_LIVE_URL to verify pricing."
+          : "Connection passed with warnings"
+        : probe.reason || "Connection failed",
     diagnostics
   };
 }
@@ -593,6 +680,20 @@ export async function createMarketDataProvider(input, { liveProbe = null, probeF
       freshness: "CONFIGURED",
       tickRate: 0
     });
+
+    const preset = applyWizardPreset(input);
+    const isMt5 = wizard && (input.category === "mt5_terminal" || input.wizardCategory === "mt5_terminal" || preset.connectionMethod === "MT5 Bridge");
+    if (isMt5) {
+      await registerTerminalForProvider(provider.id, {
+        terminalName: preset.config?.mt5?.terminalName || `${provider.name} MT5`,
+        brokerName: preset.config?.mt5?.brokerName || provider.name,
+        brokerSearchName: preset.config?.mt5?.brokerSearchName,
+        accountNumber: preset.config?.mt5?.accountNumber,
+        serverName: preset.config?.mt5?.serverName,
+        machineName: preset.config?.mt5?.machineName || "LOCAL-WORKSTATION",
+        environment: preset.environment || provider.environment
+      });
+    }
   } else if (!testResult) {
     await recalculateMarketMetrics({ liveProbe });
   }

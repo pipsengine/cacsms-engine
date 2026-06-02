@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "files": [
+    { "source": "experts/CACSMS_Engine_Bridge.mq5", "target": "MQL5/Experts/CACSMS/CACSMS_Engine_Bridge.mq5" },
+    { "source": "include/ConnectionManager.mqh", "target": "MQL5/Include/CACSMS/ConnectionManager.mqh" },
+    { "source": "include/ExecutionManager.mqh", "target": "MQL5/Include/CACSMS/ExecutionManager.mqh" },
+    { "source": "include/PositionManager.mqh", "target": "MQL5/Include/CACSMS/PositionManager.mqh" },
+    { "source": "include/HeartbeatManager.mqh", "target": "MQL5/Include/CACSMS/HeartbeatManager.mqh" },
+    { "source": "include/SecurityManager.mqh", "target": "MQL5/Include/CACSMS/SecurityManager.mqh" },
+    { "source": "include/CommandProcessor.mqh", "target": "MQL5/Include/CACSMS/CommandProcessor.mqh" },
+    { "source": "include/MessageSerializer.mqh", "target": "MQL5/Include/CACSMS/MessageSerializer.mqh" },
+    { "source": "scripts/CACSMS_TestConnection.mq5", "target": "MQL5/Scripts/CACSMS/CACSMS_TestConnection.mq5" },
+    { "source": "presets/CACSMS_Bridge_Settings.set", "target": "MQL5/Presets/CACSMS_Bridge_Settings.set" },
+    { "source": "presets/CACSMS_Bridge_Settings.set", "target": "Profiles/Templates/CACSMS_Bridge_Settings.set" }
+  ]
+}
