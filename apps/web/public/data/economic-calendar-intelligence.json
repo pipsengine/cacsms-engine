@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-03T15:47:22.925Z",
+  "updatedAt": "2026-06-03T15:48:22.549Z",
   "sources": [
     {
       "id": "forex-factory-weekly",
@@ -5719,6 +5719,14 @@
     }
   ],
   "syncLogs": [
+    {
+      "id": "f18b13d9-a77d-416c-87e9-b6ba00a29e1d",
+      "syncedAt": "2026-06-03T15:48:22.549Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
     {
       "id": "1b0c902a-c6ec-4557-8f2c-e23f6e0b001d",
       "syncedAt": "2026-06-03T15:47:22.925Z",
