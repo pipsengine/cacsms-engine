@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-03T15:45:24.898Z",
+  "updatedAt": "2026-06-03T15:47:22.925Z",
   "sources": [
     {
       "id": "forex-factory-weekly",
@@ -10,9 +10,9 @@
       "enabled": true,
       "scheduleMs": 60000,
       "status": "ONLINE",
-      "lastSyncAt": "2026-06-03T15:45:24.894Z",
-      "lastSuccessAt": "2026-06-03T15:45:24.894Z",
-      "latencyMs": 2240,
+      "lastSyncAt": "2026-06-03T15:47:22.925Z",
+      "lastSuccessAt": "2026-06-03T15:47:22.925Z",
+      "latencyMs": 378,
       "imported": 0,
       "updated": 0,
       "error": null
@@ -5719,6 +5719,22 @@
     }
   ],
   "syncLogs": [
+    {
+      "id": "1b0c902a-c6ec-4557-8f2c-e23f6e0b001d",
+      "syncedAt": "2026-06-03T15:47:22.925Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "47d4925f-e75e-4cad-b137-81fb9545c451",
+      "syncedAt": "2026-06-03T15:46:22.544Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
     {
       "id": "e1a46111-01d1-41b7-bcc8-6539935ca653",
       "syncedAt": "2026-06-03T15:45:24.894Z",
