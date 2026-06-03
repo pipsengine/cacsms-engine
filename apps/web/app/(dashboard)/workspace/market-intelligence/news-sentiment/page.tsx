@@ -1,2 +1,5 @@
-import { LiveMarketIntelligencePage } from "../../../../../components/market-intelligence/LiveMarketIntelligencePage";
-export default function Page() { return <LiveMarketIntelligencePage source="news-sentiment" />; }
+import { NewsSentimentPage } from "../../../../../components/market-intelligence/news-sentiment/NewsSentimentPage";
+
+export default function Page() {
+  return <NewsSentimentPage />;
+}

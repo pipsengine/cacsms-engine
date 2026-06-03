@@ -1,11 +1,51 @@
-export const NEWS_SOURCES=Object.freeze([["reuters-bloomberg","Reuters / Bloomberg Placeholder","Institutional Feed","LIVE",34,"12:00:00 UTC",42,97,98],["rss","RSS Aggregator","RSS","ONLINE",48,"11:59:58 UTC",28,94,96],["economic-news","Economic News API","Macro API","ONLINE",41,"11:59:55 UTC",18,96,97],["ai-classifier","AI Sentiment Classifier","AI Model","LIVE",52,"11:59:53 UTC",121,93,96],["social-feed","Social Sentiment Feed","Community","ONLINE",76,"11:59:49 UTC",15,89,92],["broker-news","Broker News Feed","Broker","ONLINE",44,"11:59:51 UTC",11,92,95],["custom-news","Custom News Provider","Internal","ONLINE",39,"11:59:52 UTC",14,94,96]].map(([id,name,type,status,latencyMs,lastSync,headlinesToday,classificationAccuracy,healthScore])=>({id,name,type,status,latencyMs,lastSync,headlinesToday,classificationAccuracy,healthScore})));
-export const NEWS_HEADLINES=Object.freeze([["11:58","Reuters","Gold strengthens as dollar weakens ahead of US inflation data.","Inflation","Bullish","HIGH",["XAUUSD","EURUSD"],"Reduce risk"],["11:42","Bloomberg","Fed officials signal caution on rate cuts.","Central Bank","Neutral","HIGH",["USDJPY","NAS100"],"Add to Risk Watch"],["11:27","MarketWire","Oil rises amid renewed supply concerns.","Commodities","Bullish","MEDIUM",["USOIL"],"Send to AI Decision"],["11:11","Reuters","Yen strengthens after BOJ policy comments.","Currency","Bearish","MEDIUM",["USDJPY","EURJPY"],"Send to AI Decision"],["10:53","RSS Aggregator","US indices rise as risk appetite improves.","Indices","Risk-On","MEDIUM",["NAS100","US30","SPX500"],"View Details"]].map(([time,source,headline,category,sentiment,impact,affectedAssets,action])=>({time,source,headline,category,sentiment,impact,affectedAssets,action})));
-const assets=["XAUUSD","EURUSD","GBPUSD","USDJPY","AUDUSD","USDCAD","USDCHF","NZDUSD","NAS100","US30","EURJPY","GBPJPY","AUDJPY","CADJPY","EURGBP","EURAUD","EURCAD","SPX500","GER40","USOIL"];
-export const NEWS_ASSET_IMPACT=Object.freeze(assets.map((symbol,index)=>({symbol,newsImpact:index<4?"HIGH":index<10?"MEDIUM":"LOW",sentimentDirection:index===0?"Bullish":index===3?"Bearish":"Neutral",riskLevel:index<4?"Moderate":"Low",tradingPermission:index<4?"Reduced Risk":"Allowed",notes:index===0?"CPI in 2 hours":index===1?"USD weakness theme":"Monitor live tone"})));
-export const NEWS_RISK_EVENTS=Object.freeze([{headline:"USD CPI in 2 hours may affect XAUUSD and EURUSD",risk:"HIGH",window:"T-120 to T+30",assets:["XAUUSD","EURUSD","USDJPY"],recommendation:"Reduce risk before high-impact USD events"},{headline:"Fed caution may challenge index risk appetite",risk:"MEDIUM",window:"ACTIVE",assets:["NAS100","US30"],recommendation:"Wait for confirmation"}]);
-export const AI_HEADLINE_CLASSIFICATION={headline:"Gold strengthens as dollar weakens ahead of US inflation data",summary:"Gold bid strengthens as USD softens into CPI risk.",sentiment:"Bullish XAUUSD",impact_score:78,affected_assets:["XAUUSD","EURUSD","USDJPY"],confidence:91,workflow_action:"Allow with reduced risk before CPI"};
-export function evaluateNewsSentiment({sources=NEWS_SOURCES,headlines=NEWS_HEADLINES,riskEvents=NEWS_RISK_EVENTS}={}){
- const sourceFailed=sources.some(({status})=>status==="FAILED");const critical=headlines.some(({impact})=>impact==="CRITICAL");const high=headlines.filter(({impact})=>impact==="HIGH").length+2;const blocked=sourceFailed||critical;const restricted=!blocked&&(high>0||riskEvents.length>0);
- return{source:"news_sentiment",status:sourceFailed?"FAILED":"LIVE",sentiment_score:62,sentiment_mode:"RISK_ON",news_risk_mode:blocked?"BLOCKED":restricted?"MODERATE":"LOW",high_impact_headlines:4,affected_assets:["XAUUSD","EURUSD","USDJPY","NAS100"],workflow_permission:blocked?"BLOCKED":restricted?"RESTRICTED":"ALLOWED",risk_recommendation:blocked?"Block trading until news risk clears":"Reduce risk before high-impact USD events",warnings:restricted?["USD CPI in 2 hours may affect XAUUSD and EURUSD"]:[],blocks:blocked?["Critical news risk or source failure during active window"]:[]};
+export const NEWS_SOURCES = Object.freeze([]);
+export const NEWS_HEADLINES = Object.freeze([]);
+export const NEWS_ASSET_IMPACT = Object.freeze([]);
+export const NEWS_RISK_EVENTS = Object.freeze([]);
+export const AI_HEADLINE_CLASSIFICATION = null;
+
+export function evaluateNewsSentiment({
+  sources = NEWS_SOURCES,
+  headlines = NEWS_HEADLINES,
+  riskEvents = NEWS_RISK_EVENTS
+} = {}) {
+  const configured = sources.length > 0;
+  const sourceFailed = sources.some(({ status }) => status === "FAILED");
+  const critical = headlines.some(({ impact }) => impact === "CRITICAL");
+  const highImpactHeadlines = headlines.filter(({ impact }) => impact === "HIGH").length;
+  const blocked = sourceFailed || critical;
+  const restricted = !blocked && configured && (highImpactHeadlines > 0 || riskEvents.length > 0);
+  const affectedAssets = [...new Set(headlines.flatMap(({ affectedAssets = [] }) => affectedAssets))];
+
+  return {
+    source: "news_sentiment",
+    status: configured ? (sourceFailed ? "FAILED" : "LIVE") : "NOT_CONFIGURED",
+    sentiment_score: null,
+    sentiment_mode: "UNAVAILABLE",
+    news_risk_mode: blocked ? "BLOCKED" : restricted ? "MODERATE" : "UNAVAILABLE",
+    high_impact_headlines: highImpactHeadlines,
+    affected_assets: affectedAssets,
+    workflow_permission: blocked ? "BLOCKED" : configured ? "RESTRICTED" : "RESTRICTED",
+    risk_recommendation: configured
+      ? "Use live normalized headlines and provider risk signals."
+      : "Configure a live news sentiment adapter.",
+    warnings: configured ? [] : ["No live news sentiment adapter is configured."],
+    blocks: blocked ? ["Critical news risk or source failure during active window."] : []
+  };
 }
-export function getNewsSentimentDashboard(){return{...evaluateNewsSentiment(),sources:NEWS_SOURCES,headlines:NEWS_HEADLINES,assetImpact:NEWS_ASSET_IMPACT,riskEvents:NEWS_RISK_EVENTS,classification:AI_HEADLINE_CLASSIFICATION,activeHeadlines:128,sourceHealth:96,riskOffAlerts:2,aiClassified:121};}
+
+export function getNewsSentimentDashboard() {
+  return {
+    ...evaluateNewsSentiment(),
+    sources: NEWS_SOURCES,
+    headlines: NEWS_HEADLINES,
+    assetImpact: NEWS_ASSET_IMPACT,
+    riskEvents: NEWS_RISK_EVENTS,
+    classification: AI_HEADLINE_CLASSIFICATION,
+    activeHeadlines: 0,
+    sourceHealth: null,
+    riskOffAlerts: 0,
+    aiClassified: 0,
+    source_mode: "LIVE_ADAPTERS_ONLY"
+  };
+}

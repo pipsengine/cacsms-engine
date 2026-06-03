@@ -3,6 +3,8 @@ import { bindInstitutionalCotCenter, renderInstitutionalCotCenter } from "./inst
 import { bindLiveMarketIntelligencePage, renderLiveMarketIntelligencePage, unmountLiveMarketIntelligencePage } from "./live-market-intelligence-page.js";
 import { mountMarketDataOperationsCenter, unmountMarketDataOperationsCenter } from "./market-data-page.js";
 import { mountSourceConfigurationCenter, unmountSourceConfigurationCenter } from "./source-configuration-page.js";
+import { mountNewsSentimentCenter } from "./news-sentiment-page.js";
+import { mountEconomicCalendarCenter } from "./economic-calendar-page.js";
 
 const marketIntelligencePrefix = "/workspace/market-intelligence/";
 
@@ -32,6 +34,10 @@ function renderCurrentPage() {
     mountSourceConfigurationCenter();
   } else if (slug === "market-data") {
     mountMarketDataOperationsCenter();
+  } else if (slug === "news-sentiment") {
+    mountNewsSentimentCenter();
+  } else if (slug === "economic-calendar") {
+    mountEconomicCalendarCenter();
   } else {
     document.querySelector("#intelligence-content").innerHTML = renderLiveMarketIntelligencePage(slug);
     bindLiveMarketIntelligencePage(slug);

@@ -1,5 +1,6 @@
 const API = "http://localhost:8080";
 const TICK_REFRESH_MS = 1000;
+const OFFLINE_RETRY_MS = 15000;
 const STALE_AFTER_MS = 15000;
 const NIGERIA_TIME_FORMAT = new Intl.DateTimeFormat("en-GB", {
   hour: "2-digit",
@@ -51,15 +52,19 @@ function renderTicks(payload) {
 }
 
 async function refreshTicks() {
+  let delay = TICK_REFRESH_MS;
   try {
     const response = await fetch(`${API}/api/market-data/ticks/latest?limit=8`, { cache: "no-store" });
     if (!response.ok) throw new Error(`tick request failed (${response.status})`);
     renderTicks(await response.json());
   } catch {
+    delay = OFFLINE_RETRY_MS;
     const ticker = ensureTicker();
     if (!ticker) return;
     ticker.className = "live-tick-status offline";
     ticker.innerHTML = '<span class="dot"></span> TICK <strong>OFFLINE</strong>';
+  } finally {
+    window.setTimeout(refreshTicks, delay);
   }
 }
 
@@ -69,7 +74,6 @@ export function installRealTimeStatus() {
   updateClock();
   refreshTicks();
   setInterval(updateClock, 1000);
-  setInterval(refreshTicks, TICK_REFRESH_MS);
 }
 
 installRealTimeStatus();

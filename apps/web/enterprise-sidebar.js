@@ -3,7 +3,7 @@ const marketIntelligenceChildren = [
   ["Data Sources Validation", "/workspace/market-intelligence/data-sources"],
   ["Source Configuration Center", "/workspace/market-intelligence/source-configuration"],
   ["Market Data Providers", "/workspace/market-intelligence/market-data"],
-  ["News & Sentiment Sources", "/workspace/market-intelligence/news-sentiment"],
+  ["News Sentiment", "/workspace/market-intelligence/news-sentiment"],
   ["Economic Calendar", "/workspace/market-intelligence/economic-calendar"],
   ["Social & Community Sentiment", "/workspace/market-intelligence/social-sentiment"],
   ["Institutional / COT Data", "/workspace/market-intelligence/institutional-cot"],

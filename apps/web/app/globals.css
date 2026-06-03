@@ -2,6 +2,7 @@
 @import "../workflow.css";
 @import "../source-configuration.css";
 @import "../market-data.css";
+@import "../news-sentiment.css";
 @import "../readability.css";
 
 body { background: #f8fafc; color: #0f172a; }

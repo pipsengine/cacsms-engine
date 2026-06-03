@@ -180,8 +180,10 @@ function configuredSourceUrl(routeSlug, envKey) {
   return provider?.apiUrl || null;
 }
 
-function configuredSourceProvider(configuredUrl) {
+function configuredSourceProvider(configuredUrl, routeSlug) {
   if (!configuredUrl) return "Provider Not Connected";
+  const provider = getSourceProviders().providers.find(item => item.sourceKey === routeSlug && item.enabled && item.apiUrl === configuredUrl);
+  if (provider?.providerName) return provider.providerName;
   try { return new URL(configuredUrl).host; } catch { return "Configured Adapter"; }
 }
 
@@ -231,7 +233,12 @@ async function probeConfiguredUrl(url) {
   const started = performance.now();
   try {
     const response = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(5000), headers: { "User-Agent": "CACSMS-Data-Sources-Validation/1.0" } });
-    return { ok: response.ok, httpStatus: response.status, latencyMs: Math.round(performance.now() - started), error: response.ok ? null : `HTTP ${response.status}` };
+    let metadata = {};
+    try {
+      const contentType = response.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) metadata = await response.json();
+    } catch {}
+    return { ...metadata, ok: response.ok, httpStatus: response.status, latencyMs: Math.round(performance.now() - started), error: response.ok ? null : `HTTP ${response.status}` };
   } catch (reason) {
     return { ok: false, httpStatus: null, latencyMs: Math.round(performance.now() - started), error: reason.message };
   }
@@ -276,14 +283,14 @@ async function getLiveSourceSnapshots({ skipRuntimeSync = false } = {}) {
     const status = cotReady ? "SYNCED" : probe?.ok ? "ONLINE" : configured ? "FAILED" : "NOT_CONFIGURED";
     return {
       id, routeSlug, name, category: id, subtitle: configuration,
-      provider: cotReady ? "CFTC Historical Compressed / Futures Only" : configuredSourceProvider(configuredUrl),
+      provider: cotReady ? "CFTC Historical Compressed / Futures Only" : configuredSourceProvider(configuredUrl, routeSlug),
       status,
       required, lastSyncAt: modified || (probe?.ok ? new Date().toISOString() : null), freshnessSeconds: cotReady ? Math.max(0, Math.round((Date.now() - statSync(cotCachePath).mtimeMs) / 1000)) : 0,
       freshness: cotReady ? `Official report ${cot.latestReportDate}` : probe?.ok ? "LIVE PROBE" : "UNAVAILABLE",
       healthScore: cotReady || probe?.ok ? 100 : 0, latencyMs: probe?.latencyMs || 0, errorCount: cotReady || probe?.ok ? 0 : 1,
       feedsStage: "Card 1", failureAction: required ? "block_card_1" : "reduce_confidence",
-      records: cotReady ? Object.values(cot.history || {}).reduce((sum, rows) => sum + rows.length, 0) : 0,
-      adapter: cotReady ? "official_cftc_cache" : probe?.ok ? "live_http_probe" : configured ? "configured_url_failed_probe" : "none",
+      records: cotReady ? Object.values(cot.history || {}).reduce((sum, rows) => sum + rows.length, 0) : Number(probe?.records || 0),
+      adapter: cotReady ? "official_cftc_cache" : probe?.ok ? probe.adapter || "live_http_probe" : configured ? "configured_url_failed_probe" : "none",
       configuration, connectionLabel: envKey ? "External Adapter" : "Official Archive", envKey: null,
       httpStatus: probe?.httpStatus || null, probeError: probe?.error || null,
       checks: {
@@ -406,16 +413,16 @@ const routes = {
   ,"GET /api/market-data/providers/detect-mt5-terminals": () => detectMt5Terminals()
   ,"GET /api/mt5/brokers": () => listMt5Brokers()
   ,"GET /api/market-intelligence/news-sentiment/dashboard": () => liveSourcePayload("news-sentiment")
-  ,"GET /api/market-intelligence/news-sentiment/headlines": () => ({ headlines: [] })
-  ,"GET /api/market-intelligence/news-sentiment/sources": () => ({ sources: [] })
-  ,"GET /api/market-intelligence/news-sentiment/asset-impact": () => ({ assets: [] })
+  ,"GET /api/market-intelligence/news-sentiment/headlines": () => ({ headlines: [], source_mode: "LIVE_ADAPTERS_ONLY" })
+  ,"GET /api/market-intelligence/news-sentiment/sources": () => ({ sources: [], source_mode: "LIVE_ADAPTERS_ONLY" })
+  ,"GET /api/market-intelligence/news-sentiment/asset-impact": () => ({ assets: [], source_mode: "LIVE_ADAPTERS_ONLY" })
   ,"GET /api/market-intelligence/news-sentiment/risk-panel": () => liveSourcePayload("news-sentiment")
   ,"GET /api/market-intelligence/economic-calendar/dashboard": () => liveSourcePayload("economic-calendar")
-  ,"GET /api/market-intelligence/economic-calendar/events": () => ({ events: [] })
-  ,"GET /api/market-intelligence/economic-calendar/high-impact": () => ({ event: null, status: "NOT_CONFIGURED" })
-  ,"GET /api/market-intelligence/economic-calendar/restrictions": () => ({ restrictions: [] })
-  ,"GET /api/market-intelligence/economic-calendar/asset-impact": () => ({ assets: [] })
-  ,"GET /api/market-intelligence/economic-calendar/central-banks": () => ({ centralBanks: [] })
+  ,"GET /api/market-intelligence/economic-calendar/events": () => ({ events: [], source_mode: "LIVE_ADAPTERS_ONLY" })
+  ,"GET /api/market-intelligence/economic-calendar/high-impact": () => ({ event: null, status: "NOT_CONFIGURED", source_mode: "LIVE_ADAPTERS_ONLY" })
+  ,"GET /api/market-intelligence/economic-calendar/restrictions": () => ({ restrictions: [], source_mode: "LIVE_ADAPTERS_ONLY" })
+  ,"GET /api/market-intelligence/economic-calendar/asset-impact": () => ({ assets: [], source_mode: "LIVE_ADAPTERS_ONLY" })
+  ,"GET /api/market-intelligence/economic-calendar/central-banks": () => ({ centralBanks: [], source_mode: "LIVE_ADAPTERS_ONLY" })
   ,"GET /api/market-intelligence/social-sentiment/dashboard": () => liveSourcePayload("social-sentiment")
   ,"GET /api/market-intelligence/social-sentiment/feed": () => ({ items: [] })
   ,"GET /api/market-intelligence/social-sentiment/asset-matrix": () => ({ assets: [] })
