@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-03T15:48:22.549Z",
+  "updatedAt": "2026-06-03T15:49:22.592Z",
   "sources": [
     {
       "id": "forex-factory-weekly",
@@ -9,13 +9,13 @@
       "url": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
       "enabled": true,
       "scheduleMs": 60000,
-      "status": "ONLINE",
-      "lastSyncAt": "2026-06-03T15:47:22.925Z",
+      "status": "FAILED",
+      "lastSyncAt": "2026-06-03T15:49:22.592Z",
       "lastSuccessAt": "2026-06-03T15:47:22.925Z",
-      "latencyMs": 378,
+      "latencyMs": 35,
       "imported": 0,
       "updated": 0,
-      "error": null
+      "error": "HTTP 429"
     }
   ],
   "events": [
@@ -5719,6 +5719,14 @@
     }
   ],
   "syncLogs": [
+    {
+      "id": "6b166d76-3dcd-43d1-b9cf-b6597dedf6d2",
+      "syncedAt": "2026-06-03T15:49:22.592Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
     {
       "id": "f18b13d9-a77d-416c-87e9-b6ba00a29e1d",
       "syncedAt": "2026-06-03T15:48:22.549Z",

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-03T15:48:22.413Z",
+  "updatedAt": "2026-06-03T15:49:22.969Z",
   "sources": [
     {
       "id": "federal-reserve-press",
@@ -12,7 +12,7 @@
       "scheduleMs": 60000,
       "reputation": 100,
       "status": "ONLINE",
-      "lastSyncAt": "2026-06-03T15:47:22.653Z",
+      "lastSyncAt": "2026-06-03T15:49:22.668Z",
       "lastSuccessAt": "2026-06-03T10:17:40.844Z",
       "latencyMs": 244,
       "imported": 0,
@@ -30,9 +30,9 @@
       "scheduleMs": 60000,
       "reputation": 100,
       "status": "ONLINE",
-      "lastSyncAt": "2026-06-03T15:47:25.369Z",
+      "lastSyncAt": "2026-06-03T15:49:22.969Z",
       "lastSuccessAt": "2026-06-03T14:07:46.654Z",
-      "latencyMs": 2959,
+      "latencyMs": 542,
       "imported": 0,
       "error": null,
       "etag": "\"80b19b8661f3dc1:0\"",
@@ -1311,6 +1311,13 @@
     }
   ],
   "syncLogs": [
+    {
+      "id": "36048c4f-b72a-473d-a202-8c2c9a76ff5b",
+      "syncedAt": "2026-06-03T15:49:22.969Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
     {
       "id": "09ec432f-d082-4a88-90a4-db646d3ba7a9",
       "syncedAt": "2026-06-03T15:48:22.413Z",
