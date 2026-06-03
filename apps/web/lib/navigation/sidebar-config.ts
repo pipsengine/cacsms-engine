@@ -30,7 +30,7 @@ export const sidebarFunctions: SidebarFunction[] = [
       page("data-sources-validation", "Data Sources Validation", "/workspace/market-intelligence/data-sources", "market-intelligence:view"),
       page("source-configuration", "Source Configuration Center", "/workspace/market-intelligence/source-configuration", "market-intelligence:admin"),
       page("market-data-mi", "Market Data Providers", "/workspace/market-intelligence/market-data", "market-intelligence:view"),
-      page("news-sentiment-mi", "News Sentiment", "/workspace/market-intelligence/news-sentiment", "market-intelligence:view"),
+      page("news-sentiment-mi", "News & Sentiment Sources", "/workspace/market-intelligence/news-sentiment", "market-intelligence:view"),
       page("economic-calendar-mi", "Economic Calendar", "/workspace/market-intelligence/economic-calendar", "market-intelligence:view"),
       page("social-sentiment-mi", "Social & Community Sentiment", "/workspace/market-intelligence/social-sentiment", "market-intelligence:view"),
       page("institutional-cot-mi", "Institutional / COT Data", "/workspace/market-intelligence/institutional-cot", "market-intelligence:view"),

@@ -55,7 +55,7 @@ test("dashboard shells install the shared real-time tick and UTC clock runtime",
   }
   const runtime = readFileSync("apps/web/real-time-status.js", "utf8");
   assert.match(runtime, /setInterval\(updateClock, 1000\)/);
-  assert.match(runtime, /setInterval\(refreshTicks, TICK_REFRESH_MS\)/);
+  assert.match(runtime, /window\.setTimeout\(refreshTicks, delay\)/);
   assert.match(runtime, /\/api\/market-data\/ticks\/latest\?limit=8/);
   assert.match(runtime, /WAITING FOR MT5/);
 });

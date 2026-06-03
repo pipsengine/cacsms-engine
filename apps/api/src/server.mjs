@@ -50,6 +50,41 @@ import {
 import { getDatabaseConfig, testDatabaseConnection } from "../../../packages/market-intelligence/src/db.js";
 import { getLatestTicks } from "../../../packages/market-intelligence/src/market-data-repository.js";
 import {
+  connectNewsProvider,
+  getNewsAssetImpact,
+  getNewsDashboard,
+  getNewsLiveSourceSnapshot,
+  listNewsAlerts,
+  listNewsArticles,
+  listNewsSources,
+  listNewsSyncLogs,
+  startNewsIntelligenceSyncLoop,
+  syncNewsIntelligence,
+  testNewsProvider
+} from "../../../packages/market-intelligence/src/news-intelligence.js";
+import {
+  connectEconomicSource,
+  createEconomicAlert,
+  getCentralBankEvents,
+  getEconomicAssetImpact,
+  getEconomicCalendarDashboard,
+  getEconomicCalendarLiveSourceSnapshot,
+  getEconomicEvent,
+  getEconomicEventCorrelation,
+  getEconomicEventHistory,
+  getEconomicRestrictions,
+  ingestEconomicActualRelease,
+  listEconomicAlerts,
+  listEconomicEvents,
+  listEconomicReleaseUpdates,
+  listEconomicSources,
+  listEconomicSyncLogs,
+  startEconomicCalendarSyncLoop,
+  syncEconomicCalendar,
+  syncEconomicActualReleases,
+  testEconomicSource
+} from "../../../packages/market-intelligence/src/economic-calendar-intelligence.js";
+import {
   createMarketDataProvider,
   deleteMarketDataProvider,
   disableMarketDataProvider,
@@ -260,6 +295,8 @@ async function getLiveSourceSnapshots({ skipRuntimeSync = false } = {}) {
   const tickEvidence = latestRecordedTickEvidence(recordedTicks);
   const snapshots = await Promise.all(liveSourceDefinitions.map(async ([id, routeSlug, name, envKey, required, configuration]) => {
     if (id === "market-data") return marketDataSnapshot;
+    if (id === "news-sentiment") return getNewsLiveSourceSnapshot();
+    if (id === "economic-calendar") return getEconomicCalendarLiveSourceSnapshot();
     if (id === "historical-data" && tickEvidence.ticks.length) {
       return buildLocalSnapshot({
         id, routeSlug, name, required, configuration,
@@ -377,7 +414,7 @@ const routes = {
   "GET /api/market-intelligence/dashboard": () => getLiveMarketIntelligenceDashboard(),
   "GET /api/market-intelligence/data-sources/health": async () => ({ sourceMode: "LIVE_ADAPTERS_ONLY", sources: await getLiveSourceSnapshots() }),
   "GET /api/market-intelligence/economic-events": () => ({ events: [], status: "NOT_CONFIGURED" }),
-  "GET /api/market-intelligence/news-sentiment": () => liveSourcePayload("news-sentiment"),
+  "GET /api/market-intelligence/news-sentiment": () => getNewsDashboard(),
   "GET /api/market-intelligence/broker-feeds": () => ({ feeds: [], status: "NOT_CONFIGURED" }),
   "GET /api/market-intelligence/data-quality-gate": async () => getDataQualityGateDashboard(await getLiveSourceSnapshots()),
   "GET /api/market-intelligence/data-quality-gate/sources": async () => ({ sources: getDataQualityGateDashboard(await getLiveSourceSnapshots()).sources }),
@@ -412,17 +449,38 @@ const routes = {
   ,"GET /api/market-data/providers/catalog": () => getWizardCatalog()
   ,"GET /api/market-data/providers/detect-mt5-terminals": () => detectMt5Terminals()
   ,"GET /api/mt5/brokers": () => listMt5Brokers()
-  ,"GET /api/market-intelligence/news-sentiment/dashboard": () => liveSourcePayload("news-sentiment")
-  ,"GET /api/market-intelligence/news-sentiment/headlines": () => ({ headlines: [], source_mode: "LIVE_ADAPTERS_ONLY" })
-  ,"GET /api/market-intelligence/news-sentiment/sources": () => ({ sources: [], source_mode: "LIVE_ADAPTERS_ONLY" })
-  ,"GET /api/market-intelligence/news-sentiment/asset-impact": () => ({ assets: [], source_mode: "LIVE_ADAPTERS_ONLY" })
-  ,"GET /api/market-intelligence/news-sentiment/risk-panel": () => liveSourcePayload("news-sentiment")
-  ,"GET /api/market-intelligence/economic-calendar/dashboard": () => liveSourcePayload("economic-calendar")
-  ,"GET /api/market-intelligence/economic-calendar/events": () => ({ events: [], source_mode: "LIVE_ADAPTERS_ONLY" })
-  ,"GET /api/market-intelligence/economic-calendar/high-impact": () => ({ event: null, status: "NOT_CONFIGURED", source_mode: "LIVE_ADAPTERS_ONLY" })
-  ,"GET /api/market-intelligence/economic-calendar/restrictions": () => ({ restrictions: [], source_mode: "LIVE_ADAPTERS_ONLY" })
-  ,"GET /api/market-intelligence/economic-calendar/asset-impact": () => ({ assets: [], source_mode: "LIVE_ADAPTERS_ONLY" })
-  ,"GET /api/market-intelligence/economic-calendar/central-banks": () => ({ centralBanks: [], source_mode: "LIVE_ADAPTERS_ONLY" })
+  ,"GET /api/market-intelligence/news-sentiment/dashboard": () => getNewsDashboard()
+  ,"GET /api/market-intelligence/news-sentiment/headlines": url => {
+    const result = listNewsArticles(Object.fromEntries(url.searchParams));
+    return { headlines: result.articles, total: result.total, source_mode: result.sourceMode };
+  }
+  ,"GET /api/market-intelligence/news-sentiment/sources": () => listNewsSources()
+  ,"GET /api/market-intelligence/news-sentiment/asset-impact": () => getNewsAssetImpact()
+  ,"GET /api/market-intelligence/news-sentiment/risk-panel": () => listNewsAlerts()
+  ,"GET /api/news/live": url => listNewsArticles({ ...Object.fromEntries(url.searchParams), limit: url.searchParams.get("limit") || 100 })
+  ,"GET /api/news/latest": url => listNewsArticles({ ...Object.fromEntries(url.searchParams), limit: url.searchParams.get("limit") || 50 })
+  ,"GET /api/news/breaking": url => listNewsArticles({ ...Object.fromEntries(url.searchParams), breaking: true })
+  ,"GET /api/news/sentiment": () => getNewsDashboard()
+  ,"GET /api/news/impact": () => getNewsAssetImpact()
+  ,"GET /api/news/economic-calendar": url => listEconomicEvents(Object.fromEntries(url.searchParams))
+  ,"GET /api/news/alerts": () => listNewsAlerts()
+  ,"GET /api/news/provider/health": () => listNewsSources()
+  ,"GET /api/news/provider/logs": () => listNewsSyncLogs()
+  ,"GET /api/market-intelligence/economic-calendar/dashboard": () => getEconomicCalendarDashboard()
+  ,"GET /api/market-intelligence/economic-calendar/events": url => listEconomicEvents(Object.fromEntries(url.searchParams))
+  ,"GET /api/market-intelligence/economic-calendar/high-impact": () => ({ event: getEconomicCalendarDashboard().nextHighImpact, source_mode: "LIVE_PROVIDERS_ONLY" })
+  ,"GET /api/market-intelligence/economic-calendar/restrictions": () => getEconomicRestrictions()
+  ,"GET /api/market-intelligence/economic-calendar/asset-impact": () => getEconomicAssetImpact()
+  ,"GET /api/market-intelligence/economic-calendar/central-banks": () => getCentralBankEvents()
+  ,"GET /api/economic-calendar": url => listEconomicEvents(Object.fromEntries(url.searchParams))
+  ,"GET /api/economic-calendar/upcoming": url => listEconomicEvents({ ...Object.fromEntries(url.searchParams), range:"upcoming" })
+  ,"GET /api/economic-calendar/today": url => listEconomicEvents({ ...Object.fromEntries(url.searchParams), range:"today" })
+  ,"GET /api/economic-calendar/high-impact": url => listEconomicEvents({ ...Object.fromEntries(url.searchParams), impact:"HIGH" })
+  ,"GET /api/economic-calendar/history": url => listEconomicEvents({ ...Object.fromEntries(url.searchParams), range:"week" })
+  ,"GET /api/economic-calendar/sources": () => listEconomicSources()
+  ,"GET /api/economic-calendar/alerts": () => listEconomicAlerts()
+  ,"GET /api/economic-calendar/logs": () => listEconomicSyncLogs()
+  ,"GET /api/economic-calendar/release-updates": url => listEconomicReleaseUpdates({ since:url.searchParams.get("since") })
   ,"GET /api/market-intelligence/social-sentiment/dashboard": () => liveSourcePayload("social-sentiment")
   ,"GET /api/market-intelligence/social-sentiment/feed": () => ({ items: [] })
   ,"GET /api/market-intelligence/social-sentiment/asset-matrix": () => ({ assets: [] })
@@ -494,13 +552,16 @@ const actions = {
   "/api/market-intelligence/test-sources": async () => ({ type: "market_intelligence.sources.live_probe.completed", ...await getLiveMarketIntelligenceDashboard({ log: true }) })
   ,"/api/market-data/providers/validate": () => liveAction("market_data.providers.live_probe.completed", "market-data")
   ,"/api/market-data/providers/restart": () => liveAction("restart", "market-data")
-  ,"/api/market-intelligence/news-sentiment/refresh": () => liveAction("news_sentiment.live_probe.completed", "news-sentiment")
-  ,"/api/market-intelligence/news-sentiment/classify": () => liveAction("news_sentiment.classification.unavailable", "news-sentiment")
-  ,"/api/market-intelligence/news-sentiment/create-alert": () => liveAction("news_sentiment.risk_alert.unavailable", "news-sentiment")
-  ,"/api/market-intelligence/economic-calendar/sync": () => liveAction("economic_calendar.live_probe.completed", "economic-calendar")
-  ,"/api/market-intelligence/economic-calendar/risk-scan": () => liveAction("economic_calendar.risk_scan.unavailable", "economic-calendar")
-  ,"/api/market-intelligence/economic-calendar/apply-restriction": () => liveAction("apply_restriction", "economic-calendar")
-  ,"/api/market-intelligence/economic-calendar/release-restriction": () => liveAction("release_restriction", "economic-calendar")
+  ,"/api/market-intelligence/news-sentiment/refresh": async () => ({ type: "news_sentiment.sync.completed", ...await syncNewsIntelligence({ force: true }) })
+  ,"/api/market-intelligence/news-sentiment/classify": () => ({ type: "news_sentiment.classification.completed", ...getNewsDashboard() })
+  ,"/api/market-intelligence/news-sentiment/create-alert": () => ({ type: "news_sentiment.alerts.current", ...listNewsAlerts() })
+  ,"/api/news/sync": async () => ({ type: "news.sync.completed", ...await syncNewsIntelligence({ force: true }) })
+  ,"/api/market-intelligence/economic-calendar/sync": async () => ({ type:"economic_calendar.sync.completed", ...await syncEconomicCalendar({ force:true }) })
+  ,"/api/market-intelligence/economic-calendar/risk-scan": () => ({ type:"economic_calendar.risk_scan.completed", ...getEconomicCalendarDashboard() })
+  ,"/api/market-intelligence/economic-calendar/apply-restriction": () => ({ type:"economic_calendar.restrictions.current", ...getEconomicRestrictions() })
+  ,"/api/market-intelligence/economic-calendar/release-restriction": () => ({ type:"economic_calendar.restrictions.current", ...getEconomicRestrictions() })
+  ,"/api/economic-calendar/sync": async () => ({ type:"economic_calendar.sync.completed", ...await syncEconomicCalendar({ force:true }) })
+  ,"/api/economic-calendar/releases/sync": async () => ({ type:"economic_calendar.release_sync.completed", ...await syncEconomicActualReleases({ force:true }) })
   ,"/api/market-intelligence/social-sentiment/refresh": () => liveAction("social_sentiment.live_probe.completed", "social-sentiment")
   ,"/api/market-intelligence/social-sentiment/run-scan": () => liveAction("social_sentiment.scan.unavailable", "social-sentiment")
   ,"/api/market-intelligence/social-sentiment/generate-contrarian-signals": () => liveAction("social_sentiment.contrarian.unavailable", "social-sentiment")
@@ -584,6 +645,62 @@ const server = createServer(async (request, response) => {
   }
   if (request.method === "POST" && url.pathname === "/api/source-configuration/sync-all") {
     return json(response, 200, { accepted: true, ...(await syncAllSourceProviders({ liveSnapshots: await getLiveSourceSnapshots() })) });
+  }
+  if (request.method === "POST" && url.pathname === "/api/news/provider/connect") {
+    try {
+      const provider = connectNewsProvider(await readBody(request));
+      return json(response, 201, { accepted: true, provider });
+    } catch (reason) {
+      return json(response, 400, { error: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/news/provider/test") {
+    try {
+      const body = await readBody(request);
+      return json(response, 200, { accepted: true, result: await testNewsProvider(body.sourceId) });
+    } catch (reason) {
+      return json(response, reason.message === "news_provider_not_found" ? 404 : 400, { error: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/economic-calendar/alerts") {
+    try {
+      return json(response, 201, { accepted:true, alert:createEconomicAlert(await readBody(request)) });
+    } catch (reason) {
+      return json(response, reason.message === "economic_event_not_found" ? 404 : 400, { error:reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/economic-calendar/releases") {
+    try {
+      return json(response,200,{accepted:true,event:ingestEconomicActualRelease(await readBody(request))});
+    } catch(reason) {
+      return json(response,reason.message==="economic_event_not_found"?404:400,{error:reason.message});
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/economic-calendar/sources") {
+    try {
+      return json(response,201,{accepted:true,source:connectEconomicSource(await readBody(request))});
+    } catch(reason) {
+      return json(response,400,{error:reason.message});
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/economic-calendar/sources/test") {
+    try {
+      const body=await readBody(request);
+      return json(response,200,{accepted:true,result:await testEconomicSource(body.sourceId)});
+    } catch(reason) {
+      return json(response,reason.message==="economic_source_not_found"?404:400,{error:reason.message});
+    }
+  }
+  if (request.method === "GET" && url.pathname.startsWith("/api/economic-calendar/")) {
+    const parts = url.pathname.split("/").filter(Boolean);
+    const id = parts[2];
+    if (id && !["upcoming","today","high-impact","history","sources","alerts","logs"].includes(id)) {
+      const event = getEconomicEvent(id);
+      if (!event) return json(response,404,{error:"economic_event_not_found"});
+      if (parts[3] === "history") return json(response,200,getEconomicEventHistory(id));
+      if (parts[3] === "correlation") return json(response,200,getEconomicEventCorrelation(id));
+      return json(response,200,{event,sourceMode:"LIVE_PROVIDERS_ONLY"});
+    }
   }
   if (request.method === "GET" && url.pathname.startsWith("/api/mt5/brokers/") && url.pathname.endsWith("/servers")) {
     const brokerName = decodeURIComponent(url.pathname.split("/")[4] || "");
@@ -940,4 +1057,8 @@ server.listen(port, async () => {
     }
   });
   console.log(`[runtime-sync] automatic MT5 sync every ${Number(process.env.CACSMS_AUTO_SYNC_MS || 30000)}ms`);
+  startNewsIntelligenceSyncLoop();
+  console.log(`[news-intelligence] automatic provider sync every ${Number(process.env.NEWS_INTELLIGENCE_SYNC_MS || 60000)}ms`);
+  startEconomicCalendarSyncLoop();
+  console.log(`[economic-calendar] automatic provider sync every ${Number(process.env.ECONOMIC_CALENDAR_SYNC_MS || 60000)}ms`);
 });

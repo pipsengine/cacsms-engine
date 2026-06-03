@@ -1,0 +1,2351 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-03T13:38:51.918Z",
+  "sources": [
+    {
+      "id": "federal-reserve-press",
+      "name": "Federal Reserve Press Releases",
+      "type": "RSS",
+      "tier": "Tier 3 Economic",
+      "url": "https://www.federalreserve.gov/feeds/press_all.xml",
+      "enabled": true,
+      "scheduleMs": 60000,
+      "reputation": 100,
+      "status": "ONLINE",
+      "lastSyncAt": "2026-06-03T13:38:51.854Z",
+      "lastSuccessAt": "2026-06-03T10:17:40.844Z",
+      "latencyMs": 1236,
+      "imported": 0,
+      "error": null,
+      "etag": "W/\"f77ce184a0f2dc1:0\"",
+      "lastModified": "Tue, 02 Jun 2026 15:00:15 GMT"
+    },
+    {
+      "id": "bls-latest-releases",
+      "name": "U.S. Bureau of Labor Statistics",
+      "type": "RSS",
+      "tier": "Tier 3 Economic",
+      "url": "https://www.bls.gov/feed/bls_latest.rss",
+      "enabled": true,
+      "scheduleMs": 60000,
+      "reputation": 100,
+      "status": "ONLINE",
+      "lastSyncAt": "2026-06-03T13:38:51.857Z",
+      "lastSuccessAt": "2026-06-03T10:17:40.363Z",
+      "latencyMs": 1167,
+      "imported": 0,
+      "error": null,
+      "etag": "\"034d6399f2dc1:0\"",
+      "lastModified": "Tue, 02 Jun 2026 14:09:12 GMT"
+    },
+    {
+      "id": "sec-press-releases",
+      "name": "U.S. SEC Press Releases",
+      "type": "RSS",
+      "tier": "Tier 3 Economic",
+      "url": "https://www.sec.gov/news/pressreleases.rss",
+      "enabled": true,
+      "scheduleMs": 300000,
+      "reputation": 100,
+      "status": "ONLINE",
+      "lastSyncAt": "2026-06-03T13:38:51.914Z",
+      "lastSuccessAt": "2026-06-03T13:38:51.914Z",
+      "latencyMs": 1166,
+      "imported": 0,
+      "error": null,
+      "etag": "\"1780493598\"",
+      "lastModified": "Wed, 03 Jun 2026 13:33:18 GMT"
+    }
+  ],
+  "articles": [
+    {
+      "id": "8a224801bd341da7334ddcb8",
+      "hash": "8a224801bd341da7334ddcb8fdbe5ea55b28f900eb67ab5a11feea24f06cb4e5",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Agencies remove additional references to reputation risk",
+      "summary": "Agencies remove additional references to reputation risk",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20260602a.htm",
+      "publishedAt": "2026-06-02T15:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:39.771Z",
+      "category": "General Market News",
+      "sentimentScore": -40,
+      "sentiment": "Bearish",
+      "confidence": 65,
+      "impact": "LOW",
+      "impactScore": 63,
+      "affectedAssets": [],
+      "action": "Monitor"
+    },
+    {
+      "id": "4633507d4d809ecc4fcae1d9",
+      "hash": "4633507d4d809ecc4fcae1d9d1fa2baddf642f08463a86a19d192136eed7f18e",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Publishes Draft Strategic Plan for Public Comment",
+      "summary": "The Securities and Exchange Commission today published a&nbsp;Draft Strategic Plan&nbsp;that focuses on returning the agency to the core mission set by Congress more than 90 years ago: protecting investors; maintaining fair, orderly, and efficient…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-51-sec-publishes-draft-strategic-plan-public-comment",
+      "publishedAt": "2026-06-02T14:30:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.014Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "adb6c6eaece1f6b4476697db",
+      "hash": "adb6c6eaece1f6b4476697dbdf70febf4b989bf00d148dcbba92cbe08a84f3e8",
+      "sourceId": "bls-latest-releases",
+      "source": "U.S. Bureau of Labor Statistics",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Major Economic Indicators Latest Numbers",
+      "summary": "Consumer Price Index (CPI): +0.6% in Apr 2026 News Release Historical Data Unemployment Rate: 4.3% in Apr 2026 News Release Historical Data Payroll Employment: +115,000(p) in Apr 2026 News Release Historical Data Average Hourly Earnings: +$0.06(p) in Apr 2026 News Release Historical Data Producer Price Index - Final Demand: +1.4%(p) in Apr 2026 News Release Historical Data Employment Cost Index (ECI): +0.9% in 1st Qtr of 2026 News Release Historical Data Productivity: +0.8% in 1st Qtr of 2026 News Release Historical Data U.S. Import Price Index: +1.9% in Apr 2026 News Release Historical Data U.S. Export Price Index: +3.3% in Apr 2026 News Release Historical Data p - preliminary",
+      "url": "https://www.bls.gov/bls/",
+      "publishedAt": "2026-06-02T14:09:05.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.313Z",
+      "category": "Inflation",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "XAUUSD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "462adeffe169108082100ca5",
+      "hash": "462adeffe169108082100ca593f06fec0330474dc6d3820ec741aab0124e3940",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Announces Four New Members of Investor Advisory Committee",
+      "summary": "The Securities and Exchange Commission today announced&nbsp;four&nbsp;new members to fill vacancies on its Investor Advisory Committee.&nbsp;Three of the four new members&nbsp;will serve four-year terms,&nbsp;while the fourth new member will serve as the…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-50-sec-announces-four-new-members-investor-advisory-committee",
+      "publishedAt": "2026-06-01T16:39:44.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.062Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "c4051f02e7686055419d6d6f",
+      "hash": "c4051f02e7686055419d6d6fcc9dcd579fe1093e262139575a4f7378dcef405e",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Proposes Rescission of Climate-Related Disclosure Rules",
+      "summary": "The Securities and Exchange Commission today proposed the rescission of overly burdensome and costly rules that require companies to provide certain climate-related information in their registration statements and annual reports. The Commission’s…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-49-sec-proposes-rescission-climate-related-disclosure-rules",
+      "publishedAt": "2026-05-29T14:50:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.110Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "3cf2e12f7d180db250fb1e09",
+      "hash": "3cf2e12f7d180db250fb1e09e08c0f1f423ef1e3ef8efab23689a4ae7f8881cb",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Federal Reserve Board issues enforcement actions with former employee of Atlantic Union Bank and former employee of Frost Bank",
+      "summary": "Federal Reserve Board issues enforcement actions with former employee of Atlantic Union Bank and former employee of Frost Bank",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20260528a.htm",
+      "publishedAt": "2026-05-28T15:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:39.782Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "bbac5143aff4c70ab9ebad31",
+      "hash": "bbac5143aff4c70ab9ebad31e0df168ba1abddae118f4369a73db8dcb735f8f8",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Investor Advisory Committee to Host June 4 Meeting",
+      "summary": "The Securities and Exchange Commission’s&nbsp;Investor Advisory Committee will hold a public meeting at the SEC Headquarters in Washington D.C. on June 4 at 10 a.m. ET to discuss private markets, passive index funds, and recommendations regarding fund…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-48-sec-investor-advisory-committee-host-june-4-meeting",
+      "publishedAt": "2026-05-27T14:59:13.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.260Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "1b1df718668d6575029eaf2a",
+      "hash": "1b1df718668d6575029eaf2a2ba0a9fb5633165ffc9aae046e85070a5e03809e",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Minutes of the Board's discount rate meeting on April 20 and 29, 2026",
+      "summary": "Minutes of the Board's discount rate meeting on April 20 and 29, 2026",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260526a.htm",
+      "publishedAt": "2026-05-26T18:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:39.828Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "XAUUSD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "eb1f8513fe06625eab44b2c5",
+      "hash": "eb1f8513fe06625eab44b2c5c407559d18554b4576206dd928a5dc1d3bd6eac9",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Kevin Warsh takes oath of office as chairman and a member of the Board of Governors of the Federal Reserve System, and the Federal Open Market Committee unanimously selects Warsh as its chairman",
+      "summary": "Kevin Warsh takes oath of office as chairman and a member of the Board of Governors of the Federal Reserve System, and the Federal Open Market Committee unanimously selects Warsh as its chairman",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/other20260522a.htm",
+      "publishedAt": "2026-05-22T20:15:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:39.878Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "f74a50b5cb3da4a88da86fbf",
+      "hash": "f74a50b5cb3da4a88da86fbf637ed614dec8e2350c5bf814137daf6e4768d00a",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Agencies publish resolution plan feedback letters for certain domestic and foreign banking organizations",
+      "summary": "Agencies publish resolution plan feedback letters for certain domestic and foreign banking organizations",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20260522a.htm",
+      "publishedAt": "2026-05-22T20:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:39.920Z",
+      "category": "Banking",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "LOW",
+      "impactScore": 63,
+      "affectedAssets": [],
+      "action": "Monitor"
+    },
+    {
+      "id": "948c96c7b94b77efb7013ede",
+      "hash": "948c96c7b94b77efb7013ede53745f29daaf98e2042442fbcb5b0b34b7eb9274",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Federal Reserve Board issues enforcement action with former employee of Commerce Bank",
+      "summary": "Federal Reserve Board issues enforcement action with former employee of Commerce Bank",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20260521a.htm",
+      "publishedAt": "2026-05-21T15:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:39.963Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "aba5453cb50c8e115719803d",
+      "hash": "aba5453cb50c8e115719803df2273cdef0b0ae6ad3d2de36ec7d8ba31e0762e7",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC and NFA Announce Memorandum of Understanding to Further Harmonize Regulatory Coordination",
+      "summary": "The Securities and Exchange Commission and National Futures Association (NFA) today announced that they have entered into a Memorandum of Understanding (MOU) to enhance their cooperation, coordination, and information sharing in areas of common…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-47-sec-nfa-announce-memorandum-understanding-further-harmonize-regulatory-coordination",
+      "publishedAt": "2026-05-21T12:51:10.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.417Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "6023da4b158de16398745ec7",
+      "hash": "6023da4b158de16398745ec7a8aad182b43db6d1cf0ed4210dc75e08f7842d18",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Federal Reserve Board requests public comment on a proposal to establish a \"payment account,\" which legally eligible financial institutions could use for the specific purpose of clearing and settling their payments",
+      "summary": "Federal Reserve Board requests public comment on a proposal to establish a \"payment account,\" which legally eligible financial institutions could use for the specific purpose of clearing and settling their payments",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/other20260520a.htm",
+      "publishedAt": "2026-05-20T20:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.005Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "800dc122f93681ea667b0d99",
+      "hash": "800dc122f93681ea667b0d997c650d9f39e9becfac4895eb26e8aa821fbd2197",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Minutes of the Federal Open Market Committee, April 28-29, 2026",
+      "summary": "Minutes of the Federal Open Market Committee, April 28-29, 2026",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260520a.htm",
+      "publishedAt": "2026-05-20T18:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.055Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "LOW",
+      "impactScore": 63,
+      "affectedAssets": [],
+      "action": "Monitor"
+    },
+    {
+      "id": "6058b19bfc4aa34908cdb511",
+      "hash": "6058b19bfc4aa34908cdb511b269029650a172189d8d32ee3d33f4e1feed4985",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Proposes Transformative Reforms to Help Public Companies Conduct Registered Offerings and Simplify Reporting Requirements",
+      "summary": "The Securities and Exchange Commission today proposed amendments to its rules and forms governing registered offerings that are designed to increase efficiency, flexibility, and cost savings for public companies while maintaining robust investor…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-46-sec-proposes-transformative-reforms-help-public-companies-conduct-registered-offerings-simplify",
+      "publishedAt": "2026-05-19T14:55:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.463Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "30a996a8dc6e2e99e35c6a21",
+      "hash": "30a996a8dc6e2e99e35c6a219f5c9cca2b39c4e7cc8fa49e3d4be36bad0ca5bb",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Rescinds Policy Regarding Denials of Settlements in Enforcement Actions",
+      "summary": "The Securities and Exchange Commission today rescinded a policy, codified in Rule 202.5(e) of its informal rules of procedures, stating that when it chooses to settle an enforcement action in which a sanction is imposed, it will not settle unless the…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-45-sec-rescinds-policy-regarding-denials-settlements-enforcement-actions",
+      "publishedAt": "2026-05-18T16:33:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.506Z",
+      "category": "Geopolitics",
+      "sentimentScore": -20,
+      "sentiment": "Bearish",
+      "confidence": 60,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "eaadbc50c274b8335fad95b6",
+      "hash": "eaadbc50c274b8335fad95b6b42c068d86401518dcb78598de501338b62b9c0a",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Federal Reserve Board names Jerome H. Powell as chair pro tempore; Powell will serve as chair pro tempore until Kevin M. Warsh is sworn in as the new chair",
+      "summary": "Federal Reserve Board names Jerome H. Powell as chair pro tempore; Powell will serve as chair pro tempore until Kevin M. Warsh is sworn in as the new chair",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/other20260515a.htm",
+      "publishedAt": "2026-05-15T21:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.102Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "5efad9003b4a5391f4fb187a",
+      "hash": "5efad9003b4a5391f4fb187a597a0a5aacc72d0c28102ba648b475e4f63f15cf",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Federal Reserve Board announces approval of application by the Stephen M. Calk 2025 Trust",
+      "summary": "Federal Reserve Board announces approval of application by the Stephen M. Calk 2025 Trust",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/orders20260515a.htm",
+      "publishedAt": "2026-05-15T20:30:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.143Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "01b7c35471b2a95177c921f0",
+      "hash": "01b7c35471b2a95177c921f02cb69f60f21d2fcad428b2b564b9365678c1ea49",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Federal Reserve Board announces it does not object to the conversion of United Texas Bank, of Dallas, Texas, from a bank supervised by the Federal Reserve to a national bank supervised by the Office of the Comptroller of the Currency",
+      "summary": "Federal Reserve Board announces it does not object to the conversion of United Texas Bank, of Dallas, Texas, from a bank supervised by the Federal Reserve to a national bank supervised by the Office of the Comptroller of the Currency",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/orders20260515b.htm",
+      "publishedAt": "2026-05-15T20:30:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.292Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "c7791a338c8859f55d3af121",
+      "hash": "c7791a338c8859f55d3af121c176ac9cb95e6562907f1e161ddf447d9952b7e3",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Federal Reserve Board announces termination of enforcement actions with UBS Group AG, Credit Suisse AG, Credit Suisse Holdings (USA), Inc., and Credit Suisse AG, New York Branch",
+      "summary": "Federal Reserve Board announces termination of enforcement actions with UBS Group AG, Credit Suisse AG, Credit Suisse Holdings (USA), Inc., and Credit Suisse AG, New York Branch",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20260515a.htm",
+      "publishedAt": "2026-05-15T15:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.340Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "71061aff50d07135a8414898",
+      "hash": "71061aff50d07135a8414898b30f7aea97e2489479bf964c6d4a25233dbc2748",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Stephen I. Miran submits his resignation as a member of the Federal Reserve Board, effective when or shortly before his successor on the Board is sworn in",
+      "summary": "Stephen I. Miran submits his resignation as a member of the Federal Reserve Board, effective when or shortly before his successor on the Board is sworn in",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/other20260514b.htm",
+      "publishedAt": "2026-05-14T18:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.385Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "ec637a3c6baf5918597d7d6b",
+      "hash": "ec637a3c6baf5918597d7d6bce62f16eee2034619b4abc6f9a7b3f99e57607a9",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Federal Reserve Board releases results from two surveys of senior financial officers at banks about their views on discount window operating days and their strategies and practices for managing reserve balances",
+      "summary": "Federal Reserve Board releases results from two surveys of senior financial officers at banks about their views on discount window operating days and their strategies and practices for managing reserve balances",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/other20260514a.htm",
+      "publishedAt": "2026-05-14T14:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.433Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "701c37ba0e9a952e925911ef",
+      "hash": "701c37ba0e9a952e925911efe03f4e60b28d0d0ffe04b0baaa3d4398e0bb2819",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Federal Reserve Board issues Economic Well-Being of U.S. Households in 2025 report",
+      "summary": "Federal Reserve Board issues Economic Well-Being of U.S. Households in 2025 report",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/other20260513a.htm",
+      "publishedAt": "2026-05-13T15:30:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.478Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "be6253d092ce9f6daeb76ec9",
+      "hash": "be6253d092ce9f6daeb76ec9c6e0a202ee550f29168f37e0c7c9b9b77be04421",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Federal Reserve Board announces termination of enforcement actions with F & M Holding Company, Inc. and Thread Bancorp, Inc.",
+      "summary": "Federal Reserve Board announces termination of enforcement actions with F & M Holding Company, Inc. and Thread Bancorp, Inc.",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20260512a.htm",
+      "publishedAt": "2026-05-12T15:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.629Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "4f147f0d6297fbca4b63349b",
+      "hash": "4f147f0d6297fbca4b63349ba8b76be963a95ce4e646a27c75cfd3317cad1e35",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Federal Reserve Board announces approval of related applications by Columbia Bank MHC, and Columbia Financial, Inc.",
+      "summary": "Federal Reserve Board announces approval of related applications by Columbia Bank MHC, and Columbia Financial, Inc.",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/orders20260508a.htm",
+      "publishedAt": "2026-05-08T21:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.674Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "fc4374e9ca1379c0cc7cc785",
+      "hash": "fc4374e9ca1379c0cc7cc785aacd4efc1358dd65b039b721ce1e8d0f7485a1d4",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Charges 21 Individuals With Alleged Wide-Reaching Insider Trading Scheme",
+      "summary": "The Securities and Exchange Commission today charged 21 individuals for their alleged involvement in a decade-long insider trading scheme that used information misappropriated from multiple global law firms and resulted in millions of dollars in illicit…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-44-sec-charges-21-individuals-alleged-wide-reaching-insider-trading-scheme",
+      "publishedAt": "2026-05-06T23:24:19.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.545Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "e59a23896c53728078d8345d",
+      "hash": "e59a23896c53728078d8345d9b0fad8e2352f4695afb4e32f42112b8694aa9a0",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Divisions of Investment Management and Corporation Finance Issue Staff Guidance Supporting Retirement Plans for Small Businesses",
+      "summary": "Staff in the Securities and Exchange Commission’s Divisions of Investment Management and Corporation Finance issued guidance addressing certain questions regarding the application of the federal securities laws to pooled employer plans (PEPs), which help…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-43-sec-divisions-investment-management-corporation-finance-issue-staff-guidance-supporting-retirement",
+      "publishedAt": "2026-05-05T20:23:55.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.583Z",
+      "category": "Corporate Earnings",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "874ea7a301b0184c2ecb89bc",
+      "hash": "874ea7a301b0184c2ecb89bc07df926746bf90043ab2170ec48d8d66a5b252c8",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Proposes Amendments to Permit Optional Semiannual Reporting by Public Companies",
+      "summary": "The Securities and Exchange Commission today proposed rule and form amendments that would give public companies the option of filing semiannual reports in lieu of quarterly reports to meet their interim reporting obligations under the federal securities…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-42-sec-proposes-amendments-permit-optional-semiannual-reporting-public-companies",
+      "publishedAt": "2026-05-05T15:54:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.623Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "439b6751ba487a0e6a3396df",
+      "hash": "439b6751ba487a0e6a3396dfc1229d36b7b454478772cdcc58cacbc1d22a90f7",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Agencies issue host state loan-to-deposit ratios",
+      "summary": "Agencies issue host state loan-to-deposit ratios",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20260501a.htm",
+      "publishedAt": "2026-05-01T15:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.719Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "LOW",
+      "impactScore": 63,
+      "affectedAssets": [],
+      "action": "Monitor"
+    },
+    {
+      "id": "75c0365be7292a7d28473d87",
+      "hash": "75c0365be7292a7d28473d87f6a7f4b711eb2895277f741698bcd53cb11ff65f",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Deputy Director of Enforcement Jason Burt to Conclude His Tenure at the SEC",
+      "summary": "The Securities and Exchange Commission today announced that Jason Burt, Deputy Director of the Division of Enforcement (Specialized Units), will depart the agency on May 1, 2026, after more than 22 years of public service.“Jason’s exceptional leadership…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-41-deputy-director-enforcement-jason-burt-conclude-his-tenure-sec",
+      "publishedAt": "2026-04-30T20:30:36.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.671Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "61591e8256ea777ae36bb2b9",
+      "hash": "61591e8256ea777ae36bb2b969f5931972c6ae7fa8ac0755d6dfa57ccebc5503",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Federal Reserve issues FOMC statement",
+      "summary": "Federal Reserve issues FOMC statement",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260429a.htm",
+      "publishedAt": "2026-04-29T18:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.765Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "6e889f94689d89a2850b2751",
+      "hash": "6e889f94689d89a2850b27516ffbf91e4ab0df0134a434aec3e38028be3c4f3c",
+      "sourceId": "federal-reserve-press",
+      "source": "Federal Reserve Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Federal Reserve Board announces approval of application by OceanFirst Financial Corp.",
+      "summary": "Federal Reserve Board announces approval of application by OceanFirst Financial Corp.",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/orders20260424a.htm",
+      "publishedAt": "2026-04-24T20:00:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.806Z",
+      "category": "Central Banks",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "USD"
+      ],
+      "action": "Review Risk"
+    },
+    {
+      "id": "2a5ae4fd38911af39e989855",
+      "hash": "2a5ae4fd38911af39e989855de1128626b57a70f495a5b26fecf8a680a649b0d",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC and CFTC Jointly Propose Amendments to Reduce Private Fund Reporting Burdens",
+      "summary": "The Securities and Exchange Commission (SEC) and the Commodity Futures Trading Commission (CFTC) jointly proposed amendments to reduce private fund reporting burdens while enabling the continued collection of necessary and appropriate information. The…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-40-sec-cftc-jointly-propose-amendments-reduce-private-fund-reporting-burdens",
+      "publishedAt": "2026-04-20T14:45:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.716Z",
+      "category": "Commodities",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "8d4776c169ba1ff903e12456",
+      "hash": "8d4776c169ba1ff903e12456dd2ea8b84c6712440405b9829b4c50aa33896810",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Chairman Atkins Launches 'Material Matters' Podcast",
+      "summary": "The Securities and Exchange Commission today announced the launch of Material Matters With SEC Chairman Paul Atkins, a new podcast that provides stakeholders and the investing public with exclusive interviews and insights around the agency’s policy and…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-39-chairman-atkins-launches-material-matters-podcast",
+      "publishedAt": "2026-04-16T17:02:47.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.763Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "d8c5dc60fd7dbb3653b5542e",
+      "hash": "d8c5dc60fd7dbb3653b5542ecb1c4dc3eb9ef9e7a31a8d197c09ac179b3707e0",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Small Business Advisory Committee to Explore Ways to Encourage More IPOs",
+      "summary": "The Securities and Exchange Commission’s Small Business Capital Formation Advisory Committee announced that it will hold a meeting on Tuesday, April 28, 2026 at 10:00 a.m. to explore ways to encourage more companies to go public.The meeting will be open…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-38-sec-small-business-advisory-committee-explore-ways-encourage-more-ipos",
+      "publishedAt": "2026-04-16T15:45:04.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.918Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "c0f4e492327911529ddf7c0b",
+      "hash": "c0f4e492327911529ddf7c0b36da8d630f10fcf3dddc8961759fdc0de4e7c412",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Seeks Public Comment on the Consolidated Audit Trail and Other Audit Trails and Data Sources",
+      "summary": "The Securities and Exchange Commission today issued a concept release soliciting public comment in support of a comprehensive review of the Consolidated Audit Trail (CAT) and other audit trails and related data sources currently used in the regulation of…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-37-sec-seeks-public-comment-consolidated-audit-trail-other-audit-trails-data-sources",
+      "publishedAt": "2026-04-16T13:55:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.956Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "661c1a5b3ab42d0069cbeaac",
+      "hash": "661c1a5b3ab42d0069cbeaac732268064c451b178cf69ed4b05ced0dc3251ddd",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Approves Exemptive Order and Proposed Rule Change to Permit Customer Cross-Margining in the U.S. Treasury Market",
+      "summary": "The Securities and Exchange Commission today issued a conditional exemptive order that permits customer cross-margining of cash market positions in U.S. Treasury securities cleared by a registered clearing agency and futures positions in U.S. Treasury…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-36-sec-approves-exemptive-order-proposed-rule-change-permit-customer-cross-margining-us-treasury-market",
+      "publishedAt": "2026-04-15T19:45:51.000Z",
+      "discoveredAt": "2026-06-03T10:17:40.998Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "f95ac7bc1a87ca70484209e4",
+      "hash": "f95ac7bc1a87ca70484209e48210a8c204da822b50f0c560b82489046bad3248",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Appoints David Woodcock as Director of the Division of Enforcement",
+      "summary": "The Securities and Exchange Commission today announced that David Woodcock has been appointed Director of the Division of Enforcement, effective May 4, 2026. Mr. Woodcock is currently a partner in the Dallas and Washington, D.C. offices of Gibson, Dunn…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-35-sec-appoints-david-woodcock-director-division-enforcement",
+      "publishedAt": "2026-04-08T16:20:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:41.048Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "ce4c22b578c5619ba4ccbba0",
+      "hash": "ce4c22b578c5619ba4ccbba0d64e7834e7953338c5b2ef3aa706143f2fd45855",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Announces Enforcement Results for Fiscal Year 2025",
+      "summary": "The Securities and Exchange Commission today announced enforcement results for the fiscal year that ended on September 30, 2025.Central to an effective enforcement program is determining which cases to bring and responsibly stewarding Commission…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-34",
+      "publishedAt": "2026-04-07T19:48:30.000Z",
+      "discoveredAt": "2026-06-03T10:17:41.093Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "0aded5604f2ff45fdd83b0ad",
+      "hash": "0aded5604f2ff45fdd83b0ad1ad9d7475a5351b175435ec3e421ccba82dbab1d",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Announces Agenda and Panelists for Roundtable on Options Market Structure",
+      "summary": "The Securities and Exchange Commission today announced the agenda and panelists for its April 16, 2026, roundtable on options market structure.The roundtable will be held at the SEC’s headquarters at 100 F Street, N.E., Washington, D.C., from 9 a.m. to 3…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-33-sec-announces-agenda-panelists-roundtable-options-market-structure",
+      "publishedAt": "2026-04-02T20:44:29.000Z",
+      "discoveredAt": "2026-06-03T10:17:41.136Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "92dae6db2fd725bb172a65cb",
+      "hash": "92dae6db2fd725bb172a65cbb58fd4449f6286f85d71beaa19d3d259270f9b5a",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Highlights Financial Independence During Financial Literacy Month",
+      "summary": "The Securities and Exchange Commission’s Office of Investor Education and Assistance (OIEA) today announced that as part of April’s National Financial Literacy Month it will highlight financial planning tools and resources on&nbsp;Investor.gov to…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-32-sec-highlights-financial-independence-during-financial-literacy-month",
+      "publishedAt": "2026-03-31T13:52:09.000Z",
+      "discoveredAt": "2026-06-03T10:17:41.181Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "71fcbb6fd6e1954b667dd825",
+      "hash": "71fcbb6fd6e1954b667dd82517ad02f936a87a7356998ea4a66c7b6b2ecf3a51",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Approves Amendment to NMS Plan to Further Reduce the Costs of the Consolidated Audit Trail",
+      "summary": "The Securities and Exchange Commission today approved an amendment to the National Market System Plan governing the Consolidated Audit Trail (“CAT”) and provided exemptive relief from certain requirements of Rule 17a-1 under the Securities Exchange Act…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-31-sec-approves-amendment-nms-plan-further-reduce-costs-consolidated-audit-trail",
+      "publishedAt": "2026-03-27T20:04:54.000Z",
+      "discoveredAt": "2026-06-03T10:17:41.221Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "560f9733fa0086eb2d63acab",
+      "hash": "560f9733fa0086eb2d63acabda062aeb0b798f32d4da4ebdce4b4a07cae4cbfd",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Clarifies the Application of Federal Securities Laws to Crypto Assets",
+      "summary": "The Securities and Exchange Commission (SEC) today issued an interpretation clarifying how the federal securities laws apply to certain crypto assets and transactions involving crypto assets. This is a major step in the Commission’s efforts to provide…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-30-sec-clarifies-application-federal-securities-laws-crypto-assets",
+      "publishedAt": "2026-03-17T19:45:25.000Z",
+      "discoveredAt": "2026-06-03T10:17:41.269Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "48d5d7e09f1d287d1488797e",
+      "hash": "48d5d7e09f1d287d1488797e29205c2a36ef4e3e1bccb99df02da18408e671e2",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Publishes Data on Public and Private Offerings, Municipal Advisors, Transfer Agents, and Securities-Based Swap Dealers",
+      "summary": "The Securities and Exchange Commission’s Division of Economic and Risk Analysis (DERA) published a new report on security based swap dealers (SBSDs) and updated statistics and data visualizations on initial public offerings (IPOs), follow-on registered…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-29-sec-publishes-data-public-private-offerings-municipal-advisors-transfer-agents-securities-based-swap",
+      "publishedAt": "2026-03-17T19:13:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:41.310Z",
+      "category": "Economic Data",
+      "sentimentScore": -20,
+      "sentiment": "Bearish",
+      "confidence": 60,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "ad00a491d6c0b1f50a2e0991",
+      "hash": "ad00a491d6c0b1f50a2e0991ab90a0f8feaec49db03a3da8bb9f103007606f16",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Proposes Amendments to Exchange Act Rule 15c2-11",
+      "summary": "The Securities and Exchange Commission today proposed amendments to Exchange Act Rule 15c2-11, which sets out certain information gathering and review requirements for broker-dealers that publish quotations for, or maintain a continuous quoted market in…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-28-sec-proposes-amendments-exchange-act-rule-15c2-11",
+      "publishedAt": "2026-03-16T19:15:00.000Z",
+      "discoveredAt": "2026-06-03T10:17:41.360Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    },
+    {
+      "id": "1d2493774efefb354dd51d37",
+      "hash": "1d2493774efefb354dd51d371311161b7282d256ceafe5d08460c6d59f4d0df8",
+      "sourceId": "sec-press-releases",
+      "source": "U.S. SEC Press Releases",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "SEC Announces Enforcement Division Director Judge Margaret A. Ryan Has Resigned From Agency",
+      "summary": "The Securities and Exchange Commission today announced that Judge Margaret A. Ryan has resigned from her role as Director of the Division of Enforcement. Principal Deputy Director Sam Waldon has been named Acting Director of the Division, effective March…",
+      "url": "https://www.sec.gov/newsroom/press-releases/2026-27-sec-announces-enforcement-division-director-judge-margaret-ryan-has-resigned-agency",
+      "publishedAt": "2026-03-16T18:09:04.000Z",
+      "discoveredAt": "2026-06-03T10:17:41.410Z",
+      "category": "General Market News",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "MEDIUM",
+      "impactScore": 78,
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Monitor"
+    }
+  ],
+  "alerts": [
+    {
+      "id": "3bc7846c-f8a6-4a11-a38d-11af5496db3a",
+      "articleId": "30a996a8dc6e2e99e35c6a21",
+      "createdAt": "2026-06-03T10:17:41.415Z",
+      "level": "HIGH",
+      "headline": "SEC Rescinds Policy Regarding Denials of Settlements in Enforcement Actions",
+      "affectedAssets": [
+        "USD",
+        "NAS100",
+        "US30"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "826adb04-04f4-4124-9e22-a0d141503558",
+      "articleId": "6e889f94689d89a2850b2751",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Federal Reserve Board announces approval of application by OceanFirst Financial Corp.",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "0bcb04b7-986d-418d-9edd-3e2c313494e3",
+      "articleId": "61591e8256ea777ae36bb2b9",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Federal Reserve issues FOMC statement",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "b301dd4a-fa93-41ed-bf0b-5ea275de9351",
+      "articleId": "4f147f0d6297fbca4b63349b",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Federal Reserve Board announces approval of related applications by Columbia Bank MHC, and Columbia Financial, Inc.",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "ddf79eb8-3896-4717-b9d5-0aa0095f91cb",
+      "articleId": "be6253d092ce9f6daeb76ec9",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Federal Reserve Board announces termination of enforcement actions with F & M Holding Company, Inc. and Thread Bancorp, Inc.",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "acfeda98-86e2-47f3-8598-669930ffb7e9",
+      "articleId": "701c37ba0e9a952e925911ef",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Federal Reserve Board issues Economic Well-Being of U.S. Households in 2025 report",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "a28d5a66-158a-40b7-ac4e-a8f3869611e5",
+      "articleId": "ec637a3c6baf5918597d7d6b",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Federal Reserve Board releases results from two surveys of senior financial officers at banks about their views on discount window operating days and their strategies and practices for managing reserve balances",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "9f932fd5-ad15-485c-a2cc-6555521eaa58",
+      "articleId": "71061aff50d07135a8414898",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Stephen I. Miran submits his resignation as a member of the Federal Reserve Board, effective when or shortly before his successor on the Board is sworn in",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "cdd49aed-9cd5-4818-a53f-b6ab75cc6576",
+      "articleId": "c7791a338c8859f55d3af121",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Federal Reserve Board announces termination of enforcement actions with UBS Group AG, Credit Suisse AG, Credit Suisse Holdings (USA), Inc., and Credit Suisse AG, New York Branch",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "3bf231aa-22c6-48e9-a373-712309040943",
+      "articleId": "01b7c35471b2a95177c921f0",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Federal Reserve Board announces it does not object to the conversion of United Texas Bank, of Dallas, Texas, from a bank supervised by the Federal Reserve to a national bank supervised by the Office of the Comptroller of the Currency",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "4f2b6d1a-b6ce-409f-a9df-f1c089a772a8",
+      "articleId": "5efad9003b4a5391f4fb187a",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Federal Reserve Board announces approval of application by the Stephen M. Calk 2025 Trust",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "d42212a5-2bce-45f0-8a24-6fa5256a44c9",
+      "articleId": "eaadbc50c274b8335fad95b6",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Federal Reserve Board names Jerome H. Powell as chair pro tempore; Powell will serve as chair pro tempore until Kevin M. Warsh is sworn in as the new chair",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "384e25c4-58ec-4f97-ab5a-93c7da91b360",
+      "articleId": "6023da4b158de16398745ec7",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Federal Reserve Board requests public comment on a proposal to establish a \"payment account,\" which legally eligible financial institutions could use for the specific purpose of clearing and settling their payments",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "e4e77fb7-58a7-42cf-a8d1-f583b5e8782d",
+      "articleId": "948c96c7b94b77efb7013ede",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Federal Reserve Board issues enforcement action with former employee of Commerce Bank",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "569dad8c-7129-4ca1-94e7-eb0641d1d6d3",
+      "articleId": "eb1f8513fe06625eab44b2c5",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Kevin Warsh takes oath of office as chairman and a member of the Board of Governors of the Federal Reserve System, and the Federal Open Market Committee unanimously selects Warsh as its chairman",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "8eb26ee5-8a6a-465e-a59c-0be9414fa5bb",
+      "articleId": "3cf2e12f7d180db250fb1e09",
+      "createdAt": "2026-06-03T10:17:40.844Z",
+      "level": "HIGH",
+      "headline": "Federal Reserve Board issues enforcement actions with former employee of Atlantic Union Bank and former employee of Frost Bank",
+      "affectedAssets": [
+        "USD"
+      ],
+      "acknowledged": false
+    },
+    {
+      "id": "dc50c745-bbdc-48d5-a429-ec5440f6bf38",
+      "articleId": "adb6c6eaece1f6b4476697db",
+      "createdAt": "2026-06-03T10:17:40.363Z",
+      "level": "HIGH",
+      "headline": "Major Economic Indicators Latest Numbers",
+      "affectedAssets": [
+        "XAUUSD",
+        "NAS100",
+        "US30"
+      ],
+      "acknowledged": false
+    }
+  ],
+  "syncLogs": [
+    {
+      "id": "aa825ac1-8ac8-444e-876e-7c3ac05f37c4",
+      "syncedAt": "2026-06-03T13:38:51.914Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "4bd3bb76-c2f6-40a4-989b-5cb38f0c5fcb",
+      "syncedAt": "2026-06-03T13:29:42.228Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "7ab429fb-6167-4abf-ace8-a6123a5c64e5",
+      "syncedAt": "2026-06-03T13:28:42.883Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "a2c32f23-ca74-4262-b8c3-c261cef60205",
+      "syncedAt": "2026-06-03T13:27:42.221Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "cd389483-2606-4205-ba40-b2e0d340ed67",
+      "syncedAt": "2026-06-03T13:26:44.276Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "8526b596-4671-44d6-8292-88b129e3b52f",
+      "syncedAt": "2026-06-03T13:25:42.206Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "620e3bb6-49d6-4aeb-b2b9-c3e7741a06d4",
+      "syncedAt": "2026-06-03T13:24:42.968Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "969999a0-5233-495a-ba7e-fcd1cb7cbf80",
+      "syncedAt": "2026-06-03T13:23:42.185Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "35749843-3cc4-41f9-8a3f-bc47410b4837",
+      "syncedAt": "2026-06-03T13:22:43.449Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "60769e89-9ff1-460a-9a5e-bfb9ec0391b9",
+      "syncedAt": "2026-06-03T13:21:42.167Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "102de465-7685-4e75-b39d-cde662d33130",
+      "syncedAt": "2026-06-03T13:20:42.843Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "63389cbf-bb52-4052-b37e-76d10048dc8a",
+      "syncedAt": "2026-06-03T13:19:42.152Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "821f8383-a494-4534-9528-ac5c7b0fbe2d",
+      "syncedAt": "2026-06-03T13:18:42.786Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "df26ff27-3b5d-489e-9ea5-10a3f129f2be",
+      "syncedAt": "2026-06-03T13:17:42.135Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "9d4da728-1867-4d4f-a308-3f2ba473b198",
+      "syncedAt": "2026-06-03T13:16:42.931Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "c4859bfc-6ed2-431e-abee-1ac04fa758e4",
+      "syncedAt": "2026-06-03T13:15:42.118Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "aa790d73-a46f-4837-93f2-78f62cecda94",
+      "syncedAt": "2026-06-03T13:14:43.630Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "d7c29f72-eb25-4cb7-b437-9c23680b3914",
+      "syncedAt": "2026-06-03T13:13:42.100Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "1970d77f-823c-44c3-ac24-4ed1169a8d20",
+      "syncedAt": "2026-06-03T13:12:43.198Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "76f32bfb-af63-4ef9-91b2-b8879487416c",
+      "syncedAt": "2026-06-03T13:11:42.077Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "90202e7d-20a5-40ba-bb51-d44b3ec803ea",
+      "syncedAt": "2026-06-03T13:10:43.134Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "1e2a3c46-3b8d-4a0d-9943-4ea7d0d10840",
+      "syncedAt": "2026-06-03T13:09:42.072Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "43bfa327-0527-4f93-a893-da2914286734",
+      "syncedAt": "2026-06-03T13:08:42.743Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "4dcef318-3ee8-41fb-a91c-4dd1680cbb34",
+      "syncedAt": "2026-06-03T13:07:42.058Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "bdf61ef0-53bb-41c0-96c7-2a3c435d376a",
+      "syncedAt": "2026-06-03T13:06:42.826Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "6b806419-b153-4450-bd6d-a9f03ae0f7e0",
+      "syncedAt": "2026-06-03T13:05:42.035Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "ad6c0aa1-5416-4738-b408-49c538f074c3",
+      "syncedAt": "2026-06-03T13:04:43.173Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "325ab847-d36b-4864-83cf-68ecdba79d48",
+      "syncedAt": "2026-06-03T13:03:42.029Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "eaf38b24-8e66-4a10-bee5-2f7bfa88f005",
+      "syncedAt": "2026-06-03T13:02:42.562Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "7513d14d-dec3-40fa-a725-df40bfca0230",
+      "syncedAt": "2026-06-03T13:01:42.011Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "bef7a76f-37f4-4a9c-b935-eee0615504f4",
+      "syncedAt": "2026-06-03T13:00:42.644Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "2aab1c87-19d7-4d7c-abe6-7fc945690ae9",
+      "syncedAt": "2026-06-03T12:59:42.000Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "0e6e3213-9141-4bfe-8500-072afcd68620",
+      "syncedAt": "2026-06-03T12:58:43.074Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "0ac5f14b-2c82-45af-909a-d16d2fa45d28",
+      "syncedAt": "2026-06-03T12:57:41.994Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "8ab58a75-707b-4f03-962e-a1bd18f7b711",
+      "syncedAt": "2026-06-03T12:56:42.837Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "4ca710d3-47c3-4025-972e-167c9ab3b449",
+      "syncedAt": "2026-06-03T12:55:41.979Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "6e4322f1-e900-458c-a36a-2ecdc8e94d91",
+      "syncedAt": "2026-06-03T12:54:42.633Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "db8eeac9-a2e0-4d43-90ed-2f0a87159dbd",
+      "syncedAt": "2026-06-03T12:53:41.972Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "36e0c455-42aa-4647-816e-d11eb1e0b948",
+      "syncedAt": "2026-06-03T12:52:45.441Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "f82b2f0a-7707-44d3-bdb1-e17f0b4d059e",
+      "syncedAt": "2026-06-03T12:51:41.954Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "c7a03bfa-7f57-4553-9ee4-0ac518395a03",
+      "syncedAt": "2026-06-03T12:50:42.915Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "862c4818-57ca-4a78-a383-563785e45956",
+      "syncedAt": "2026-06-03T12:49:41.957Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "a96c4462-115f-4f21-ab4d-151b8af9973a",
+      "syncedAt": "2026-06-03T12:48:43.023Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "c8a227f4-b661-4060-b3e5-faa7f2756fa2",
+      "syncedAt": "2026-06-03T12:47:41.954Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "d7b5439f-ba97-40c9-8d7f-bee77ed0505b",
+      "syncedAt": "2026-06-03T12:46:44.621Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "638ccc4d-5431-4b9c-b927-06afd82fcbcd",
+      "syncedAt": "2026-06-03T12:45:41.950Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "713e6baa-cb4a-497f-8157-6819bac72ad1",
+      "syncedAt": "2026-06-03T12:44:42.832Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "eb580614-58e4-4bf9-92ce-047de045de7a",
+      "syncedAt": "2026-06-03T12:43:41.923Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "2e19caa6-7bf5-4c59-b64d-1955606c6ff3",
+      "syncedAt": "2026-06-03T12:42:42.604Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "dec73555-847b-437b-8365-b6c354ba7172",
+      "syncedAt": "2026-06-03T12:41:41.913Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "d36c6ccf-6cc5-49f2-8752-8cfd83a49013",
+      "syncedAt": "2026-06-03T12:40:45.183Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "adf33ca6-02e8-4f28-85bc-570ea13d763a",
+      "syncedAt": "2026-06-03T11:51:57.157Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "0af613d1-c092-4d39-9dc7-bdada8379b57",
+      "syncedAt": "2026-06-03T11:50:57.971Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "8b097970-4301-4b76-93fc-b38339b95211",
+      "syncedAt": "2026-06-03T11:49:57.130Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "3576c712-eff4-4d6e-b363-4bf9ef282f38",
+      "syncedAt": "2026-06-03T11:48:58.009Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "083669e2-bd06-4ff6-b0bb-bd5d714c614b",
+      "syncedAt": "2026-06-03T11:47:57.116Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "396f85a9-c4a2-4ead-863f-a84d0c13a46d",
+      "syncedAt": "2026-06-03T11:46:57.751Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "74ee6f91-79bd-48e1-a09a-44d8ca4f06ad",
+      "syncedAt": "2026-06-03T11:45:57.104Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "6d8f4741-f87c-4f37-b506-79ad08c0e695",
+      "syncedAt": "2026-06-03T11:44:57.753Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "3588d338-f5b9-4dc0-b365-e163f96df920",
+      "syncedAt": "2026-06-03T11:43:57.098Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "23bae92e-edd5-4511-8bd5-68434ad6e9ff",
+      "syncedAt": "2026-06-03T11:42:58.130Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "ebaac826-6e3b-4725-b86f-3343a078c7a4",
+      "syncedAt": "2026-06-03T11:41:57.084Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "c3646255-1424-4055-af73-a5ca12a8aee9",
+      "syncedAt": "2026-06-03T11:40:57.873Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "d48ba4a5-0d85-476c-84a0-c79db01b54a7",
+      "syncedAt": "2026-06-03T11:39:57.053Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "7360f19b-beea-4b95-a63d-3d6ab1c05e44",
+      "syncedAt": "2026-06-03T11:38:58.113Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "81da69c5-801b-4faf-824f-6f114d253f3a",
+      "syncedAt": "2026-06-03T11:37:57.037Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "e6383da4-df1a-49f6-9072-6b6a3d9c60c8",
+      "syncedAt": "2026-06-03T11:36:57.977Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "127969f5-ffca-4c25-95c2-46185f6898af",
+      "syncedAt": "2026-06-03T11:35:57.025Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "1becc4f0-4fbb-453f-883f-5697b451eece",
+      "syncedAt": "2026-06-03T11:34:57.558Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "3299bda7-5c62-4a57-8a86-4d6e943fde21",
+      "syncedAt": "2026-06-03T11:33:57.003Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "cd7051ce-643c-4118-a116-a4818ab26960",
+      "syncedAt": "2026-06-03T11:32:57.618Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "a9360870-e14e-45bd-8f0d-3c4f649c54eb",
+      "syncedAt": "2026-06-03T11:31:57.005Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "e94d16f1-90db-4915-8814-9b5f27782a9b",
+      "syncedAt": "2026-06-03T11:30:58.084Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "8dd0f498-0cc2-40a6-8b13-5444988368f9",
+      "syncedAt": "2026-06-03T11:29:57.005Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "d9f7ce41-dc02-4653-b4dd-c46b23a37d92",
+      "syncedAt": "2026-06-03T11:28:57.559Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "2c533974-1d6c-48c7-9722-d9b2f55fb4cd",
+      "syncedAt": "2026-06-03T11:27:56.994Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "a82768a7-d309-4c2f-a35a-ab0762fb387c",
+      "syncedAt": "2026-06-03T11:26:57.783Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "247fe2d3-3627-4adf-b897-f2ebf4960179",
+      "syncedAt": "2026-06-03T11:25:56.980Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "2c0d3fca-66c9-49e7-9a38-ecbf02aca9fa",
+      "syncedAt": "2026-06-03T11:25:00.441Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "8443ee40-641e-4977-a9f6-160bfd550ac6",
+      "syncedAt": "2026-06-03T11:24:24.096Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "a790a7c3-7ea0-49ca-9b6c-c38601f06511",
+      "syncedAt": "2026-06-03T11:23:24.937Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "38e064eb-b704-4806-9ad7-4bcbd3f14662",
+      "syncedAt": "2026-06-03T11:22:24.079Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "b4f941cf-264d-45e2-8f1f-7027f8e19acd",
+      "syncedAt": "2026-06-03T11:21:25.634Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "c550b1db-8e87-433a-b5ee-9653f78b711f",
+      "syncedAt": "2026-06-03T11:21:16.965Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "0300f278-f31e-49bb-9762-299552426b53",
+      "syncedAt": "2026-06-03T11:20:16.362Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "7f74f744-ce57-49a5-a476-45b3cdea9dca",
+      "syncedAt": "2026-06-03T11:19:18.025Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "7a7ac247-f30f-4a91-895a-739aaa3ab049",
+      "syncedAt": "2026-06-03T11:18:41.062Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "e5d52e88-6e52-46c7-9774-1932eb46161b",
+      "syncedAt": "2026-06-03T11:17:41.787Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "02dd0fdd-d6c4-4157-96e2-83dc6ca222e0",
+      "syncedAt": "2026-06-03T11:16:41.056Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "33080e7d-6065-42a4-a6b9-77c17c4b281d",
+      "syncedAt": "2026-06-03T11:15:42.015Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "b3fba263-07e8-45ba-bb23-85b5944e74bd",
+      "syncedAt": "2026-06-03T11:14:41.054Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "48e940db-039c-47c3-aa6f-332de71fcab4",
+      "syncedAt": "2026-06-03T11:13:43.585Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "2f8e6175-2ba3-4ed4-a71f-1ac6b66ac0ec",
+      "syncedAt": "2026-06-03T11:12:41.056Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "1e1d1ded-61fe-456e-b203-433284d1fc02",
+      "syncedAt": "2026-06-03T11:11:42.629Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "ac44e98d-6c88-4b97-a4be-43b7c5ee812d",
+      "syncedAt": "2026-06-03T11:10:41.053Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "c3d5801c-8076-48ee-b72d-9469b8eb9705",
+      "syncedAt": "2026-06-03T11:09:42.101Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "4cf6b36c-1888-4bd8-8d79-91567a0a1701",
+      "syncedAt": "2026-06-03T11:08:41.053Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "bd7afc3c-6355-41c9-a281-faa0314c03e6",
+      "syncedAt": "2026-06-03T11:07:41.698Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "e49c18ee-7b72-4dc2-b35f-4fb4addc7304",
+      "syncedAt": "2026-06-03T11:06:41.022Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "620bd9d3-bbe5-425f-8d2f-8e5ec28c0fa5",
+      "syncedAt": "2026-06-03T11:05:42.206Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "6c0eaf95-765c-405a-a6ec-9464dec20860",
+      "syncedAt": "2026-06-03T11:04:40.989Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "9fb29df8-0831-4398-a963-f3b1da4d7cd7",
+      "syncedAt": "2026-06-03T11:03:41.731Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "e7641881-0db2-4f9d-952c-fd40177e4a12",
+      "syncedAt": "2026-06-03T11:02:40.971Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "f73931e0-5893-4b51-889f-d1d96ea61c72",
+      "syncedAt": "2026-06-03T11:01:41.635Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "9f8c4f59-b1c1-4ce9-9fa2-0a39e705c365",
+      "syncedAt": "2026-06-03T11:00:40.955Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "11a35595-22fd-46b7-be34-9f9d92a46042",
+      "syncedAt": "2026-06-03T10:59:41.497Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "e97c05d6-7ca6-4716-ba71-69fbadeb7e5a",
+      "syncedAt": "2026-06-03T10:58:40.955Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "6a1ff9ff-2024-4696-a93e-effd12603d9d",
+      "syncedAt": "2026-06-03T10:57:41.723Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "837242f4-9dd4-439e-88d8-ae106a5b5f08",
+      "syncedAt": "2026-06-03T10:56:40.943Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "70ed2519-179d-4e00-988e-a90a648b74e9",
+      "syncedAt": "2026-06-03T10:55:41.878Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "8e8a4475-d561-4717-a602-ba607791abcf",
+      "syncedAt": "2026-06-03T10:54:40.943Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "47883b74-3904-40c8-b2db-c7bbd78507ca",
+      "syncedAt": "2026-06-03T10:53:41.523Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "3b24b15c-b546-4512-87ab-3b1575f7f505",
+      "syncedAt": "2026-06-03T10:52:40.927Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "4bb61bf0-e992-4e61-92db-e0656b498963",
+      "syncedAt": "2026-06-03T10:51:41.690Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "0423f780-0992-4b9f-836f-2ea45c128415",
+      "syncedAt": "2026-06-03T10:50:40.903Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "52597fa2-7224-454f-b814-5caa2abe2561",
+      "syncedAt": "2026-06-03T10:49:41.748Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "276170ed-9a1b-48a2-b023-958c988a4871",
+      "syncedAt": "2026-06-03T10:48:22.262Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "14aa82ed-d71a-4d16-9f08-ff1d856f449d",
+      "syncedAt": "2026-06-03T10:47:21.666Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "12993ac4-b635-4a77-b77f-8219c5d258c0",
+      "syncedAt": "2026-06-03T10:46:22.439Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "7b3b1d4d-a9e5-43eb-947d-816cedba4601",
+      "syncedAt": "2026-06-03T10:45:21.662Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "3d0e2210-e00f-4e02-984a-699832fceaf9",
+      "syncedAt": "2026-06-03T10:44:22.333Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "bb8d6124-b30e-408e-8b84-7a777c05fbfe",
+      "syncedAt": "2026-06-03T10:43:21.653Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "2febb606-6b60-4148-9fe9-131f861dd707",
+      "syncedAt": "2026-06-03T10:42:22.340Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "6cfde18d-bd9d-4cdc-8a0d-9734b999b610",
+      "syncedAt": "2026-06-03T10:41:21.634Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "864ea70a-4647-493e-8886-fe5a8664ca56",
+      "syncedAt": "2026-06-03T10:40:22.435Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "024bf5b5-3a8e-47e3-b653-8bb9af856272",
+      "syncedAt": "2026-06-03T10:39:21.635Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "a7b9e792-4ca7-4c42-8770-88f8215087e3",
+      "syncedAt": "2026-06-03T10:38:22.193Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "e5da21fd-a9e6-4cef-b78a-a80596b3da75",
+      "syncedAt": "2026-06-03T10:37:21.628Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "cd5a20d5-e1a1-4cc8-ab6f-c69449f6569c",
+      "syncedAt": "2026-06-03T10:36:22.152Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "a0cb9f6a-75b1-48b7-a78b-e6a936badea0",
+      "syncedAt": "2026-06-03T10:35:21.619Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "51e72c04-b28d-48f6-aa19-2358d4a293cc",
+      "syncedAt": "2026-06-03T10:34:22.436Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "37a97a3d-5334-4543-b109-a143cfc58b16",
+      "syncedAt": "2026-06-03T10:33:21.614Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "e2202950-1c1a-4149-903e-650aec2cdbf0",
+      "syncedAt": "2026-06-03T10:32:22.259Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "66c53aec-7966-42c3-9c5c-dc946c4e2952",
+      "syncedAt": "2026-06-03T10:31:21.601Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "ad9e7aa5-bc4d-4981-bfbf-3459f988c7e2",
+      "syncedAt": "2026-06-03T10:30:22.533Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "3f3c2744-3161-4afc-abfd-6d83f943ae9e",
+      "syncedAt": "2026-06-03T10:29:21.585Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "77d2323f-2198-45a8-9c43-7c3ec2407d13",
+      "syncedAt": "2026-06-03T10:28:22.207Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "e5083938-263b-4c28-b60a-8ee284314ad0",
+      "syncedAt": "2026-06-03T10:27:21.556Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "3f5ab67c-8ba9-4952-a7fd-2add67a6a8cc",
+      "syncedAt": "2026-06-03T10:26:22.248Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "e0d10d67-2d37-4fe3-a605-575e39f35f10",
+      "syncedAt": "2026-06-03T10:25:21.541Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "1bf08fb9-6463-4306-bd93-0626d9c1ba25",
+      "syncedAt": "2026-06-03T10:24:22.081Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "2b811167-6c21-4a73-8379-385d771b320d",
+      "syncedAt": "2026-06-03T10:23:21.524Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "affa4a29-adda-40ae-a14a-167490b5dcf6",
+      "syncedAt": "2026-06-03T10:22:23.654Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "64a44403-422a-44b9-ab5a-77501e1ecc07",
+      "syncedAt": "2026-06-03T10:21:38.899Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "27522355-bb3b-464d-a164-f15a64544204",
+      "syncedAt": "2026-06-03T10:20:38.355Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "eadc01e3-01e0-431e-9850-301f09520977",
+      "syncedAt": "2026-06-03T10:19:39.043Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "20ef823e-2205-438e-b360-e50d7e1347a4",
+      "syncedAt": "2026-06-03T10:18:38.341Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "8f542a6a-bb0d-4589-adc5-9b4f6e3d6fbd",
+      "syncedAt": "2026-06-03T10:17:41.416Z",
+      "sourcesChecked": 3,
+      "articlesImported": 46,
+      "failures": 0
+    }
+  ]
+}

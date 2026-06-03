@@ -1,0 +1,15 @@
+BEGIN;
+ALTER TABLE market.economic_events ADD COLUMN IF NOT EXISTS event_key text;
+ALTER TABLE market.economic_events ADD COLUMN IF NOT EXISTS country text;
+ALTER TABLE market.economic_events ADD COLUMN IF NOT EXISTS category text;
+ALTER TABLE market.economic_events ADD COLUMN IF NOT EXISTS metadata jsonb NOT NULL DEFAULT '{}'::jsonb;
+CREATE UNIQUE INDEX IF NOT EXISTS economic_events_event_key_uq ON market.economic_events(event_key) WHERE event_key IS NOT NULL;
+CREATE INDEX IF NOT EXISTS economic_events_scheduled_at_idx ON market.economic_events(scheduled_at);
+CREATE INDEX IF NOT EXISTS economic_events_currency_idx ON market.economic_events(currency);
+CREATE TABLE IF NOT EXISTS market.economic_event_alerts(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),event_id uuid REFERENCES market.economic_events(id) ON DELETE CASCADE,alert_type text NOT NULL,delivery jsonb NOT NULL DEFAULT '["IN_APP"]'::jsonb,threshold jsonb NOT NULL DEFAULT '{}'::jsonb,triggered_at timestamptz,created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS market.economic_event_deviations(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),event_id uuid REFERENCES market.economic_events(id) ON DELETE CASCADE,forecast_value text,actual_value text,deviation_numeric numeric(18,8),calculated_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS market.economic_event_correlations(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),event_id uuid REFERENCES market.economic_events(id) ON DELETE CASCADE,correlation_type text NOT NULL,correlation_value jsonb NOT NULL DEFAULT '{}'::jsonb,created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS market.economic_event_ai_analysis(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),event_id uuid REFERENCES market.economic_events(id) ON DELETE CASCADE,analysis jsonb NOT NULL DEFAULT '{}'::jsonb,created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS market.economic_event_history(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),event_id uuid REFERENCES market.economic_events(id) ON DELETE CASCADE,snapshot jsonb NOT NULL DEFAULT '{}'::jsonb,created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS market.economic_event_sync_logs(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),source_id uuid REFERENCES market.economic_calendar_sources(id) ON DELETE SET NULL,status text NOT NULL,events_imported integer NOT NULL DEFAULT 0,events_updated integer NOT NULL DEFAULT 0,latency_ms integer,error text,created_at timestamptz NOT NULL DEFAULT now());
+COMMIT;
