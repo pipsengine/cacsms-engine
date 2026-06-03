@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-03T13:38:51.777Z",
+  "updatedAt": "2026-06-03T15:04:05.405Z",
   "sources": [
     {
       "id": "forex-factory-weekly",
@@ -9,13 +9,13 @@
       "url": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
       "enabled": true,
       "scheduleMs": 60000,
-      "status": "ONLINE",
-      "lastSyncAt": "2026-06-03T13:38:51.777Z",
-      "lastSuccessAt": "2026-06-03T13:38:51.777Z",
-      "latencyMs": 1011,
+      "status": "FAILED",
+      "lastSyncAt": "2026-06-03T15:04:05.405Z",
+      "lastSuccessAt": "2026-06-03T15:02:05.402Z",
+      "latencyMs": 208,
       "imported": 0,
       "updated": 0,
-      "error": null
+      "error": "HTTP 429"
     }
   ],
   "events": [
@@ -43,7 +43,7 @@
         "EURGBP",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "MPC Member Greene Speaks is a low importance central bank event for GBP.",
         "bullish": "A stronger-than-expected result may support GBP and related assets.",
@@ -60,7 +60,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.168Z",
-      "updatedAt": "2026-06-03T13:38:51.447Z"
+      "updatedAt": "2026-06-03T13:52:50.905Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "c75f0318e15bfa8931a7d5ea",
@@ -89,7 +94,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "FOMC Member Waller Speaks is a low importance central bank event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -106,7 +111,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.168Z",
-      "updatedAt": "2026-06-03T13:38:51.450Z"
+      "updatedAt": "2026-06-03T13:52:50.908Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "72e8c680e73b60637a6da344",
@@ -130,7 +140,7 @@
         "NZD",
         "NZDUSD"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "Bank Holiday is a low importance government event for NZD.",
         "bullish": "A stronger-than-expected result may support NZD and related assets.",
@@ -147,7 +157,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.169Z",
-      "updatedAt": "2026-06-03T13:38:51.453Z"
+      "updatedAt": "2026-06-03T13:52:50.910Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "65369a765e51e021746532cc",
@@ -173,7 +188,7 @@
         "EURJPY",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Capital Spending q/y is a low importance economic data event for JPY.",
         "bullish": "A stronger-than-expected result may support JPY and related assets.",
@@ -190,7 +205,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.170Z",
-      "updatedAt": "2026-06-03T13:38:51.457Z"
+      "updatedAt": "2026-06-03T13:52:50.914Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "7f1a15a9bdecfd38f400807b",
@@ -216,7 +236,7 @@
         "EURJPY",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Final Manufacturing PMI is a low importance manufacturing event for JPY.",
         "bullish": "A stronger-than-expected result may support JPY and related assets.",
@@ -233,7 +253,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.170Z",
-      "updatedAt": "2026-06-03T13:38:51.464Z"
+      "updatedAt": "2026-06-03T13:52:50.916Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "30bef45c1166fe3a23cc4325",
@@ -262,7 +287,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "FOMC Member Powell Speaks is a medium importance central bank event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -279,7 +304,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.171Z",
-      "updatedAt": "2026-06-03T13:38:51.468Z"
+      "updatedAt": "2026-06-03T13:52:50.918Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "1a3d60a8049788f5f8ee101e",
@@ -304,7 +334,7 @@
         "AUDUSD",
         "AUDJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "MI Inflation Gauge m/m is a low importance inflation event for AUD.",
         "bullish": "A stronger-than-expected result may support AUD and related assets.",
@@ -321,7 +351,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.172Z",
-      "updatedAt": "2026-06-03T13:38:51.471Z"
+      "updatedAt": "2026-06-03T13:52:50.920Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "b7ec346ff1ca60e98a2de9ec",
@@ -346,7 +381,7 @@
         "AUDUSD",
         "AUDJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "ANZ Job Advertisements m/m is a low importance employment event for AUD.",
         "bullish": "A stronger-than-expected result may support AUD and related assets.",
@@ -363,7 +398,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.174Z",
-      "updatedAt": "2026-06-03T13:38:51.478Z"
+      "updatedAt": "2026-06-03T13:52:50.922Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "cb066fa05458ed04e88fb788",
@@ -388,7 +428,7 @@
         "AUDUSD",
         "XAUUSD"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "RatingDog Manufacturing PMI is a low importance manufacturing event for CNY.",
         "bullish": "A stronger-than-expected result may support CNY and related assets.",
@@ -405,7 +445,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.175Z",
-      "updatedAt": "2026-06-03T13:38:51.480Z"
+      "updatedAt": "2026-06-03T13:52:50.924Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "d410a22d904c0161e5a11da5",
@@ -432,7 +477,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "German Retail Sales m/m is a low importance retail sales event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -449,7 +494,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.176Z",
-      "updatedAt": "2026-06-03T13:38:51.482Z"
+      "updatedAt": "2026-06-03T13:52:50.925Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "21298756fa88d389b3896110",
@@ -475,7 +525,7 @@
         "EURGBP",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Nationwide HPI m/m is a low importance economic data event for GBP.",
         "bullish": "A stronger-than-expected result may support GBP and related assets.",
@@ -492,7 +542,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.176Z",
-      "updatedAt": "2026-06-03T13:38:51.484Z"
+      "updatedAt": "2026-06-03T13:52:50.927Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "4b016f8700e18be4dbbc84cf",
@@ -517,7 +572,7 @@
         "AUDUSD",
         "AUDJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Commodity Prices y/y is a low importance inflation event for AUD.",
         "bullish": "A stronger-than-expected result may support AUD and related assets.",
@@ -534,7 +589,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.177Z",
-      "updatedAt": "2026-06-03T13:38:51.490Z"
+      "updatedAt": "2026-06-03T13:52:50.929Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "75664ca4c08efc0849b8cc21",
@@ -559,7 +619,7 @@
         "USDCHF",
         "EURCHF"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Retail Sales y/y is a low importance retail sales event for CHF.",
         "bullish": "A stronger-than-expected result may support CHF and related assets.",
@@ -576,7 +636,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.177Z",
-      "updatedAt": "2026-06-03T13:38:51.495Z"
+      "updatedAt": "2026-06-03T13:52:50.931Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "8e6d0ecc79f3e9d49a5d3db8",
@@ -601,7 +666,7 @@
         "USDCHF",
         "EURCHF"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "GDP q/q is a low importance gdp event for CHF.",
         "bullish": "A stronger-than-expected result may support CHF and related assets.",
@@ -618,7 +683,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.177Z",
-      "updatedAt": "2026-06-03T13:38:51.497Z"
+      "updatedAt": "2026-06-03T13:52:50.934Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "29ee70ead91bbd712c1219f9",
@@ -645,7 +715,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Spanish Manufacturing PMI is a low importance manufacturing event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -662,7 +732,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.178Z",
-      "updatedAt": "2026-06-03T13:38:51.502Z"
+      "updatedAt": "2026-06-03T13:52:50.936Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "80c2e581c71f4d7ce6d42db5",
@@ -687,7 +762,7 @@
         "USDCHF",
         "EURCHF"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Manufacturing PMI is a low importance manufacturing event for CHF.",
         "bullish": "A stronger-than-expected result may support CHF and related assets.",
@@ -704,7 +779,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.178Z",
-      "updatedAt": "2026-06-03T13:38:51.506Z"
+      "updatedAt": "2026-06-03T13:52:50.937Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "6548b67effc2a053874806d6",
@@ -731,7 +811,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Italian Manufacturing PMI is a low importance manufacturing event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -748,7 +828,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.179Z",
-      "updatedAt": "2026-06-03T13:38:51.510Z"
+      "updatedAt": "2026-06-03T13:52:50.938Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "342f4fceb159a0df43c3d788",
@@ -775,7 +860,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "French Final Manufacturing PMI is a low importance manufacturing event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -792,7 +877,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.179Z",
-      "updatedAt": "2026-06-03T13:38:51.514Z"
+      "updatedAt": "2026-06-03T13:52:50.940Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "c812d29532616df9cbeed7c4",
@@ -819,7 +909,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "German Final Manufacturing PMI is a low importance manufacturing event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -836,7 +926,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.180Z",
-      "updatedAt": "2026-06-03T13:38:51.515Z"
+      "updatedAt": "2026-06-03T13:52:50.942Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "4ab24df6451073203d0ade1f",
@@ -863,7 +958,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Final Manufacturing PMI is a low importance manufacturing event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -880,7 +975,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.180Z",
-      "updatedAt": "2026-06-03T13:38:51.517Z"
+      "updatedAt": "2026-06-03T13:52:50.945Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "959ce8897a7e949363777655",
@@ -907,7 +1007,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "M3 Money Supply y/y is a low importance economic data event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -924,7 +1024,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.181Z",
-      "updatedAt": "2026-06-03T13:38:51.524Z"
+      "updatedAt": "2026-06-03T13:52:50.947Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "7975d35c6eff0a38f7e894a4",
@@ -951,7 +1056,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Private Loans y/y is a low importance economic data event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -968,7 +1073,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.181Z",
-      "updatedAt": "2026-06-03T13:38:51.526Z"
+      "updatedAt": "2026-06-03T13:52:50.949Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "c9a3142e34e592d660dae6b4",
@@ -994,7 +1104,7 @@
         "EURGBP",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Final Manufacturing PMI is a low importance manufacturing event for GBP.",
         "bullish": "A stronger-than-expected result may support GBP and related assets.",
@@ -1011,7 +1121,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.182Z",
-      "updatedAt": "2026-06-03T13:38:51.533Z"
+      "updatedAt": "2026-06-03T13:52:50.952Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "767c2114635bf9d1db076abe",
@@ -1038,7 +1153,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Unemployment Rate is a low importance central bank event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -1055,7 +1170,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.182Z",
-      "updatedAt": "2026-06-03T13:38:51.539Z"
+      "updatedAt": "2026-06-03T13:52:50.955Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "fd44a7ee203fed76d5d8ed21",
@@ -1079,7 +1199,7 @@
         "CAD",
         "USDCAD"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Manufacturing PMI is a low importance manufacturing event for CAD.",
         "bullish": "A stronger-than-expected result may support CAD and related assets.",
@@ -1096,7 +1216,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.183Z",
-      "updatedAt": "2026-06-03T13:38:51.542Z"
+      "updatedAt": "2026-06-03T13:52:50.957Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "22c74905a0b944394b9d234a",
@@ -1125,7 +1250,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Final Manufacturing PMI is a low importance manufacturing event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -1142,7 +1267,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.183Z",
-      "updatedAt": "2026-06-03T13:38:51.543Z"
+      "updatedAt": "2026-06-03T13:52:50.959Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "e11f7425cda29f1f7d825480",
@@ -1171,7 +1301,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "ISM Manufacturing PMI is a high importance manufacturing event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -1188,7 +1318,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.183Z",
-      "updatedAt": "2026-06-03T13:38:51.546Z"
+      "updatedAt": "2026-06-03T13:52:50.960Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "2f391b66f9d751ae1f1b5d20",
@@ -1217,7 +1352,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "ISM Manufacturing Prices is a medium importance inflation event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -1234,7 +1369,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.184Z",
-      "updatedAt": "2026-06-03T13:38:51.553Z"
+      "updatedAt": "2026-06-03T13:52:50.961Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "a9bd8f6283a462c9105fe2d9",
@@ -1263,7 +1403,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Construction Spending m/m is a low importance housing event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -1280,7 +1420,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.184Z",
-      "updatedAt": "2026-06-03T13:38:51.560Z"
+      "updatedAt": "2026-06-03T13:52:50.963Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "f69c1112f2d256d861ab5cd4",
@@ -1304,7 +1449,7 @@
         "CAD",
         "USDCAD"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "Gov Council Member Rogers Speaks is a low importance central bank event for CAD.",
         "bullish": "A stronger-than-expected result may support CAD and related assets.",
@@ -1321,7 +1466,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.185Z",
-      "updatedAt": "2026-06-03T13:38:51.561Z"
+      "updatedAt": "2026-06-03T13:52:50.965Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "22fd495a73dba468e91c90b6",
@@ -1347,7 +1497,7 @@
         "EURJPY",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Monetary Base y/y is a low importance economic data event for JPY.",
         "bullish": "A stronger-than-expected result may support JPY and related assets.",
@@ -1364,7 +1514,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.185Z",
-      "updatedAt": "2026-06-03T13:38:51.563Z"
+      "updatedAt": "2026-06-03T13:52:50.968Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "ab305af89bee892dd307cefd",
@@ -1389,7 +1544,7 @@
         "AUDUSD",
         "AUDJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Building Approvals m/m is a low importance housing event for AUD.",
         "bullish": "A stronger-than-expected result may support AUD and related assets.",
@@ -1406,7 +1561,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.186Z",
-      "updatedAt": "2026-06-03T13:38:51.565Z"
+      "updatedAt": "2026-06-03T13:52:50.972Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "a29df845296ed497a2b90df2",
@@ -1431,7 +1591,7 @@
         "AUDUSD",
         "AUDJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Company Operating Profits q/q is a low importance economic data event for AUD.",
         "bullish": "A stronger-than-expected result may support AUD and related assets.",
@@ -1448,7 +1608,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.188Z",
-      "updatedAt": "2026-06-03T13:38:51.571Z"
+      "updatedAt": "2026-06-03T13:52:50.974Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "8ed2c61ab403ac7617464981",
@@ -1473,7 +1638,7 @@
         "AUDUSD",
         "AUDJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Current Account is a low importance trade balance event for AUD.",
         "bullish": "A stronger-than-expected result may support AUD and related assets.",
@@ -1490,7 +1655,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.188Z",
-      "updatedAt": "2026-06-03T13:38:51.577Z"
+      "updatedAt": "2026-06-03T13:52:50.975Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "6916ed463a409e38f5d60ada",
@@ -1516,7 +1686,7 @@
         "EURJPY",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "10-y Bond Auction is a low importance government event for JPY.",
         "bullish": "A stronger-than-expected result may support JPY and related assets.",
@@ -1533,7 +1703,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.189Z",
-      "updatedAt": "2026-06-03T13:38:51.581Z"
+      "updatedAt": "2026-06-03T13:52:50.977Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "0eeddd39ceda6734b06ba07a",
@@ -1562,7 +1737,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "FOMC Member Kashkari Speaks is a low importance central bank event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -1579,7 +1754,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.190Z",
-      "updatedAt": "2026-06-03T13:38:51.583Z"
+      "updatedAt": "2026-06-03T13:52:50.979Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "815a71c9be48a7209e0aabf8",
@@ -1606,7 +1786,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "Italian Bank Holiday is a low importance government event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -1623,7 +1803,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.192Z",
-      "updatedAt": "2026-06-03T13:38:51.591Z"
+      "updatedAt": "2026-06-03T13:52:50.981Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "344baf9d9d4f934563185711",
@@ -1650,7 +1835,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "French Gov Budget Balance is a low importance government event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -1667,7 +1852,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.192Z",
-      "updatedAt": "2026-06-03T13:38:51.593Z"
+      "updatedAt": "2026-06-03T13:52:50.983Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "963aa0b8999d6fb6b0a20769",
@@ -1694,7 +1884,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Spanish Unemployment Change is a low importance employment event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -1711,7 +1901,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.193Z",
-      "updatedAt": "2026-06-03T13:38:51.596Z"
+      "updatedAt": "2026-06-03T13:52:50.983Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "54611e4ec48751ab488b5b94",
@@ -1737,7 +1932,7 @@
         "EURGBP",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "M4 Money Supply m/m is a low importance economic data event for GBP.",
         "bullish": "A stronger-than-expected result may support GBP and related assets.",
@@ -1754,7 +1949,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.193Z",
-      "updatedAt": "2026-06-03T13:38:51.597Z"
+      "updatedAt": "2026-06-03T13:52:50.985Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "b00d74b3978d405ac8216314",
@@ -1780,7 +1980,7 @@
         "EURGBP",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Mortgage Approvals is a low importance housing event for GBP.",
         "bullish": "A stronger-than-expected result may support GBP and related assets.",
@@ -1797,7 +1997,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.194Z",
-      "updatedAt": "2026-06-03T13:38:51.600Z"
+      "updatedAt": "2026-06-03T13:52:50.987Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "5547fe7a5e1e28f9fffd7e55",
@@ -1823,7 +2028,7 @@
         "EURGBP",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Net Lending to Individuals m/m is a low importance economic data event for GBP.",
         "bullish": "A stronger-than-expected result may support GBP and related assets.",
@@ -1840,7 +2045,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.194Z",
-      "updatedAt": "2026-06-03T13:38:51.604Z"
+      "updatedAt": "2026-06-03T13:52:50.988Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "e6e75a4c0be3a3b5a49e7159",
@@ -1867,7 +2077,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Core CPI Flash Estimate y/y is a medium importance inflation event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -1884,7 +2094,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.194Z",
-      "updatedAt": "2026-06-03T13:38:51.608Z"
+      "updatedAt": "2026-06-03T13:52:50.989Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "dd13f9eb664140bdf22cf8c9",
@@ -1911,7 +2126,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "CPI Flash Estimate y/y is a medium importance inflation event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -1928,7 +2143,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.195Z",
-      "updatedAt": "2026-06-03T13:38:51.610Z"
+      "updatedAt": "2026-06-03T13:52:50.991Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "d62d6d539225f0d9573066f6",
@@ -1954,7 +2174,7 @@
         "EURGBP",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "10-y Bond Auction is a low importance government event for GBP.",
         "bullish": "A stronger-than-expected result may support GBP and related assets.",
@@ -1971,7 +2191,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.195Z",
-      "updatedAt": "2026-06-03T13:38:51.612Z"
+      "updatedAt": "2026-06-03T13:52:50.992Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "7c9539f3cd8fa71cc3c77c3a",
@@ -2000,7 +2225,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "FOMC Member Hammack Speaks is a low importance central bank event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -2017,7 +2242,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.196Z",
-      "updatedAt": "2026-06-03T13:38:51.620Z"
+      "updatedAt": "2026-06-03T13:52:50.993Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "dce4277519cc434f24139a1d",
@@ -2043,7 +2273,7 @@
         "EURGBP",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "BOE Gov Bailey Speaks is a high importance central bank event for GBP.",
         "bullish": "A stronger-than-expected result may support GBP and related assets.",
@@ -2060,7 +2290,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.196Z",
-      "updatedAt": "2026-06-03T13:38:51.625Z"
+      "updatedAt": "2026-06-03T13:52:50.994Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "ac5e52a65e421b6b5b355154",
@@ -2089,7 +2324,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "JOLTS Job Openings is a medium importance employment event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -2106,7 +2341,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.197Z",
-      "updatedAt": "2026-06-03T13:38:51.628Z"
+      "updatedAt": "2026-06-03T13:52:50.996Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "686ee0017e9f4bd75fa81014",
@@ -2135,7 +2375,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "RCM/TIPP Economic Optimism is a low importance economic data event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -2152,7 +2392,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.197Z",
-      "updatedAt": "2026-06-03T13:38:51.632Z"
+      "updatedAt": "2026-06-03T13:52:50.997Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "311b574639c6aca51d685a64",
@@ -2181,7 +2426,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Omdia Total Vehicle Sales is a low importance economic data event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -2198,7 +2443,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.198Z",
-      "updatedAt": "2026-06-03T13:38:51.637Z"
+      "updatedAt": "2026-06-03T13:52:50.998Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "9cca45df30860d07ce0e8e42",
@@ -2224,7 +2474,7 @@
         "EURGBP",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "MPC Member Greene Speaks is a low importance central bank event for GBP.",
         "bullish": "A stronger-than-expected result may support GBP and related assets.",
@@ -2241,7 +2491,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.198Z",
-      "updatedAt": "2026-06-03T13:38:51.640Z"
+      "updatedAt": "2026-06-03T13:52:51.000Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "82f904cbab9406c20a6f4f4a",
@@ -2265,7 +2520,7 @@
         "NZD",
         "NZDUSD"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "GDT Price Index is a low importance economic data event for NZD.",
         "bullish": "A stronger-than-expected result may support NZD and related assets.",
@@ -2282,7 +2537,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.199Z",
-      "updatedAt": "2026-06-03T13:38:51.643Z"
+      "updatedAt": "2026-06-03T13:52:51.001Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "7615c2ff14949d8a520cd218",
@@ -2311,7 +2571,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "API Weekly Statistical Bulletin is a low importance economic data event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -2328,7 +2588,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.199Z",
-      "updatedAt": "2026-06-03T13:38:51.646Z"
+      "updatedAt": "2026-06-03T13:52:51.002Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "7601e9582871fdbb98d9819c",
@@ -2352,7 +2617,7 @@
         "NZD",
         "NZDUSD"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Building Consents m/m is a low importance housing event for NZD.",
         "bullish": "A stronger-than-expected result may support NZD and related assets.",
@@ -2369,7 +2634,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.199Z",
-      "updatedAt": "2026-06-03T13:38:51.651Z"
+      "updatedAt": "2026-06-03T13:52:51.004Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "b20ed8cfa3003176efb5a13a",
@@ -2393,7 +2663,7 @@
         "NZD",
         "NZDUSD"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Overseas Trade Index q/q is a low importance economic data event for NZD.",
         "bullish": "A stronger-than-expected result may support NZD and related assets.",
@@ -2410,7 +2680,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.200Z",
-      "updatedAt": "2026-06-03T13:38:51.657Z"
+      "updatedAt": "2026-06-03T13:52:51.005Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "2a584b95bebbe9b67b03dd34",
@@ -2435,7 +2710,7 @@
         "AUDUSD",
         "AUDJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "GDP q/q is a high importance gdp event for AUD.",
         "bullish": "A stronger-than-expected result may support AUD and related assets.",
@@ -2452,7 +2727,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.200Z",
-      "updatedAt": "2026-06-03T13:38:51.666Z"
+      "updatedAt": "2026-06-03T13:52:51.007Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "de49539e6b0608f272da1a20",
@@ -2477,7 +2757,7 @@
         "AUDUSD",
         "XAUUSD"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "RatingDog Services PMI is a low importance manufacturing event for CNY.",
         "bullish": "A stronger-than-expected result may support CNY and related assets.",
@@ -2494,7 +2774,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.201Z",
-      "updatedAt": "2026-06-03T13:38:51.670Z"
+      "updatedAt": "2026-06-03T13:52:51.008Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "cf276909cda8d3ffbe50a973",
@@ -2523,7 +2808,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "FOMC Member Goolsbee Speaks is a low importance central bank event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -2540,7 +2825,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.201Z",
-      "updatedAt": "2026-06-03T13:38:51.673Z"
+      "updatedAt": "2026-06-03T13:52:51.009Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "3dbe8e00250c1182ca292124",
@@ -2565,7 +2855,7 @@
         "AUDUSD",
         "AUDJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Private Sector Credit m/m is a low importance economic data event for AUD.",
         "bullish": "A stronger-than-expected result may support AUD and related assets.",
@@ -2582,7 +2872,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.202Z",
-      "updatedAt": "2026-06-03T13:38:51.675Z"
+      "updatedAt": "2026-06-03T13:52:51.011Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "f15ab25dab45aea47061c478",
@@ -2609,7 +2904,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Spanish Services PMI is a low importance manufacturing event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -2626,7 +2921,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.202Z",
-      "updatedAt": "2026-06-03T13:38:51.677Z"
+      "updatedAt": "2026-06-03T13:52:51.011Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "5b4ec1ae99ab60695fc1c63d",
@@ -2653,7 +2953,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Italian Services PMI is a low importance manufacturing event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -2670,7 +2970,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.203Z",
-      "updatedAt": "2026-06-03T13:38:51.680Z"
+      "updatedAt": "2026-06-03T13:52:51.012Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "f00183a4e004c9ff99727936",
@@ -2697,7 +3002,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "French Final Services PMI is a low importance manufacturing event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -2714,7 +3019,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.204Z",
-      "updatedAt": "2026-06-03T13:38:51.682Z"
+      "updatedAt": "2026-06-03T13:52:51.014Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "c63620a1d2f094034bad6d3f",
@@ -2741,7 +3051,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "German Final Services PMI is a low importance manufacturing event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -2758,7 +3068,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.205Z",
-      "updatedAt": "2026-06-03T13:38:51.685Z"
+      "updatedAt": "2026-06-03T13:52:51.016Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "282dab9b5ddcd371d0f0d8ff",
@@ -2785,7 +3100,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Final Services PMI is a low importance manufacturing event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -2802,7 +3117,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.205Z",
-      "updatedAt": "2026-06-03T13:38:51.688Z"
+      "updatedAt": "2026-06-03T13:52:51.017Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "d990bfe9895c3106e090d814",
@@ -2828,7 +3148,7 @@
         "EURGBP",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Final Services PMI is a low importance manufacturing event for GBP.",
         "bullish": "A stronger-than-expected result may support GBP and related assets.",
@@ -2845,7 +3165,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.205Z",
-      "updatedAt": "2026-06-03T13:38:51.690Z"
+      "updatedAt": "2026-06-03T13:52:51.018Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "eface25ebf6eef19b64f36f3",
@@ -2871,7 +3196,7 @@
         "EURJPY",
         "GBPJPY"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "BOJ Gov Ueda Speaks is a high importance central bank event for JPY.",
         "bullish": "A stronger-than-expected result may support JPY and related assets.",
@@ -2888,7 +3213,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.206Z",
-      "updatedAt": "2026-06-03T13:38:51.692Z"
+      "updatedAt": "2026-06-03T13:52:51.020Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "268d0ca914c09f9f272c23e3",
@@ -2915,7 +3245,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "PPI m/m is a low importance inflation event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -2932,7 +3262,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.207Z",
-      "updatedAt": "2026-06-03T13:38:51.696Z"
+      "updatedAt": "2026-06-03T13:52:51.022Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "feff9f3b6dfc2dec07e1cf69",
@@ -2961,7 +3296,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "ADP Non-Farm Employment Change is a high importance employment event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -2978,7 +3313,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.207Z",
-      "updatedAt": "2026-06-03T13:38:51.698Z"
+      "updatedAt": "2026-06-03T13:52:51.023Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "029f8e1d69d9a1ecc0ce8d98",
@@ -3002,7 +3342,7 @@
         "CAD",
         "USDCAD"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Labor Productivity q/q is a low importance economic data event for CAD.",
         "bullish": "A stronger-than-expected result may support CAD and related assets.",
@@ -3019,7 +3359,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.208Z",
-      "updatedAt": "2026-06-03T13:38:51.700Z"
+      "updatedAt": "2026-06-03T13:52:51.024Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "3bc836c6d1a48deaa1db518e",
@@ -3048,7 +3393,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "AWAITING_ACTUAL",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "FOMC Member Barr Speaks is a low importance central bank event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -3065,7 +3410,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.209Z",
-      "updatedAt": "2026-06-03T13:38:51.703Z"
+      "updatedAt": "2026-06-03T13:52:51.025Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "3229ad9d9a1aa7481a035906",
@@ -3094,7 +3444,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "UPCOMING",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Final Services PMI is a low importance manufacturing event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -3111,7 +3461,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.209Z",
-      "updatedAt": "2026-06-03T13:38:51.707Z"
+      "updatedAt": "2026-06-03T13:52:51.025Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "23b34d7c0dc6fe02bd82317e",
@@ -3140,7 +3495,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "UPCOMING",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "ISM Services PMI is a high importance manufacturing event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -3157,7 +3512,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.210Z",
-      "updatedAt": "2026-06-03T13:38:51.709Z"
+      "updatedAt": "2026-06-03T14:01:46.064Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 1,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "d16686ee0fa56b45bf01ae2c",
@@ -3186,7 +3546,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "UPCOMING",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "Treasury Sec Bessent Speaks is a medium importance government event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -3203,7 +3563,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.210Z",
-      "updatedAt": "2026-06-03T13:38:51.711Z"
+      "updatedAt": "2026-06-03T14:01:46.065Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 1,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "d232f5358154b6a43471e056",
@@ -3232,7 +3597,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "UPCOMING",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Factory Orders m/m is a low importance economic data event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -3249,7 +3614,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.211Z",
-      "updatedAt": "2026-06-03T13:38:51.712Z"
+      "updatedAt": "2026-06-03T14:01:46.067Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 1,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "def3e92e2fccf7b9412b62cd",
@@ -3279,7 +3649,7 @@
         "NAS100",
         "USOIL"
       ],
-      "status": "UPCOMING",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Crude Oil Inventories is a low importance energy event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -3296,7 +3666,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.211Z",
-      "updatedAt": "2026-06-03T13:38:51.714Z"
+      "updatedAt": "2026-06-03T14:35:33.091Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 1,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "ddaf1e21271c8e4f8fccbc82",
@@ -3342,7 +3717,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.212Z",
-      "updatedAt": "2026-06-03T13:38:51.715Z"
+      "updatedAt": "2026-06-03T13:52:51.031Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "ddef85d82289dd06ad61ee93",
@@ -3388,7 +3768,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.212Z",
-      "updatedAt": "2026-06-03T13:38:51.716Z"
+      "updatedAt": "2026-06-03T13:52:51.032Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "c33537e8ece921809e88da76",
@@ -3429,7 +3814,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.212Z",
-      "updatedAt": "2026-06-03T13:38:51.718Z"
+      "updatedAt": "2026-06-03T13:52:51.033Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "6ab2af2016600f3958e19eee",
@@ -3471,7 +3861,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.213Z",
-      "updatedAt": "2026-06-03T13:38:51.719Z"
+      "updatedAt": "2026-06-03T13:52:51.033Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "c488840ac9f9e0852aa2da89",
@@ -3513,7 +3908,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.213Z",
-      "updatedAt": "2026-06-03T13:38:51.721Z"
+      "updatedAt": "2026-06-03T13:52:51.034Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "f52ecaa3b650121fc043df46",
@@ -3555,7 +3955,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.214Z",
-      "updatedAt": "2026-06-03T13:38:51.722Z"
+      "updatedAt": "2026-06-03T13:52:51.036Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "d8be6dfa94af081812fe1e54",
@@ -3597,7 +4002,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.214Z",
-      "updatedAt": "2026-06-03T13:38:51.723Z"
+      "updatedAt": "2026-06-03T13:52:51.037Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "9b83fc41db1a38b74b314d21",
@@ -3641,7 +4051,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.214Z",
-      "updatedAt": "2026-06-03T13:38:51.724Z"
+      "updatedAt": "2026-06-03T13:52:51.039Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "339c179da21b849252afacfa",
@@ -3684,7 +4099,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.215Z",
-      "updatedAt": "2026-06-03T13:38:51.726Z"
+      "updatedAt": "2026-06-03T13:52:51.040Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "397f0a729bcfb5138743aadd",
@@ -3728,7 +4148,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.215Z",
-      "updatedAt": "2026-06-03T13:38:51.729Z"
+      "updatedAt": "2026-06-03T13:52:51.041Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "6ae51d1666690b675e5be3a3",
@@ -3772,7 +4197,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.216Z",
-      "updatedAt": "2026-06-03T13:38:51.730Z"
+      "updatedAt": "2026-06-03T13:52:51.042Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "8e56f0fa19d5b797a594f825",
@@ -3818,7 +4248,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.216Z",
-      "updatedAt": "2026-06-03T13:38:51.732Z"
+      "updatedAt": "2026-06-03T13:52:51.043Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "d53766fb4c410434bd4f09dd",
@@ -3864,7 +4299,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.216Z",
-      "updatedAt": "2026-06-03T13:38:51.733Z"
+      "updatedAt": "2026-06-03T13:52:51.044Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "9a62a34ab2e79fe469c0a82a",
@@ -3910,7 +4350,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.217Z",
-      "updatedAt": "2026-06-03T13:38:51.735Z"
+      "updatedAt": "2026-06-03T13:52:51.045Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "97b4bf1141e7748f7b83dad2",
@@ -3956,7 +4401,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.218Z",
-      "updatedAt": "2026-06-03T13:38:51.736Z"
+      "updatedAt": "2026-06-03T13:52:51.046Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "a6cc9386cbe625ea5dd9234a",
@@ -4002,7 +4452,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.219Z",
-      "updatedAt": "2026-06-03T13:38:51.738Z"
+      "updatedAt": "2026-06-03T13:52:51.047Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "c3902ef39ffa1205d354d9db",
@@ -4048,7 +4503,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.220Z",
-      "updatedAt": "2026-06-03T13:38:51.740Z"
+      "updatedAt": "2026-06-03T13:52:51.048Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "d99f86ca020eb5bac0e7e1a5",
@@ -4091,7 +4551,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.220Z",
-      "updatedAt": "2026-06-03T13:38:51.741Z"
+      "updatedAt": "2026-06-03T13:52:51.050Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "dbb67e6049b15b3e0a4cf876",
@@ -4137,7 +4602,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.221Z",
-      "updatedAt": "2026-06-03T13:38:51.743Z"
+      "updatedAt": "2026-06-03T13:52:51.051Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "59448bc2afd9a3933242b619",
@@ -4180,7 +4650,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.221Z",
-      "updatedAt": "2026-06-03T13:38:51.744Z"
+      "updatedAt": "2026-06-03T13:52:51.052Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "b0eaab1e8f9f47b895a20422",
@@ -4223,7 +4698,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.222Z",
-      "updatedAt": "2026-06-03T13:38:51.747Z"
+      "updatedAt": "2026-06-03T13:52:51.052Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "d7e6ca695930b972797c123c",
@@ -4265,7 +4745,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.222Z",
-      "updatedAt": "2026-06-03T13:38:51.749Z"
+      "updatedAt": "2026-06-03T13:52:51.053Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "80aefd67133d4b338979e76a",
@@ -4308,7 +4793,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.222Z",
-      "updatedAt": "2026-06-03T13:38:51.751Z"
+      "updatedAt": "2026-06-03T13:52:51.055Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "d4e24d1657509aadcdad1df2",
@@ -4351,7 +4841,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.223Z",
-      "updatedAt": "2026-06-03T13:38:51.752Z"
+      "updatedAt": "2026-06-03T13:52:51.056Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "1c00155ad37615ebb48ceca2",
@@ -4395,7 +4890,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.224Z",
-      "updatedAt": "2026-06-03T13:38:51.754Z"
+      "updatedAt": "2026-06-03T13:52:51.057Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "188ff68b195ecb3bd752882c",
@@ -4439,7 +4939,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.226Z",
-      "updatedAt": "2026-06-03T13:38:51.755Z"
+      "updatedAt": "2026-06-03T13:52:51.058Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "9af784c208c4c7fdd5ff667a",
@@ -4481,7 +4986,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.227Z",
-      "updatedAt": "2026-06-03T13:38:51.756Z"
+      "updatedAt": "2026-06-03T13:52:51.059Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "7d4da9accb556ca4bbc2e227",
@@ -4525,7 +5035,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.227Z",
-      "updatedAt": "2026-06-03T13:38:51.758Z"
+      "updatedAt": "2026-06-03T13:52:51.060Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "242a68c72852d61a1b100ee3",
@@ -4569,7 +5084,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.228Z",
-      "updatedAt": "2026-06-03T13:38:51.760Z"
+      "updatedAt": "2026-06-03T13:52:51.061Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "74fd9380e834a4c635791643",
@@ -4613,7 +5133,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.228Z",
-      "updatedAt": "2026-06-03T13:38:51.762Z"
+      "updatedAt": "2026-06-03T13:52:51.062Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "b19045bfe200a219a2be818e",
@@ -4654,7 +5179,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.228Z",
-      "updatedAt": "2026-06-03T13:38:51.763Z"
+      "updatedAt": "2026-06-03T13:52:51.064Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "c923a1b0c543a000e8f18190",
@@ -4695,7 +5225,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.229Z",
-      "updatedAt": "2026-06-03T13:38:51.764Z"
+      "updatedAt": "2026-06-03T13:52:51.065Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "200ae3223e093ebbc0a2f731",
@@ -4741,7 +5276,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.229Z",
-      "updatedAt": "2026-06-03T13:38:51.766Z"
+      "updatedAt": "2026-06-03T13:52:51.066Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "27b193758318e339f890acf4",
@@ -4787,7 +5327,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.230Z",
-      "updatedAt": "2026-06-03T13:38:51.768Z"
+      "updatedAt": "2026-06-03T13:52:51.067Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "a7748af9f63c8510eb1590b8",
@@ -4833,7 +5378,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.230Z",
-      "updatedAt": "2026-06-03T13:38:51.769Z"
+      "updatedAt": "2026-06-03T13:52:51.068Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "fe53e19dda803c0de7dcfde6",
@@ -4876,7 +5426,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.230Z",
-      "updatedAt": "2026-06-03T13:38:51.771Z"
+      "updatedAt": "2026-06-03T13:52:51.069Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "feea4fcb0aeafda6d62cd51d",
@@ -4917,7 +5472,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.231Z",
-      "updatedAt": "2026-06-03T13:38:51.772Z"
+      "updatedAt": "2026-06-03T13:52:51.070Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "2b92b6b35d019af2ad131938",
@@ -4960,7 +5520,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.231Z",
-      "updatedAt": "2026-06-03T13:38:51.774Z"
+      "updatedAt": "2026-06-03T13:52:51.071Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     },
     {
       "id": "8e88b368daf3dfae4fb2f01e",
@@ -5006,7 +5571,12 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.232Z",
-      "updatedAt": "2026-06-03T13:38:51.775Z"
+      "updatedAt": "2026-06-03T13:52:51.072Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": true
     },
     {
       "id": "d912ecfdbcca934bd7a9f876",
@@ -5052,10 +5622,60 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.232Z",
-      "updatedAt": "2026-06-03T13:38:51.777Z"
+      "updatedAt": "2026-06-03T13:52:51.073Z",
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "releaseExpected": false
     }
   ],
   "history": [
+    {
+      "id": "c81ad354-6c50-4c74-92cf-c226898245df",
+      "eventId": "def3e92e2fccf7b9412b62cd",
+      "recordedAt": "2026-06-03T14:35:33.091Z",
+      "previous": "-3.3M",
+      "forecast": "-2.9M",
+      "actual": "",
+      "status": "UPCOMING"
+    },
+    {
+      "id": "eaf1e5c9-78df-45fd-9111-541929b9ab35",
+      "eventId": "d232f5358154b6a43471e056",
+      "recordedAt": "2026-06-03T14:01:46.067Z",
+      "previous": "1.5%",
+      "forecast": "4.6%",
+      "actual": "",
+      "status": "UPCOMING"
+    },
+    {
+      "id": "4cc112d0-d9a7-4139-bf17-a2c6e7d8e437",
+      "eventId": "d16686ee0fa56b45bf01ae2c",
+      "recordedAt": "2026-06-03T14:01:46.065Z",
+      "previous": "",
+      "forecast": "",
+      "actual": "",
+      "status": "UPCOMING"
+    },
+    {
+      "id": "654ce62c-0ab1-44fe-88e2-a4819ea559d5",
+      "eventId": "23b34d7c0dc6fe02bd82317e",
+      "recordedAt": "2026-06-03T14:01:46.064Z",
+      "previous": "53.6",
+      "forecast": "53.7",
+      "actual": "",
+      "status": "UPCOMING"
+    },
+    {
+      "id": "72742617-804c-4ffa-934d-4922d5f9a422",
+      "eventId": "3229ad9d9a1aa7481a035906",
+      "recordedAt": "2026-06-03T13:50:51.220Z",
+      "previous": "50.9",
+      "forecast": "51.0",
+      "actual": "",
+      "status": "UPCOMING"
+    },
     {
       "id": "431a7bb6-0c2f-4ee7-b12a-85273b0db3cd",
       "eventId": "3bc836c6d1a48deaa1db518e",
@@ -5099,6 +5719,646 @@
     }
   ],
   "syncLogs": [
+    {
+      "id": "41f463d7-a800-46de-aee7-88cf6f52031b",
+      "syncedAt": "2026-06-03T15:04:05.405Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "8163f9ed-54d5-4f6b-9388-68463456a5c5",
+      "syncedAt": "2026-06-03T15:03:05.196Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "7dcf93be-8435-4eee-a369-d37fc1616247",
+      "syncedAt": "2026-06-03T15:02:05.402Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "e5abe34a-f29e-404c-9472-f719de905e35",
+      "syncedAt": "2026-06-03T15:01:05.169Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "6f900950-13da-4ae4-845d-26e6c870e60b",
+      "syncedAt": "2026-06-03T15:00:05.505Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "436e01ca-0916-4560-9a7d-7bafa9efe525",
+      "syncedAt": "2026-06-03T14:59:05.155Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "a1c8ec7f-ca43-4107-aa85-f2f02ed34c4e",
+      "syncedAt": "2026-06-03T14:58:05.565Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "bae6da80-d0cb-405b-a967-52846e04715a",
+      "syncedAt": "2026-06-03T14:57:05.154Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "4ebdc93b-3dfa-41cc-80fc-268eeedd0d87",
+      "syncedAt": "2026-06-03T14:56:05.193Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "d7792e48-7295-4168-80e3-a44ebfc3a9f1",
+      "syncedAt": "2026-06-03T14:55:05.147Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0b2f2fab-2a36-40c8-9322-641b22dd69ad",
+      "syncedAt": "2026-06-03T14:54:05.337Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "5dd5d7ec-ab35-49f4-991d-0f89770073c5",
+      "syncedAt": "2026-06-03T14:53:05.134Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "d477c11c-cd40-435b-a841-736751fa600d",
+      "syncedAt": "2026-06-03T14:52:06.688Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "c0eced3b-530e-4d35-9ab7-8ae875dd1569",
+      "syncedAt": "2026-06-03T14:51:14.370Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "fe6c570d-0805-43a2-add3-605ddaf57a4b",
+      "syncedAt": "2026-06-03T14:50:13.994Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "41863ed3-5d65-4634-86f0-6739b8d8c46b",
+      "syncedAt": "2026-06-03T14:49:14.342Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "00d92230-5c15-42c2-a842-cd402f382c17",
+      "syncedAt": "2026-06-03T14:48:13.972Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f94a51c8-0c5b-41b4-aeaa-ae39ca5c72ac",
+      "syncedAt": "2026-06-03T14:47:15.986Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "7866ebbd-46e1-4d88-b64b-4232eea334d3",
+      "syncedAt": "2026-06-03T14:40:32.630Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1591acb0-d16d-4d2e-a105-e53b79303f48",
+      "syncedAt": "2026-06-03T14:39:32.736Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "ae15bb9f-aaed-4a28-81e8-b964446e2859",
+      "syncedAt": "2026-06-03T14:38:32.617Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "a604d395-bd4d-4b70-87f2-e77bd6e3cccf",
+      "syncedAt": "2026-06-03T14:37:33.027Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "2b768bf3-3442-4e63-96a9-a343e447403b",
+      "syncedAt": "2026-06-03T14:36:32.610Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0bf9e4f7-8c53-4d6c-9401-5f04e0fe7c20",
+      "syncedAt": "2026-06-03T14:35:33.172Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 1,
+      "failures": 0
+    },
+    {
+      "id": "62b5fadc-1772-4f63-b2a9-ab2872562e9d",
+      "syncedAt": "2026-06-03T14:34:32.591Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "46a61d7b-15a5-46de-8817-afc9a9be11ac",
+      "syncedAt": "2026-06-03T14:33:32.699Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "faefa308-4517-450a-8e9a-439b277caf89",
+      "syncedAt": "2026-06-03T14:32:32.578Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "fe182811-2610-4c18-85df-a688f9b64510",
+      "syncedAt": "2026-06-03T14:31:32.598Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "05b50c64-3363-48a5-b87f-ddeeec7a53e0",
+      "syncedAt": "2026-06-03T14:30:32.564Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "46b34ab2-7a47-4b0a-8260-49d2c100b40d",
+      "syncedAt": "2026-06-03T14:29:32.771Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "fedea4ea-ee41-48b0-8141-45d8b3329dca",
+      "syncedAt": "2026-06-03T14:28:32.553Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "779a9152-8afe-40bd-8e28-32b8039ccf67",
+      "syncedAt": "2026-06-03T14:27:33.051Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "6560242b-fcb2-4a98-8213-66dd45f42949",
+      "syncedAt": "2026-06-03T14:26:32.540Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "499624fa-1575-451a-a107-d0e823948abd",
+      "syncedAt": "2026-06-03T14:25:32.843Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "2bf753e6-bc09-4255-b3e4-20e36f770cab",
+      "syncedAt": "2026-06-03T14:24:32.525Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "fbb131cd-199e-46c4-8156-ddf6563c44ec",
+      "syncedAt": "2026-06-03T14:23:33.214Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "1bb150c3-8012-4c8c-a8bf-1b2ad33a0249",
+      "syncedAt": "2026-06-03T14:22:32.518Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "8fb5da4a-30bd-4aff-b81a-27a2f0603f5f",
+      "syncedAt": "2026-06-03T14:21:32.565Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "d40bbf41-9246-4c5f-8f38-caeb75446aa5",
+      "syncedAt": "2026-06-03T14:20:32.503Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "40d4b77e-88ae-47a3-a054-00a56402acd8",
+      "syncedAt": "2026-06-03T14:19:32.556Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "f15d4bf5-2171-42ec-a744-847a09bbe439",
+      "syncedAt": "2026-06-03T14:18:32.491Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "c2baf996-657c-449e-9f58-b4a354e66279",
+      "syncedAt": "2026-06-03T14:17:34.281Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "183e89fe-ef8a-4efc-8d7b-e75e0e217307",
+      "syncedAt": "2026-06-03T14:16:45.675Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "797a22ac-03d8-4822-af29-1d42a90f2faa",
+      "syncedAt": "2026-06-03T14:15:46.148Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "c9b90f8d-2336-4dff-8516-d276fb71ca8f",
+      "syncedAt": "2026-06-03T14:14:45.657Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "08e72844-00fc-4d3d-a674-c8eb3fff8c1c",
+      "syncedAt": "2026-06-03T14:13:45.856Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "f1c78675-20ea-4128-86e7-649d0a3d528c",
+      "syncedAt": "2026-06-03T14:12:45.634Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0341955d-fb11-478f-a7bd-038be2c9d7ad",
+      "syncedAt": "2026-06-03T14:11:45.741Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "cfdc82a8-33bc-4161-946e-34f70b75c534",
+      "syncedAt": "2026-06-03T14:10:45.609Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "e86bd6cd-a8d2-4fed-aa89-82ae11089ccc",
+      "syncedAt": "2026-06-03T14:09:45.720Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "b4bcb140-50c9-45b3-ba2b-6afa8b6ef428",
+      "syncedAt": "2026-06-03T14:08:45.591Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "cf85939e-d673-43b4-be2e-977cf5ef0316",
+      "syncedAt": "2026-06-03T14:07:46.409Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "9b9f7d93-52a0-4415-95dc-640b81670563",
+      "syncedAt": "2026-06-03T14:06:45.586Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0be3db85-eaf1-4d87-af5a-bf6f2225b272",
+      "syncedAt": "2026-06-03T14:05:46.016Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "9af9cfbb-7334-4809-9ef2-89825418a838",
+      "syncedAt": "2026-06-03T14:04:45.563Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "04812a58-5e1f-49bd-b5c5-68dc122ceaa2",
+      "syncedAt": "2026-06-03T14:03:46.067Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "a072b5a5-6de4-4e83-983f-f1e784650dc4",
+      "syncedAt": "2026-06-03T14:02:45.558Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "37386e2c-fa4d-4726-a970-823f7ee587d6",
+      "syncedAt": "2026-06-03T14:01:46.156Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 3,
+      "failures": 0
+    },
+    {
+      "id": "4d411210-8445-464b-85c5-05651eb8f503",
+      "syncedAt": "2026-06-03T14:00:45.536Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "b7edfc2a-3fe2-4e81-8c9f-a77457cd3796",
+      "syncedAt": "2026-06-03T13:59:45.654Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "123975d7-4b63-4b92-8808-8bb9e2dac515",
+      "syncedAt": "2026-06-03T13:58:45.531Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "b7a972dd-139f-45ff-8c43-b5e3bae13851",
+      "syncedAt": "2026-06-03T13:57:45.640Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "c18c5df5-7f7e-4a20-8da8-562691b63d66",
+      "syncedAt": "2026-06-03T13:56:45.501Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1d15643e-2eb3-4eb9-9003-fa0927a30e4a",
+      "syncedAt": "2026-06-03T13:55:47.052Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "1fba9e69-045e-4cb8-9a85-48bea11cd4df",
+      "syncedAt": "2026-06-03T13:54:50.880Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "70ef562f-542b-4824-a91f-a9623b8cd874",
+      "syncedAt": "2026-06-03T13:53:50.835Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0b99d4e4-64c4-48fe-9e1b-d2daf8a3a875",
+      "syncedAt": "2026-06-03T13:52:51.073Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "431efc94-70db-4cc0-924a-9da95bf3ed34",
+      "syncedAt": "2026-06-03T13:51:50.815Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f0bc6ade-be35-4015-933a-d3dbe87084ef",
+      "syncedAt": "2026-06-03T13:50:51.258Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 1,
+      "failures": 0
+    },
+    {
+      "id": "64178fcc-90de-4f22-82af-2b0b975b5b17",
+      "syncedAt": "2026-06-03T13:49:50.806Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "854e4ebf-c75a-4351-951a-94fc1eb22b9e",
+      "syncedAt": "2026-06-03T13:48:50.838Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "984ddaa8-f2ca-4ef3-9a4f-80a6bf07a83f",
+      "syncedAt": "2026-06-03T13:47:50.789Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "584f181c-b0db-4b80-b18c-8008f072f413",
+      "syncedAt": "2026-06-03T13:46:51.082Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "c7941880-83bb-4055-be66-7224d7d381b9",
+      "syncedAt": "2026-06-03T13:45:50.787Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "8677b22c-8d3d-46ae-bbf0-37d176341f15",
+      "syncedAt": "2026-06-03T13:44:51.040Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "9d227c16-13c5-4ebf-9f02-d7d0d22eff14",
+      "syncedAt": "2026-06-03T13:43:50.769Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "ee13b897-330e-438c-91fd-26e0ad0d9185",
+      "syncedAt": "2026-06-03T13:42:51.044Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "e94b64b7-36f8-429f-a455-81b6561203d7",
+      "syncedAt": "2026-06-03T13:41:50.771Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "fbef1065-58b9-49f1-b2eb-bf6e63e9bf13",
+      "syncedAt": "2026-06-03T13:40:51.140Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "78830dd6-5a40-4946-9f78-b53f58c440fd",
+      "syncedAt": "2026-06-03T13:39:50.758Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
     {
       "id": "700ee849-2662-4c9f-bf7b-4ec7a0a5705b",
       "syncedAt": "2026-06-03T13:38:51.777Z",

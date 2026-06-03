@@ -91,11 +91,33 @@ function analyze(raw) {
   const potentialDirection = deviationNumber == null ? "Pending release" : deviationNumber > 0 ? `Potentially bullish ${raw.country}` : deviationNumber < 0 ? `Potentially bearish ${raw.country}` : "Neutral";
   return { importance, deviationNumber, riskScore, volatility, potentialDirection };
 }
+function expectsActual(raw) {
+  const title=String(raw.title || raw.event || "");
+  if(/\b(speaks|speech|holiday|auction|minutes|statement|report|book)\b/i.test(title))return false;
+  return Boolean(String(raw.forecast || "").trim() || String(raw.previous || "").trim());
+}
+function deriveEventStatus(event) {
+  if(event.actual)return "RELEASED";
+  if(new Date(event.scheduledAt)>=new Date())return "UPCOMING";
+  const releaseExpected=event.releaseExpected ?? expectsActual({title:event.event,forecast:event.forecast,previous:event.previous});
+  return releaseExpected?"ACTUAL_UNAVAILABLE":"COMPLETED";
+}
+function presentEvent(event) {
+  const releaseExpected=event.releaseExpected ?? expectsActual({title:event.event,forecast:event.forecast,previous:event.previous});
+  const status=deriveEventStatus(event);
+  return {
+    ...event,
+    releaseExpected,
+    status,
+    sentimentImpact:status==="ACTUAL_UNAVAILABLE"?"Actual unavailable":status==="COMPLETED"?"No numeric release expected":event.sentimentImpact
+  };
+}
 function normalize(raw, source) {
   const analysis = analyze(raw);
   const scheduledAt = new Date(raw.date).toISOString();
   const id = hash(source.id, raw.title, raw.country, scheduledAt).slice(0,24);
   const released = raw.actual != null && String(raw.actual).trim() !== "";
+  const releaseExpected=expectsActual(raw);
   const eventCategory = category(raw.title);
   const affectedAssets = assetsFor(raw.country,raw.title);
   const relatedNews = listNewsArticles({ q:`${raw.country} ${raw.title}`, limit:5 }).articles.map(article=>({ id:article.id, headline:article.headline, url:article.url, sentiment:article.sentiment, impact:article.impact }));
@@ -104,7 +126,8 @@ function normalize(raw, source) {
     currency:raw.country, category:eventCategory, scheduledAt, previous:raw.previous || "", forecast:raw.forecast || "",
     actual:raw.actual || "", deviation:analysis.deviationNumber, importance:analysis.importance,
     sentimentImpact:analysis.potentialDirection, expectedVolatility:analysis.volatility, riskScore:analysis.riskScore,
-    historicalImportance:analysis.importance, affectedAssets, status:released ? "RELEASED" : new Date(scheduledAt) < new Date() ? "AWAITING_ACTUAL" : "UPCOMING",
+    historicalImportance:analysis.importance, affectedAssets, releaseExpected,
+    status:released ? "RELEASED" : new Date(scheduledAt) < new Date() ? releaseExpected ? "ACTUAL_UNAVAILABLE" : "COMPLETED" : "UPCOMING",
     aiAnalysis:{
       summary:`${raw.title} is a ${analysis.importance.toLowerCase()} importance ${eventCategory.toLowerCase()} event for ${raw.country}.`,
       bullish:`A stronger-than-expected result may support ${raw.country} and related assets.`,
@@ -244,7 +267,7 @@ function rangeBounds(range="week") {
   return {start,end};
 }
 export function listEconomicEvents(filters={}) {
-  const store=readStore(); let events=store.events;
+  const store=readStore(); let events=store.events.map(presentEvent);
   const {start,end}=rangeBounds(filters.range || "week");
   events=events.filter(event=>new Date(event.scheduledAt)>=start&&new Date(event.scheduledAt)<=end);
   if(filters.currency) events=events.filter(event=>event.currency===String(filters.currency).toUpperCase());
@@ -258,14 +281,14 @@ export function getEconomicCalendarDashboard() {
   const store=readStore(), today=listEconomicEvents({range:"today"}).events, upcoming=listEconomicEvents({range:"upcoming"}).events;
   const high=upcoming.filter(event=>["HIGH","EXTREME"].includes(event.importance));
   const sourcesOnline=store.sources.filter(source=>source.status==="ONLINE").length, retained=store.events.length>0;
-  return {sourceMode:"LIVE_PROVIDERS_ONLY",updatedAt:store.updatedAt,status:sourcesOnline?"LIVE":retained?"SYNCED":"FAILED",sourcesOnline,sourcesTotal:store.sources.length,totalEvents:store.events.length,todayEvents:today.length,highImpactToday:today.filter(event=>event.importance==="HIGH").length,mediumImpactToday:today.filter(event=>event.importance==="MEDIUM").length,lowImpactToday:today.filter(event=>event.importance==="LOW").length,centralBankEvents:today.filter(event=>event.category==="Central Bank").length,upcoming24h:upcoming.length,marketRiskLevel:high.length>=3?"ELEVATED":high.length?"MODERATE":"LOW",volatilityForecast:high.length?"HIGH":"LOW",nextHighImpact:high[0]||null};
+  return {sourceMode:"LIVE_PROVIDERS_ONLY",updatedAt:store.updatedAt,status:sourcesOnline?"LIVE":retained?"SYNCED":"FAILED",sourcesOnline,sourcesTotal:store.sources.length,actualReleaseProvider:tradingEconomicsCredential()?"CONFIGURED":"NOT_CONFIGURED",actualReleasePollMs:Number(process.env.ECONOMIC_CALENDAR_RELEASE_POLL_MS||RELEASE_POLL_MS),totalEvents:store.events.length,todayEvents:today.length,highImpactToday:today.filter(event=>event.importance==="HIGH").length,mediumImpactToday:today.filter(event=>event.importance==="MEDIUM").length,lowImpactToday:today.filter(event=>event.importance==="LOW").length,centralBankEvents:today.filter(event=>event.category==="Central Bank").length,upcoming24h:upcoming.length,marketRiskLevel:high.length>=3?"ELEVATED":high.length?"MODERATE":"LOW",volatilityForecast:high.length?"HIGH":"LOW",nextHighImpact:high[0]||null};
 }
 export function listEconomicSources(){return {sources:readStore().sources,sourceMode:"LIVE_PROVIDERS_ONLY"};}
 export function listEconomicAlerts(){return {alerts:readStore().alerts,sourceMode:"LIVE_PROVIDERS_ONLY"};}
 export function listEconomicSyncLogs(){return {logs:readStore().syncLogs,sourceMode:"LIVE_PROVIDERS_ONLY"};}
 export function connectEconomicSource(input={}){const name=String(input.name||"").trim(),url=String(input.url||"").trim();if(!name||!url)throw new Error("economic_source_name_and_url_required");const parsed=new URL(url);if(!["http:","https:"].includes(parsed.protocol))throw new Error("economic_source_url_invalid");const store=readStore(),id=String(input.id||hash(name,url).slice(0,20)),existing=store.sources.find(source=>source.id===id||source.url===url);const source={...(existing||{}),id,name,type:String(input.type||"JSON Feed"),url,enabled:input.enabled!==false,scheduleMs:Math.max(60000,Number(input.scheduleMs||DEFAULT_SYNC_MS)),status:existing?.status||"PENDING",lastSyncAt:existing?.lastSyncAt||null,lastSuccessAt:existing?.lastSuccessAt||null,latencyMs:existing?.latencyMs||null,imported:0,updated:0,error:null};store.sources=existing?store.sources.map(item=>item.id===existing.id?source:item):[...store.sources,source];writeStore(store);return source;}
 export async function testEconomicSource(sourceId){const store=readStore(),source=store.sources.find(item=>item.id===sourceId);if(!source)throw new Error("economic_source_not_found");const probeStore={...store,events:[...store.events],alerts:[...store.alerts]};const result=await syncSource(source,probeStore);return {sourceId,status:result.status,latencyMs:result.latencyMs,error:result.error,reachable:result.status==="ONLINE"};}
-export function getEconomicEvent(id){return readStore().events.find(event=>event.id===id)||null;}
+export function getEconomicEvent(id){const event=readStore().events.find(item=>item.id===id);return event?presentEvent(event):null;}
 export function listEconomicReleaseUpdates({since=null}={}){const store=readStore(),timestamp=since?Date.parse(since):0;return {events:store.events.filter(event=>event.actualUpdatedAt&&new Date(event.actualUpdatedAt).getTime()>timestamp),serverTime:new Date().toISOString(),sourceMode:"LIVE_PROVIDERS_ONLY"};}
 export function getEconomicEventHistory(id){const store=readStore(),event=store.events.find(item=>item.id===id);return {event,history:store.history.filter(item=>item.eventId===id),sourceMode:"LIVE_PROVIDERS_ONLY"};}
 export function getEconomicEventCorrelation(id){const event=getEconomicEvent(id);return {eventId:id,relatedNews:event?.relatedNews||[],correlations:event?[{type:"Currency Strength",value:event.currency},{type:"News Sentiment",value:event.relatedNews?.map(item=>item.sentiment)||[]},{type:"Affected Markets",value:event.affectedAssets}]:[],sourceMode:"LIVE_PROVIDERS_ONLY"};}
@@ -274,4 +297,5 @@ export function getEconomicAssetImpact(){const map={};for(const event of readSto
 export function getCentralBankEvents(){return {centralBanks:readStore().events.filter(event=>event.category==="Central Bank"),sourceMode:"LIVE_PROVIDERS_ONLY"};}
 export function getEconomicCalendarLiveSourceSnapshot(){const dashboard=getEconomicCalendarDashboard(),store=readStore(),healthy=dashboard.sourcesOnline>0,retained=dashboard.totalEvents>0,available=healthy||retained;return {id:"economic-calendar",routeSlug:"economic-calendar",name:"Economic Calendar",category:"economic-calendar",subtitle:"Automated live economic-event synchronization and risk intelligence.",provider:healthy?`${dashboard.sourcesOnline} live calendar provider${dashboard.sourcesOnline===1?"":"s"}`:retained?"Retained live calendar dataset":"No reachable calendar provider",status:healthy?"LIVE":retained?"SYNCED":"FAILED",required:true,lastSyncAt:store.updatedAt,freshnessSeconds:store.updatedAt?Math.max(0,Math.round((Date.now()-new Date(store.updatedAt).getTime())/1000)):0,freshness:store.updatedAt?"LIVE DATASET":"UNAVAILABLE",healthScore:healthy?100:retained?70:0,latencyMs:store.sources[0]?.latencyMs||0,errorCount:store.sources.filter(source=>source.status==="FAILED").length,feedsStage:"Card 1",failureAction:"restricted_trading_mode",records:dashboard.totalEvents,adapter:"economic_calendar_intelligence_engine",configuration:"Live economic calendar providers with automatic revisions and actual-release tracking.",connectionLabel:"Economic Calendar Sync Engine",envKey:null,httpStatus:null,probeError:healthy?null:retained?"Provider temporarily unavailable; retained live records remain active.":"No calendar providers are currently reachable.",checks:{configured:store.sources.some(source=>source.enabled),availability:available,apiValidation:available,latency:healthy?"LIVE SYNC":retained?"RETRY PENDING":"UNAVAILABLE",freshness:store.updatedAt?"LIVE DATASET":"UNAVAILABLE",quality:available?"PASSED":"FAILED"}};}
 export function createEconomicAlert(input={}){const store=readStore(),event=getEconomicEvent(input.eventId);if(!event)throw new Error("economic_event_not_found");const alert={id:randomUUID(),eventId:event.id,createdAt:new Date().toISOString(),level:input.level||event.importance,type:input.type||"BEFORE_EVENT",message:input.message||`Alert for ${event.event}`,delivery:input.delivery||["IN_APP"],acknowledged:false};store.alerts.unshift(alert);writeStore(store);return alert;}
-export function startEconomicCalendarSyncLoop({intervalMs=Number(process.env.ECONOMIC_CALENDAR_SYNC_MS||DEFAULT_SYNC_MS),releasePollMs=Number(process.env.ECONOMIC_CALENDAR_RELEASE_POLL_MS||RELEASE_POLL_MS)}={}){if(loopStarted||intervalMs<=0)return;loopStarted=true;setTimeout(()=>syncEconomicCalendar({force:true}).catch(error=>console.error("[economic-calendar]",error.message)),1500);setInterval(()=>syncEconomicCalendar().catch(error=>console.error("[economic-calendar]",error.message)),intervalMs);if(releasePollMs>0)setInterval(()=>syncEconomicActualReleases().catch(error=>console.error("[economic-calendar-release]",error.message)),releasePollMs);}
+export function reconcileEconomicEventStatuses(){const store=readStore();let updated=0;store.events=store.events.map(event=>{const presented=presentEvent(event);if(event.releaseExpected!==presented.releaseExpected||event.status!==presented.status){updated++;return {...event,releaseExpected:presented.releaseExpected,status:presented.status,sentimentImpact:presented.sentimentImpact};}return event;});if(updated)writeStore(store);return {updated};}
+export function startEconomicCalendarSyncLoop({intervalMs=Number(process.env.ECONOMIC_CALENDAR_SYNC_MS||DEFAULT_SYNC_MS),releasePollMs=Number(process.env.ECONOMIC_CALENDAR_RELEASE_POLL_MS||RELEASE_POLL_MS)}={}){if(loopStarted||intervalMs<=0)return;loopStarted=true;reconcileEconomicEventStatuses();setTimeout(()=>syncEconomicCalendar({force:true}).catch(error=>console.error("[economic-calendar]",error.message)),1500);setInterval(()=>syncEconomicCalendar().catch(error=>console.error("[economic-calendar]",error.message)),intervalMs);if(releasePollMs>0)setInterval(()=>syncEconomicActualReleases().catch(error=>console.error("[economic-calendar-release]",error.message)),releasePollMs);}
