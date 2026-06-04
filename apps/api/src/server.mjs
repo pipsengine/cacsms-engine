@@ -25,6 +25,7 @@ import { WORKFLOW_CARD_QUEUE } from "../../../packages/workflow/src/index.js";
 import { evaluateDataQualityGate } from "../../../packages/market-intelligence/src/data-sources.js";
 import { DATA_QUALITY_GATE_RULES, getDataQualityGateDashboard } from "../../../packages/market-intelligence/src/data-quality-gate.js";
 import { buildAccountPortfolioLiveSourceSnapshot } from "../../../packages/market-intelligence/src/account-portfolio-source-validation.js";
+import { buildPropFirmRulesLiveSourceSnapshot } from "../../../packages/market-intelligence/src/prop-firm-rules-source-validation.js";
 import { buildMarketDataLiveSourceSnapshot, probeMarketDataBridge } from "../../../packages/market-intelligence/src/market-data-source-validation.js";
 import { getLastRuntimeSyncResult, runMarketDataRuntimeSync, startMarketDataRuntimeSyncLoop } from "../../../packages/market-intelligence/src/runtime-sync.js";
 import { createCotSyncStatus, evaluateInstitutionalCot, getCotComparison, getInstitutionalCotDashboard } from "../../../packages/market-intelligence/src/institutional-cot.js";
@@ -273,7 +274,7 @@ const liveSourceDefinitions = [
   ["historical-data", "historical-data", "Historical Data", "HISTORICAL_DATA_LIVE_URL", true, "Configure an OHLCV archive adapter or upload historical data."],
   ["broker-data", "broker-data", "Broker Data", "BROKER_DATA_LIVE_URL", true, "Configure an MT5, cTrader, FIX or broker API bridge."],
   ["account-portfolio-data", "account-portfolio", "Account & Portfolio Data", "ACCOUNT_PORTFOLIO_LIVE_URL", true, "Connect a broker account or portfolio ledger adapter."],
-  ["prop-firm-rules", "prop-firm-rules", "Prop Firm Rules & Limits", "PROP_FIRM_RULES_LIVE_URL", true, "Import a validated prop firm rule catalog."]
+  ["prop-firm-rules", "prop-firm-rules", "Prop Firm Rules & Limits", null, true, "Production rule catalog from market.prop_firms (no external URL probe)."]
 ];
 
 const HEALTHY_LIVE_SOURCE_STATUSES = new Set(["ONLINE", "LIVE", "SYNCED"]);
@@ -434,6 +435,9 @@ async function getLiveSourceSnapshots({ skipRuntimeSync = false } = {}) {
     }
     if (id === "account-portfolio-data") {
       return buildAccountPortfolioLiveSourceSnapshot();
+    }
+    if (id === "prop-firm-rules") {
+      return buildPropFirmRulesLiveSourceSnapshot();
     }
     const isCot = id === "institutional-cot-data";
     const configuredUrl = configuredSourceUrl(routeSlug, envKey);

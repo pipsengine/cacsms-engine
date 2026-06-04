@@ -36,7 +36,9 @@ export function evaluateDataQualityGate(sources = DATA_SOURCES) {
     if (!HEALTHY_STATUSES.has(byId[id]?.status)) warnings.push(`${byId[id]?.name} unavailable: confidence reduced`);
   }
 
-  const healthScore = Math.round(sources.reduce((sum, source) => sum + source.healthScore, 0) / sources.length);
+  const healthScore = Math.round(
+    required.reduce((sum, source) => sum + source.healthScore, 0) / Math.max(required.length, 1)
+  );
   if (healthScore < 85) rejectReasons.push("Data quality below minimum threshold");
   const proceedToStageOne = !rejectReasons.length && !requiredFailures.some((source) => source.id === "market-data");
 

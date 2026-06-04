@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-04T09:04:49.330Z",
+  "updatedAt": "2026-06-04T09:22:08.987Z",
   "sources": [
     {
       "id": "forex-factory-weekly",
@@ -9,13 +9,13 @@
       "url": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
       "enabled": true,
       "scheduleMs": 60000,
-      "status": "FAILED",
-      "lastSyncAt": "2026-06-04T09:03:50.945Z",
-      "lastSuccessAt": "2026-06-04T09:01:51.756Z",
-      "latencyMs": 1634,
+      "status": "ONLINE",
+      "lastSyncAt": "2026-06-04T09:21:14.690Z",
+      "lastSuccessAt": "2026-06-04T09:21:14.690Z",
+      "latencyMs": 5721,
       "imported": 0,
       "updated": 0,
-      "error": "HTTP 429"
+      "error": null
     }
   ],
   "events": [
@@ -4231,7 +4231,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "UPCOMING",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "French 10-y Bond Auction is a low importance government event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -4248,10 +4248,10 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.216Z",
-      "updatedAt": "2026-06-03T13:52:51.042Z",
+      "updatedAt": "2026-06-04T09:19:10.888Z",
       "releasedAt": null,
       "actualUpdatedAt": null,
-      "updateSequence": 0,
+      "updateSequence": 1,
       "lastChangedFields": [],
       "releaseExpected": false
     },
@@ -5836,6 +5836,15 @@
   ],
   "history": [
     {
+      "id": "526cf57b-7739-45a2-b410-9ab93a0639a2",
+      "eventId": "6ae51d1666690b675e5be3a3",
+      "recordedAt": "2026-06-04T09:19:10.887Z",
+      "previous": "3.61|2.0",
+      "forecast": "",
+      "actual": "",
+      "status": "UPCOMING"
+    },
+    {
       "id": "c9a12dcd-9c31-4f12-bf0f-b90495700382",
       "eventId": "397f0a729bcfb5138743aadd",
       "recordedAt": "2026-06-04T09:00:18.622Z",
@@ -5950,6 +5959,142 @@
     }
   ],
   "syncLogs": [
+    {
+      "id": "91465a9a-7b86-41ae-bc9f-662bdc649415",
+      "syncedAt": "2026-06-04T09:22:08.986Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "fef2d3ed-6331-4fc0-991d-c4f690d79f98",
+      "syncedAt": "2026-06-04T09:21:14.690Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f44597e5-de29-410f-9031-3e4da36546dd",
+      "syncedAt": "2026-06-04T09:20:08.959Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1e3cdb78-14e6-4c07-bc1a-faf38797bcdc",
+      "syncedAt": "2026-06-04T09:19:10.955Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 1,
+      "failures": 0
+    },
+    {
+      "id": "3ea86f91-53ab-46be-9839-e413e447d1a1",
+      "syncedAt": "2026-06-04T09:18:08.942Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "aa2e5a5d-e2a2-4646-ad10-ac9730ccfdc9",
+      "syncedAt": "2026-06-04T09:17:12.122Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "7a2e2b98-dced-4d0c-b8df-1d3c06ac5409",
+      "syncedAt": "2026-06-04T09:15:55.823Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "d3ecdc39-844b-4db0-8f52-514df0240369",
+      "syncedAt": "2026-06-04T09:15:06.401Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "726c1a45-6ed1-4db8-86f6-1072e4f8cb98",
+      "syncedAt": "2026-06-04T09:13:55.811Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "b2cb7c9e-f729-4e8b-97b1-83f461fbeaa0",
+      "syncedAt": "2026-06-04T09:12:55.847Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "cd059d9b-d6b1-4939-9ce1-5c44524a82c1",
+      "syncedAt": "2026-06-04T09:11:55.778Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "e55ce575-41d1-4a82-a137-7be902b5b5c5",
+      "syncedAt": "2026-06-04T09:10:57.930Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "5aeda1b4-c9d3-4a7c-bf1a-690eb86af064",
+      "syncedAt": "2026-06-04T09:09:52.021Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "43bfb297-0989-4af9-9347-7035b2dfcac0",
+      "syncedAt": "2026-06-04T09:08:49.345Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "98e9afc1-1efb-4bc2-8421-3e37dbcdf63a",
+      "syncedAt": "2026-06-04T09:07:50.438Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "699b7a70-efe2-4637-9a16-3a0e415be3a8",
+      "syncedAt": "2026-06-04T09:06:49.336Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f1652bf8-4a77-4aa5-a2f8-d62638aaa71b",
+      "syncedAt": "2026-06-04T09:05:49.489Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
     {
       "id": "dd0d0fbd-26c2-4f36-a2a5-e762e6945001",
       "syncedAt": "2026-06-04T09:04:49.329Z",
