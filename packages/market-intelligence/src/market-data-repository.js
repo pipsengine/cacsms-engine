@@ -309,23 +309,8 @@ export async function getProviderById(id) {
   return mapProvider(rows[0]);
 }
 
-export async function createProvider(input, { createdBy = "system.admin", draft = false, wizard = false } = {}) {
-  await assertDatabaseReady();
-  const normalized = validateProviderInput(input, { draft, wizard });
-  await assertNoDuplicateName(normalized.name);
-  if (normalized.wizardCategory !== "mt5_terminal" && normalized.category !== "mt5_terminal") {
-    await assertNoDuplicateUrl(normalized.baseUrl, normalized.websocketUrl);
-  } else if (!draft) {
-    await assertNoDuplicateMt5TerminalProvider(normalized);
-  }
-
-  const providerCode = await generateProviderCode(normalized.providerType);
-  const supportedSymbols = parseSymbols(normalized.supportedSymbols);
-  const assetCoverage = normalized.assetCoverage || normalized.supportedAssetClasses || [];
-  const capabilities = normalized.capabilities || {};
-  const status = draft ? "DRAFT" : normalized.enabled === false ? "DISABLED" : "NOT_CONFIGURED";
-
-  const config = {
+function buildProviderConfig(normalized) {
+  return {
     internalNotes: normalized.notes || "",
     wizardCategory: normalized.wizardCategory || normalized.category || null,
     providerTemplateId: normalized.providerTemplateId || null,
@@ -348,6 +333,100 @@ export async function createProvider(input, { createdBy = "system.admin", draft 
     } : null,
     advanced: normalized.advanced || null
   };
+}
+
+async function updateProviderFromWizard(id, normalized, { createdBy, draft = false }) {
+  const config = buildProviderConfig(normalized);
+  const supportedSymbols = parseSymbols(normalized.supportedSymbols);
+  const assetCoverage = normalized.assetCoverage || normalized.supportedAssetClasses || [];
+  const capabilities = normalized.capabilities || {};
+  const status = draft ? "DRAFT" : normalized.enabled === false ? "DISABLED" : "NOT_CONFIGURED";
+  const { rows } = await query(
+    `UPDATE market.market_data_providers SET
+      name = $2,
+      provider_type = $3,
+      connection_method = $4,
+      base_url = $5,
+      websocket_url = $6,
+      port = $7,
+      auth_type = $8,
+      vault_secret_ref = $9,
+      enabled = $10,
+      environment = $11,
+      description = $12,
+      vendor_website = $13,
+      contact_info = $14,
+      notes = $15,
+      asset_coverage = $16::jsonb,
+      supported_asset_classes = $16::jsonb,
+      supported_symbols = $17::jsonb,
+      capabilities = $18::jsonb,
+      api_url = $5,
+      config = $19::jsonb,
+      status = $20,
+      updated_at = now()
+    WHERE id = $1 AND archived = false
+    RETURNING ${PROVIDER_COLUMNS}`,
+    [
+      id,
+      normalized.name.trim(),
+      normalized.providerType,
+      normalized.connectionMethod,
+      normalized.baseUrl || null,
+      normalized.websocketUrl || null,
+      normalized.port ? Number(normalized.port) : null,
+      normalizeAuthType(normalized.authType),
+      normalized.vaultSecretRef || null,
+      draft ? false : normalized.enabled !== false,
+      normalized.environment,
+      normalized.description || null,
+      normalized.vendorWebsite || null,
+      normalized.contactInfo || null,
+      normalized.notes || null,
+      JSON.stringify(assetCoverage),
+      JSON.stringify(supportedSymbols),
+      JSON.stringify(capabilities),
+      JSON.stringify(config),
+      status
+    ]
+  );
+  if (!rows[0]) throw new Error("provider_not_found");
+  return mapProvider(rows[0]);
+}
+
+export async function createProvider(input, { createdBy = "system.admin", draft = false, wizard = false } = {}) {
+  await assertDatabaseReady();
+  const normalized = validateProviderInput(input, { draft, wizard });
+  const mt5Identity = extractMt5Identity(normalized);
+  const existingMt5 = mt5Identity ? await findDuplicateMt5Provider(mt5Identity) : null;
+
+  if (existingMt5) {
+    const existing = await getProviderById(existingMt5.id);
+    if (existing) {
+      if (draft || existing.status === "DRAFT") {
+        await assertNoDuplicateName(normalized.name, existing.id);
+        return updateProviderFromWizard(existing.id, normalized, { createdBy, draft });
+      }
+      if (!draft) {
+        await assertNoDuplicateMt5TerminalProvider(normalized);
+      }
+    }
+  }
+
+  await assertNoDuplicateName(normalized.name);
+  if (normalized.wizardCategory !== "mt5_terminal" && normalized.category !== "mt5_terminal") {
+    await assertNoDuplicateUrl(normalized.baseUrl, normalized.websocketUrl);
+  } else if (!draft) {
+    await assertNoDuplicateMt5TerminalProvider(normalized);
+  }
+
+  const providerCode = await generateProviderCode(normalized.providerType);
+  const supportedSymbols = parseSymbols(normalized.supportedSymbols);
+  const assetCoverage = normalized.assetCoverage || normalized.supportedAssetClasses || [];
+  const capabilities = normalized.capabilities || {};
+  const status = draft ? "DRAFT" : normalized.enabled === false ? "DISABLED" : "NOT_CONFIGURED";
+
+  const config = buildProviderConfig(normalized);
 
   const vaultRef = normalized.vaultSecretRef
     || (normalized.apiKey ? normalized.vaultSecretRef || `MARKETDATA_${String(normalized.vendorKey || normalized.providerType).toUpperCase()}_API_KEY` : null);
@@ -550,16 +629,22 @@ export async function insertConfidence({ confidenceScore, integrityScore, workfl
 export async function getLatestHealthByProvider() {
   if (!isDatabaseConfigured()) return new Map();
   const { rows } = await query(
-    `SELECT DISTINCT ON (h.provider_id)
-      h.provider_id, h.status, h.health, h.freshness, h.tick_rate, h.observed_at,
-      (
-        SELECT l.latency_ms FROM market.market_data_latency l
-        WHERE l.provider_id = h.provider_id
-        ORDER BY l.observed_at DESC
-        LIMIT 1
-      ) AS latency_ms
-     FROM market.market_data_health h
-     ORDER BY h.provider_id, h.observed_at DESC`
+    `WITH latest_health AS (
+       SELECT DISTINCT ON (provider_id)
+        provider_id, status, health, freshness, tick_rate, observed_at
+       FROM market.market_data_health
+       ORDER BY provider_id, observed_at DESC
+     )
+     SELECT h.provider_id, h.status, h.health, h.freshness, h.tick_rate, h.observed_at,
+      l.latency_ms
+     FROM latest_health h
+     LEFT JOIN LATERAL (
+       SELECT latency_ms
+       FROM market.market_data_latency l
+       WHERE l.provider_id = h.provider_id
+       ORDER BY l.observed_at DESC
+       LIMIT 1
+     ) l ON true`
   );
   return new Map(rows.map((row) => [row.provider_id, row]));
 }

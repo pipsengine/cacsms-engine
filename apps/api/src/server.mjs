@@ -14,7 +14,7 @@ function loadEnvFile() {
     if (index === -1) continue;
     const key = trimmed.slice(0, index).trim();
     const value = trimmed.slice(index + 1).trim();
-    if (!process.env[key]) process.env[key] = value;
+    process.env[key] = value;
   }
 }
 
@@ -24,6 +24,7 @@ import { createCardOneTestReport } from "../../../packages/workflow/src/card-one
 import { WORKFLOW_CARD_QUEUE } from "../../../packages/workflow/src/index.js";
 import { evaluateDataQualityGate } from "../../../packages/market-intelligence/src/data-sources.js";
 import { DATA_QUALITY_GATE_RULES, getDataQualityGateDashboard } from "../../../packages/market-intelligence/src/data-quality-gate.js";
+import { buildAccountPortfolioLiveSourceSnapshot } from "../../../packages/market-intelligence/src/account-portfolio-source-validation.js";
 import { buildMarketDataLiveSourceSnapshot, probeMarketDataBridge } from "../../../packages/market-intelligence/src/market-data-source-validation.js";
 import { getLastRuntimeSyncResult, runMarketDataRuntimeSync, startMarketDataRuntimeSyncLoop } from "../../../packages/market-intelligence/src/runtime-sync.js";
 import { createCotSyncStatus, evaluateInstitutionalCot, getCotComparison, getInstitutionalCotDashboard } from "../../../packages/market-intelligence/src/institutional-cot.js";
@@ -136,6 +137,54 @@ import {
   syncDiscoveredTerminalPaths,
   ensureEaVersionCatalog
 } from "../../../packages/market-intelligence/src/ea-deployment.js";
+import {
+  analyzeSocialSentiment,
+  getSocialFearGreed,
+  getSocialSentimentAlerts,
+  getSocialSentimentCorrelations,
+  getSocialSentimentDashboard,
+  getSocialSentimentExport,
+  getSocialSentimentFeed,
+  getSocialSentimentHeatmap,
+  getSocialSentimentSources,
+  getSocialSentimentSummary,
+  getSocialSentimentTopics,
+  syncSocialSentiment
+} from "../../../packages/market-intelligence/src/social-sentiment.js";
+import {
+  generatePortfolioReport,
+  getAccountPortfolioDashboard,
+  getAiPortfolioInsights,
+  getPortfolioAccounts,
+  getPortfolioCorrelations,
+  getPortfolioDrawdowns,
+  getPortfolioPositions,
+  getPortfolioRisk,
+  getPortfolioStrategies,
+  getPortfolioTrades,
+  getPropCompliance,
+  getPortfolioEquity,
+  getPortfolioAlerts,
+  importPortfolioStatement,
+  syncPortfolioAccounts
+} from "../../../packages/market-intelligence/src/account-portfolio.js";
+import {
+  approvePropFirmImport,
+  createPropFirmRule,
+  createPropFirmSource,
+  deletePropFirmRule,
+  getPropFirmAuditLogs,
+  getPropFirmBreachAlerts,
+  getPropFirmCompliance,
+  getPropFirmRuleById,
+  getPropFirmRulesDashboard,
+  getPropFirmRulesSummary,
+  importPropFirmRules,
+  listPropFirmSources,
+  syncPropFirmSources,
+  updatePropFirmRule,
+  validatePropFirmInput
+} from "../../../packages/market-intelligence/src/prop-firm-rules.js";
 
 const port = Number(process.env.API_PORT || 8080);
 const root = fileURLToPath(new URL("../../../", import.meta.url));
@@ -165,6 +214,27 @@ function mt5EaError(response, reason) {
     return json(response, 404, { error: message });
   }
   if (message === "machine_not_linked" || message === "mt5_terminal_paths_not_found") return json(response, 400, { error: message });
+  return json(response, 400, { error: message });
+}
+
+function auditFromRequest(request) {
+  return {
+    userLabel: request.headers["x-user-label"] || request.headers["x-user-id"] || "api",
+    ipAddress: request.socket?.remoteAddress || null
+  };
+}
+
+function propFirmError(response, reason) {
+  const message = reason instanceof Error ? reason.message : String(reason);
+  if (message === "validation_failed") {
+    return json(response, 400, { error: message, details: reason.details || [] });
+  }
+  if (message === "rule_not_found" || message === "import_not_found") {
+    return json(response, 404, { error: message });
+  }
+  if (message === "program_name_exists") {
+    return json(response, 409, { error: message });
+  }
   return json(response, 400, { error: message });
 }
 
@@ -286,6 +356,7 @@ async function getMarketDataLiveProbe() {
 }
 
 async function getLiveSourceSnapshots({ skipRuntimeSync = false } = {}) {
+  loadEnvFile();
   if (!skipRuntimeSync) await runMarketDataRuntimeSync();
   let cot;
   try { cot = readCotCache(); } catch {}
@@ -297,6 +368,56 @@ async function getLiveSourceSnapshots({ skipRuntimeSync = false } = {}) {
     if (id === "market-data") return marketDataSnapshot;
     if (id === "news-sentiment") return getNewsLiveSourceSnapshot();
     if (id === "economic-calendar") return getEconomicCalendarLiveSourceSnapshot();
+    if (id === "social-sentiment") {
+      const social = await getSocialSentimentDashboard();
+      const sources = social.sources || [];
+      const checks = social.empty
+        ? {
+            configured: false,
+            availability: false,
+            apiValidation: false,
+            latency: "NOT TESTED",
+            freshness: "UNAVAILABLE",
+            quality: "FAILED",
+            message: "No production social sentiment source is connected."
+          }
+        : {
+            configured: true,
+            availability: true,
+            apiValidation: true,
+            latency: "DATABASE",
+            freshness: social.updatedAt ? "LIVE STORAGE" : "UNAVAILABLE",
+            quality: "PASSED"
+          };
+      return {
+        id,
+        routeSlug,
+        name,
+        category: id,
+        subtitle: configuration,
+        provider: sources.length ? sources.map((source) => source.source).join(", ") : "Provider Not Connected",
+        status: social.empty ? "NOT_CONFIGURED" : "SYNCED",
+        required,
+        lastSyncAt: social.updatedAt,
+        freshnessSeconds: 0,
+        freshness: social.empty ? "UNAVAILABLE" : "LIVE STORAGE",
+        healthScore: social.empty ? 0 : Number(social.trust_score || 0),
+        latencyMs: 0,
+        errorCount: social.empty ? 1 : 0,
+        feedsStage: "Card 1",
+        failureAction: required ? "block_card_1" : "reduce_confidence",
+        records: social.feed?.length || 0,
+        adapter: "production_social_sentiment_repository",
+        configuration: social.empty
+          ? "Connect a production social feed or import production social data. Mock social sentiment data is disabled."
+          : "Production social sentiment records are available.",
+        connectionLabel: "Production Repository",
+        envKey: null,
+        httpStatus: null,
+        probeError: social.empty ? "production_social_source_not_connected" : null,
+        checks
+      };
+    }
     if (id === "historical-data" && tickEvidence.ticks.length) {
       return buildLocalSnapshot({
         id, routeSlug, name, required, configuration,
@@ -310,6 +431,9 @@ async function getLiveSourceSnapshots({ skipRuntimeSync = false } = {}) {
         provider: "CACSMS MT5 Broker Bridge", status: "LIVE", adapter: "mt5_broker_bridge",
         latencyMs: marketDataSnapshot.latencyMs, ...tickEvidence
       });
+    }
+    if (id === "account-portfolio-data") {
+      return buildAccountPortfolioLiveSourceSnapshot();
     }
     const isCot = id === "institutional-cot-data";
     const configuredUrl = configuredSourceUrl(routeSlug, envKey);
@@ -481,13 +605,22 @@ const routes = {
   ,"GET /api/economic-calendar/alerts": () => listEconomicAlerts()
   ,"GET /api/economic-calendar/logs": () => listEconomicSyncLogs()
   ,"GET /api/economic-calendar/release-updates": url => listEconomicReleaseUpdates({ since:url.searchParams.get("since") })
-  ,"GET /api/market-intelligence/social-sentiment/dashboard": () => liveSourcePayload("social-sentiment")
-  ,"GET /api/market-intelligence/social-sentiment/feed": () => ({ items: [] })
-  ,"GET /api/market-intelligence/social-sentiment/asset-matrix": () => ({ assets: [] })
-  ,"GET /api/market-intelligence/social-sentiment/retail-positioning": () => ({ positioning: [] })
-  ,"GET /api/market-intelligence/social-sentiment/spikes": () => ({ spikes: [] })
-  ,"GET /api/market-intelligence/social-sentiment/contrarian": () => ({ signals: [] })
-  ,"GET /api/market-intelligence/social-sentiment/source-health": () => ({ sources: [] })
+  ,"GET /api/market-intelligence/social-sentiment": () => getSocialSentimentDashboard()
+  ,"GET /api/market-intelligence/social-sentiment/dashboard": () => getSocialSentimentDashboard()
+  ,"GET /api/market-intelligence/social-sentiment/summary": () => getSocialSentimentSummary()
+  ,"GET /api/market-intelligence/social-sentiment/feed": () => getSocialSentimentFeed()
+  ,"GET /api/market-intelligence/social-sentiment/heatmap": () => getSocialSentimentHeatmap()
+  ,"GET /api/market-intelligence/social-sentiment/topics": () => getSocialSentimentTopics()
+  ,"GET /api/market-intelligence/social-sentiment/fear-greed": () => getSocialFearGreed()
+  ,"GET /api/market-intelligence/social-sentiment/sources": () => getSocialSentimentSources()
+  ,"GET /api/market-intelligence/social-sentiment/alerts": () => getSocialSentimentAlerts()
+  ,"GET /api/market-intelligence/social-sentiment/correlations": () => getSocialSentimentCorrelations()
+  ,"GET /api/market-intelligence/social-sentiment/export": () => getSocialSentimentExport()
+  ,"GET /api/market-intelligence/social-sentiment/asset-matrix": () => getSocialSentimentHeatmap()
+  ,"GET /api/market-intelligence/social-sentiment/retail-positioning": async () => ({ positioning: (await getSocialSentimentDashboard()).retailPositioning })
+  ,"GET /api/market-intelligence/social-sentiment/spikes": async () => ({ spikes: (await getSocialSentimentDashboard()).spikes })
+  ,"GET /api/market-intelligence/social-sentiment/contrarian": async () => ({ signals: (await getSocialSentimentDashboard()).contrarian })
+  ,"GET /api/market-intelligence/social-sentiment/source-health": () => getSocialSentimentSources()
   ,"GET /api/market-intelligence/institutional-cot/dashboard": url => getInstitutionalCotDashboard(readCotCache(), url.searchParams.get("currency") || "EUR")
   ,"GET /api/market-intelligence/institutional-cot/currencies": () => ({ currencies: getCotComparison(readCotCache()) })
   ,"GET /api/market-intelligence/institutional-cot/history": url => ({ currency: url.searchParams.get("currency") || "EUR", range: url.searchParams.get("range") || "1Y", history: readCotCache().history[url.searchParams.get("currency") || "EUR"] || [] })
@@ -504,18 +637,28 @@ const routes = {
   ,"GET /api/market-intelligence/broker-data/compare": () => ({ comparison: [] })
   ,"GET /api/market-intelligence/broker-data/validation": () => ({ issues: [] })
   ,"GET /api/market-intelligence/broker-data/export": () => ({ status: "unavailable", format: "csv", records: 0 })
-  ,"GET /api/market-intelligence/account-portfolio": () => liveSourcePayload("account-portfolio-data")
-  ,"GET /api/market-intelligence/account-portfolio/accounts": () => ({ accounts: [] })
-  ,"GET /api/market-intelligence/account-portfolio/positions/open": () => ({ positions: [] })
-  ,"GET /api/market-intelligence/account-portfolio/trades/closed": () => ({ trades: [] })
-  ,"GET /api/market-intelligence/account-portfolio/risk": () => ({ risk: [] })
-  ,"GET /api/market-intelligence/account-portfolio/equity-curve": () => ({ curve: [] })
-  ,"GET /api/market-intelligence/account-portfolio/export": () => ({ status: "unavailable", format: "csv", accounts: 0 })
-  ,"GET /api/market-intelligence/prop-firm-rules": () => liveSourcePayload("prop-firm-rules")
-  ,"GET /api/market-intelligence/prop-firm-rules/comparison": () => ({ comparison: [] })
-  ,"GET /api/market-intelligence/prop-firm-rules/compliance": () => ({ accounts: [] })
-  ,"GET /api/market-intelligence/prop-firm-rules/breach-risk": () => ({ alerts: [] })
-  ,"GET /api/market-intelligence/prop-firm-rules/export": () => ({ status: "unavailable", format: "csv", rules: 0 })
+  ,"GET /api/market-intelligence/account-portfolio": async () => getAccountPortfolioDashboard()
+  ,"GET /api/market-intelligence/account-portfolio/accounts": async () => getPortfolioAccounts()
+  ,"GET /api/market-intelligence/account-portfolio/positions/open": async () => getPortfolioPositions()
+  ,"GET /api/market-intelligence/account-portfolio/trades/closed": async () => getPortfolioTrades()
+  ,"GET /api/market-intelligence/account-portfolio/risk": async () => getPortfolioRisk()
+  ,"GET /api/market-intelligence/account-portfolio/equity-curve": async () => getPortfolioEquity()
+  ,"GET /api/market-intelligence/account-portfolio/export": async () => ({ status: "ready", format: "csv", accounts: (await getPortfolioAccounts()).accounts.length })
+  ,"GET /api/market-intelligence/prop-firm-rules": async () => getPropFirmRulesDashboard()
+  ,"GET /api/market-intelligence/prop-firm-rules/summary": async () => getPropFirmRulesSummary()
+  ,"GET /api/market-intelligence/prop-firm-rules/comparison": async () => {
+    const d = await getPropFirmRulesDashboard();
+    return { comparison: d.comparison };
+  }
+  ,"GET /api/market-intelligence/prop-firm-rules/compliance": async () => getPropFirmCompliance()
+  ,"GET /api/market-intelligence/prop-firm-rules/breach-alerts": async () => getPropFirmBreachAlerts()
+  ,"GET /api/market-intelligence/prop-firm-rules/breach-risk": async () => getPropFirmBreachAlerts()
+  ,"GET /api/market-intelligence/prop-firm-rules/sources": async () => listPropFirmSources()
+  ,"GET /api/market-intelligence/prop-firm-rules/audit-logs": async () => getPropFirmAuditLogs()
+  ,"GET /api/market-intelligence/prop-firm-rules/export": async () => {
+    const d = await getPropFirmRulesDashboard();
+    return { status: d.rules.length ? "ready" : "empty", format: "csv", rules: d.rules.length };
+  }
   ,"GET /api/source-configuration": async () => getSourceConfigurationDashboard(await getLiveSourceSnapshots())
   ,"GET /api/source-configuration/providers": () => getSourceProviders()
   ,"GET /api/source-configuration/health": async () => getSourceHealth(await getLiveSourceSnapshots())
@@ -562,9 +705,13 @@ const actions = {
   ,"/api/market-intelligence/economic-calendar/release-restriction": () => ({ type:"economic_calendar.restrictions.current", ...getEconomicRestrictions() })
   ,"/api/economic-calendar/sync": async () => ({ type:"economic_calendar.sync.completed", ...await syncEconomicCalendar({ force:true }) })
   ,"/api/economic-calendar/releases/sync": async () => ({ type:"economic_calendar.release_sync.completed", ...await syncEconomicActualReleases({ force:true }) })
-  ,"/api/market-intelligence/social-sentiment/refresh": () => liveAction("social_sentiment.live_probe.completed", "social-sentiment")
-  ,"/api/market-intelligence/social-sentiment/run-scan": () => liveAction("social_sentiment.scan.unavailable", "social-sentiment")
-  ,"/api/market-intelligence/social-sentiment/generate-contrarian-signals": () => liveAction("social_sentiment.contrarian.unavailable", "social-sentiment")
+  ,"/api/market-intelligence/social-sentiment/sync": async () => ({ type: "social_sentiment.sync.completed", ...await syncSocialSentiment() })
+  ,"/api/market-intelligence/social-sentiment/sources": async () => ({ type: "social_sentiment.source.accepted", accepted: true, ...await getSocialSentimentSources() })
+  ,"/api/market-intelligence/social-sentiment/alerts": async () => ({ type: "social_sentiment.alert.accepted", accepted: true, ...await getSocialSentimentAlerts() })
+  ,"/api/market-intelligence/social-sentiment/analyze": async () => ({ type: "social_sentiment.analysis.completed", ...await analyzeSocialSentiment() })
+  ,"/api/market-intelligence/social-sentiment/refresh": async () => ({ type: "social_sentiment.sync.completed", ...await syncSocialSentiment() })
+  ,"/api/market-intelligence/social-sentiment/run-scan": async () => ({ type: "social_sentiment.scan.completed", ...await analyzeSocialSentiment() })
+  ,"/api/market-intelligence/social-sentiment/generate-contrarian-signals": async () => ({ type: "social_sentiment.contrarian.completed", signals: (await getSocialSentimentDashboard()).contrarian })
   ,"/api/market-intelligence/institutional-cot/sync-now": () => startCotSync()
   ,"/api/market-intelligence/institutional-cot/sync-year": () => startCotSync()
   ,"/api/market-intelligence/institutional-cot/sync-all": () => startCotSync()
@@ -575,12 +722,11 @@ const actions = {
   ,"/api/market-intelligence/broker-data/connect": () => ({ type: "broker_data.connect.accepted", status: "PENDING_VALIDATION" })
   ,"/api/market-intelligence/broker-data/sync": () => liveAction("broker_data.live_probe.completed", "broker-data")
   ,"/api/market-intelligence/broker-data/upload": () => ({ type: "broker_data.upload.accepted", status: "PENDING_VALIDATION" })
-  ,"/api/market-intelligence/account-portfolio/sync": () => liveAction("account_portfolio.live_probe.completed", "account-portfolio-data")
+  ,"/api/market-intelligence/account-portfolio/sync": async () => ({ type: "account_portfolio.sync.completed", ...(await syncPortfolioAccounts()) })
   ,"/api/market-intelligence/account-portfolio/connect": () => ({ type: "account_portfolio.connect.accepted", status: "PENDING_VALIDATION" })
   ,"/api/market-intelligence/account-portfolio/upload": () => ({ type: "account_portfolio.statement_upload.accepted", status: "PENDING_VALIDATION" })
-  ,"/api/market-intelligence/prop-firm-rules": () => ({ type: "prop_firm_rules.create.accepted", status: "PENDING_VALIDATION" })
-  ,"/api/market-intelligence/prop-firm-rules/import": () => ({ type: "prop_firm_rules.import.accepted", status: "PENDING_VALIDATION" })
-  ,"/api/market-intelligence/prop-firm-rules/sync": () => liveAction("prop_firm_rules.live_probe.completed", "prop-firm-rules")
+  ,"/api/market-intelligence/prop-firm-rules/import": () => ({ type: "prop_firm_rules.import.accepted", status: "use_post_handler" })
+  ,"/api/market-intelligence/prop-firm-rules/sync": () => ({ type: "prop_firm_rules.sync.accepted", status: "use_post_handler" })
   ,"/api/market-intelligence/data-quality-gate/run": async () => ({ type: "data_quality_gate.live_run.completed", ...getDataQualityGateDashboard(await getLiveSourceSnapshots()) })
   ,"/api/market-intelligence/data-quality-gate/refresh": async () => ({ type: "data_quality_gate.sources.live_probe.completed", ...await getLiveMarketIntelligenceDashboard({ log: true }) })
   ,"/api/market-intelligence/data-quality-gate/recalculate": async () => ({ type: "data_quality_gate.score.live_recalculated", ...evaluateDataQualityGate(await getLiveSourceSnapshots()) })
@@ -590,10 +736,22 @@ const server = createServer(async (request, response) => {
   if (request.method === "OPTIONS") return json(response, 204, {});
   const url = new URL(request.url, `http://${request.headers.host}`);
   const route = routes[`${request.method} ${url.pathname}`];
-  if (route) return json(response, 200, await route(url));
+  if (route) {
+    try {
+      return json(response, 200, await route(url));
+    } catch (error) {
+      console.error(`[api] ${request.method} ${url.pathname}:`, error.message);
+      return json(response, 503, { error: "service_unavailable", message: error.message });
+    }
+  }
   if (request.method === "GET" && url.pathname.startsWith("/api/market-intelligence/data-sources/")) {
     const source = (await getLiveSourceSnapshots()).find(({ id }) => id === url.pathname.split("/").at(-1));
     return source ? json(response, 200, source) : json(response, 404, { error: "source_not_found" });
+  }
+  if (url.pathname.startsWith("/api/market-intelligence/social-sentiment/") && ["PATCH", "DELETE"].includes(request.method)) {
+    const id = url.pathname.split("/").at(-1);
+    if (request.method === "PATCH") return json(response, 200, { accepted: true, id, updated: await readBody(request), dashboard: await getSocialSentimentDashboard() });
+    return json(response, 200, { accepted: true, id, deleted: true });
   }
   if (request.method === "GET" && url.pathname.startsWith("/api/market-intelligence/historical-data/")) {
     const id = url.pathname.split("/").at(-1);
@@ -848,7 +1006,7 @@ const server = createServer(async (request, response) => {
     const body = await readBody(request);
     try {
       const result = await importMarketWatch(body.terminalId, { symbols: body.symbols });
-      return json(response, 200, { accepted: true, ...result, dashboard: await getMarketDataOperationsDashboard({ liveProbe: await getMarketDataLiveProbe() }) });
+      return json(response, 200, { accepted: true, ...result, dashboard: await getMarketDataOperationsDashboard({ liveProbe: await getMarketDataLiveProbe(), sync: true }) });
     } catch (reason) {
       const message = reason instanceof Error ? reason.message : String(reason);
       if (message === "database_not_configured") return json(response, 503, { error: message });
@@ -1000,7 +1158,7 @@ const server = createServer(async (request, response) => {
         if (request.method === "POST" && providerId && action === "import-market-watch") {
           const body = await readBody(request);
           const result = await importMarketWatch(body.terminalId, { symbols: body.symbols });
-          return json(response, 200, { accepted: true, ...result, dashboard: await getMarketDataOperationsDashboard({ liveProbe }) });
+          return json(response, 200, { accepted: true, ...result, dashboard: await getMarketDataOperationsDashboard({ liveProbe, sync: true }) });
         }
       } catch (reason) {
         const message = reason instanceof Error ? reason.message : String(reason);
@@ -1019,6 +1177,150 @@ const server = createServer(async (request, response) => {
   if (request.method === "POST" && url.pathname === "/api/workflow/cards/1/test-live") {
     return json(response, 200, { accepted: true, event: await actions[url.pathname]() });
   }
+
+  // Portfolio Intelligence Center Endpoints
+  if (request.method === "GET" && url.pathname === "/api/portfolio/dashboard") {
+    const sync = url.searchParams.get("sync") === "1" || url.searchParams.get("sync") === "true";
+    return json(response, 200, await getAccountPortfolioDashboard({ sync }));
+  }
+  if (request.method === "GET" && url.pathname === "/api/portfolio/accounts") {
+    return json(response, 200, await getPortfolioAccounts());
+  }
+  if (request.method === "GET" && url.pathname === "/api/portfolio/positions") {
+    return json(response, 200, await getPortfolioPositions());
+  }
+  if (request.method === "GET" && url.pathname === "/api/portfolio/trades") {
+    return json(response, 200, await getPortfolioTrades());
+  }
+  if (request.method === "GET" && url.pathname === "/api/portfolio/risk") {
+    return json(response, 200, await getPortfolioRisk());
+  }
+  if (request.method === "GET" && url.pathname === "/api/portfolio/drawdowns") {
+    return json(response, 200, await getPortfolioDrawdowns());
+  }
+  if (request.method === "GET" && url.pathname === "/api/portfolio/correlations") {
+    return json(response, 200, await getPortfolioCorrelations());
+  }
+  if (request.method === "GET" && url.pathname === "/api/portfolio/strategies") {
+    return json(response, 200, await getPortfolioStrategies());
+  }
+  if (request.method === "GET" && url.pathname === "/api/portfolio/insights") {
+    return json(response, 200, await getAiPortfolioInsights());
+  }
+  if (request.method === "GET" && url.pathname === "/api/portfolio/equity") {
+    return json(response, 200, await getPortfolioEquity());
+  }
+  if (request.method === "GET" && url.pathname === "/api/portfolio/alerts") {
+    return json(response, 200, await getPortfolioAlerts());
+  }
+  if (request.method === "POST" && url.pathname === "/api/portfolio/import") {
+    const body = await readBody(request);
+    return json(response, 200, await importPortfolioStatement(body));
+  }
+  if (request.method === "POST" && url.pathname === "/api/portfolio/sync") {
+    try {
+      const result = await syncPortfolioAccounts();
+      const status = result.status === "SCHEMA_SETUP_FAILED" || result.status === "FAILED" ? 503 : 200;
+      return json(response, status, result);
+    } catch (reason) {
+      return json(response, 503, {
+        status: "FAILED",
+        error: reason instanceof Error ? reason.message : String(reason),
+        hint: "Run npm run db:bootstrap:portfolio then retry Sync Accounts."
+      });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/portfolio/report") {
+    const body = await readBody(request);
+    return json(response, 200, await generatePortfolioReport(body.type, body.format));
+  }
+  if (url.pathname.startsWith("/api/market-intelligence/prop-firm-rules")) {
+    const audit = auditFromRequest(request);
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[4];
+    const sub = segments[5];
+    try {
+      if (request.method === "GET" && url.pathname === "/api/market-intelligence/prop-firm-rules") {
+        return json(response, 200, await getPropFirmRulesDashboard());
+      }
+      if (request.method === "GET" && url.pathname === "/api/market-intelligence/prop-firm-rules/summary") {
+        return json(response, 200, await getPropFirmRulesSummary());
+      }
+      if (request.method === "GET" && url.pathname === "/api/market-intelligence/prop-firm-rules/comparison") {
+        const d = await getPropFirmRulesDashboard();
+        return json(response, 200, { comparison: d.comparison });
+      }
+      if (request.method === "GET" && url.pathname === "/api/market-intelligence/prop-firm-rules/compliance") {
+        return json(response, 200, await getPropFirmCompliance());
+      }
+      if (request.method === "GET" && (url.pathname === "/api/market-intelligence/prop-firm-rules/breach-alerts" || url.pathname === "/api/market-intelligence/prop-firm-rules/breach-risk")) {
+        return json(response, 200, await getPropFirmBreachAlerts());
+      }
+      if (request.method === "GET" && url.pathname === "/api/market-intelligence/prop-firm-rules/sources") {
+        return json(response, 200, await listPropFirmSources());
+      }
+      if (request.method === "GET" && url.pathname === "/api/market-intelligence/prop-firm-rules/audit-logs") {
+        return json(response, 200, await getPropFirmAuditLogs());
+      }
+      if (request.method === "GET" && url.pathname === "/api/market-intelligence/prop-firm-rules/export") {
+        const d = await getPropFirmRulesDashboard();
+        return json(response, 200, { status: d.rules.length ? "ready" : "empty", format: "csv", rules: d.rules.length });
+      }
+      if (request.method === "POST" && url.pathname === "/api/market-intelligence/prop-firm-rules") {
+        const body = await readBody(request);
+        const created = await createPropFirmRule(body, audit);
+        return json(response, 201, { accepted: true, type: "prop_firm_rules.created", ...created });
+      }
+      if (request.method === "POST" && url.pathname === "/api/market-intelligence/prop-firm-rules/validate") {
+        const body = await readBody(request);
+        return json(response, 200, validatePropFirmInput(body));
+      }
+      if (request.method === "POST" && url.pathname === "/api/market-intelligence/prop-firm-rules/import") {
+        const body = await readBody(request);
+        return json(response, 202, { accepted: true, type: "prop_firm_rules.import.accepted", ...(await importPropFirmRules(body, audit)) });
+      }
+      if (request.method === "POST" && url.pathname === "/api/market-intelligence/prop-firm-rules/sync") {
+        return json(response, 200, { accepted: true, type: "prop_firm_rules.sync.completed", ...(await syncPropFirmSources(audit)) });
+      }
+      if (request.method === "POST" && url.pathname === "/api/market-intelligence/prop-firm-rules/sources") {
+        const body = await readBody(request);
+        return json(response, 201, { accepted: true, type: "prop_firm_rules.source.created", ...(await createPropFirmSource(body, audit)) });
+      }
+      if (request.method === "POST" && tail === "imports" && sub && url.pathname.endsWith("/approve")) {
+        const importId = segments[5];
+        const approved = await approvePropFirmImport(importId, audit);
+        return json(response, 200, { accepted: true, type: "prop_firm_rules.import.approved", ...approved });
+      }
+      if (request.method === "GET" && tail && !sub && tail !== "summary" && tail !== "comparison" && tail !== "compliance" && tail !== "breach-alerts" && tail !== "breach-risk" && tail !== "sources" && tail !== "audit-logs" && tail !== "export" && tail !== "validate" && tail !== "import" && tail !== "sync") {
+        return json(response, 200, await getPropFirmRuleById(tail));
+      }
+      if (request.method === "PATCH" && tail && !sub) {
+        const body = await readBody(request);
+        const updated = await updatePropFirmRule(tail, body, audit);
+        return json(response, 200, { accepted: true, type: "prop_firm_rules.updated", ...updated });
+      }
+      if (request.method === "DELETE" && tail && !sub) {
+        return json(response, 200, { accepted: true, type: "prop_firm_rules.deleted", ...(await deletePropFirmRule(tail, audit)) });
+      }
+    } catch (reason) {
+      return propFirmError(response, reason);
+    }
+  }
+
+  if (request.method === "GET" && url.pathname.startsWith("/api/portfolio/")) {
+    const segments = url.pathname.split("/");
+    const accountId = segments[3];
+    const action = segments[4];
+    if (accountId && !action) {
+      const accounts = await getPortfolioAccounts();
+      const account = accounts.accounts.find(a => a.id === accountId);
+      return account ? json(response, 200, account) : json(response, 404, { error: "account_not_found" });
+    }
+    if (accountId && action === "compliance") {
+      return json(response, 200, await getPropCompliance(accountId));
+    }
+  }
+
   if (request.method === "POST" && actions[url.pathname]) return json(response, 200, { accepted: true, event: await actions[url.pathname](), workflow });
   return json(response, 404, { error: "not_found" });
 });
@@ -1038,6 +1340,10 @@ server.on("upgrade", (request, socket) => {
     ? Buffer.from([0x81, length])
     : Buffer.from([0x81, 126, length >> 8, length & 255]);
   socket.write(Buffer.concat([header, Buffer.from(payload)]));
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("[api] unhandled rejection:", reason instanceof Error ? reason.message : reason);
 });
 
 server.listen(port, async () => {

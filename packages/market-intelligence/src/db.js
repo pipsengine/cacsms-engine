@@ -42,9 +42,9 @@ export function getPool() {
   if (!pool) {
     pool = new Pool({
       connectionString: process.env.DATABASE_URL,
-      max: Number(process.env.DATABASE_POOL_MAX || 10),
+      max: Number(process.env.DATABASE_POOL_MAX || 20),
       idleTimeoutMillis: Number(process.env.DATABASE_IDLE_TIMEOUT_MS || 30000),
-      connectionTimeoutMillis: Number(process.env.DATABASE_CONNECT_TIMEOUT_MS || 5000)
+      connectionTimeoutMillis: Number(process.env.DATABASE_CONNECT_TIMEOUT_MS || 15000)
     });
     pool.on("error", (error) => {
       console.error("[database] idle client error:", error.message);
@@ -102,8 +102,13 @@ export async function testDatabaseConnection() {
 }
 
 export async function query(text, params = []) {
-  const client = getPool();
-  return client.query(text, params);
+  const poolRef = getPool();
+  try {
+    return await poolRef.query(text, params);
+  } catch (error) {
+    if (!/timeout exceeded when trying to connect/i.test(error.message)) throw error;
+    return poolRef.query(text, params);
+  }
 }
 
 export async function withTransaction(fn) {

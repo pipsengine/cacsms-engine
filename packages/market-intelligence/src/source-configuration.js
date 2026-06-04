@@ -47,8 +47,8 @@ const DEFAULT_PROVIDERS = SOURCE_CATEGORIES.map(({ id, label, category, supporte
   sourceLabel: label,
   category,
   providerName: supportedProviders[0],
-  providerType: id === "institutional-cot" ? "Official Archive" : id === "prop-firm-rules" ? "Internal Database" : "API",
-  apiUrl: id === "institutional-cot" ? "https://www.cftc.gov/MarketReports/CommitmentsofTraders/HistoricalCompressed/index.htm" : "",
+  providerType: id === "institutional-cot" ? "Official Archive" : id === "prop-firm-rules" ? "Internal Database" : id === "account-portfolio" ? "MT5 Bridge" : "API",
+  apiUrl: id === "institutional-cot" ? "https://www.cftc.gov/MarketReports/CommitmentsofTraders/HistoricalCompressed/index.htm" : id === "account-portfolio" ? "" : "",
   websocketUrl: "",
   authenticationType: id === "institutional-cot" || id === "prop-firm-rules" ? "none" : "api_key",
   credentialRef: id === "institutional-cot" || id === "prop-firm-rules" ? null : `${category.toUpperCase()}_API_KEY`,
@@ -58,7 +58,7 @@ const DEFAULT_PROVIDERS = SOURCE_CATEGORIES.map(({ id, label, category, supporte
   config: id === "institutional-cot"
     ? { reportType: "FUTURES_ONLY", syncSchedule: "Saturday 12:00am", currencyMapping: "CFTC Legacy" }
     : id === "prop-firm-rules"
-      ? { supportedFirms: ["FTMO", "FundedNext", "5ers", "E8", "Custom"] }
+      ? { dataMode: "production_live", catalogSource: "market.prop_firms" }
       : {}
 }));
 
@@ -110,9 +110,21 @@ function ensureStoreFile() {
   }
 }
 
+function normalizeLegacyProviders(store) {
+  for (const provider of store.providers || []) {
+    if (provider.sourceKey !== "account-portfolio") continue;
+    if (!provider.apiUrl || /api\.cacsms\.io/i.test(provider.apiUrl)) {
+      provider.apiUrl = "";
+      provider.providerType = "MT5 Bridge";
+      provider.providerName = provider.providerName || "MT5 Account";
+    }
+  }
+  return store;
+}
+
 export function loadStore() {
   ensureStoreFile();
-  return JSON.parse(readFileSync(storePath, "utf8").replace(/^\uFEFF/, ""));
+  return normalizeLegacyProviders(JSON.parse(readFileSync(storePath, "utf8").replace(/^\uFEFF/, "")));
 }
 
 export function saveStore(store) {
@@ -320,7 +332,10 @@ export function deleteSourceProvider(id) {
 
 function evaluateTest(provider, liveSnapshots, probeResult) {
   const live = liveSnapshotForSource(provider.sourceKey, liveSnapshots);
-  const ok = probeResult?.ok || live && HEALTHY_STATUSES.has(live.status);
+  const bridgeBacked = ["account-portfolio", "market-data", "broker-data"].includes(provider.sourceKey)
+    && live
+    && HEALTHY_STATUSES.has(live.status);
+  const ok = bridgeBacked || probeResult?.ok || (live && HEALTHY_STATUSES.has(live.status));
   const latencyMs = probeResult?.latencyMs ?? live?.latencyMs ?? null;
   let result = "FAIL";
   if (ok) result = latencyMs != null && latencyMs > 2000 ? "WARNING" : "PASS";

@@ -1,17 +1,463 @@
-const rules=[["FTMO","$100,000","Phase 1","10%","5%","10%","4","Unlimited","Allowed","Allowed","Yes","No","90%","14 days","Active"],["FundedNext","$50,000","Phase 1","8%","5%","10%","5","Unlimited","Allowed","Allowed","Yes","Yes","95%","14 days","Active"],["The5ers","$100,000","Funded","-","5%","10%","0","Unlimited","Allowed","Allowed","Yes","No","100%","14 days","Active"],["E8 Markets","$50,000","Phase 2","5%","5%","8%","0","Unlimited","Restricted","Allowed","Yes","No","80%","14 days","Under Review"]];
-const comparison=[["FTMO","EUR 540","10%","5%","10%","Up to $2M","90%","First payout","Allowed","Allowed","None","1:100","FX / Metals / Indices / Crypto"],["FundedNext","USD 299","8%","5%","10%","Up to $4M","95%","Available","Allowed","Allowed","40% best day","1:100","FX / Metals / Indices"],["The5ers","USD 495","Funded","5%","10%","Up to $4M","100%","Program dependent","Allowed","Allowed","None","1:100","FX / Metals / Indices"],["E8 Markets","USD 358","5% P2","5%","8%","Up to $1M","80%","Program dependent","Restricted","Allowed","None","1:50","FX / Metals / Indices"]];
-const compliance=[["PROP-FTMO-02","FTMO","$25,000","$25,418","16%","14%","74%","4 / 4","Low","Compliant"],["PROP-FN-03","FundedNext","$15,240","$15,220","12%","13%","45%","3 / 5","Medium","Watchlist"],["PROP-E8-04","E8 Markets","$50,110","$48,280","72%","61%","62%","2 / 0","High","At Risk"]];
-const alerts=[["Daily loss close to limit","High","PROP-E8-04","72% utilized","Reduce size and block correlated trades"],["Max drawdown close to limit","High","PROP-E8-04","61% utilized","Require compliance review"],["Over-leverage warning","Low","PROP-FTMO-02","Within 1:100","No action"],["News trading restriction","Medium","PROP-E8-04","USD CPI window armed","Block affected symbols"],["Weekend holding warning","Low","PROP-FTMO-02","2 open positions","Review before rollover"],["Consistency rule warning","Medium","PROP-FN-03","34% best day","Keep below 40%"],["Inactivity risk","Low","PROP-FTMO-02","Active","No action"],["Minimum trading day gap","Low","PROP-FN-03","3 / 5 complete","Continue compliant activity"]];
-const firms=[["FTMO","Prague, Czech Republic","MT4 / MT5 / cTrader","FX, metals, indices, crypto","Up to $2M","News and weekend trading supported","Latency arbitrage / account sharing"],["FundedNext","Dubai, UAE","MT4 / MT5 / cTrader","FX, metals, indices","Up to $4M","95% split / 14 day payout","HFT abuse / account sharing"],["The5ers","Israel / Global","MT5","FX, metals, indices","Up to $4M","100% split eligible","Latency arbitrage"],["E8 Markets","United States","MT5 / DXtrade","FX, metals, indices","Up to $1M","80% split / 14 day payout","Restricted news trading"]];
-const t=(heads,rows)=>`<div class="pf-table"><table><thead><tr>${heads.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map(x=>`<td>${x}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
-export function renderPropFirmRulesCenter(){return `<section class="pf-dashboard"><header class="pf-header"><div><p>03 / MARKET INTELLIGENCE CENTER / PROP FIRM RULES</p><h1>Prop Firm Rules</h1><span>Track prop firm trading rules, drawdown limits, payout conditions, challenge requirements, and breach risks.</span></div><aside><b>COMPLIANCE / ACTIVE</b><b>MONITORED ACCOUNTS / 3</b><b>AT RISK / 1</b><small>LAST SYNC / 12:26:18 WAT</small></aside></header><div class="pf-actions">${["Add Prop Firm","Import Rules","Sync Rules","Export Comparison"].map((x,i)=>`<button class="${i<3?"primary":""}">${x}</button>`).join("")}</div>
-<section class="pf-metrics">${[["Total Prop Firms","4","catalog active","blue"],["Active Accounts","3","connected accounts","green"],["Accounts Near Breach","1","requires review","amber"],["Breached Accounts","0","hard veto clear","green"],["Average Daily Loss Limit","5.0%","normalized policy","blue"],["Average Max Drawdown","9.5%","catalog average","blue"],["Minimum Trading Days","4","typical requirement","purple"],["Next Payout Due","Jun 14","FTMO account","purple"]].map(([a,b,c,d])=>`<article class="${d}"><small>${a}</small><strong>${b}</strong><span>${c}</span></article>`).join("")}</section>
-<section class="pf-card"><div class="pf-title"><div><h2>Filter Panel</h2><p>Compare firm rules and compliance posture across programs and availability.</p></div><b>RULE CATALOG FILTERS</b></div><div class="pf-filters">${[["Prop Firm",["All Firms","FTMO","FundedNext","The5ers","E8 Markets"]],["Account Size",["All Sizes","$25,000","$50,000","$100,000","$200,000"]],["Account Type",["All Types","Challenge","Evaluation","Funded","Instant Funding"]],["Phase",["All Phases","Phase 1","Phase 2","Verification","Funded"]],["Rule Category",["All Rules","Drawdown","Payout","Trading Restrictions","Platforms"]],["Risk Status",["All Statuses","Low","Medium","High","Breached"]],["Country Availability",["All Countries","Global","United States","United Kingdom","Nigeria"]],["Platform",["All Platforms","MT4","MT5","cTrader","DXtrade","TradingView"]]].map(([a,b])=>`<label>${a}<select>${b.map(x=>`<option>${x}</option>`).join("")}</select></label>`).join("")}</div><div class="pf-actions"><button class="primary">Apply Filters</button><button>Reset</button><button>Save View</button></div></section>
-<section class="pf-card"><div class="pf-title"><div><h2>Prop Firm Rules Table</h2><p>Program-specific challenge, drawdown, trading and payout requirements.</p></div><b>4 RULE SETS</b></div>${t(["Prop Firm","Account Size","Phase","Profit Target","Daily Loss Limit","Max Drawdown","Minimum Trading Days","Max Trading Days","News Trading","Weekend Holding","EA Allowed","Copy Trading","Payout Split","Payout Cycle","Status","Details"],rules.map((row,i)=>[...row,`<button data-pf-firm="${i}">View Details</button>`]))}</section>
-<section class="pf-card"><div class="pf-title"><div><h2>Rule Comparison Matrix</h2><p>Side-by-side firm analytics for program selection and compliance planning.</p></div><b>PREMIUM ANALYTICS</b></div>${t(["Firm","Challenge Fee","Profit Target","Daily Drawdown","Overall Drawdown","Scaling Plan","Payout Split","Refund Policy","News Restriction","Weekend Rule","Consistency Rule","Leverage","Instruments Allowed"],comparison)}</section>
-<section class="pf-card"><div class="pf-title"><div><h2>Account Compliance Monitor</h2><p>Connected prop-account utilization, progress and breach posture.</p></div><b>1 ACCOUNT AT RISK</b></div>${t(["Account","Firm","Balance","Equity","Daily Loss Used","Max Drawdown Used","Profit Target Progress","Minimum Days Completed","Rule Breach Risk","Status"],compliance.map(row=>[...row.slice(0,8),`<b class="pf-flag ${row[8].toLowerCase()}">${row[8]}</b>`,`<b class="pf-flag ${row[9].toLowerCase().replaceAll(" ","-")}">${row[9]}</b>`]))}</section>
-<section class="pf-card"><div class="pf-title"><div><h2>Breach Risk Panel</h2><p>Early-warning queue for rule pressure, restrictions and hard-veto conditions.</p></div><b>2 HIGH / 2 MEDIUM</b></div>${t(["Alert","Severity","Account","Current State","Required Action"],alerts.map(row=>[row[0],`<b class="pf-flag ${row[1].toLowerCase()}">${row[1]}</b>`,...row.slice(2)]))}</section>
-<section class="pf-card"><div class="pf-title"><div><h2>Empty, Loading & Error States</h2><p>Operational states prepared for rule imports and backend synchronization.</p></div><b>STATE LIBRARY</b></div><div class="pf-states"><article><h3>Loading Prop Firm Rules</h3><p>Loading prop firm rules and compliance status...</p><i></i><i></i><i></i></article><article><h3>No Prop Firm Rules Added Yet</h3><p>Add a prop firm or import a rules file to begin compliance monitoring.</p><button>Add Prop Firm</button><button>Import Rules</button></article><article><h3>Prop Firm Rules Could Not Be Loaded</h3><p>Please check the rule source or retry synchronization.</p><button>Retry</button><button>View Sync Logs</button></article></div></section>
-<section class="pf-card"><div class="pf-title"><div><h2>Prop Firm Rules Action Center</h2><p>Catalog, synchronization, import, monitoring and comparison controls.</p></div></div><div class="pf-actions">${["Add Prop Firm","Import Rules","Sync Rules","Export Comparison","Run Compliance Scan","Review Breach Alerts","Configure Payout Policies","View Sync Logs"].map((x,i)=>`<button class="${i<3?"primary":""}">${x}</button>`).join("")}</div></section></section>`}
-function drawer(row){return `<aside class="pf-drawer"><button data-pf-close>x</button><p>PROP FIRM DETAIL DRAWER</p><h2>${row[0]}</h2><div>${[["Firm Profile",row[1]],["Trading Platforms",row[2]],["Allowed Instruments",row[3]],["Scaling Plan",row[4]],["Payout Policy",row[5]],["Prohibited Strategies",row[6]],["Challenge Phases","Phase 1 / Phase 2 / Funded"],["Breach Conditions","Daily loss / drawdown / restricted strategies"]].map(([a,b])=>`<span><small>${a}</small><strong>${b}</strong></span>`).join("")}</div><h3>Trading Rules & Notes</h3><p>Rules are normalized for monitoring. Always validate firm-specific terms before execution.</p><div class="pf-actions"><button>Add Note</button><button>Export Firm Rules</button></div></aside>`}
-export function bindPropFirmRulesCenter(){document.querySelectorAll("[data-pf-firm]").forEach(x=>x.addEventListener("click",()=>{document.querySelector(".pf-drawer")?.remove();document.body.insertAdjacentHTML("beforeend",drawer(firms[Number(x.dataset.pfFirm)]));document.querySelector("[data-pf-close]").addEventListener("click",()=>document.querySelector(".pf-drawer").remove())}))}
+import { toast } from "./market-intelligence-actions.js";
+
+const API = `${location.protocol}//${location.hostname}:8080`;
+let pfState = { data: null, loading: true };
+let pfRefreshTimer = null;
+let pfClickBound = false;
+const PF_REFRESH_MS = 30000;
+
+const esc = (v) =>
+  String(v ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+
+function t(heads, rows) {
+  return `<div class="pf-table"><table><thead><tr>${heads.map((x) => `<th>${esc(x)}</th>`).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((x) => `<td>${x}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+function flag(level) {
+  const cls = String(level || "")
+    .toLowerCase()
+    .replace(/\s+/g, "-");
+  return `<b class="pf-flag ${cls}">${esc(level)}</b>`;
+}
+
+function fmtMoney(n) {
+  if (n == null) return "—";
+  return `$${Number(n).toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
+}
+
+function fmtPct(n) {
+  if (n == null) return "—";
+  return `${Number(n).toFixed(1)}%`;
+}
+
+async function api(path, options = {}) {
+  const res = await fetch(`${API}${path}`, {
+    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+    ...options
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.message || body.error || res.statusText);
+  return body;
+}
+
+function productionBanner(meta = {}) {
+  const lastSync = meta.lastSync
+    ? new Date(meta.lastSync).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Lagos" }) + " WAT"
+    : "—";
+  return `<section class="pf-status-strip">
+    <article><small>Data Mode</small><strong>Production Live</strong></article>
+    <article><small>Mock Data</small><strong>Disabled</strong></article>
+    <article><small>Database Status</small><strong>${esc(meta.databaseStatus || "—")}</strong></article>
+    <article><small>Last Sync</small><strong>${esc(lastSync)}</strong></article>
+    <article><small>Records Loaded</small><strong>${esc(meta.recordsLoaded ?? 0)}</strong></article>
+  </section>`;
+}
+
+function emptyState() {
+  return `<section class="pf-card pf-empty-main">
+    <h2>No prop firm rules configured yet.</h2>
+    <p>Add a prop firm manually, import official rule documents, or connect an approved rule source to begin monitoring compliance.</p>
+    <div class="pf-actions">
+      <button type="button" class="primary" data-pf-action="add-firm">Add Prop Firm</button>
+      <button type="button" data-pf-action="import-rules">Import Rule Document</button>
+      <button type="button" data-pf-action="configure-source">Configure Rule Source</button>
+      <button type="button" data-pf-action="setup-guide">View Setup Guide</button>
+    </div>
+  </section>`;
+}
+
+function summaryCards(summary = {}) {
+  const items = [
+    ["Total Prop Firms", summary.totalPropFirms ?? 0, "in catalog", "blue"],
+    ["Active Accounts", summary.activeAccounts ?? 0, "linked compliance", "green"],
+    ["Accounts Near Breach", summary.accountsNearBreach ?? 0, "elevated utilization", "amber"],
+    ["Breached Accounts", summary.breachedAccounts ?? 0, "hard violations", summary.breachedAccounts ? "amber" : "green"],
+    ["Avg Daily Loss Limit", summary.averageDailyLossLimit != null ? `${summary.averageDailyLossLimit}%` : "—", "policy average", "blue"],
+    ["Avg Max Drawdown", summary.averageMaxDrawdown != null ? `${summary.averageMaxDrawdown}%` : "—", "policy average", "blue"],
+    ["Min Trading Days", summary.minimumTradingDays ?? "—", "typical requirement", "purple"],
+    ["Open Alerts", summary.openBreachAlerts ?? 0, "breach panel", "purple"]
+  ];
+  return `<section class="pf-metrics">${items.map(([a, b, c, d]) => `<article class="${d}"><small>${esc(a)}</small><strong>${esc(b)}</strong><span>${esc(c)}</span></article>`).join("")}</section>`;
+}
+
+function rulesTable(rules = []) {
+  if (!rules.length) return "";
+  const rows = rules.map((r, i) => [
+    esc(r.firmName),
+    fmtMoney(r.accountSize),
+    esc(r.phase),
+    r.profitTargetPercent != null ? fmtPct(r.profitTargetPercent) : "—",
+    fmtPct(r.dailyLossLimitPercent),
+    fmtPct(r.maxDrawdownPercent),
+    esc(r.minTradingDays ?? "—"),
+    esc(r.maxTradingDays ?? "—"),
+    r.newsTradingAllowed ? "Allowed" : "Restricted",
+    r.weekendHoldingAllowed ? "Allowed" : "Restricted",
+    r.eaAllowed ? "Yes" : "No",
+    r.copyTradingAllowed ? "Yes" : "No",
+    r.payoutSplitPercent != null ? fmtPct(r.payoutSplitPercent) : "—",
+    esc(r.payoutCycle || "—"),
+    esc(r.status),
+    `<button type="button" data-pf-rule="${i}">View Details</button>`
+  ]);
+  return `<section class="pf-card"><div class="pf-title"><div><h2>Prop Firm Rules Table</h2><p>Program-specific challenge, drawdown, trading and payout requirements from production storage.</p></div><b>${rules.length} RULE SETS</b></div>${t(["Prop Firm", "Account Size", "Phase", "Profit Target", "Daily Loss", "Max Drawdown", "Min Days", "Max Days", "News", "Weekend", "EA", "Copy", "Payout Split", "Cycle", "Status", "Details"], rows)}</section>`;
+}
+
+function comparisonSection(matrix = []) {
+  if (!matrix.length) return "";
+  return `<section class="pf-card"><div class="pf-title"><div><h2>Rule Comparison Matrix</h2><p>Side-by-side analytics from stored firm programs.</p></div><b>LIVE DATA</b></div>${t(["Firm", "Challenge Fee", "Profit Target", "Daily Drawdown", "Overall Drawdown", "Scaling", "Payout Split", "Refund", "News", "Weekend", "Consistency", "Leverage", "Instruments"], matrix.map((row) => row.map((c) => esc(c))))}</section>`;
+}
+
+function complianceSection(accounts = [], message) {
+  if (message) {
+    return `<section class="pf-card pf-empty-panel"><div class="pf-title"><div><h2>Account Compliance Monitor</h2><p>${esc(message)}</p></div></div></section>`;
+  }
+  if (!accounts.length) {
+    return `<section class="pf-card pf-empty-panel"><div class="pf-title"><div><h2>Account Compliance Monitor</h2><p>No prop firm account connected. Connect an account to begin real-time rule compliance monitoring.</p></div><b>0 ACCOUNTS</b></div></section>`;
+  }
+  const rows = accounts.map((a) => [
+    esc(a.accountName),
+    esc(a.firmName),
+    fmtMoney(a.balance),
+    fmtMoney(a.equity),
+    a.dailyLossUsedPercent != null ? fmtPct(a.dailyLossUsedPercent) : "—",
+    a.maxDrawdownUsedPercent != null ? fmtPct(a.maxDrawdownUsedPercent) : "—",
+    a.profitTargetProgressPercent != null ? fmtPct(a.profitTargetProgressPercent) : "—",
+    esc(a.minimumDaysCompleted ?? "—"),
+    flag(a.breachRisk),
+    flag(a.status)
+  ]);
+  const atRisk = accounts.filter((a) => a.status === "At Risk").length;
+  return `<section class="pf-card"><div class="pf-title"><div><h2>Account Compliance Monitor</h2><p>Connected accounts with utilization from live MT5 snapshots and stored rule limits.</p></div><b>${atRisk ? `${atRisk} AT RISK` : `${accounts.length} MONITORED`}</b></div>${t(["Account", "Firm", "Balance", "Equity", "Daily Loss Used", "Max DD Used", "Profit Progress", "Min Days", "Breach Risk", "Status"], rows)}</section>`;
+}
+
+function breachSection(alerts = [], message) {
+  if (message) {
+    return `<section class="pf-card pf-empty-panel"><div class="pf-title"><div><h2>Breach Risk Panel</h2><p>${esc(message)}</p></div></div></section>`;
+  }
+  if (!alerts.length) {
+    return `<section class="pf-card pf-empty-panel"><div class="pf-title"><div><h2>Breach Risk Panel</h2><p>No active breach alerts from connected accounts.</p></div><b>CLEAR</b></div></section>`;
+  }
+  const rows = alerts.map((row) => {
+    const [alert, severity, account, state, action] = row;
+    return [esc(alert), flag(severity), esc(account), esc(state), esc(action)];
+  });
+  return `<section class="pf-card"><div class="pf-title"><div><h2>Breach Risk Panel</h2><p>Alerts derived from live account utilization and stored rule thresholds.</p></div><b>${alerts.length} ALERTS</b></div>${t(["Alert", "Severity", "Account", "Current State", "Required Action"], rows)}</section>`;
+}
+
+function sourcesSection(sources = []) {
+  if (!sources.length) {
+    return `<section class="pf-card pf-empty-panel"><div class="pf-title"><div><h2>Source Configuration</h2><p>No rule sources configured. Add an official website, document URL, or partner API endpoint.</p></div></div><div class="pf-actions"><button type="button" class="primary" data-pf-action="configure-source">Configure Rule Source</button></div></section>`;
+  }
+  const rows = sources.map((s) => [
+    esc(s.sourceName),
+    esc(s.sourceType),
+    esc(s.endpointUrl || "—"),
+    esc(s.authenticationType || "—"),
+    esc(s.syncFrequency || "—"),
+    s.lastSync ? esc(new Date(s.lastSync).toLocaleString()) : "—",
+    flag(s.healthStatus),
+    s.approvalRequired ? "Yes" : "No"
+  ]);
+  return `<section class="pf-card"><div class="pf-title"><div><h2>Source Configuration</h2><p>Approved ingestion endpoints and sync health.</p></div><b>${sources.length} SOURCES</b></div>${t(["Source", "Type", "URL / Endpoint", "Auth", "Sync Frequency", "Last Sync", "Health", "Approval Required"], rows)}</section>`;
+}
+
+function auditSection(logs = []) {
+  if (!logs.length) {
+    return `<section class="pf-card pf-empty-panel"><div class="pf-title"><div><h2>Audit Logs</h2><p>Changes to firms, rules, imports, and sync operations are recorded here.</p></div></div></section>`;
+  }
+  const rows = logs.slice(0, 15).map((l) => [
+    esc(l.user),
+    l.timestamp ? esc(new Date(l.timestamp).toLocaleString()) : "—",
+    esc(l.action),
+    esc(l.entity),
+    esc(l.reason || "—")
+  ]);
+  return `<section class="pf-card"><div class="pf-title"><div><h2>Audit Logs</h2><p>Production change history.</p></div><b>${logs.length} ENTRIES</b></div>${t(["User", "Timestamp", "Action", "Entity", "Reason"], rows)}</section>`;
+}
+
+function addFirmModal() {
+  return `<dialog id="pf-add-firm-modal" class="pf-modal">
+    <form method="dialog" id="pf-add-firm-form">
+      <header><h2>Add Prop Firm</h2><button type="button" data-pf-close-modal>×</button></header>
+      <fieldset><legend>Basic Information</legend>
+        <label>Firm Name<input name="firmName" required /></label>
+        <label>Website<input name="website" type="url" /></label>
+        <label>Country / Region<input name="country" /></label>
+        <label>Supported Platforms<input name="supportedPlatforms" /></label>
+        <label>Status<select name="firmStatus"><option>Draft</option><option>Active</option></select></label>
+      </fieldset>
+      <fieldset><legend>Account Program</legend>
+        <label>Program Name<input name="programName" required /></label>
+        <label>Account Size<input name="accountSize" type="number" min="1" required /></label>
+        <label>Currency<input name="currency" value="USD" /></label>
+        <label>Phase<select name="phase"><option>Phase 1</option><option>Phase 2</option><option>Verification</option><option>Funded</option><option>Evaluation</option><option>Challenge</option></select></label>
+        <label>Account Type<select name="accountType"><option>Challenge</option><option>Evaluation</option><option>Funded</option></select></label>
+        <label>Challenge Fee<input name="challengeFee" type="number" min="0" step="0.01" /></label>
+      </fieldset>
+      <fieldset><legend>Trading Rules</legend>
+        <label>Profit Target %<input name="profitTargetPercent" type="number" min="0" step="0.1" /></label>
+        <label>Daily Loss Limit %<input name="dailyLossLimitPercent" type="number" min="0" step="0.1" required /></label>
+        <label>Max Drawdown %<input name="maxDrawdownPercent" type="number" min="0" step="0.1" required /></label>
+        <label>Drawdown Type<input name="drawdownType" placeholder="Balance / Equity" /></label>
+        <label>Minimum Trading Days<input name="minTradingDays" type="number" min="0" /></label>
+        <label>Maximum Trading Days<input name="maxTradingDays" type="number" min="0" /></label>
+        <label>Leverage<input name="leverage" placeholder="1:100" /></label>
+      </fieldset>
+      <fieldset><legend>Payout Rules</legend>
+        <label>Payout Split %<input name="payoutSplitPercent" type="number" min="0" max="100" /></label>
+        <label>Payout Cycle<input name="payoutCycle" placeholder="14 days" /></label>
+      </fieldset>
+      <footer class="pf-actions">
+        <button type="button" data-pf-save="draft">Save Draft</button>
+        <button type="button" data-pf-save="validate">Validate Rules</button>
+        <button type="submit" class="primary" data-pf-save="activate">Save and Activate</button>
+        <button type="button" data-pf-close-modal>Cancel</button>
+      </footer>
+    </form>
+  </dialog>`;
+}
+
+function importModal() {
+  return `<dialog id="pf-import-modal" class="pf-modal">
+    <form method="dialog" id="pf-import-form">
+      <header><h2>Import Rule Document</h2><button type="button" data-pf-close-modal>×</button></header>
+      <p>Imports are stored as <strong>Pending Review</strong> until approved.</p>
+      <label>Source Type<select name="sourceType"><option>pdf</option><option>docx</option><option>csv</option><option>xlsx</option><option>url</option><option>manual</option></select></label>
+      <label>File / URL / Paste<textarea name="sourceLabel" rows="4" placeholder="Paste rules or enter document URL"></textarea></label>
+      <footer class="pf-actions">
+        <button type="submit" class="primary">Submit Import</button>
+        <button type="button" data-pf-close-modal>Cancel</button>
+      </footer>
+    </form>
+  </dialog>`;
+}
+
+function sourceModal() {
+  return `<dialog id="pf-source-modal" class="pf-modal">
+    <form method="dialog" id="pf-source-form">
+      <header><h2>Configure Rule Source</h2><button type="button" data-pf-close-modal>×</button></header>
+      <label>Source Name<input name="sourceName" required /></label>
+      <label>Source Type<select name="sourceType"><option>official_website</option><option>rule_document_url</option><option>admin_database</option><option>manual_database</option><option>partner_api</option><option>webhook</option></select></label>
+      <label>URL / Endpoint<input name="endpointUrl" type="url" /></label>
+      <label>Authentication Type<select name="authenticationType"><option>none</option><option>api_key</option><option>bearer</option><option>basic</option></select></label>
+      <label>Sync Frequency<select name="syncFrequency"><option>manual</option><option>hourly</option><option>daily</option><option>weekly</option></select></label>
+      <footer class="pf-actions">
+        <button type="submit" class="primary">Save Source</button>
+        <button type="button" data-pf-close-modal>Cancel</button>
+      </footer>
+    </form>
+  </dialog>`;
+}
+
+export function renderPropFirmRulesCenter() {
+  const d = pfState.data;
+  if (pfState.loading && !d) {
+    return `<section class="pf-dashboard"><header class="pf-header"><div><p>03 / MARKET INTELLIGENCE / PROP FIRM RULES</p><h1>Prop Firm Rules</h1><span>Loading production rule catalog…</span></div></header><section class="pf-card"><p>Loading prop firm rules and compliance status…</p></section></section>`;
+  }
+
+  const meta = d?.meta || {};
+  const empty = d?.empty;
+  const body = empty
+    ? emptyState()
+    : `${summaryCards(d.summary)}${rulesTable(d.rules)}${comparisonSection(d.comparison)}${complianceSection(d.compliance, d.complianceMessage)}${breachSection(d.breachAlerts, d.breachMessage)}${sourcesSection(d.sources)}${auditSection(d.auditLogs)}`;
+
+  return `<section class="pf-dashboard" id="pf-root">
+    <header class="pf-header">
+      <div><p>03 / MARKET INTELLIGENCE / PROP FIRM RULES</p><h1>Prop Firm Rules</h1><span>Production rule catalog, compliance monitoring, and breach alerts — no mock data.</span></div>
+      <aside><b>DATA / PRODUCTION LIVE</b><b>MOCK / DISABLED</b><b>RECORDS / ${esc(meta.recordsLoaded ?? 0)}</b><small>DB / ${esc(meta.databaseStatus || "—")}</small></aside>
+    </header>
+    ${productionBanner(meta)}
+    <div class="pf-actions">
+      <button type="button" class="primary" data-pf-action="add-firm">Add Prop Firm</button>
+      <button type="button" data-pf-action="import-rules">Import Rule Document</button>
+      <button type="button" data-pf-action="sync-rules">Sync Rules</button>
+      <button type="button" data-pf-action="refresh">Refresh</button>
+    </div>
+    ${body}
+    ${addFirmModal()}${importModal()}${sourceModal()}
+  </section>`;
+}
+
+function readForm(form) {
+  const fd = new FormData(form);
+  const o = {};
+  for (const [k, v] of fd.entries()) {
+    if (v === "") continue;
+    const n = Number(v);
+    o[k] = v !== "" && !Number.isNaN(n) && form.elements[k]?.type === "number" ? n : v;
+  }
+  return o;
+}
+
+async function loadDashboard() {
+  pfState.loading = true;
+  paint();
+  try {
+    const data = await api("/api/market-intelligence/prop-firm-rules");
+    pfState.data = data;
+    pfState.loading = false;
+  } catch (error) {
+    pfState.loading = false;
+    pfState.data = {
+      empty: true,
+      meta: { databaseStatus: "Error", recordsLoaded: 0 },
+      error: error.message
+    };
+    toast(`Prop firm rules: ${error.message}`, "error");
+  }
+  paint();
+}
+
+function paint() {
+  const root = document.querySelector("#intelligence-content");
+  if (!root) return;
+  root.innerHTML = renderPropFirmRulesCenter();
+  bindPropFirmRulesCenter();
+}
+
+function openModal(id) {
+  document.getElementById(id)?.showModal?.();
+}
+
+function closeModals() {
+  document.querySelectorAll(".pf-modal").forEach((m) => m.close());
+}
+
+async function handleImportSubmit(e) {
+  e.preventDefault();
+  const payload = readForm(e.target);
+  try {
+    await api("/api/market-intelligence/prop-firm-rules/import", {
+      method: "POST",
+      body: JSON.stringify({
+        sourceType: payload.sourceType,
+        sourceLabel: payload.sourceLabel,
+        extracted: { rawText: payload.sourceLabel }
+      })
+    });
+    closeModals();
+    toast("Import queued — Pending Review");
+    await loadDashboard();
+  } catch (err) {
+    toast(err.message, "error");
+  }
+}
+
+async function handleSourceSubmit(e) {
+  e.preventDefault();
+  const payload = readForm(e.target);
+  try {
+    await api("/api/market-intelligence/prop-firm-rules/sources", { method: "POST", body: JSON.stringify(payload) });
+    closeModals();
+    toast("Source configured");
+    await loadDashboard();
+  } catch (err) {
+    toast(err.message, "error");
+  }
+}
+
+export function bindPropFirmRulesCenter() {
+  if (pfClickBound) return;
+  pfClickBound = true;
+
+  document.addEventListener("submit", (event) => {
+    if (!location.pathname.includes("prop-firm-rules")) return;
+    if (event.target.id === "pf-import-form") handleImportSubmit(event);
+    if (event.target.id === "pf-source-form") handleSourceSubmit(event);
+  });
+
+  document.addEventListener("click", async (event) => {
+    if (!location.pathname.includes("prop-firm-rules")) return;
+    const btn = event.target.closest("[data-pf-action],[data-pf-save],[data-pf-close-modal],[data-pf-rule]");
+    if (!btn) return;
+
+    if (btn.dataset.pfCloseModal != null) {
+      closeModals();
+      return;
+    }
+
+    const action = btn.dataset.pfAction;
+    if (action === "add-firm" || action === "setup-guide") {
+      if (action === "setup-guide") {
+        window.dispatchEvent(new CustomEvent("mi:navigate", { detail: { route: "/workspace/market-intelligence/source-configuration" } }));
+        return;
+      }
+      openModal("pf-add-firm-modal");
+      return;
+    }
+    if (action === "import-rules") {
+      openModal("pf-import-modal");
+      return;
+    }
+    if (action === "configure-source") {
+      openModal("pf-source-modal");
+      return;
+    }
+    if (action === "sync-rules" || action === "refresh") {
+      try {
+        if (action === "sync-rules") await api("/api/market-intelligence/prop-firm-rules/sync", { method: "POST" });
+        await loadDashboard();
+        toast(action === "sync-rules" ? "Rule sources synced" : "Dashboard refreshed");
+      } catch (e) {
+        toast(e.message, "error");
+      }
+      return;
+    }
+
+    if (btn.dataset.pfSave) {
+      event.preventDefault();
+      const form = document.getElementById("pf-add-firm-form");
+      const payload = readForm(form);
+      if (btn.dataset.pfSave === "validate") {
+        try {
+          const v = await api("/api/market-intelligence/prop-firm-rules/validate", {
+            method: "POST",
+            body: JSON.stringify({ ...payload, activate: true })
+          });
+          toast(v.valid ? "Validation passed" : `Validation failed: ${(v.errors || []).join(", ")}`, v.valid ? "ok" : "error");
+        } catch (e) {
+          toast(e.message, "error");
+        }
+        return;
+      }
+      payload.activate = btn.dataset.pfSave === "activate";
+      payload.status = payload.activate ? "Active" : "Draft";
+      try {
+        await api("/api/market-intelligence/prop-firm-rules", { method: "POST", body: JSON.stringify(payload) });
+        closeModals();
+        await loadDashboard();
+        toast(payload.activate ? "Firm rule activated" : "Draft saved");
+      } catch (e) {
+        toast(e.message, "error");
+      }
+      return;
+    }
+
+    if (btn.dataset.pfRule != null) {
+      const rule = pfState.data?.rules?.[Number(btn.dataset.pfRule)];
+      if (!rule) return;
+      toast(`${rule.firmName} — ${rule.programName} (${rule.status})`);
+    }
+  });
+}
+
+export function mountPropFirmRulesCenter() {
+  document.querySelector(".intelligence-header")?.remove();
+  pfClickBound = false;
+  loadDashboard();
+  if (pfRefreshTimer) clearInterval(pfRefreshTimer);
+  pfRefreshTimer = setInterval(() => {
+    if (location.pathname.includes("prop-firm-rules")) loadDashboard();
+  }, PF_REFRESH_MS);
+}
+
+export function unmountPropFirmRulesCenter() {
+  if (pfRefreshTimer) {
+    clearInterval(pfRefreshTimer);
+    pfRefreshTimer = null;
+  }
+}

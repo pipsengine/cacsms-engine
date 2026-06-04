@@ -6,7 +6,7 @@ import {
   renderProviderWizardModal
 } from "./market-data-provider-wizard.js";
 
-const API = "http://localhost:8080";
+const API = `${location.protocol}//${location.hostname}:8080`;
 const AUTO_REFRESH_MS = 30000;
 let marketDataRefreshTimer = null;
 
@@ -22,6 +22,14 @@ export function unmountMarketDataOperationsCenter() {
 }
 const esc = (value) => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 const table = (headers, rows) => `<div class="mdoc-table-wrap"><table><thead><tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+
+function formatTerminalAccountMetrics(row) {
+  if (row.accountMetricsStale) return `<span class="mdoc-warning">Stale</span>`;
+  if (!row.accountMetricsReceived) return `<span class="mdoc-warning">No metrics</span>`;
+  const balance = Number(row.accountBalance || 0).toLocaleString("en-US", { maximumFractionDigits: 2 });
+  const equity = Number(row.accountEquity || 0).toLocaleString("en-US", { maximumFractionDigits: 2 });
+  return `${balance} / ${equity}`;
+}
 
 function renderMt5Sections(data) {
   const mt5 = data.mt5 || { terminals: [], machines: [], heartbeats: [], health: {}, readiness: {} };
@@ -46,7 +54,7 @@ function renderMt5Sections(data) {
     ? `<section class="mdoc-panel"><div class="mdoc-panel-head"><h2>Terminal Onboarding Status</h2><b>${esc(onboarding?.providerName || "PROVIDER")}</b></div><ol class="mdoc-onboarding">${steps.map((step) => `<li class="mdoc-onboarding-step ${esc(String(step.status).toLowerCase())}"><span>${esc(step.order)}</span><div><strong>${esc(step.label)}</strong><small>${esc(String(step.status).replaceAll("_", " "))}</small></div></li>`).join("")}</ol></section>`
     : "";
 
-  const terminalsHtml = `<section class="mdoc-panel"><div class="mdoc-panel-head"><h2>Registered MT5 Terminals</h2><b>${mt5.terminals.length} TERMINALS</b></div>${table(["Terminal","Machine","Broker","Account","Server","Environment","EA Status","Connection","Last Heartbeat","Latency","Symbols","Actions"], mt5.terminals.map((row) => [esc(row.terminalName), esc(row.machineName), esc(row.brokerName), esc(row.accountNumber || "—"), esc(row.serverName || "—"), esc(row.environment), `<b class="mdoc-state ${esc(String(row.eaStatus).toLowerCase())}">${esc(row.eaStatus)}</b>`, `<b class="mdoc-state ${esc(String(row.connectionStatus).toLowerCase())}">${esc(row.connectionStatus)}</b>`, formatAge(row.lastHeartbeat), row.latencyMs != null ? `${row.latencyMs} ms` : "—", esc(row.liveSymbolCount || 0), `<span class="mdoc-actions"><button data-action="generate-token" data-provider-id="${esc(row.providerId)}" data-terminal-id="${esc(row.id)}">Copy Token</button><button data-action="import-market-watch" data-terminal-id="${esc(row.id)}">Import</button><button data-action="provider-details" data-provider-id="${esc(row.providerId)}">Details</button></span>`]))}</section>`;
+  const terminalsHtml = `<section class="mdoc-panel"><div class="mdoc-panel-head"><h2>Registered MT5 Terminals</h2><b>${mt5.terminals.length} TERMINALS</b></div>${table(["Terminal","Machine","Broker","Account","Balance / Equity","Server","Environment","EA Status","Connection","Last Heartbeat","Latency","Symbols","Actions"], mt5.terminals.map((row) => [esc(row.terminalName), esc(row.machineName), esc(row.brokerName), esc(row.accountNumber || "—"), formatTerminalAccountMetrics(row), esc(row.serverName || "—"), esc(row.environment), `<b class="mdoc-state ${esc(String(row.eaStatus).toLowerCase())}">${esc(row.eaStatus)}</b>`, `<b class="mdoc-state ${esc(String(row.connectionStatus).toLowerCase())}">${esc(row.connectionStatus)}</b>`, formatAge(row.lastHeartbeat), row.latencyMs != null ? `${row.latencyMs} ms` : "—", esc(row.liveSymbolCount || 0), `<span class="mdoc-actions"><button data-action="generate-token" data-provider-id="${esc(row.providerId)}" data-terminal-id="${esc(row.id)}">Copy Token</button><button data-action="import-market-watch" data-terminal-id="${esc(row.id)}">Import</button><button data-action="provider-details" data-provider-id="${esc(row.providerId)}">Details</button></span>`]))}</section>`;
 
   const machinesHtml = `<section class="mdoc-panel"><div class="mdoc-panel-head"><h2>Connected Machines</h2><b>${mt5.machines.length} MACHINES</b></div>${table(["Machine","Hostname","OS","Agent","Public IP","Private IP","MT5 Count","Status","Last Seen"], mt5.machines.map((row) => [esc(row.name), esc(row.hostname || "—"), esc(row.operatingSystem || "—"), esc(row.agentVersion || "—"), esc(row.publicIp || "—"), esc(row.privateIp || "—"), esc(row.mt5Count ?? 0), `<b class="mdoc-state ${esc(String(row.status).toLowerCase())}">${esc(row.status)}</b>`, row.lastSeen ? esc(new Date(row.lastSeen).toLocaleString()) : "—"]))}</section>`;
 
@@ -58,6 +66,7 @@ function renderMt5Sections(data) {
   const nextStepHtml = waitingHeartbeat
     ? `<section class="mdoc-panel mdoc-setup-cta" id="mdoc-heartbeat-help">
         <div class="mdoc-panel-head"><h2>Waiting for EA Heartbeat</h2><b>STEP 4–6</b></div>
+        <p><strong>Portfolio balance/equity</strong> require EA heartbeats that include the <code>account</code> block. If the terminal table shows <em>No metrics</em>, recompile <strong>CACSMS Engine Bridge v1.0.3</strong> in MetaEditor (F7), re-attach to chart, and confirm Experts log shows <code>CACSMS heartbeat sent</code>.</p>
         <p>MT5 only allows a small WebRequest URL list and URLs must be entered <strong>without brackets</strong>. Use exactly:</p>
         <p class="mdoc-token-field"><input readonly value="http://127.0.0.1:8080" id="mdoc-webrequest-url" /></p>
         <p class="mdoc-help">In MT5: Tools → Options → Expert Advisors → select an old URL → click <strong>Delete</strong> → add the URL above → OK → restart MT5.</p>
@@ -225,9 +234,46 @@ async function request(path, init = {}) {
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
     const detail = payload.hint || payload.message || (payload.error ? String(payload.error).replaceAll("_", " ") : `Request failed (${response.status})`);
-    throw new Error(detail);
+    const error = new Error(detail);
+    error.status = response.status;
+    error.payload = payload;
+    throw error;
   }
   return payload;
+}
+
+function isMt5Provider(provider = {}) {
+  return provider.connectionMethod === "MT5 Bridge"
+    || provider.category === "mt5_terminal"
+    || String(provider.providerType || provider.type || "").includes("MT5");
+}
+
+function duplicateProviderMessage(error) {
+  const payload = error?.payload || {};
+  if (payload.error === "duplicate_mt5_terminal_provider") {
+    return payload.hint || (payload.existingProvider
+      ? `MT5 provider already registered as "${payload.existingProvider}". Continue setup on the dashboard below.`
+      : "An MT5 provider already exists for this broker, server, and environment.");
+  }
+  if (payload.error === "duplicate_provider_name") {
+    return "A provider with this name already exists. Use a different name or open the existing provider.";
+  }
+  if (payload.error === "duplicate_provider_url") {
+    return "A provider with this URL already exists.";
+  }
+  return error?.message || "Request failed";
+}
+
+function notificationForExistingProvider(error) {
+  const payload = error?.payload || {};
+  if (payload.error !== "duplicate_mt5_terminal_provider") return null;
+  return {
+    title: "MT5 provider already registered",
+    providerName: payload.existingProvider || "Existing provider",
+    providerCode: payload.existingCode || "",
+    status: "Use Register Terminal below to finish EA setup",
+    workflowImpact: "No duplicate was created. Continue with terminal registration and heartbeat sync."
+  };
 }
 
 async function post(path, body = {}) {
@@ -506,23 +552,31 @@ async function bindProviderWizard(refresh, state, catalog) {
   });
 
   modal.querySelector('[data-action="save-draft"]')?.addEventListener("click", async () => {
+    const button = modal.querySelector('[data-action="save-draft"]');
     state = readWizardForm(modal, state);
     hideModalError(modal);
+    if (button?.disabled) return;
+    if (button) button.disabled = true;
     try {
       await post("/api/market-data/providers", { ...buildWizardPayload(state), draft: true });
       close();
       await refresh();
     } catch (reason) {
-      showModalError(modal, reason.message);
+      showModalError(modal, duplicateProviderMessage(reason));
+    } finally {
+      if (button) button.disabled = false;
     }
   });
 
   modal.querySelector('[data-action="register-provider"]')?.addEventListener("click", async () => {
+    const button = modal.querySelector('[data-action="register-provider"]');
     state = readWizardForm(modal, state);
     hideModalError(modal);
+    if (button?.disabled) return;
     if (!state.testPassed) return showModalError(modal, "Complete connection testing before registering the provider.");
     const validation = state.category === "mt5_terminal" ? validateMt5Step(state) : null;
     if (validation && !validation.startsWith("warning:")) return showModalError(modal, validation);
+    if (button) button.disabled = true;
     try {
       if (state.customServer && state.customServerName) {
         await post("/api/mt5/brokers/custom-server", buildWizardPayload(state));
@@ -531,13 +585,41 @@ async function bindProviderWizard(refresh, state, catalog) {
       close();
       await refresh(payload.notification);
     } catch (reason) {
-      showModalError(modal, reason.message);
+      const notice = notificationForExistingProvider(reason);
+      if (notice) {
+        close();
+        await refresh(notice);
+        document.querySelector("#mdoc-register-terminal, #mdoc-heartbeat-help, .mdoc-mt5-kpis")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      showModalError(modal, duplicateProviderMessage(reason));
+    } finally {
+      if (button) button.disabled = false;
     }
   });
 }
 
-async function openAddProviderModal(refresh) {
+async function openAddProviderModal(refresh, { skipIfMt5Exists = false } = {}) {
   if (document.querySelector("#mdoc-add-modal")) return;
+  if (skipIfMt5Exists) {
+    try {
+      const dashboard = await loadDashboard();
+      const mt5Providers = (dashboard.providers || []).filter(isMt5Provider);
+      if (mt5Providers.length) {
+        await refresh({
+          title: "MT5 provider already configured",
+          providerName: mt5Providers[0].name,
+          providerCode: mt5Providers[0].providerCode || "",
+          status: mt5Providers[0].status || "REGISTERED",
+          workflowImpact: "Use Register Terminal or EA heartbeat steps below — do not create a duplicate provider."
+        });
+        document.querySelector("#mdoc-register-terminal, #mdoc-heartbeat-help, .mdoc-mt5-kpis")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+    } catch {
+      /* open wizard when dashboard cannot be loaded */
+    }
+  }
   const [catalog, brokersPayload] = await Promise.all([
     request("/api/market-data/providers/catalog"),
     request("/api/mt5/brokers")
@@ -647,6 +729,13 @@ export function bindMarketDataOperationsCenter() {
     URL.revokeObjectURL(url);
   });
   root.querySelector('[data-action="open-logs"]')?.addEventListener("click", () => document.querySelector("#mdoc-logs")?.scrollIntoView({ behavior: "smooth" }));
+
+  if (new URLSearchParams(location.search).get("connect") === "mt5") {
+    const url = new URL(location.href);
+    url.searchParams.delete("connect");
+    history.replaceState({}, "", url);
+    queueMicrotask(() => openAddProviderModal(refresh, { skipIfMt5Exists: true }));
+  }
 }
 
 export async function mountMarketDataOperationsCenter() {

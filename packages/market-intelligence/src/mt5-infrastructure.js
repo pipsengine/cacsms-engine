@@ -1,5 +1,12 @@
 import { randomBytes } from "node:crypto";
 import { isDatabaseConfigured, query } from "./db.js";
+import {
+  heartbeatHasAccountPayload,
+  normalizeHeartbeatPayload,
+  parseAccountSnapshot,
+  snapshotHasLiveMetrics,
+  upsertAccountSnapshotFromHeartbeat
+} from "./portfolio-live-data.js";
 import { WORKFLOW_DEPENDENCY_CARDS } from "./provider-wizard-catalog.js";
 import {
   appendLog,
@@ -47,6 +54,9 @@ function emptyInfra() {
 
 function mapTerminal(row) {
   const connectionStatus = effectiveTerminalConnectionStatus(row);
+  const snapshot = parseAccountSnapshot(row.account_snapshot, { lastHeartbeatAt: row.last_heartbeat_at });
+  const accountMetricsReceived = snapshotHasLiveMetrics(snapshot);
+  const accountMetricsStale = Boolean(snapshot.stale);
   return {
     id: row.id,
     providerId: row.provider_id,
@@ -65,6 +75,10 @@ function mapTerminal(row) {
     lastHeartbeatAgeSec: row.last_heartbeat_at ? Math.round((Date.now() - new Date(row.last_heartbeat_at).getTime()) / 1000) : null,
     latencyMs: row.latency_ms,
     liveSymbolCount: row.live_symbol_count,
+    accountMetricsReceived,
+    accountMetricsStale,
+    accountBalance: accountMetricsReceived ? snapshot.balance : null,
+    accountEquity: accountMetricsReceived ? snapshot.equity : null,
     onboarding: row.onboarding || {}
   };
 }
@@ -265,6 +279,7 @@ export async function triggerTerminalHeartbeat(terminalId) {
 
 export async function recordHeartbeat(input) {
   if (!isDatabaseConfigured()) throw new Error("database_not_configured");
+  input = normalizeHeartbeatPayload(input);
   const token = String(input.token || "").trim();
   const terminalId = input.terminalId || input.terminal_id;
   let resolvedTerminalId = terminalId;
@@ -315,6 +330,14 @@ export async function recordHeartbeat(input) {
        status = 'CONNECTED', last_heartbeat_at = now(), last_update_at = now(), ea_version = EXCLUDED.ea_version`,
     [resolvedTerminalId, providerId, input.eaVersion || "1.0.0"]
   );
+
+  if (heartbeatHasAccountPayload(input)) {
+    await upsertAccountSnapshotFromHeartbeat(resolvedTerminalId, input);
+  } else if (String(input.eaVersion || "").startsWith("1.0")) {
+    console.warn(
+      `[mt5-heartbeat] terminal ${resolvedTerminalId} heartbeat from ${input.eaVersion} has no account metrics — recompile EA v1.0.3+ in MetaEditor and re-attach to chart`
+    );
+  }
 
   const ticksReceived = await recordLiveTicks(resolvedTerminalId, providerId, input.ticks || input.prices || []);
   const onboarding = {

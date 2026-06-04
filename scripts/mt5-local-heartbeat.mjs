@@ -44,6 +44,7 @@ async function sendHeartbeat() {
 }
 
 console.log(`CACSMS local heartbeat relay → ${apiBase} every ${intervalSec}s`);
+console.log("Note: relay keeps connection alive only. Balance/equity require the MT5 EA heartbeat (with account payload), not this relay.");
 
 async function tick() {
   try {

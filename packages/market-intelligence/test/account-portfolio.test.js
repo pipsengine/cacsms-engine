@@ -1,34 +1,88 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { PORTFOLIO_CLOSED_TRADES, PORTFOLIO_POSITIONS, PORTFOLIO_RISK_METRICS, TRADING_ACCOUNTS, getAccountPortfolioDashboard } from "../src/account-portfolio.js";
+import { getAccountPortfolioDashboard } from "../src/account-portfolio.js";
+import {
+  buildExecutiveSummary,
+  buildPortfolioDashboard,
+  computeClosedTradeStats,
+  heartbeatHasAccountPayload,
+  snapshotHasLiveMetrics,
+  syncPortfolioFromLiveSources
+} from "../src/portfolio-live-data.js";
+import { PortfolioSyncService, PORTFOLIO_SYNC_PLATFORMS } from "../src/portfolio-sync-service.js";
 
-test("terminal account portfolio dashboard renders the complete intelligence center", () => {
+test("account portfolio page uses live API only without demo portfolio", () => {
   const page = readFileSync("apps/web/account-portfolio-page.js", "utf8");
-  for (const section of ["Portfolio Filter Panel","Portfolio Equity Chart","Account Allocation Section","Open Positions Table","Closed Trades Table","Risk & Drawdown Panel","Account Health Table","Empty, Loading & Error States","Account Portfolio Action Center"]) assert.match(page,new RegExp(section.replace(/[&]/g,"\\$&")));
-  for (const mode of ["Balance","Equity","Drawdown","Daily Return","Cumulative Return","Compare Accounts","Fullscreen"]) assert.match(page,new RegExp(mode));
-  assert.match(page,/data-ap-account/);
-  assert.match(page,/ap-drawer/);
+  assert.match(page, /api\/portfolio\/dashboard/);
+  assert.match(page, /LIVE PRODUCTION DATA/);
+  assert.doesNotMatch(page, /Use Demo Portfolio|FTMO Challenge|acc-live-01/);
 });
 
-test("account portfolio package exposes accounts positions trades risk and computed summary", () => {
-  const dashboard=getAccountPortfolioDashboard();
-  assert.equal(TRADING_ACCOUNTS.length,3);
-  assert.equal(PORTFOLIO_POSITIONS.length,4);
-  assert.equal(PORTFOLIO_CLOSED_TRADES.length,3);
-  assert.equal(PORTFOLIO_RISK_METRICS.length,10);
-  assert.equal(dashboard.summary.totalBalance,124860);
-  assert.equal(dashboard.summary.totalEquity,126412);
+test("live portfolio dashboard returns empty production payload without database", async () => {
+  const dashboard = await getAccountPortfolioDashboard({ sync: false });
+  assert.equal(dashboard.emptyState, true);
+  assert.equal(dashboard.placeholderMode, false);
+  assert.equal(dashboard.dataSource, "live");
+  assert.equal(dashboard.accounts.length, 0);
+  assert.equal(dashboard.summary.totalBalance, 0);
 });
 
-test("account portfolio API exposes dashboard account trade risk equity sync connect and export routes", () => {
-  const api=readFileSync("apps/api/src/server.mjs","utf8");
-  for(const route of ["/api/market-intelligence/account-portfolio","/api/market-intelligence/account-portfolio/accounts","/api/market-intelligence/account-portfolio/positions/open","/api/market-intelligence/account-portfolio/trades/closed","/api/market-intelligence/account-portfolio/risk","/api/market-intelligence/account-portfolio/equity-curve","/api/market-intelligence/account-portfolio/sync","/api/market-intelligence/account-portfolio/connect","/api/market-intelligence/account-portfolio/export"]) assert.match(api,new RegExp(route.replaceAll("/","\\/")));
+test("heartbeat ignores relay-only payloads without account metrics", () => {
+  assert.equal(heartbeatHasAccountPayload({ token: "x", openPositions: [] }), false);
+  assert.equal(heartbeatHasAccountPayload({ account: null, openPositions: [] }), false);
+  assert.equal(heartbeatHasAccountPayload({ account: { balance: 10000, equity: 10050 } }), true);
+  assert.equal(snapshotHasLiveMetrics({ balance: "10,250.50", equity: "10,300.00" }), true);
 });
 
-test("account portfolio migration defines normalized tables indexes and permissions", () => {
-  const sql=readFileSync("database/migrations/012_account_portfolio.sql","utf8");
-  for(const table of ["trading_accounts","portfolio_positions","portfolio_closed_trades","portfolio_equity_snapshots","portfolio_risk_metrics","portfolio_sync_logs","portfolio_strategy_allocation"]) assert.match(sql,new RegExp(`market\\.${table}`));
-  for(const permission of ["view","connect","sync","export","view_risk","manage_notes"]) assert.match(sql,new RegExp(`market_intelligence\\.account_portfolio\\.${permission}`));
-  assert.match(sql,/idx_portfolio_positions_account_status/);
+test("executive summary and trade stats compute from real rows only", () => {
+  const accounts = [
+    { balance: 10000, equity: 10100, floatingPL: 100, realizedPL: 500, marginUsed: 200, riskScore: 20, dailyDrawdownPercent: 0.5, monthlyReturnPercent: 2, status: "Healthy" }
+  ];
+  const summary = buildExecutiveSummary(accounts);
+  assert.equal(summary.totalBalance, 10000);
+  assert.equal(summary.totalEquity, 10100);
+  const stats = computeClosedTradeStats([
+    { profitLoss: 120 },
+    { profitLoss: -40 }
+  ]);
+  assert.equal(stats.totalTrades, 2);
+  assert.equal(stats.winningTrades, 1);
+});
+
+test("portfolio sync service reports not configured without database", async () => {
+  const svc = new PortfolioSyncService();
+  const result = await svc.syncAll();
+  assert.equal(result.status, "DATABASE_NOT_CONFIGURED");
+  assert.ok(PORTFOLIO_SYNC_PLATFORMS.includes("MT5"));
+});
+
+test("account portfolio API exposes live portfolio routes", () => {
+  const api = readFileSync("apps/api/src/server.mjs", "utf8");
+  for (const route of [
+    "/api/portfolio/dashboard",
+    "/api/portfolio/sync",
+    "/api/portfolio/import",
+    "/api/market-intelligence/account-portfolio"
+  ]) assert.match(api, new RegExp(route.replaceAll("/", "\\/")));
+});
+
+test("live shell mounts dedicated account portfolio center", () => {
+  const shell = readFileSync("apps/web/market-intelligence-live-shell.js", "utf8");
+  assert.match(shell, /mountAccountPortfolioCenter/);
+});
+
+test("portfolio migrations include live account snapshot bridge", () => {
+  const sql = readFileSync("database/migrations/028_portfolio_live_account_snapshot.sql", "utf8");
+  assert.match(sql, /account_snapshot/);
+  assert.match(sql, /terminal_id/);
+});
+
+test("buildPortfolioDashboard marks non-placeholder analytics", () => {
+  const dash = buildPortfolioDashboard(
+    { accounts: [], openPositions: [], closedTrades: [], equitySnapshots: [], riskRows: [], alerts: [], propCompliance: [] },
+    { sync: { liveSyncActive: false }, integrations: {} }
+  );
+  assert.equal(dash.placeholderMode, false);
+  assert.equal(typeof syncPortfolioFromLiveSources, "function");
 });

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-03T15:49:22.592Z",
+  "updatedAt": "2026-06-04T09:04:49.330Z",
   "sources": [
     {
       "id": "forex-factory-weekly",
@@ -10,9 +10,9 @@
       "enabled": true,
       "scheduleMs": 60000,
       "status": "FAILED",
-      "lastSyncAt": "2026-06-03T15:49:22.592Z",
-      "lastSuccessAt": "2026-06-03T15:47:22.925Z",
-      "latencyMs": 35,
+      "lastSyncAt": "2026-06-04T09:03:50.945Z",
+      "lastSuccessAt": "2026-06-04T09:01:51.756Z",
+      "latencyMs": 1634,
       "imported": 0,
       "updated": 0,
       "error": "HTTP 429"
@@ -3700,7 +3700,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "UPCOMING",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "Beige Book is a low importance economic data event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -3738,7 +3738,7 @@
       "actual": "",
       "deviation": null,
       "importance": "LOW",
-      "sentimentImpact": "Pending release",
+      "sentimentImpact": "No numeric release expected",
       "expectedVolatility": "LOW",
       "riskScore": 25,
       "historicalImportance": "LOW",
@@ -3751,7 +3751,7 @@
         "US30",
         "NAS100"
       ],
-      "status": "UPCOMING",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "FOMC Member Logan Speaks is a low importance central bank event for USD.",
         "bullish": "A stronger-than-expected result may support USD and related assets.",
@@ -3776,6 +3776,57 @@
       "releaseExpected": false
     },
     {
+      "id": "19e801c4a855362074013ef1",
+      "sourceId": "forex-factory-weekly",
+      "provider": "Forex Factory",
+      "event": "FOMC Member Logan Speaks",
+      "country": "United States",
+      "currency": "USD",
+      "category": "Central Bank",
+      "scheduledAt": "2026-06-03T20:00:00.000Z",
+      "previous": "",
+      "forecast": "",
+      "actual": "",
+      "deviation": null,
+      "importance": "LOW",
+      "sentimentImpact": "Pending release",
+      "expectedVolatility": "LOW",
+      "riskScore": 25,
+      "historicalImportance": "LOW",
+      "affectedAssets": [
+        "USD",
+        "EURUSD",
+        "GBPUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US30",
+        "NAS100"
+      ],
+      "releaseExpected": false,
+      "status": "COMPLETED",
+      "aiAnalysis": {
+        "summary": "FOMC Member Logan Speaks is a low importance central bank event for USD.",
+        "bullish": "A stronger-than-expected result may support USD and related assets.",
+        "bearish": "A weaker-than-expected result may pressure USD and support opposing assets.",
+        "neutral": "An in-line result may reduce immediate directional conviction.",
+        "tradingConsiderations": "Expected volatility is low; monitor spreads and confirmation after release.",
+        "riskWarnings": "Monitor live liquidity and revisions."
+      },
+      "propFirmRestriction": {
+        "restricted": false,
+        "beforeMinutes": 0,
+        "afterMinutes": 0,
+        "action": "No default restriction."
+      },
+      "relatedNews": [],
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "discoveredAt": "2026-06-04T04:25:29.242Z",
+      "updatedAt": "2026-06-04T04:25:29.242Z"
+    },
+    {
       "id": "c33537e8ece921809e88da76",
       "sourceId": "forex-factory-weekly",
       "provider": "Forex Factory",
@@ -3797,7 +3848,7 @@
         "NZD",
         "NZDUSD"
       ],
-      "status": "UPCOMING",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "ANZ Commodity Prices m/m is a low importance inflation event for NZD.",
         "bullish": "A stronger-than-expected result may support NZD and related assets.",
@@ -3844,7 +3895,7 @@
         "AUDUSD",
         "AUDJPY"
       ],
-      "status": "UPCOMING",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Goods Trade Balance is a low importance trade balance event for AUD.",
         "bullish": "A stronger-than-expected result may support AUD and related assets.",
@@ -3891,7 +3942,7 @@
         "AUDUSD",
         "AUDJPY"
       ],
-      "status": "UPCOMING",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "RBA Gov Bullock Speaks is a high importance central bank event for AUD.",
         "bullish": "A stronger-than-expected result may support AUD and related assets.",
@@ -3938,7 +3989,7 @@
         "USDCHF",
         "EURCHF"
       ],
-      "status": "UPCOMING",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "CPI m/m is a medium importance inflation event for CHF.",
         "bullish": "A stronger-than-expected result may support CHF and related assets.",
@@ -3955,10 +4006,10 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.214Z",
-      "updatedAt": "2026-06-03T13:52:51.036Z",
+      "updatedAt": "2026-06-04T06:30:07.094Z",
       "releasedAt": null,
       "actualUpdatedAt": null,
-      "updateSequence": 0,
+      "updateSequence": 1,
       "lastChangedFields": [],
       "releaseExpected": true
     },
@@ -3985,7 +4036,7 @@
         "USDCHF",
         "EURCHF"
       ],
-      "status": "UPCOMING",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Unemployment Rate is a low importance central bank event for CHF.",
         "bullish": "A stronger-than-expected result may support CHF and related assets.",
@@ -4034,7 +4085,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "UPCOMING",
+      "status": "COMPLETED",
       "aiAnalysis": {
         "summary": "ECB President Lagarde Speaks is a medium importance central bank event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -4082,7 +4133,7 @@
         "EURGBP",
         "GBPJPY"
       ],
-      "status": "UPCOMING",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Construction PMI is a low importance manufacturing event for GBP.",
         "bullish": "A stronger-than-expected result may support GBP and related assets.",
@@ -4099,10 +4150,10 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.215Z",
-      "updatedAt": "2026-06-03T13:52:51.040Z",
+      "updatedAt": "2026-06-04T08:34:54.691Z",
       "releasedAt": null,
       "actualUpdatedAt": null,
-      "updateSequence": 0,
+      "updateSequence": 1,
       "lastChangedFields": [],
       "releaseExpected": true
     },
@@ -4131,7 +4182,7 @@
         "EURJPY",
         "GER40"
       ],
-      "status": "UPCOMING",
+      "status": "ACTUAL_UNAVAILABLE",
       "aiAnalysis": {
         "summary": "Retail Sales m/m is a low importance retail sales event for EUR.",
         "bullish": "A stronger-than-expected result may support EUR and related assets.",
@@ -4148,10 +4199,10 @@
       },
       "relatedNews": [],
       "discoveredAt": "2026-06-03T11:19:18.215Z",
-      "updatedAt": "2026-06-03T13:52:51.041Z",
+      "updatedAt": "2026-06-04T09:00:18.622Z",
       "releasedAt": null,
       "actualUpdatedAt": null,
-      "updateSequence": 0,
+      "updateSequence": 1,
       "lastChangedFields": [],
       "releaseExpected": true
     },
@@ -4460,6 +4511,57 @@
       "releaseExpected": true
     },
     {
+      "id": "8c6ae20966dc9310ec0d4508",
+      "sourceId": "forex-factory-weekly",
+      "provider": "Forex Factory",
+      "event": "FOMC Member Bowman Speaks",
+      "country": "United States",
+      "currency": "USD",
+      "category": "Central Bank",
+      "scheduledAt": "2026-06-04T14:00:00.000Z",
+      "previous": "",
+      "forecast": "",
+      "actual": "",
+      "deviation": null,
+      "importance": "LOW",
+      "sentimentImpact": "Pending release",
+      "expectedVolatility": "LOW",
+      "riskScore": 25,
+      "historicalImportance": "LOW",
+      "affectedAssets": [
+        "USD",
+        "EURUSD",
+        "GBPUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US30",
+        "NAS100"
+      ],
+      "releaseExpected": false,
+      "status": "UPCOMING",
+      "aiAnalysis": {
+        "summary": "FOMC Member Bowman Speaks is a low importance central bank event for USD.",
+        "bullish": "A stronger-than-expected result may support USD and related assets.",
+        "bearish": "A weaker-than-expected result may pressure USD and support opposing assets.",
+        "neutral": "An in-line result may reduce immediate directional conviction.",
+        "tradingConsiderations": "Expected volatility is low; monitor spreads and confirmation after release.",
+        "riskWarnings": "Monitor live liquidity and revisions."
+      },
+      "propFirmRestriction": {
+        "restricted": false,
+        "beforeMinutes": 0,
+        "afterMinutes": 0,
+        "action": "No default restriction."
+      },
+      "relatedNews": [],
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "discoveredAt": "2026-06-04T04:25:29.253Z",
+      "updatedAt": "2026-06-04T04:25:29.253Z"
+    },
+    {
       "id": "c3902ef39ffa1205d354d9db",
       "sourceId": "forex-factory-weekly",
       "provider": "Forex Factory",
@@ -4557,6 +4659,108 @@
       "updateSequence": 0,
       "lastChangedFields": [],
       "releaseExpected": false
+    },
+    {
+      "id": "902e16aa09128285d8a01efa",
+      "sourceId": "forex-factory-weekly",
+      "provider": "Forex Factory",
+      "event": "FOMC Member Daly Speaks",
+      "country": "United States",
+      "currency": "USD",
+      "category": "Central Bank",
+      "scheduledAt": "2026-06-04T15:40:00.000Z",
+      "previous": "",
+      "forecast": "",
+      "actual": "",
+      "deviation": null,
+      "importance": "LOW",
+      "sentimentImpact": "Pending release",
+      "expectedVolatility": "LOW",
+      "riskScore": 25,
+      "historicalImportance": "LOW",
+      "affectedAssets": [
+        "USD",
+        "EURUSD",
+        "GBPUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US30",
+        "NAS100"
+      ],
+      "releaseExpected": false,
+      "status": "UPCOMING",
+      "aiAnalysis": {
+        "summary": "FOMC Member Daly Speaks is a low importance central bank event for USD.",
+        "bullish": "A stronger-than-expected result may support USD and related assets.",
+        "bearish": "A weaker-than-expected result may pressure USD and support opposing assets.",
+        "neutral": "An in-line result may reduce immediate directional conviction.",
+        "tradingConsiderations": "Expected volatility is low; monitor spreads and confirmation after release.",
+        "riskWarnings": "Monitor live liquidity and revisions."
+      },
+      "propFirmRestriction": {
+        "restricted": false,
+        "beforeMinutes": 0,
+        "afterMinutes": 0,
+        "action": "No default restriction."
+      },
+      "relatedNews": [],
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "discoveredAt": "2026-06-04T04:25:29.255Z",
+      "updatedAt": "2026-06-04T04:25:29.255Z"
+    },
+    {
+      "id": "8c2630e16f071416365a4324",
+      "sourceId": "forex-factory-weekly",
+      "provider": "Forex Factory",
+      "event": "FOMC Member Schmid Speaks",
+      "country": "United States",
+      "currency": "USD",
+      "category": "Central Bank",
+      "scheduledAt": "2026-06-04T17:00:00.000Z",
+      "previous": "",
+      "forecast": "",
+      "actual": "",
+      "deviation": null,
+      "importance": "LOW",
+      "sentimentImpact": "Pending release",
+      "expectedVolatility": "LOW",
+      "riskScore": 25,
+      "historicalImportance": "LOW",
+      "affectedAssets": [
+        "USD",
+        "EURUSD",
+        "GBPUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US30",
+        "NAS100"
+      ],
+      "releaseExpected": false,
+      "status": "UPCOMING",
+      "aiAnalysis": {
+        "summary": "FOMC Member Schmid Speaks is a low importance central bank event for USD.",
+        "bullish": "A stronger-than-expected result may support USD and related assets.",
+        "bearish": "A weaker-than-expected result may pressure USD and support opposing assets.",
+        "neutral": "An in-line result may reduce immediate directional conviction.",
+        "tradingConsiderations": "Expected volatility is low; monitor spreads and confirmation after release.",
+        "riskWarnings": "Monitor live liquidity and revisions."
+      },
+      "propFirmRestriction": {
+        "restricted": false,
+        "beforeMinutes": 0,
+        "afterMinutes": 0,
+        "action": "No default restriction."
+      },
+      "relatedNews": [],
+      "releasedAt": null,
+      "actualUpdatedAt": null,
+      "updateSequence": 0,
+      "lastChangedFields": [],
+      "discoveredAt": "2026-06-04T04:25:29.255Z",
+      "updatedAt": "2026-06-04T04:25:29.255Z"
     },
     {
       "id": "dbb67e6049b15b3e0a4cf876",
@@ -5632,6 +5836,33 @@
   ],
   "history": [
     {
+      "id": "c9a12dcd-9c31-4f12-bf0f-b90495700382",
+      "eventId": "397f0a729bcfb5138743aadd",
+      "recordedAt": "2026-06-04T09:00:18.622Z",
+      "previous": "-0.1%",
+      "forecast": "-0.3%",
+      "actual": "",
+      "status": "UPCOMING"
+    },
+    {
+      "id": "5c31eed8-4a63-454f-b905-f9af6c46296f",
+      "eventId": "339c179da21b849252afacfa",
+      "recordedAt": "2026-06-04T08:34:54.691Z",
+      "previous": "39.7",
+      "forecast": "40.4",
+      "actual": "",
+      "status": "UPCOMING"
+    },
+    {
+      "id": "074caaaf-8e02-4427-859f-14943ea241d5",
+      "eventId": "f52ecaa3b650121fc043df46",
+      "recordedAt": "2026-06-04T06:30:07.094Z",
+      "previous": "0.3%",
+      "forecast": "0.3%",
+      "actual": "",
+      "status": "UPCOMING"
+    },
+    {
       "id": "c81ad354-6c50-4c74-92cf-c226898245df",
       "eventId": "def3e92e2fccf7b9412b62cd",
       "recordedAt": "2026-06-03T14:35:33.091Z",
@@ -5719,6 +5950,1998 @@
     }
   ],
   "syncLogs": [
+    {
+      "id": "dd0d0fbd-26c2-4f36-a2a5-e762e6945001",
+      "syncedAt": "2026-06-04T09:04:49.329Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "831e201a-bdf6-4918-be78-47689b120f21",
+      "syncedAt": "2026-06-04T09:03:50.945Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "6b3947cb-bb18-420c-aded-dc10b006d8a2",
+      "syncedAt": "2026-06-04T09:02:49.310Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "c9853b58-c444-4539-89bc-7c0d5d723967",
+      "syncedAt": "2026-06-04T09:01:51.757Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "a1cde43d-f6a1-480b-ab20-dc7b354001a9",
+      "syncedAt": "2026-06-04T09:01:17.798Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "3328dc45-7f50-46d2-a1cd-fc076079e76f",
+      "syncedAt": "2026-06-04T09:00:18.847Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 1,
+      "failures": 0
+    },
+    {
+      "id": "0732f00d-86ad-4c84-b755-901707f9b299",
+      "syncedAt": "2026-06-04T08:59:17.467Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "fdee1aed-ad7c-4f24-8229-8861ed5c0063",
+      "syncedAt": "2026-06-04T08:58:18.680Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "4f4f779e-b9aa-4685-b7d0-0526fb94f455",
+      "syncedAt": "2026-06-04T08:57:17.438Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "7876940f-609c-420a-8048-a548bcaeb5a5",
+      "syncedAt": "2026-06-04T08:56:18.668Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "8553227d-709c-4ceb-856b-b81fb191570a",
+      "syncedAt": "2026-06-04T08:55:17.435Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "9051abb2-99bc-4597-b2cc-7c5557d7531b",
+      "syncedAt": "2026-06-04T08:54:18.151Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "514dda5b-010e-4f41-8eb7-4b097eacd474",
+      "syncedAt": "2026-06-04T08:53:17.410Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "3e4a7492-d95e-4970-a4d9-43ff59900ed5",
+      "syncedAt": "2026-06-04T08:52:19.294Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "805a817e-038e-4436-837f-9b1c3d31feb8",
+      "syncedAt": "2026-06-04T08:51:17.380Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "4067ea96-17af-4c08-96fd-8e8c44d51315",
+      "syncedAt": "2026-06-04T08:50:18.104Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "ba4d6645-a0ae-44f6-a511-80c6fd235b7d",
+      "syncedAt": "2026-06-04T08:49:17.302Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "5265d2a9-4cba-4f70-8392-3d0cda4293cf",
+      "syncedAt": "2026-06-04T08:48:17.437Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "86f3a5f6-fbe1-458a-bc59-13f08cdbeb98",
+      "syncedAt": "2026-06-04T08:47:17.280Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "5dbab973-9538-4d10-a4e7-19ecf3fe020d",
+      "syncedAt": "2026-06-04T08:46:19.043Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "2eed6aaa-fbe5-4a74-be83-917e670bdc5e",
+      "syncedAt": "2026-06-04T08:45:26.173Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "25a76a57-4dbf-41b0-8966-8abfd9063294",
+      "syncedAt": "2026-06-04T08:44:24.873Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "9bbde4d8-09fd-4c6c-900b-00d13b967bfa",
+      "syncedAt": "2026-06-04T08:43:26.686Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "f8dcb3c0-1415-4359-8696-3cfb96e87dab",
+      "syncedAt": "2026-06-04T08:42:54.783Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "5eef7204-e678-4291-ab4a-3ee7711e4a4b",
+      "syncedAt": "2026-06-04T08:41:54.015Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "01cd272c-97f9-491c-9fdd-d591ad0670b9",
+      "syncedAt": "2026-06-04T08:40:54.717Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "dd79927e-3e88-496e-bb7e-f3b65d111a31",
+      "syncedAt": "2026-06-04T08:39:54.009Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "9f8eff23-d25d-4aa0-9269-a6dc2286cd86",
+      "syncedAt": "2026-06-04T08:38:56.048Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "64aaa2bb-eb80-4321-9eb2-8e662ab47784",
+      "syncedAt": "2026-06-04T08:37:53.979Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "73cb8e80-e087-4a8b-9710-1ce47ac5e5e4",
+      "syncedAt": "2026-06-04T08:36:54.860Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0098c126-5a6d-428e-9a92-842722fa02b0",
+      "syncedAt": "2026-06-04T08:35:53.964Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "418f82fd-dd6d-46f1-ac10-6b7870761fda",
+      "syncedAt": "2026-06-04T08:34:54.824Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 1,
+      "failures": 0
+    },
+    {
+      "id": "c8fd88fb-c895-4a27-b265-37f0f8a53796",
+      "syncedAt": "2026-06-04T08:33:53.957Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "15dcf673-5759-4b66-9f7f-6e289299f763",
+      "syncedAt": "2026-06-04T08:32:55.497Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "e45b2aca-5bbd-4a9e-927a-cfdface04571",
+      "syncedAt": "2026-06-04T08:31:53.933Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "91fa622a-5086-463a-8bab-cded50a97f37",
+      "syncedAt": "2026-06-04T08:30:54.044Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "45068285-bb25-467e-bf79-040f9f067030",
+      "syncedAt": "2026-06-04T08:29:53.921Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "8334d917-88d5-4deb-9d90-f9123852ba49",
+      "syncedAt": "2026-06-04T08:28:54.013Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "a2134aed-c0d2-4d1d-afd9-6806866d1577",
+      "syncedAt": "2026-06-04T08:27:53.913Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "65ce240e-e255-47e2-9b68-0873c7cf1011",
+      "syncedAt": "2026-06-04T08:26:56.047Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "d18de5d3-c6d7-4dd2-ab92-64f7eaaa5daa",
+      "syncedAt": "2026-06-04T08:25:58.990Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "82a88a43-d5e2-46cd-9460-5302ae8b8968",
+      "syncedAt": "2026-06-04T08:24:56.739Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "fda99539-c675-4449-afd8-4814eaf87c7b",
+      "syncedAt": "2026-06-04T08:23:56.937Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "75edb318-32ab-429f-9b7a-2b151cb3a116",
+      "syncedAt": "2026-06-04T08:22:56.722Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "a95d9f23-b430-4790-9e78-8bb6f5dffd92",
+      "syncedAt": "2026-06-04T08:21:57.139Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "355feaaf-d03d-48aa-9808-26b789d65d5d",
+      "syncedAt": "2026-06-04T08:20:56.715Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "9fdc8fdd-736e-41bd-9ec4-c0159bcaca8e",
+      "syncedAt": "2026-06-04T08:19:59.084Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "c7f708dc-f299-4670-af3d-49fc300c7f76",
+      "syncedAt": "2026-06-04T08:18:23.896Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "9eae4903-21e7-4764-a79c-2e9b18f72bdf",
+      "syncedAt": "2026-06-04T08:17:24.306Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "7d93adb2-fd38-4230-beee-a6e533cbc644",
+      "syncedAt": "2026-06-04T08:16:23.880Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1b199ceb-ed41-48ce-a1b1-9d30ea88ade2",
+      "syncedAt": "2026-06-04T08:15:24.319Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0af4b4f0-44f4-44a8-8dcf-c3fc15929efe",
+      "syncedAt": "2026-06-04T08:14:23.884Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "de9e198f-f6ce-4a3d-b961-9973d49f0bd6",
+      "syncedAt": "2026-06-04T08:13:25.682Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1286b03f-a0a5-402c-bc21-6ecb64e0fb80",
+      "syncedAt": "2026-06-04T08:12:23.866Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "726ffaba-1320-4521-b0ce-c895d392f8cb",
+      "syncedAt": "2026-06-04T08:11:24.017Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "c4dd49de-cb6e-456f-82fc-7bd309651cb8",
+      "syncedAt": "2026-06-04T08:10:23.853Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "e46fc9dd-5d1a-47cb-98da-30d0f1c19f61",
+      "syncedAt": "2026-06-04T08:09:23.990Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "77fcdb47-edf7-4469-8f2c-0b939eeaa728",
+      "syncedAt": "2026-06-04T08:08:23.847Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1ddbb68e-c8d5-4533-b148-114dc1007fa2",
+      "syncedAt": "2026-06-04T08:07:25.441Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "79bc9977-35a2-49d3-8216-4085ad553a3a",
+      "syncedAt": "2026-06-04T08:06:23.823Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "14e224de-c30e-4730-80c3-e6b23179a163",
+      "syncedAt": "2026-06-04T08:05:24.687Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "d16d5ac7-04ef-4d07-a366-5b5cfd440b02",
+      "syncedAt": "2026-06-04T08:04:23.817Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "eb5f0236-6b21-4b82-a258-2a0134e7fa13",
+      "syncedAt": "2026-06-04T08:03:24.429Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "244251c4-9ace-401a-9a01-7310cca8fd6c",
+      "syncedAt": "2026-06-04T08:02:23.797Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f20b74c7-6220-4c98-bf6a-cf1040935dec",
+      "syncedAt": "2026-06-04T08:01:27.094Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "90fe4e32-b84b-4c94-ac98-960c7d564825",
+      "syncedAt": "2026-06-04T07:35:21.488Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "63c3cf76-23f3-4a9f-9317-1ddd6a4db44f",
+      "syncedAt": "2026-06-04T07:34:35.103Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "b443d918-49c9-4c5d-82e7-a4c52f0140c0",
+      "syncedAt": "2026-06-04T07:33:28.013Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "873da825-cf12-4aa6-a10f-a728b2ed80a0",
+      "syncedAt": "2026-06-04T07:32:26.418Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "72e2f575-1769-4a79-a200-0b08ab9638dd",
+      "syncedAt": "2026-06-04T07:31:26.789Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "4d48c006-7e26-4c5b-957e-af02e4c65413",
+      "syncedAt": "2026-06-04T07:30:26.395Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "dc32b68e-7eab-4572-9076-bb4290737a52",
+      "syncedAt": "2026-06-04T07:29:27.888Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "7f294b93-439f-44b4-a0a6-a8a52dde4956",
+      "syncedAt": "2026-06-04T07:28:26.397Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0454975a-85dc-4bad-871a-dcdffb7876d8",
+      "syncedAt": "2026-06-04T07:27:29.536Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "6152f507-5d63-4540-bafb-e0ce91646b3b",
+      "syncedAt": "2026-06-04T07:27:04.037Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "a54630a0-ee7e-43f7-ab82-4c9fbc2cc49d",
+      "syncedAt": "2026-06-04T07:26:02.631Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0a5c49c8-eec8-48dc-8cea-93caab20e5ee",
+      "syncedAt": "2026-06-04T07:25:04.105Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "d06ef253-aeec-4a2b-bde8-b655e9eec6fa",
+      "syncedAt": "2026-06-04T07:24:02.622Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "19ab6fb4-a6e9-4e7d-aad3-14cbcb9220ff",
+      "syncedAt": "2026-06-04T07:23:07.518Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "9860c1e1-888d-4a56-a9c7-a8f4bce1377d",
+      "syncedAt": "2026-06-04T07:17:46.403Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0072290d-b759-46bf-9578-99d9d92ae3ce",
+      "syncedAt": "2026-06-04T07:16:47.068Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "15c34e4d-374b-4d5e-926d-797d6391e46a",
+      "syncedAt": "2026-06-04T07:15:46.384Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "7caaf68f-3c40-4677-b0fb-d28ee1fc93a6",
+      "syncedAt": "2026-06-04T07:14:49.524Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "90f201ad-ce48-4b6f-9c1e-5d64afc046f0",
+      "syncedAt": "2026-06-04T07:13:46.364Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "719cea7c-c7a9-489c-8860-56165fe842fc",
+      "syncedAt": "2026-06-04T07:12:48.532Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "524da57f-3c5a-4c57-8988-eed1c94944f0",
+      "syncedAt": "2026-06-04T07:11:46.348Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "3904916a-1a79-40c4-a115-e323b08551ba",
+      "syncedAt": "2026-06-04T07:10:47.351Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "6bfbbad1-322c-44ad-b0ff-40b2ebbad7c7",
+      "syncedAt": "2026-06-04T07:09:46.327Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "c0f4caa0-2cb0-4768-89e5-9bbd4c8ade08",
+      "syncedAt": "2026-06-04T07:08:48.966Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "5220e248-05c1-4b8c-b3ff-f6a35ea4c82d",
+      "syncedAt": "2026-06-04T07:07:46.312Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "8a8bcdba-60a0-4ac8-b3a4-134bd8ea897e",
+      "syncedAt": "2026-06-04T07:06:48.474Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "a5a84a7a-c955-4e8b-8022-40c66e08d388",
+      "syncedAt": "2026-06-04T07:05:46.312Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "b3a4f874-2648-4274-8e68-3e29070b66e4",
+      "syncedAt": "2026-06-04T07:04:47.191Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "b76d3827-9588-433d-922a-5ea9a5942697",
+      "syncedAt": "2026-06-04T07:03:46.299Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "ccfe0a1c-dfc9-40e7-9511-f79931045273",
+      "syncedAt": "2026-06-04T07:02:49.167Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "4f83fbe7-6222-4141-8d4b-9967c536babf",
+      "syncedAt": "2026-06-04T07:01:46.291Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "c91e0935-e98c-456f-adb8-3b33bb0d8ee5",
+      "syncedAt": "2026-06-04T07:00:48.862Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "3c9529fa-a559-4ce0-9a3b-b974f5d0d2b8",
+      "syncedAt": "2026-06-04T07:00:41.621Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "4c2eecf4-1768-4ce2-8ced-1b1aabbefb28",
+      "syncedAt": "2026-06-04T06:59:44.061Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "2513da60-e737-46a2-91e0-f526aa78d894",
+      "syncedAt": "2026-06-04T06:58:52.418Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "c13676b6-48a2-456e-a5ad-ad72085e3df7",
+      "syncedAt": "2026-06-04T06:57:59.181Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "ff269ae0-f53c-43cc-bac6-69a5d98561f8",
+      "syncedAt": "2026-06-04T06:57:37.968Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "2104cf81-f6d9-4efc-b699-dd84e21c430e",
+      "syncedAt": "2026-06-04T06:56:42.306Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "ce294974-b778-4e17-859c-90117ee0d3fb",
+      "syncedAt": "2026-06-04T06:55:39.535Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "a3e6a14f-0016-4f09-a05f-bad2c78f06bb",
+      "syncedAt": "2026-06-04T06:54:40.152Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "3e1ed35a-74d4-47ca-af51-0b0451edfe95",
+      "syncedAt": "2026-06-04T06:53:39.524Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "2cc76d88-9b8e-45c3-b45d-9a84dbf560a2",
+      "syncedAt": "2026-06-04T06:52:41.719Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "3ad87555-eef9-434c-97f5-d14923c0b20e",
+      "syncedAt": "2026-06-04T06:52:00.715Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "7b4cd5f7-8fda-4e46-90b1-ad95f4f1b87c",
+      "syncedAt": "2026-06-04T06:51:18.671Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0ed1e585-841f-489e-b2fc-9dcb56bfaa61",
+      "syncedAt": "2026-06-04T06:50:09.686Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f4341bad-bf57-4c2e-a498-f17727489b87",
+      "syncedAt": "2026-06-04T06:49:07.473Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "e8636301-5912-437b-8757-7dc7785d725a",
+      "syncedAt": "2026-06-04T06:48:09.670Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "5b2ffe36-8b6e-4962-a203-6e3f9a36fe23",
+      "syncedAt": "2026-06-04T06:47:06.809Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "4afdad04-3c6c-46cc-9384-e78265fe403b",
+      "syncedAt": "2026-06-04T06:46:07.298Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "e74d190d-06dd-410e-aab2-6734c5c59636",
+      "syncedAt": "2026-06-04T06:45:06.795Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "fb5feb5d-164f-4daa-b48f-a53d1c512225",
+      "syncedAt": "2026-06-04T06:44:09.312Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "0cdf683a-3513-4fc0-abaa-27812c5774f8",
+      "syncedAt": "2026-06-04T06:43:06.768Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0fb795d8-e303-4990-9b69-93adeb30c426",
+      "syncedAt": "2026-06-04T06:42:07.966Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "653d3457-d080-4075-a5ac-bf9bec447aaa",
+      "syncedAt": "2026-06-04T06:41:06.751Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "2091512d-1f86-4982-8ac1-2b239ac7156f",
+      "syncedAt": "2026-06-04T06:40:07.677Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "77169740-e2c3-4f16-b873-9f30e636f930",
+      "syncedAt": "2026-06-04T06:39:06.744Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "2762714a-4fa2-4275-9682-904e48885fec",
+      "syncedAt": "2026-06-04T06:38:08.627Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "9f94a485-a2b8-44d7-8ca4-ce3341f5443e",
+      "syncedAt": "2026-06-04T06:37:06.725Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "e0c57d74-bc94-40e7-8b03-25bce3dfbbb5",
+      "syncedAt": "2026-06-04T06:36:08.050Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "3157d411-8555-421e-b3d1-b845a628d54a",
+      "syncedAt": "2026-06-04T06:35:06.703Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "e5fede94-ee9a-4f2e-84cf-320408f2422f",
+      "syncedAt": "2026-06-04T06:34:07.144Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "20f010ca-76bb-4d15-a490-6e7eff625d8e",
+      "syncedAt": "2026-06-04T06:33:06.675Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "b25fe102-1ac2-44ed-8a18-0ee62789291c",
+      "syncedAt": "2026-06-04T06:32:08.746Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "626a0dd0-1e10-4525-912a-8a0cfe1169fa",
+      "syncedAt": "2026-06-04T06:31:06.653Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f36d849a-8427-4b09-b8a5-ac1489fdc7f9",
+      "syncedAt": "2026-06-04T06:30:07.131Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 1,
+      "failures": 0
+    },
+    {
+      "id": "6df6e772-e3df-4bd7-ae29-81672ff9e7d6",
+      "syncedAt": "2026-06-04T06:29:06.643Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "d7f3c15c-c4ed-4a64-98c7-c32c74223862",
+      "syncedAt": "2026-06-04T06:28:08.155Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "3f803a1f-a9f8-4bb3-b901-011a90a25cf3",
+      "syncedAt": "2026-06-04T06:27:06.644Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "a36d5785-8009-4fec-a1b2-1ae6cc16e5d4",
+      "syncedAt": "2026-06-04T06:26:09.810Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "e26937fd-4d87-442a-8af4-cc8d004868ac",
+      "syncedAt": "2026-06-04T06:21:41.379Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "c3054e2a-5985-4877-a88d-6fbd083a410e",
+      "syncedAt": "2026-06-04T06:20:43.624Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "c0e205bf-84cc-4898-8136-aa17d15e107d",
+      "syncedAt": "2026-06-04T06:19:42.502Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "7610b69b-cd43-4e64-ad11-be6cf1ac92e2",
+      "syncedAt": "2026-06-04T06:19:27.584Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f0870f19-c3f8-4d4f-afdd-1944ec0b4006",
+      "syncedAt": "2026-06-04T06:18:28.209Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "261e095d-9209-4a4c-9850-f1aa433b3632",
+      "syncedAt": "2026-06-04T06:17:27.578Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "74bbcfca-944a-4afa-bf84-e9aaec864c7c",
+      "syncedAt": "2026-06-04T06:16:31.659Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "613d0e2c-3858-475a-af67-05deb398c1b1",
+      "syncedAt": "2026-06-04T06:15:22.348Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "383748d3-60c5-4ad1-9800-fc63f06621a0",
+      "syncedAt": "2026-06-04T06:14:22.761Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "9714a51f-a143-45bd-9114-0ebb172fbed3",
+      "syncedAt": "2026-06-04T06:13:22.327Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1917f0af-45a3-4238-aeaa-dbf1d0acd7d2",
+      "syncedAt": "2026-06-04T06:12:24.717Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "84da67bc-2980-446d-9a8d-dee2888b1122",
+      "syncedAt": "2026-06-04T06:11:40.761Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "904da879-c084-496f-8a1a-59ee5a78d9a2",
+      "syncedAt": "2026-06-04T06:10:40.364Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "22529d39-a191-47b3-83f4-737e57663a44",
+      "syncedAt": "2026-06-04T06:09:41.758Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "69914381-77cb-4cf4-b3f2-d3066b22980f",
+      "syncedAt": "2026-06-04T06:08:40.347Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "472d6714-4618-4416-b0ef-8e4c0fe53dab",
+      "syncedAt": "2026-06-04T06:07:42.940Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "43c8b04f-71b4-425d-a7c4-9c648d3a9586",
+      "syncedAt": "2026-06-04T06:06:37.713Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "91671057-cf09-4eb9-93c4-6dea58286cf5",
+      "syncedAt": "2026-06-04T06:05:39.242Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "dd22b8aa-3bc5-46de-8997-5ddb45a596c8",
+      "syncedAt": "2026-06-04T06:04:37.705Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "8912977a-423e-47a2-98fd-fc0b2799c44f",
+      "syncedAt": "2026-06-04T06:03:40.167Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1e3934a6-52b6-4301-bdf0-ca255701e58f",
+      "syncedAt": "2026-06-04T06:02:37.687Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "6ae6e098-120e-4a7f-ba5c-b593b614cc01",
+      "syncedAt": "2026-06-04T06:01:38.541Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "7ce5cf07-6200-462e-a44b-deee94058065",
+      "syncedAt": "2026-06-04T06:00:37.663Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "2ed12ea5-3e1e-443f-aadb-067d128db773",
+      "syncedAt": "2026-06-04T05:59:38.834Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "67307ce7-fe22-4db5-840b-1e22b226894a",
+      "syncedAt": "2026-06-04T05:58:37.654Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "40b2efce-4623-4847-87fb-2546883b023b",
+      "syncedAt": "2026-06-04T05:57:39.102Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "e9c434ba-257b-4451-9c82-1a69fb6f5dd3",
+      "syncedAt": "2026-06-04T05:56:37.637Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "a2c70304-6410-45b5-9b2e-3b54e9647781",
+      "syncedAt": "2026-06-04T05:55:37.950Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "e49b5489-2e09-48f4-ad67-c7dcb7d87f72",
+      "syncedAt": "2026-06-04T05:54:37.628Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "3b881b8f-ee80-4b6c-841c-227c38bcb764",
+      "syncedAt": "2026-06-04T05:53:39.643Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "959cb561-e1fd-4635-aeac-9aa4bebd7dd8",
+      "syncedAt": "2026-06-04T05:53:17.634Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "a4c0f5c2-0d3a-4a75-890a-7076469fd7e5",
+      "syncedAt": "2026-06-04T05:52:20.472Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "b51e2483-14e2-4f19-a4f2-e2e4b224b9b6",
+      "syncedAt": "2026-06-04T05:51:17.612Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1cb6c517-1520-4aca-8942-67ea064b25a5",
+      "syncedAt": "2026-06-04T05:50:19.950Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "9a3cad91-89f3-4d04-961e-1bfa51de8004",
+      "syncedAt": "2026-06-04T05:49:17.596Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "ce824412-b545-451d-aef9-2428c7eba47e",
+      "syncedAt": "2026-06-04T05:48:18.783Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "c048ed2f-0074-4155-8f8d-5104859b15b6",
+      "syncedAt": "2026-06-04T05:47:17.569Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "c60a22c0-7cd2-4059-a4f3-ac1333c101ea",
+      "syncedAt": "2026-06-04T05:46:19.792Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "a8e52024-dfb3-4396-b77d-81f97284b69a",
+      "syncedAt": "2026-06-04T05:45:17.251Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "686ecb7f-ac30-481f-a154-a71a26865192",
+      "syncedAt": "2026-06-04T05:44:18.384Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "917aff00-0274-4fd3-8e6e-cca8b7acd5b3",
+      "syncedAt": "2026-06-04T05:43:17.226Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "136be076-a0d7-480f-a002-692e8a3980fb",
+      "syncedAt": "2026-06-04T05:42:17.558Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "a0c9da17-774a-45e9-9abd-ab829badbecd",
+      "syncedAt": "2026-06-04T05:41:17.216Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "323cd70b-e4e5-4780-a825-b03f433fa916",
+      "syncedAt": "2026-06-04T05:40:19.436Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "6f7d7252-25aa-4151-948d-d75a0d3db18e",
+      "syncedAt": "2026-06-04T05:39:17.205Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "741c7580-750d-4b79-96e4-f270e674c3d1",
+      "syncedAt": "2026-06-04T05:38:19.580Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "e2ffb5cd-42b6-481b-a836-163d7e2580b4",
+      "syncedAt": "2026-06-04T05:35:57.827Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "60e85841-02d6-439a-a0fe-1d110002cac3",
+      "syncedAt": "2026-06-04T05:34:56.470Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "33b17165-87fa-49fb-9537-789facc1aed5",
+      "syncedAt": "2026-06-04T05:33:58.752Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "b83d4064-9cfc-4c1f-8786-cc4d0a77eb04",
+      "syncedAt": "2026-06-04T05:32:56.469Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "e115d43c-a81d-455a-8526-654280ae5818",
+      "syncedAt": "2026-06-04T05:31:57.429Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "67aad9b7-4a8d-4d48-a22b-69a3b5da5c5e",
+      "syncedAt": "2026-06-04T05:30:56.456Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "7a1a288f-3078-4007-9305-06dd17201a72",
+      "syncedAt": "2026-06-04T05:29:57.626Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "970e77de-7180-411f-a825-34468b446660",
+      "syncedAt": "2026-06-04T05:28:56.434Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "346461d3-8159-456e-b060-ed9ce0b5cbeb",
+      "syncedAt": "2026-06-04T05:27:58.195Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "63ee0fab-df70-43da-a02e-6703045fac6d",
+      "syncedAt": "2026-06-04T05:26:56.416Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "031dcbdd-579e-469a-9ecc-f27356774cd1",
+      "syncedAt": "2026-06-04T05:25:56.814Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "6f45d6d8-c4cf-4567-a937-a7bb0cd26691",
+      "syncedAt": "2026-06-04T05:24:56.396Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "8c160222-fd2c-41d5-bee6-d312c1ea94cd",
+      "syncedAt": "2026-06-04T05:23:58.428Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "8ae01cfe-e62e-4715-9c5e-f12d2b6cb829",
+      "syncedAt": "2026-06-04T05:23:30.173Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "4f92e324-8615-4c61-b9af-6ad98fdaef42",
+      "syncedAt": "2026-06-04T05:22:31.310Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "b2f554f2-81c1-4dd1-bef2-26e220884ec5",
+      "syncedAt": "2026-06-04T05:21:30.164Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "84f07ec5-614b-4519-b62a-57acfc77307c",
+      "syncedAt": "2026-06-04T05:20:30.787Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "5d288813-d1c0-4c9c-bf2b-31f4d97feb35",
+      "syncedAt": "2026-06-04T05:19:30.149Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f9caa0c0-514e-42dd-b294-287ca3f05fea",
+      "syncedAt": "2026-06-04T05:18:31.555Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1d2da3a5-4c2e-450d-9518-6b8e9e960863",
+      "syncedAt": "2026-06-04T05:17:30.125Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f80a6c86-cdc7-4e66-967a-24a800961313",
+      "syncedAt": "2026-06-04T05:16:32.726Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "4e6e2c36-d9aa-46fb-b015-3bbeca2b216c",
+      "syncedAt": "2026-06-04T05:15:30.105Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "6d698091-fb5c-4200-abb5-8f9a4d2710a9",
+      "syncedAt": "2026-06-04T05:14:30.250Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "0c94f650-180a-4729-9c2e-7782db76e24e",
+      "syncedAt": "2026-06-04T05:13:30.094Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "465b38f2-9d28-49bd-9036-1a5fbfbefb5e",
+      "syncedAt": "2026-06-04T05:12:32.319Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "133d9f3c-d6a7-4c9e-bad1-ab12c0c7f17b",
+      "syncedAt": "2026-06-04T05:11:31.279Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "72eee296-9712-4785-8982-0f8357b22fa0",
+      "syncedAt": "2026-06-04T05:10:30.724Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "a2c290a9-75e9-44e7-92f6-79271ec4f9b4",
+      "syncedAt": "2026-06-04T05:09:32.857Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "a288b6d2-94b4-41a0-a295-e6554e6c82fa",
+      "syncedAt": "2026-06-04T05:08:30.694Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "4093f91a-9314-4564-84a9-ccaa035d4451",
+      "syncedAt": "2026-06-04T05:07:30.993Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "80fd5aa3-dbb7-495a-aada-cae1f0e7d663",
+      "syncedAt": "2026-06-04T05:06:30.689Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f1261c41-4a95-4cc9-81e3-e8dc0eac8bcd",
+      "syncedAt": "2026-06-04T05:05:31.802Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1427f476-5aff-44dd-8697-3f4c21de523e",
+      "syncedAt": "2026-06-04T05:04:30.680Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "b747e642-9da5-406e-aca0-84e460a089e3",
+      "syncedAt": "2026-06-04T05:03:32.866Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "9534f6fb-3fb6-4ff8-8066-4b25875abec9",
+      "syncedAt": "2026-06-04T05:02:40.581Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "339d1af4-b71e-4d76-8549-f0fbf9f0d248",
+      "syncedAt": "2026-06-04T05:01:40.761Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "31d1dd94-0ce3-4de9-be00-39cd2a8443ac",
+      "syncedAt": "2026-06-04T05:00:40.559Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "4cee7b60-a8f6-49c4-930c-5c622f5ca0df",
+      "syncedAt": "2026-06-04T04:59:40.759Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "3aae758e-1973-4dda-a6d0-e5ebfc89fae0",
+      "syncedAt": "2026-06-04T04:58:40.559Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "4d2349c1-55d4-4d5b-90d5-f04bbead0a92",
+      "syncedAt": "2026-06-04T04:57:43.323Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1923b646-62de-4e61-9c8b-5fa99b92c37e",
+      "syncedAt": "2026-06-04T04:56:40.546Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "6187b6ab-5b70-4154-868f-01716a69b6d8",
+      "syncedAt": "2026-06-04T04:55:41.356Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "afee4da5-032a-4564-bc25-66659adcf01a",
+      "syncedAt": "2026-06-04T04:54:40.528Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0d9211b8-d8c0-4e6a-bd59-be9aa34a1f08",
+      "syncedAt": "2026-06-04T04:53:41.356Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "df19ba2e-3d18-4b9c-9a05-459c8aff587e",
+      "syncedAt": "2026-06-04T04:52:40.525Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f2a8a2f2-947d-4834-a8d9-119ce4d553df",
+      "syncedAt": "2026-06-04T04:51:42.542Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "2016e2ef-fe69-4bda-9a26-80f37b6bb16d",
+      "syncedAt": "2026-06-04T04:50:40.519Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "2398ab57-abb5-48ab-9c5a-508bc63f70fe",
+      "syncedAt": "2026-06-04T04:49:41.830Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "b1ba0c08-467f-4974-9588-2f11bb06af82",
+      "syncedAt": "2026-06-04T04:48:40.496Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "accd2200-89bb-4311-a64e-9c0e2b09329b",
+      "syncedAt": "2026-06-04T04:47:41.082Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "5ccba039-9602-4a42-b40d-52b8bc3eeb1c",
+      "syncedAt": "2026-06-04T04:46:40.491Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "ceb37683-7f05-49e0-8664-728627a50891",
+      "syncedAt": "2026-06-04T04:45:42.872Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "5654e255-b592-41e1-8da9-6d2d01cb0a5c",
+      "syncedAt": "2026-06-04T04:45:15.721Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "5ddbc96d-2797-478e-bca1-4fbbcd7b5368",
+      "syncedAt": "2026-06-04T04:44:17.777Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "0afa8571-6645-4703-b547-3d46de8180a0",
+      "syncedAt": "2026-06-04T04:42:23.455Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "645e4fb8-05e5-4c08-9ea8-abd00aca6d68",
+      "syncedAt": "2026-06-04T04:41:23.234Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1062f0a7-c165-49f5-8cff-a7aad9ed8085",
+      "syncedAt": "2026-06-04T04:40:25.665Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "8f273d8d-69a8-4bd0-86af-c8e62fb453e4",
+      "syncedAt": "2026-06-04T04:39:23.210Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "8ecad4af-a541-47bc-80f2-84336473da8d",
+      "syncedAt": "2026-06-04T04:38:24.556Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "384e6512-7f89-4336-afe1-87d7260dab32",
+      "syncedAt": "2026-06-04T04:37:23.201Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "191896cc-41e7-4c22-a1d9-f7d2bab7245c",
+      "syncedAt": "2026-06-04T04:36:24.267Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "240322bf-fee0-4e69-accd-9c115445b343",
+      "syncedAt": "2026-06-04T04:35:23.183Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "bbd3c6ac-867d-4690-bf9c-eb1277986d1f",
+      "syncedAt": "2026-06-04T04:34:25.869Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "cfc762d9-f565-4549-a989-178cbd4a8d24",
+      "syncedAt": "2026-06-04T04:30:26.855Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "14faaf4d-e8db-4bf9-b4bb-41a4b3c0f55c",
+      "syncedAt": "2026-06-04T04:29:26.934Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "51a62c88-9bfd-4bee-a110-27a345a338b0",
+      "syncedAt": "2026-06-04T04:28:26.812Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "54732f58-c60b-4e05-aac9-b806676b6ca6",
+      "syncedAt": "2026-06-04T04:27:27.426Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "c251e2e1-1067-41f9-b9eb-26eef81092c1",
+      "syncedAt": "2026-06-04T04:26:26.801Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "9264dd93-4e6b-4162-bed5-9905bbdb3680",
+      "syncedAt": "2026-06-04T04:25:29.273Z",
+      "sourcesChecked": 1,
+      "eventsImported": 4,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
     {
       "id": "6b166d76-3dcd-43d1-b9cf-b6597dedf6d2",
       "syncedAt": "2026-06-03T15:49:22.592Z",

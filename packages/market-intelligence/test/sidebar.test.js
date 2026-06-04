@@ -17,6 +17,7 @@ test("enterprise sidebar keeps functions as expand-only buttons and children as 
   assert.match(sidebar, /class="enterprise-sidebar-parent" type="button"/);
   assert.match(sidebar, /class="enterprise-sidebar-child\$\{route === current \? " active" : ""\}" href="\$\{route\}"/);
   assert.doesNotMatch(sidebar, /href="\/workspace\/market-intelligence">Market Intelligence Center/);
+  assert.equal(sidebar.match(/"\/workspace\/market-intelligence\/market-data"/g)?.length, 1);
   assert.doesNotMatch(sidebar, /function-number/);
   assert.doesNotMatch(sidebar, /\["01"/);
   assert.doesNotMatch(sidebar, /data-sources-validation/);

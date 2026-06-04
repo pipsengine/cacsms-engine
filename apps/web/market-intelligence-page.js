@@ -251,7 +251,13 @@ if (slug === "institutional-cot") {
   document.querySelector(".intelligence-header").remove();
   document.querySelector("#intelligence-content").innerHTML = renderInstitutionalCotCenter();
   bindInstitutionalCotCenter();
-} else if (["dashboard","data-sources","data-sources-feed-health","market-data","news-sentiment","economic-calendar","social-sentiment","historical-data","broker-data","account-portfolio","prop-firm-rules","data-quality-gate"].includes(slug) || !slug) {
+} else if (slug === "account-portfolio") {
+  document.querySelector(".intelligence-header")?.remove();
+  mountAccountPortfolioCenter();
+} else if (slug === "prop-firm-rules") {
+  document.querySelector(".intelligence-header")?.remove();
+  mountPropFirmRulesCenter();
+} else if (["dashboard","data-sources","data-sources-feed-health","market-data","news-sentiment","economic-calendar","social-sentiment","historical-data","broker-data","data-quality-gate"].includes(slug) || !slug) {
   document.querySelector(".intelligence-header").remove();
   document.querySelector("#intelligence-content").innerHTML = renderLiveMarketIntelligencePage(slug || "dashboard");
   bindLiveMarketIntelligencePage(slug || "dashboard");
@@ -272,6 +278,6 @@ import { bindLiveMarketIntelligencePage, renderLiveMarketIntelligencePage } from
 import { bindInstitutionalCotCenter, renderInstitutionalCotCenter } from "./institutional-cot-page.js";
 import { bindHistoricalDataCenter, renderHistoricalDataCenter } from "./historical-data-page.js";
 import { bindBrokerDataCenter, renderBrokerDataCenter } from "./broker-data-page.js";
-import { bindAccountPortfolioCenter, renderAccountPortfolioCenter } from "./account-portfolio-page.js";
-import { bindPropFirmRulesCenter, renderPropFirmRulesCenter } from "./prop-firm-rules-page.js";
+import { bindAccountPortfolioCenter, mountAccountPortfolioCenter, renderAccountPortfolioCenter } from "./account-portfolio-page.js";
+import { mountPropFirmRulesCenter } from "./prop-firm-rules-page.js";
 import { bindDataQualityGateCenter, renderDataQualityGateCenter } from "./data-quality-gate-page.js";

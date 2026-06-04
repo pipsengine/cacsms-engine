@@ -10,14 +10,16 @@ private:
    CConnectionManager *m_connection;
    string m_token;
    string m_eaVersion;
+   bool m_includeTicks;
    datetime m_lastSent;
 
 public:
-   CHeartbeatManager(CConnectionManager *connection, const string token, const string eaVersion)
+   CHeartbeatManager(CConnectionManager *connection, const string token, const string eaVersion, const bool includeTicks = false)
    {
       m_connection = connection;
       m_token = token;
       m_eaVersion = eaVersion;
+      m_includeTicks = includeTicks;
       m_lastSent = 0;
    }
 
@@ -34,7 +36,7 @@ public:
          return true;
 
       const int latencyMs = 12;
-      string body = CacsmsBuildHeartbeatJson(m_token, m_eaVersion, latencyMs);
+      string body = CacsmsBuildHeartbeatJson(m_token, m_eaVersion, latencyMs, m_includeTicks);
       string response;
       int httpStatus = 0;
 
@@ -45,7 +47,7 @@ public:
       }
 
       m_lastSent = now;
-      Print("CACSMS heartbeat sent. HTTP=", httpStatus);
+      Print("CACSMS heartbeat sent. HTTP=", httpStatus, " account=", StringSubstr(body, StringFind(body, "\"account\""), 80));
       return true;
    }
 

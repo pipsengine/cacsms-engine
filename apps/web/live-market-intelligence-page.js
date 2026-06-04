@@ -8,7 +8,7 @@ const labels = {
   "social-sentiment": ["Social & Community Sentiment", "Optional live community sentiment connectors."],
   "historical-data": ["Historical Data", "Live OHLCV archive connectors and imported datasets."],
   "broker-data": ["Broker Data", "Live broker bridges, pricing feeds and execution telemetry."],
-  "account-portfolio": ["Account Portfolio", "Live connected account balances, equity, positions and risk state."],
+  "account-portfolio": ["Account Portfolio Intelligence Center", "Institutional portfolio analytics, multi-account risk, prop compliance and AI advisor."],
   "prop-firm-rules": ["Prop Firm Rules", "Live imported rule catalogs and connected account compliance state."],
   "data-quality-gate": ["Data Quality Gate", "Source-honest Card 1 workflow admission control using live adapter status only."]
 };

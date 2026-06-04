@@ -54,8 +54,7 @@ export const sidebarFunctions = [
   ["mt5", "Server", "MT5 Infrastructure", "", [
     ["Agent Downloads", "/workspace/mt5-infrastructure/agent-downloads"],
     ["EA Deployments", "/workspace/mt5-infrastructure/ea-deployments"],
-    ["Connection Monitor", "/workspace/mt5-infrastructure/connection-monitor"],
-    ["Market Data Providers", "/workspace/market-intelligence/market-data"]
+    ["Connection Monitor", "/workspace/mt5-infrastructure/connection-monitor"]
   ]],
   ["machines", "MonitorSmartphone", "Machine Registry", "", [["Machine Dashboard", "/workspace/machines/dashboard"]]],
   ["monitoring", "Activity", "Monitoring & Self-Healing", "", [["Monitoring Dashboard", "/workspace/monitoring/dashboard"]]],

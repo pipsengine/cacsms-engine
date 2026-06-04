@@ -45,7 +45,7 @@ export function ProviderConfigurationPanel({ categories, registry, selectedId, o
             ) : null}
             {selected.sourceKey === "prop-firm-rules" ? (
               <div className="sc-form-grid">
-                <label>Supported Firms<input readOnly value={Array.isArray(selected.config.supportedFirms) ? selected.config.supportedFirms.join(", ") : "FTMO, FundedNext, 5ers, E8, Custom"} /></label>
+                <label>Catalog Source<input readOnly value={selected.config.catalogSource || "market.prop_firms (database)"} /></label>
               </div>
             ) : null}
           </div>

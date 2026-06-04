@@ -293,30 +293,68 @@ function buildEmptyDashboard(reason = "empty") {
     symbolAvailability: [],
     comparison: [],
     workflowImpacts: WORKFLOW_IMPACTS_STATIC,
+    mt5: {
+      terminals: [],
+      machines: [],
+      heartbeats: [],
+      health: {},
+      readiness: {
+        permission: "STOP",
+        message: "Configure a market data provider to enable MT5 onboarding.",
+        reason: reason === "database_not_configured" ? "database_not_configured" : "no_market_data_providers"
+      },
+      onboarding: []
+    },
     logs: [],
     output
   };
 }
 
-export async function getMarketDataOperationsDashboard({ liveProbe = null } = {}) {
-  await runMarketDataRuntimeSync({ liveProbe, skipThrottle: false });
+async function settle(label, fn, fallback) {
+  try {
+    return await fn();
+  } catch (error) {
+    console.warn(`[market-data] ${label} failed:`, error.message);
+    return fallback;
+  }
+}
+
+export async function getMarketDataOperationsDashboard({ liveProbe = null, sync = false } = {}) {
   if (!isDatabaseConfigured()) return buildEmptyDashboard("database_not_configured");
-  const [providersRaw, healthMap, coverageRows, symbols, ticks, logs] = await Promise.all([
-    listProviders(),
-    getLatestHealthByProvider(),
-    listCoverageRows(),
-    listSymbols(),
-    getLatestTicks(),
-    listLogs(100)
-  ]);
-  if (!providersRaw.length) return buildEmptyDashboard("empty");
-  return buildComputedDashboard(providersRaw, healthMap, coverageRows, symbols, ticks, logs, liveProbe);
+  try {
+    if (sync) {
+      await runMarketDataRuntimeSync({ liveProbe, force: true, skipThrottle: true });
+    }
+    const [providersRaw, healthMap, coverageRows, symbols, ticks, logs] = await Promise.all([
+      settle("listProviders", listProviders, []),
+      settle("getLatestHealthByProvider", getLatestHealthByProvider, new Map()),
+      settle("listCoverageRows", listCoverageRows, []),
+      settle("listSymbols", listSymbols, []),
+      settle("getLatestTicks", () => getLatestTicks(), []),
+      settle("listLogs", () => listLogs(100), [])
+    ]);
+    if (!providersRaw.length) return buildEmptyDashboard("empty");
+    return await buildComputedDashboard(providersRaw, healthMap, coverageRows, symbols, ticks, logs, liveProbe);
+  } catch (error) {
+    console.warn("[market-data] dashboard failed:", error.message);
+    const empty = buildEmptyDashboard("database_error");
+    empty.banner.feedFreshness = "DEGRADED";
+    empty.output.databaseError = error.message;
+    return empty;
+  }
 }
 
 async function buildComputedDashboard(providersRaw, healthMap, coverageRows, symbols, ticks, logs, liveProbe) {
   const symbolCount = symbols.length || TARGET_ASSETS.length;
   let providers = await Promise.all(providersRaw.map((provider) => deriveProviderView(provider, healthMap)));
-  const mt5 = isDatabaseConfigured() ? await getMt5InfrastructureDashboard() : { terminals: [], machines: [], heartbeats: [], health: {} };
+  let mt5 = { terminals: [], machines: [], heartbeats: [], health: {} };
+  if (isDatabaseConfigured()) {
+    try {
+      mt5 = await getMt5InfrastructureDashboard();
+    } catch (error) {
+      console.warn("[market-data] mt5 infrastructure load failed:", error.message);
+    }
+  }
   for (const provider of providers) {
     const terminal = mt5.terminals.find((item) => item.providerId === provider.id);
     if (terminal) {

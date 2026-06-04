@@ -48,7 +48,7 @@ const exportActions = [
   [["snapshot", "report", "csv", "excel", "row"], "/api/market-intelligence/dashboard"]
 ];
 
-function toast(message, tone = "ok") {
+export function toast(message, tone = "ok") {
   let element = document.querySelector(".mi-action-toast");
   if (!element) {
     element = document.createElement("div");
@@ -191,11 +191,27 @@ async function act(button) {
   toast(`${button.textContent.trim()}: action recorded`, "warn");
 }
 
+function isPortfolioControl(button) {
+  return Boolean(
+    button?.closest("[data-ap-root]")
+    && (button.dataset.apAction
+      || button.dataset.apNav
+      || button.dataset.apTab
+      || button.dataset.apChart
+      || button.dataset.apPeriod
+      || button.dataset.apAccount
+      || button.dataset.apSync
+      || button.dataset.apReport
+      || button.dataset.apClose)
+  );
+}
+
 export function installMarketIntelligenceActions() {
   if (installed) return;
   installed = true;
   document.addEventListener("click", event => {
     const button = event.target.closest("button");
-    if (button) act(button);
+    if (!button || isPortfolioControl(button)) return;
+    act(button);
   });
 }
