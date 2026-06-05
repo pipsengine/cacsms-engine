@@ -97,7 +97,7 @@ function showLiveStatus(message, tone = "ok") {
 }
 
 function setLiveButtonsBusy(busy, label = "Working...") {
-  document.querySelectorAll("[data-live-test], [data-live-refresh], [data-card2-action], [data-source-health-action], [data-dependency-action], [data-market-env-action]").forEach((button) => {
+  document.querySelectorAll("[data-live-test], [data-live-refresh], [data-card2-action], [data-source-health-action], [data-dependency-action], [data-market-env-action], [data-macro-action], [data-sentiment-action], [data-institutional-action]").forEach((button) => {
     if (busy) {
       button.dataset.liveLabel = button.dataset.liveLabel || button.textContent;
       button.disabled = true;
@@ -169,6 +169,9 @@ function renderCard2(slug) {
   if (slug === "source-health-review") return renderSourceHealthReviewPage();
   if (slug === "dependency-matrix") return renderDependencyMatrixPage();
   if (slug === "market-environment") return renderMarketEnvironmentPage();
+  if (slug === "macro-intelligence") return renderMacroIntelligencePage();
+  if (slug === "sentiment-intelligence") return renderSentimentIntelligencePage();
+  if (slug === "institutional-intelligence") return renderInstitutionalIntelligencePage();
   const [title, subtitle] = labels[slug] || labels.dashboard;
   const rows = card2Pages[slug] || card2Pages.dashboard;
   const sourceRows = (data.sources || []).map(item => [item.name, item.required ? "REQUIRED" : "OPTIONAL", badge(item.status), item.freshness, item.records, item.adapter]);
@@ -403,6 +406,111 @@ function renderMarketEnvironmentPage() {
   </section>`;
 }
 
+function renderMacroIntelligencePage() {
+  const d = data || {};
+  const header = `<header class="live-header"><div><small>MARKET INTELLIGENCE CENTER / MACRO INTELLIGENCE</small><h1>Macro Intelligence Center</h1><p>Analyze global macroeconomic trends, central bank policy, inflation, growth, yields, liquidity, and cross-asset market impact.</p></div><aside>${statusBadge(d.status || "PRODUCTION LIVE")}<span>PRODUCTION LIVE</span><span>MOCK DATA DISABLED</span><span>LIVE MACRO INPUTS ONLY</span><span>LAST SYNC / ${formatTime(d.badges?.lastSync)}</span><span>MACRO CONFIDENCE SCORE / ${d.badges?.macroConfidenceScore === null || d.badges?.macroConfidenceScore === undefined ? "Unavailable" : percent(d.badges.macroConfidenceScore)}</span></aside></header>`;
+  if (["DATABASE_NOT_CONFIGURED", "SCHEMA_NOT_READY"].includes(d.status)) {
+    return `<section class="live-page macro-page">${header}<article class="live-card live-empty"><h2>${display(d.status)}</h2><p>${display(d.message)}</p></article></section>`;
+  }
+  if (d.status === "EMPTY") {
+    return `<section class="live-page macro-page">${header}<article class="live-card live-empty"><h2>Macro intelligence cannot be calculated yet.</h2><p>Connect economic calendar, central bank, interest rate, yield, inflation, and sentiment data sources to enable live macro analysis.</p><div class="live-actions"><a href="/workspace/data-sources-validation/source-configuration">Open Source Registry</a><a href="/workspace/data-sources-validation/source-configuration">Configure Macro Sources</a><a href="/workspace/market-intelligence/dependency-matrix">Open Dependency Matrix</a><a href="/workspace/market-intelligence/source-health-review">Run Source Health Review</a></div></article></section>`;
+  }
+  const score = d.score || {};
+  const inputRows = (d.inputs || []).map(row => [row.input,row.provider,statusBadge(row.status),row.freshness || "Input unavailable. Macro confidence score reduced.",percent(row.health),row.weight,formatTime(row.lastUpdated),row.usedInMacroScore ? row.usedIn || "Macro score" : "Input unavailable. Macro confidence score reduced."]);
+  const currencyRows = (d.currencyBias || []).map(row => [row.currency,row.economy,row.inflationTrend,row.growthMomentum,row.centralBankTone,row.yieldSupport,row.employmentStrength,row.riskSensitivity,statusBadge(row.macroBias),percent(row.confidence),formatTime(row.lastUpdated)]);
+  const bankRows = (d.centralBanks || []).map(row => [row.centralBank,display(row.currentRate),row.latestDecision,statusBadge(row.policyTone),row.inflationConcern,row.growthConcern,formatTime(row.nextMeeting),row.ratePathBias,row.marketExpectation,row.currencyImpact]);
+  const growthRows = (d.inflationGrowth || []).map(row => [row.metricName,display(row.latest),display(row.previous),display(row.forecast),display(row.deviation),row.trendDirection,row.marketImpact,formatTime(row.observedAt)]);
+  const yieldRows = (d.yieldsRates || []).map(row => [row.metricName,display(row.latest),display(row.previous),row.direction,row.usdBias,row.jpyBias,row.goldImpact,row.equityImpact,row.carryTradeCondition,formatTime(row.observedAt)]);
+  const crossRows = (d.crossAsset || []).map(row => [row.asset,statusBadge(row.macroBias),row.primaryDriver,row.secondaryDriver,row.riskToneImpact,row.yieldImpact,row.commodityImpact,row.tradingSuitability,percent(row.confidence)]);
+  const timelineRows = (d.regimeTimeline || []).map(row => [formatTime(row.date),row.regime,row.trigger,row.affectedMarkets,percent(row.confidence),row.notes]);
+  const alertRows = (d.alerts || []).map(row => [formatTime(row.createdAt),row.title,row.alertType,statusBadge(row.severity),statusBadge(row.status)]);
+  const ai = d.aiSummary || {};
+  return `<section class="live-page macro-page">
+    ${header}
+    <div class="live-actions"><button type="button" data-macro-action="refresh">Refresh Macro Data</button><button type="button" data-macro-action="sync-sources">Sync Macro Sources</button><button type="button" data-macro-action="recalculate">Recalculate Macro Bias</button><a href="/workspace/data-sources-validation/source-configuration">Configure Sources</a><button type="button" data-macro-action="export">Export Macro Report</button></div>
+    <section class="live-kpis shr-kpis macro-kpis">${(d.summary || []).map(([label,value,tone]) => `<article class="${esc(tone || "info")}"><small>${display(label)}</small><strong>${typeof value === "number" ? percent(value) : display(value)}</strong></article>`).join("")}</section>
+    <article class="live-card macro-engine"><div class="live-title"><div><h2>MACRO BIAS ENGINE</h2><p>Currency, central bank, inflation, growth, yield, risk sentiment, commodity, safe haven and liquidity bias.</p></div>${statusBadge(score.globalMacroRegime)}</div><div class="menv-score-grid">${[["Currency Macro Bias",score.usdMacroBias],["Central Bank Bias",score.centralBankBias],["Inflation Bias",score.inflationPressure],["Growth Bias",score.growthMomentum],["Yield Bias",score.yieldDirection],["Risk Sentiment Bias",score.riskTone],["Commodity Bias",score.oilMacroBias],["Safe Haven Bias",score.goldMacroBias],["Liquidity Bias",score.globalMacroRegime]].map(([label,value]) => `<p><span>${label}</span><strong>${display(value)}</strong></p>`).join("")}</div></article>
+    <article class="live-card"><div class="live-title"><div><h2>MACRO DATA INPUTS PANEL</h2><p>Live macro source readiness. Missing inputs reduce the confidence score.</p></div></div>${inputRows.length ? table(["Input","Provider","Status","Freshness","Health","Weight","Last Updated","Used In Macro Score"], inputRows) : "<p>Input unavailable. Macro confidence score reduced.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>CURRENCY MACRO BIAS TABLE</h2><p>USD, EUR, GBP, JPY, CHF, CAD, AUD, NZD and CNY macro bias states.</p></div></div>${currencyRows.length ? table(["Currency","Economy","Inflation Trend","Growth Momentum","Central Bank Tone","Yield Support","Employment Strength","Risk Sensitivity","Macro Bias","Confidence","Last Updated"], currencyRows) : "<p>No live currency macro bias records available.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>CENTRAL BANK INTELLIGENCE PANEL</h2><p>Policy tone, rate path, expectations and currency impact.</p></div></div>${bankRows.length ? table(["Central Bank","Current Rate","Latest Decision","Policy Tone","Inflation Concern","Growth Concern","Next Meeting","Rate Path Bias","Market Expectation","Currency Impact"], bankRows) : "<p>No live central bank policy records available.</p>"}</article>
+    <div class="live-split"><article class="live-card"><div class="live-title"><div><h2>INFLATION & GROWTH DASHBOARD</h2><p>Inflation, core inflation, GDP, PMI, employment, retail sales and confidence metrics.</p></div></div>${growthRows.length ? table(["Metric","Latest","Previous","Forecast","Deviation","Trend Direction","Market Impact","Observed"], growthRows) : "<p>No live inflation or growth records available.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>YIELD & RATES DASHBOARD</h2><p>US yields, Bund, Gilt, JGB, real yields, curve and rate differential context.</p></div></div>${yieldRows.length ? table(["Metric","Latest","Previous","Direction","USD Bias","JPY Bias","Gold Impact","Equity Impact","Carry Trade","Observed"], yieldRows) : "<p>No live yield or rate records available.</p>"}</article></div>
+    <article class="live-card"><div class="live-title"><div><h2>CROSS-ASSET MACRO IMPACT</h2><p>Forex, metals, commodities, indices and crypto macro impact.</p></div></div>${crossRows.length ? table(["Asset","Macro Bias","Primary Driver","Secondary Driver","Risk Tone Impact","Yield Impact","Commodity Impact","Trading Suitability","Confidence"], crossRows) : "<p>No cross-asset macro impact records available.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>MACRO REGIME TIMELINE</h2><p>Historical regime shifts and triggers from live recalculation events.</p></div></div>${timelineRows.length ? table(["Date","Regime","Trigger","Affected Markets","Confidence","Notes"], timelineRows) : "<p>No macro regime history recorded yet.</p>"}</article>
+    <article class="live-card macro-ai"><div class="live-title"><div><h2>AI MACRO INTERPRETATION</h2><p>Current regime, currency strength, central bank divergence, inflation, growth, rates, cross-asset implications and caution.</p></div><div class="live-actions"><button type="button" data-macro-action="regenerate-summary">Regenerate Summary</button><button type="button" data-macro-action="alerts">Save to Journal</button><button type="button" data-macro-action="export">Export Brief</button><button type="button" data-macro-action="alerts">Create Alert</button></div></div><p>${display(ai.summary)}</p><div class="shr-drawer-grid">${[["Strongest Currencies",ai.strongestCurrencies],["Weakest Currencies",ai.weakestCurrencies],["Central Bank Divergence",ai.centralBankDivergence],["Inflation Risks",ai.inflationRisks],["Growth Risks",ai.growthRisks],["Yield / Rate Impact",ai.yieldRateImpact],["Gold / Oil / Equity",ai.crossAssetImplications],["Trading Caution",ai.tradingCaution]].map(([label,value]) => `<p><span>${label}</span><strong>${display(value)}</strong></p>`).join("")}</div></article>
+    <article class="live-card"><div class="live-title"><div><h2>MACRO ALERTS</h2><p>Macro bias, gold, risk tone, Fed tone, recession and yield curve alerts.</p></div><button type="button" data-macro-action="alerts">Create Alert</button></div>${alertRows.length ? table(["Time","Alert","Type","Severity","Status"], alertRows) : "<p>No macro alerts recorded yet.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>AUDIT LOG</h2><p>Macro recalculation, source sync, summary and alert actions.</p></div></div>${(d.audit || []).length ? table(["Timestamp","Action","Source","Actor","Status"], d.audit.map(row => [formatTime(row.created_at),row.action,row.source,row.actor,statusBadge(row.status)])) : "<p>No macro audit events recorded yet.</p>"}</article>
+  </section>`;
+}
+
+function renderSentimentIntelligencePage() {
+  const d = data || {};
+  const header = `<header class="live-header"><div><small>MARKET INTELLIGENCE CENTER / SENTIMENT INTELLIGENCE</small><h1>Sentiment Intelligence Center</h1><p>Unify news sentiment, social sentiment, macro tone, COT positioning, market environment, and AI analysis into one actionable sentiment dashboard.</p></div><aside>${statusBadge(d.status || "PRODUCTION LIVE")}<span>PRODUCTION LIVE</span><span>MOCK DATA DISABLED</span><span>LIVE INPUTS ONLY</span><span>LAST CALCULATION / ${formatTime(d.badges?.lastCalculation)}</span><span>SENTIMENT CONFIDENCE SCORE / ${d.badges?.sentimentConfidenceScore === null || d.badges?.sentimentConfidenceScore === undefined ? "Unavailable" : percent(d.badges.sentimentConfidenceScore)}</span></aside></header>`;
+  if (["DATABASE_NOT_CONFIGURED", "SCHEMA_NOT_READY"].includes(d.status)) {
+    return `<section class="live-page sentiment-page">${header}<article class="live-card live-empty"><h2>${display(d.status)}</h2><p>${display(d.message)}</p></article></section>`;
+  }
+  if (d.status === "EMPTY") {
+    return `<section class="live-page sentiment-page">${header}<article class="live-card live-empty"><h2>Sentiment intelligence cannot be calculated yet.</h2><p>Connect news sentiment, social sentiment, macro intelligence, COT, and market environment sources to enable unified sentiment analysis.</p><div class="live-actions"><a href="/workspace/data-sources-validation/source-configuration">Open Source Registry</a><a href="/workspace/data-sources-validation/source-configuration">Configure Sentiment Inputs</a><a href="/workspace/market-intelligence/dependency-matrix">Open Dependency Matrix</a><a href="/workspace/market-intelligence/source-health-review">Run Source Health Review</a></div></article></section>`;
+  }
+  const score = d.score || {};
+  const inputRows = (d.inputs || []).map(row => [row.input,row.source,statusBadge(row.status),row.freshness || "Input unavailable. Sentiment confidence score reduced.",percent(row.health),row.weight,formatTime(row.lastUpdated),row.usedInScore ? row.usedIn || "Unified sentiment score" : "Input unavailable. Sentiment confidence score reduced."]);
+  const instrumentRows = (d.instruments || []).map(row => [row.instrument,row.assetClass,row.newsSentiment,row.socialSentiment,row.macroBias,row.cotBias,row.priceConfirmation,row.volatilityRisk,statusBadge(row.overallSentiment),percent(row.confidence),row.tradingBias,formatTime(row.lastUpdated)]);
+  const matrixRows = (d.currencyMatrix || []).map(row => [row.currency,row.news,row.social,row.macro,row.cot,row.price,statusBadge(row.overall),percent(row.confidence),row.risk]);
+  const divergenceRows = (d.divergence || []).map(row => [row.instrument,row.news,row.social,row.macro,row.cot,row.price,row.agreementLevel,row.divergenceType,statusBadge(row.riskLevel),row.recommendation]);
+  const extremeRows = (d.extremeRisk || []).map(row => [row.riskType,row.instrument,statusBadge(row.riskLabel),row.description,row.recommendation,formatTime(row.createdAt)]);
+  const timelineRows = (d.timeline || []).map(row => [formatTime(row.time),row.instrument,row.previousSentiment,row.currentSentiment,row.change,row.trigger,percent(row.confidence)]);
+  const alertRows = (d.alerts || []).map(row => [formatTime(row.createdAt),row.title,row.alertType,statusBadge(row.severity),statusBadge(row.status)]);
+  const ai = d.aiSummary || {};
+  return `<section class="live-page sentiment-page">
+    ${header}
+    <div class="live-actions"><button type="button" data-sentiment-action="refresh">Refresh Sentiment</button><button type="button" data-sentiment-action="recalculate">Recalculate Sentiment</button><a href="/workspace/data-sources-validation/source-configuration">Configure Inputs</a><button type="button" data-sentiment-action="alerts">Create Alert</button><button type="button" data-sentiment-action="export">Export Report</button></div>
+    <section class="live-kpis shr-kpis sentiment-kpis">${(d.summary || []).map(([label,value,tone]) => `<article class="${esc(tone || "info")}"><small>${display(label)}</small><strong>${typeof value === "number" ? percent(value) : display(value)}</strong></article>`).join("")}</section>
+    <article class="live-card sentiment-engine"><div class="live-title"><div><h2>UNIFIED SENTIMENT ENGINE</h2><p>Overall score, asset and currency scores, risk tone, agreement, divergence, contrarian risk and confidence.</p></div>${statusBadge(score.overallMarketSentiment)}</div><div class="menv-score-grid">${[["Overall Sentiment Score",score.overallSentimentScore],["Risk Tone",score.riskTone],["Sentiment Agreement",score.mixedSignals],["Sentiment Divergence",score.sentimentDivergence],["Extreme Sentiment",score.extremeSentiment],["Contrarian Risk",score.overcrowdedTrades],["Confidence Score",percent(score.sentimentConfidence)],["News / Social / COT",`${score.newsSentiment || ""} / ${score.socialSentiment || ""} / ${score.cotPositioning || ""}`]].map(([label,value]) => `<p><span>${label}</span><strong>${display(value)}</strong></p>`).join("")}</div></article>
+    <article class="live-card"><div class="live-title"><div><h2>INPUT DEPENDENCY PANEL</h2><p>Live sentiment inputs. Missing feeds reduce confidence instead of being replaced.</p></div></div>${inputRows.length ? table(["Input","Source","Status","Freshness","Health","Weight","Last Updated","Used In Score"], inputRows) : "<p>Input unavailable. Sentiment confidence score reduced.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>INSTRUMENT SENTIMENT TABLE</h2><p>Unified news, social, macro, COT, price and volatility sentiment by instrument.</p></div></div>${instrumentRows.length ? table(["Instrument","Asset Class","News Sentiment","Social Sentiment","Macro Bias","COT Bias","Price Confirmation","Volatility Risk","Overall Sentiment","Confidence","Trading Bias","Last Updated"], instrumentRows) : "<p>No live instrument sentiment records available.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>CURRENCY SENTIMENT MATRIX</h2><p>USD, EUR, GBP, JPY, CHF, CAD, AUD, NZD, XAU, Oil and BTC sentiment matrix.</p></div></div>${matrixRows.length ? table(["Currency","News","Social","Macro","COT","Price","Overall","Confidence","Risk"], matrixRows) : "<p>No live currency sentiment matrix records available.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>SENTIMENT AGREEMENT / DIVERGENCE PANEL</h2><p>Where news, social, macro, COT and price agree or conflict.</p></div></div>${divergenceRows.length ? table(["Instrument","News","Social","Macro","COT","Price","Agreement Level","Divergence Type","Risk Level","Recommendation"], divergenceRows) : "<p>No sentiment divergence records available.</p>"}</article>
+    <div class="live-split"><article class="live-card"><div class="live-title"><div><h2>EXTREME SENTIMENT & CONTRARIAN RISK</h2><p>Overcrowded longs/shorts, retail FOMO/panic, exhaustion and reversal risk.</p></div></div>${extremeRows.length ? table(["Risk Type","Instrument","Risk","Description","Recommendation","Time"], extremeRows) : "<p>No extreme sentiment or contrarian risk records available.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>SENTIMENT TIMELINE</h2><p>Sentiment changes from news, social, economic, COT, macro, price and volatility triggers.</p></div></div>${timelineRows.length ? table(["Time","Instrument","Previous Sentiment","Current Sentiment","Change","Trigger","Confidence"], timelineRows) : "<p>No sentiment timeline events recorded yet.</p>"}</article></div>
+    <article class="live-card sentiment-ai"><div class="live-title"><div><h2>AI SENTIMENT INTERPRETATION</h2><p>Overall sentiment, strongest biases, agreement/conflicts, contrarian risk, trade caution and prop-firm caution.</p></div><div class="live-actions"><button type="button" data-sentiment-action="regenerate-summary">Regenerate Summary</button><button type="button" data-sentiment-action="alerts">Save to Journal</button><button type="button" data-sentiment-action="export">Export Brief</button><button type="button" data-sentiment-action="alerts">Create Alert</button></div></div><p>${display(ai.summary)}</p><div class="shr-drawer-grid">${[["Strongest Bullish Instruments",ai.strongestBullishInstruments],["Strongest Bearish Instruments",ai.strongestBearishInstruments],["Where Signals Agree",ai.agreementNotes],["Where Signals Conflict",ai.conflictNotes],["Contrarian Risks",ai.contrarianRisks],["Trade Caution",ai.tradeCaution],["Prop Firm Caution",ai.propFirmCaution]].map(([label,value]) => `<p><span>${label}</span><strong>${display(value)}</strong></p>`).join("")}</div></article>
+    <article class="live-card"><div class="live-title"><div><h2>SENTIMENT ALERTS</h2><p>Turn, divergence, risk-off, conflict and confidence threshold alerts.</p></div><button type="button" data-sentiment-action="alerts">Create Alert</button></div>${alertRows.length ? table(["Time","Alert","Type","Severity","Status"], alertRows) : "<p>No sentiment alerts recorded yet.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>AUDIT LOG</h2><p>Unified sentiment recalculation, summary and alert actions.</p></div></div>${(d.audit || []).length ? table(["Timestamp","Action","Source","Actor","Status"], d.audit.map(row => [formatTime(row.created_at),row.action,row.source,row.actor,statusBadge(row.status)])) : "<p>No sentiment audit events recorded yet.</p>"}</article>
+  </section>`;
+}
+
+function renderInstitutionalIntelligencePage() {
+  const d = data || {};
+  const header = `<header class="live-header"><div><small>MARKET INTELLIGENCE CENTER / INSTITUTIONAL INTELLIGENCE</small><h1>Institutional Intelligence Center</h1><p>Analyze smart money behaviour, liquidity zones, institutional positioning, order flow, COT bias, market structure, and accumulation/distribution signals.</p></div><aside>${statusBadge(d.status || "PRODUCTION LIVE")}<span>PRODUCTION LIVE</span><span>MOCK DATA DISABLED</span><span>LIVE INPUTS ONLY</span><span>LAST CALCULATION / ${formatTime(d.badges?.lastCalculation)}</span><span>INSTITUTIONAL CONFIDENCE SCORE / ${d.badges?.institutionalConfidenceScore === null || d.badges?.institutionalConfidenceScore === undefined ? "Unavailable" : percent(d.badges.institutionalConfidenceScore)}</span></aside></header>`;
+  if (["DATABASE_NOT_CONFIGURED", "SCHEMA_NOT_READY"].includes(d.status)) return `<section class="live-page institutional-page">${header}<article class="live-card live-empty"><h2>${display(d.status)}</h2><p>${display(d.message)}</p></article></section>`;
+  if (d.status === "EMPTY") return `<section class="live-page institutional-page">${header}<article class="live-card live-empty"><h2>Institutional intelligence cannot be calculated yet.</h2><p>Connect COT reports, market data, broker data, volume data, liquidity data, and macro intelligence sources to enable institutional analysis.</p><div class="live-actions"><a href="/workspace/data-sources-validation/source-configuration">Open Source Registry</a><a href="/workspace/data-sources-validation/source-configuration">Configure Institutional Inputs</a><a href="/workspace/market-intelligence/dependency-matrix">Open Dependency Matrix</a><a href="/workspace/market-intelligence/source-health-review">Run Source Health Review</a></div></article></section>`;
+  const score = d.score || {};
+  const inputRows = (d.inputs || []).map(row => [row.input,row.source,statusBadge(row.status),row.freshness || "Input unavailable. Institutional confidence score reduced.",percent(row.health),row.weight,formatTime(row.lastUpdated),row.usedInScore ? row.usedIn || "Institutional score" : "Input unavailable. Institutional confidence score reduced."]);
+  const instrumentRows = (d.instruments || []).map(row => [row.instrument,row.assetClass,row.cotBias,row.smartMoneyBias,row.liquidityBias,row.orderFlowBias,row.marketStructure,row.accumulationDistribution,row.retailTrapRisk,row.stopHuntRisk,statusBadge(row.institutionalBias),percent(row.confidence),formatTime(row.lastUpdated)]);
+  const liquidityRows = (d.liquidity || []).map(row => [row.instrument,row.liquidityZone,row.zoneType,display(row.priceLevel),row.timeframe,row.strength,display(row.distanceFromPrice),row.sweepStatus,statusBadge(row.riskLevel)]);
+  const cotRows = (d.cotPositioning || []).map(row => [row.market,display(row.commercialNet),display(row.largeSpecNet),display(row.smallSpecNet),display(row.openInterest),display(row.weeklyChange),row.cotBias,row.extremePositioning,formatTime(row.lastReportDate)]);
+  const accRows = (d.accumulationDistribution || []).map(row => [row.instrument,row.state,row.volumeBehaviour,row.rangeCompression,row.breakoutFailure,row.liquiditySweeps,row.candleDisplacement,row.cotDirection,row.marketStructureShift,percent(row.confidence)]);
+  const smcRows = (d.smc || []).map(row => [row.instrument,row.smcSignal,row.direction,row.timeframe,row.priceZone,row.strength,row.confirmation,display(row.invalidationLevel),statusBadge(row.status)]);
+  const trapRows = (d.retailTraps || []).map(row => [row.instrument,row.retailOvercrowding,row.stopClusterRisk,row.fakeBreakoutRisk,row.liquiditySweepRisk,row.newsTrapRisk,row.sessionTrapRisk,statusBadge(row.riskLevel)]);
+  const alertRows = (d.alerts || []).map(row => [formatTime(row.createdAt),row.title,row.alertType,statusBadge(row.severity),statusBadge(row.status)]);
+  const ai = d.aiSummary || {};
+  return `<section class="live-page institutional-page">
+    ${header}
+    <div class="live-actions"><button type="button" data-institutional-action="refresh">Refresh Intelligence</button><button type="button" data-institutional-action="recalculate">Recalculate Institutional Bias</button><a href="/workspace/data-sources-validation/source-configuration">Configure Inputs</a><button type="button" data-institutional-action="alerts">Create Alert</button><button type="button" data-institutional-action="export">Export Report</button></div>
+    <section class="live-kpis shr-kpis institutional-kpis">${(d.summary || []).map(([label,value,tone]) => `<article class="${esc(tone || "info")}"><small>${display(label)}</small><strong>${typeof value === "number" ? percent(value) : display(value)}</strong></article>`).join("")}</section>
+    <article class="live-card institutional-engine"><div class="live-title"><div><h2>INSTITUTIONAL INTELLIGENCE ENGINE</h2><p>Smart money, liquidity, accumulation/distribution, COT, order flow, structure, retail trap, stop hunt and manipulation scoring.</p></div>${statusBadge(score.institutionalBias)}</div><div class="menv-score-grid">${[["Smart Money Bias",score.smartMoneyDirection],["Liquidity Bias",score.liquidityCondition],["Accumulation / Distribution",`${score.accumulationSignals || 0} / ${score.distributionSignals || 0}`],["COT Alignment",score.cotAlignment],["Order Flow Bias",score.orderFlowBias],["Market Structure Bias",score.institutionalBias],["Retail Trap Risk",score.retailTrapRisk],["Stop Hunt Risk",score.stopHuntRisk],["Manipulation Risk",score.manipulationRisk],["Confidence",percent(score.institutionalConfidence)]].map(([label,value]) => `<p><span>${label}</span><strong>${display(value)}</strong></p>`).join("")}</div></article>
+    <article class="live-card"><div class="live-title"><div><h2>INPUT DEPENDENCY PANEL</h2><p>Institutional inputs. Missing feeds reduce confidence instead of being replaced.</p></div></div>${inputRows.length ? table(["Input","Source","Status","Freshness","Health","Weight","Last Updated","Used In Score"], inputRows) : "<p>Input unavailable. Institutional confidence score reduced.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>INSTRUMENT INSTITUTIONAL BIAS TABLE</h2><p>COT, smart money, liquidity, order flow, market structure, accumulation/distribution and trap risk by instrument.</p></div></div>${instrumentRows.length ? table(["Instrument","Asset Class","COT Bias","Smart Money Bias","Liquidity Bias","Order Flow Bias","Market Structure","Accumulation / Distribution","Retail Trap Risk","Stop Hunt Risk","Institutional Bias","Confidence","Last Updated"], instrumentRows) : "<p>No live institutional instrument records available.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>LIQUIDITY INTELLIGENCE PANEL</h2><p>Buy-side/sell-side liquidity, highs/lows, order blocks, fair value gaps, voids and stop clusters.</p></div></div>${liquidityRows.length ? table(["Instrument","Liquidity Zone","Zone Type","Price Level","Timeframe","Strength","Distance From Price","Sweep Status","Risk Level"], liquidityRows) : "<p>No live liquidity zone records available.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>COT INSTITUTIONAL POSITIONING PANEL</h2><p>Commercials, large speculators, small speculators, open interest and COT bias.</p></div></div>${cotRows.length ? table(["Market","Commercial Net","Large Spec Net","Small Spec Net","Open Interest","Weekly Change","COT Bias","Extreme Positioning","Last Report Date"], cotRows) : "<p>No live COT positioning records available.</p>"}</article>
+    <div class="live-split"><article class="live-card"><div class="live-title"><div><h2>ACCUMULATION / DISTRIBUTION PANEL</h2><p>Volume behaviour, range compression, failed breakouts, sweeps, displacement, COT and structure shifts.</p></div></div>${accRows.length ? table(["Instrument","State","Volume Behaviour","Range Compression","Breakout Failure","Liquidity Sweeps","Candle Displacement","COT Direction","Market Structure Shift","Confidence"], accRows) : "<p>No accumulation/distribution records available.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>SMART MONEY CONCEPTS PANEL</h2><p>BOS, CHoCH, order blocks, FVG, liquidity sweeps, mitigation, breakers, premium/discount and displacement.</p></div></div>${smcRows.length ? table(["Instrument","SMC Signal","Direction","Timeframe","Price Zone","Strength","Confirmation","Invalidation Level","Status"], smcRows) : "<p>No smart money concept records available.</p>"}</article></div>
+    <article class="live-card"><div class="live-title"><div><h2>RETAIL TRAP & STOP HUNT RISK</h2><p>Retail overcrowding, stop clusters, fake breakouts, liquidity sweeps, news traps and session traps.</p></div></div>${trapRows.length ? table(["Instrument","Retail Overcrowding","Stop Cluster Risk","Fake Breakout Risk","Liquidity Sweep Risk","News Trap Risk","Session Trap Risk","Risk Level"], trapRows) : "<p>No retail trap or stop hunt records available.</p>"}</article>
+    <article class="live-card institutional-ai"><div class="live-title"><div><h2>AI INSTITUTIONAL INTERPRETATION</h2><p>Likely institutional behaviour, aligned instruments, liquidity targets, COT confirmation, trap warnings and caution.</p></div><div class="live-actions"><button type="button" data-institutional-action="regenerate-summary">Regenerate Summary</button><button type="button" data-institutional-action="alerts">Save to Journal</button><button type="button" data-institutional-action="export">Export Brief</button><button type="button" data-institutional-action="alerts">Create Alert</button></div></div><p>${display(ai.summary)}</p><div class="shr-drawer-grid">${[["Best Aligned Instruments",ai.bestAlignedInstruments],["Liquidity Targets",ai.liquidityTargets],["Smart Money Direction",ai.smartMoneyDirection],["COT Confirmation",ai.cotConfirmation],["Retail Trap Warnings",ai.retailTrapWarnings],["Stop Hunt Risk",ai.stopHuntRisk],["Trading Caution",ai.tradingCaution]].map(([label,value]) => `<p><span>${label}</span><strong>${display(value)}</strong></p>`).join("")}</div></article>
+    <article class="live-card"><div class="live-title"><div><h2>INSTITUTIONAL ALERTS</h2><p>Liquidity sweeps, institutional bias, distribution risk, stop hunt, FVG mitigation and retail trap alerts.</p></div><button type="button" data-institutional-action="alerts">Create Alert</button></div>${alertRows.length ? table(["Time","Alert","Type","Severity","Status"], alertRows) : "<p>No institutional alerts recorded yet.</p>"}</article>
+    <article class="live-card"><div class="live-title"><div><h2>AUDIT LOG</h2><p>Institutional recalculation, summary and alert actions.</p></div></div>${(d.audit || []).length ? table(["Timestamp","Action","Source","Actor","Status"], d.audit.map(row => [formatTime(row.created_at),row.action,row.source,row.actor,statusBadge(row.status)])) : "<p>No institutional audit events recorded yet.</p>"}</article>
+  </section>`;
+}
+
 function renderValidatedPackagePage() {
   const d = data || {};
   const meta = d.metadata || {};
@@ -527,11 +635,17 @@ async function load(slug, { silent = false, owner = "card-2" } = {}) {
             ? "/api/market-intelligence/dependency-matrix"
             : owner === "card-2" && slug === "market-environment"
               ? "/api/market-intelligence/market-environment"
+              : owner === "card-2" && slug === "macro-intelligence"
+                ? "/api/market-intelligence/macro-intelligence"
+                : owner === "card-2" && slug === "sentiment-intelligence"
+                  ? "/api/market-intelligence/sentiment-intelligence"
+                  : owner === "card-2" && slug === "institutional-intelligence"
+                    ? "/api/market-intelligence/institutional-intelligence"
         : "/api/market-intelligence/live/dashboard";
     const response = await fetch(`${API}${endpoint}`, { cache: "no-store" });
     if (!response.ok) throw new Error(`Live adapter probe failed (${response.status})`);
     const rawPayload = await response.json();
-    const payload = owner === "card-2" && ["dashboard", "validated-package", "source-health-review", "dependency-matrix", "market-environment"].includes(slug) ? rawPayload : parseLiveDashboardPayload(rawPayload);
+    const payload = owner === "card-2" && ["dashboard", "validated-package", "source-health-review", "dependency-matrix", "market-environment", "macro-intelligence", "sentiment-intelligence", "institutional-intelligence"].includes(slug) ? rawPayload : parseLiveDashboardPayload(rawPayload);
     if (!payload) throw new Error("Live dashboard response was invalid");
     data = payload;
     error = "";
@@ -550,6 +664,24 @@ async function load(slug, { silent = false, owner = "card-2" } = {}) {
 }
 
 export function bindLiveMarketIntelligencePage(slug, { owner = "card-2" } = {}) {
+  document.querySelectorAll("[data-institutional-action]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      runInstitutionalAction(button.dataset.institutionalAction, slug);
+    });
+  });
+  document.querySelectorAll("[data-sentiment-action]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      runSentimentAction(button.dataset.sentimentAction, slug);
+    });
+  });
+  document.querySelectorAll("[data-macro-action]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      runMacroAction(button.dataset.macroAction, slug);
+    });
+  });
   document.querySelectorAll("[data-market-env-action]").forEach((button) => {
     button.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -723,6 +855,105 @@ async function runMarketEnvironmentAction(action, slug) {
     });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error || `Market environment action failed (${response.status})`);
+    showLiveStatus(`${endpoint}: recorded`);
+    await load(slug, { owner: "card-2" });
+  } catch (reason) {
+    showLiveStatus(reason.message, "bad");
+  } finally {
+    setLiveButtonsBusy(false);
+  }
+}
+
+async function runMacroAction(action, slug) {
+  if (action === "refresh") return load(slug, { owner: "card-2" });
+  if (action === "export") {
+    const payload = JSON.stringify(data || {}, null, 2);
+    const anchor = document.createElement("a");
+    anchor.href = URL.createObjectURL(new Blob([payload], { type: "application/json" }));
+    anchor.download = `macro-intelligence-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.click();
+    URL.revokeObjectURL(anchor.href);
+    return showLiveStatus("Macro report export prepared");
+  }
+  const body = action === "alerts"
+    ? { title: "Macro intelligence operator alert", severity: "info", alertType: "operator_alert" }
+    : {};
+  const endpoint = action === "alerts" ? "alerts" : action;
+  setLiveButtonsBusy(true, "Working...");
+  try {
+    const response = await fetch(`${API}/api/market-intelligence/macro-intelligence/${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error || `Macro intelligence action failed (${response.status})`);
+    showLiveStatus(`${endpoint}: recorded`);
+    await load(slug, { owner: "card-2" });
+  } catch (reason) {
+    showLiveStatus(reason.message, "bad");
+  } finally {
+    setLiveButtonsBusy(false);
+  }
+}
+
+async function runSentimentAction(action, slug) {
+  if (action === "refresh") return load(slug, { owner: "card-2" });
+  if (action === "export") {
+    const payload = JSON.stringify(data || {}, null, 2);
+    const anchor = document.createElement("a");
+    anchor.href = URL.createObjectURL(new Blob([payload], { type: "application/json" }));
+    anchor.download = `sentiment-intelligence-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.click();
+    URL.revokeObjectURL(anchor.href);
+    return showLiveStatus("Sentiment report export prepared");
+  }
+  const body = action === "alerts"
+    ? { title: "Sentiment intelligence operator alert", severity: "info", alertType: "operator_alert" }
+    : {};
+  const endpoint = action === "alerts" ? "alerts" : action;
+  setLiveButtonsBusy(true, "Working...");
+  try {
+    const response = await fetch(`${API}/api/market-intelligence/sentiment-intelligence/${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error || `Sentiment intelligence action failed (${response.status})`);
+    showLiveStatus(`${endpoint}: recorded`);
+    await load(slug, { owner: "card-2" });
+  } catch (reason) {
+    showLiveStatus(reason.message, "bad");
+  } finally {
+    setLiveButtonsBusy(false);
+  }
+}
+
+async function runInstitutionalAction(action, slug) {
+  if (action === "refresh") return load(slug, { owner: "card-2" });
+  if (action === "export") {
+    const payload = JSON.stringify(data || {}, null, 2);
+    const anchor = document.createElement("a");
+    anchor.href = URL.createObjectURL(new Blob([payload], { type: "application/json" }));
+    anchor.download = `institutional-intelligence-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.click();
+    URL.revokeObjectURL(anchor.href);
+    return showLiveStatus("Institutional report export prepared");
+  }
+  const body = action === "alerts"
+    ? { title: "Institutional intelligence operator alert", severity: "info", alertType: "operator_alert" }
+    : {};
+  const endpoint = action === "alerts" ? "alerts" : action;
+  setLiveButtonsBusy(true, "Working...");
+  try {
+    const response = await fetch(`${API}/api/market-intelligence/institutional-intelligence/${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error || `Institutional intelligence action failed (${response.status})`);
     showLiveStatus(`${endpoint}: recorded`);
     await load(slug, { owner: "card-2" });
   } catch (reason) {

@@ -28,6 +28,9 @@ import { getValidatedPackageDashboard, persistValidatedPackageFromCardOne } from
 import { getSourceHealthReviewDashboard, getSourceHealthReviewSlice, runSourceHealthReviewAction } from "../../../packages/market-intelligence/src/source-health-review.js";
 import { getDependencyMatrixDashboard, getDependencyMatrixSlice, runDependencyMatrixAction } from "../../../packages/market-intelligence/src/dependency-matrix.js";
 import { getMarketEnvironmentDashboard, getMarketEnvironmentSlice, runMarketEnvironmentAction } from "../../../packages/market-intelligence/src/market-environment.js";
+import { getMacroIntelligenceDashboard, getMacroIntelligenceSlice, runMacroIntelligenceAction } from "../../../packages/market-intelligence/src/macro-intelligence.js";
+import { getSentimentIntelligenceDashboard, getSentimentIntelligenceSlice, runSentimentIntelligenceAction } from "../../../packages/market-intelligence/src/sentiment-intelligence.js";
+import { getInstitutionalIntelligenceDashboard, getInstitutionalIntelligenceSlice, runInstitutionalIntelligenceAction } from "../../../packages/market-intelligence/src/institutional-intelligence.js";
 import { DATA_QUALITY_GATE_RULES, getDataQualityGateDashboard } from "../../../packages/market-intelligence/src/data-quality-gate.js";
 import { buildAccountPortfolioLiveSourceSnapshot } from "../../../packages/market-intelligence/src/account-portfolio-source-validation.js";
 import { buildPropFirmRulesLiveSourceSnapshot } from "../../../packages/market-intelligence/src/prop-firm-rules-source-validation.js";
@@ -574,6 +577,35 @@ const routes = {
   "GET /api/market-intelligence/market-environment/session": () => getMarketEnvironmentSlice("session"),
   "GET /api/market-intelligence/market-environment/events": () => getMarketEnvironmentSlice("events"),
   "GET /api/market-intelligence/market-environment/export": () => getMarketEnvironmentSlice("export"),
+  "GET /api/market-intelligence/macro-intelligence": () => getMacroIntelligenceDashboard(),
+  "GET /api/market-intelligence/macro-intelligence/summary": () => getMacroIntelligenceSlice("summary"),
+  "GET /api/market-intelligence/macro-intelligence/inputs": () => getMacroIntelligenceSlice("inputs"),
+  "GET /api/market-intelligence/macro-intelligence/currency-bias": () => getMacroIntelligenceSlice("currency-bias"),
+  "GET /api/market-intelligence/macro-intelligence/central-banks": () => getMacroIntelligenceSlice("central-banks"),
+  "GET /api/market-intelligence/macro-intelligence/inflation-growth": () => getMacroIntelligenceSlice("inflation-growth"),
+  "GET /api/market-intelligence/macro-intelligence/yields-rates": () => getMacroIntelligenceSlice("yields-rates"),
+  "GET /api/market-intelligence/macro-intelligence/cross-asset": () => getMacroIntelligenceSlice("cross-asset"),
+  "GET /api/market-intelligence/macro-intelligence/regime-timeline": () => getMacroIntelligenceSlice("regime-timeline"),
+  "GET /api/market-intelligence/macro-intelligence/export": () => getMacroIntelligenceSlice("export"),
+  "GET /api/market-intelligence/sentiment-intelligence": () => getSentimentIntelligenceDashboard(),
+  "GET /api/market-intelligence/sentiment-intelligence/summary": () => getSentimentIntelligenceSlice("summary"),
+  "GET /api/market-intelligence/sentiment-intelligence/inputs": () => getSentimentIntelligenceSlice("inputs"),
+  "GET /api/market-intelligence/sentiment-intelligence/instruments": () => getSentimentIntelligenceSlice("instruments"),
+  "GET /api/market-intelligence/sentiment-intelligence/currency-matrix": () => getSentimentIntelligenceSlice("currency-matrix"),
+  "GET /api/market-intelligence/sentiment-intelligence/divergence": () => getSentimentIntelligenceSlice("divergence"),
+  "GET /api/market-intelligence/sentiment-intelligence/extreme-risk": () => getSentimentIntelligenceSlice("extreme-risk"),
+  "GET /api/market-intelligence/sentiment-intelligence/timeline": () => getSentimentIntelligenceSlice("timeline"),
+  "GET /api/market-intelligence/sentiment-intelligence/export": () => getSentimentIntelligenceSlice("export"),
+  "GET /api/market-intelligence/institutional-intelligence": () => getInstitutionalIntelligenceDashboard(),
+  "GET /api/market-intelligence/institutional-intelligence/summary": () => getInstitutionalIntelligenceSlice("summary"),
+  "GET /api/market-intelligence/institutional-intelligence/inputs": () => getInstitutionalIntelligenceSlice("inputs"),
+  "GET /api/market-intelligence/institutional-intelligence/instruments": () => getInstitutionalIntelligenceSlice("instruments"),
+  "GET /api/market-intelligence/institutional-intelligence/liquidity": () => getInstitutionalIntelligenceSlice("liquidity"),
+  "GET /api/market-intelligence/institutional-intelligence/cot-positioning": () => getInstitutionalIntelligenceSlice("cot-positioning"),
+  "GET /api/market-intelligence/institutional-intelligence/accumulation-distribution": () => getInstitutionalIntelligenceSlice("accumulation-distribution"),
+  "GET /api/market-intelligence/institutional-intelligence/smc": () => getInstitutionalIntelligenceSlice("smc"),
+  "GET /api/market-intelligence/institutional-intelligence/retail-traps": () => getInstitutionalIntelligenceSlice("retail-traps"),
+  "GET /api/market-intelligence/institutional-intelligence/export": () => getInstitutionalIntelligenceSlice("export"),
   "GET /api/market-intelligence/data-sources/health": async () => ({ sourceMode: "LIVE_ADAPTERS_ONLY", sources: await getLiveSourceSnapshots() }),
   "GET /api/market-intelligence/economic-events": () => ({ events: [], status: "NOT_CONFIGURED" }),
   "GET /api/market-intelligence/news-sentiment": () => getNewsDashboard(),
@@ -1254,6 +1286,51 @@ const server = createServer(async (request, response) => {
         ? { liveSnapshots: await getLiveSourceSnapshots(), ticks: await getLatestTicks(40) }
         : {};
       return json(response, 200, { accepted: true, event: await runMarketEnvironmentAction(action, body, auditFromRequest(request).userLabel, context) });
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (request.method === "POST" && url.pathname.startsWith("/api/market-intelligence/macro-intelligence/")) {
+    const action = url.pathname.split("/").pop();
+    const body = await readBody(request).catch(() => ({}));
+    try {
+      const context = action === "recalculate" || action === "regenerate-summary" || action === "sync-sources"
+        ? { liveSnapshots: await getLiveSourceSnapshots() }
+        : {};
+      return json(response, 200, { accepted: true, event: await runMacroIntelligenceAction(action, body, auditFromRequest(request).userLabel, context) });
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (request.method === "POST" && url.pathname.startsWith("/api/market-intelligence/sentiment-intelligence/")) {
+    const action = url.pathname.split("/").pop();
+    const body = await readBody(request).catch(() => ({}));
+    try {
+      const context = action === "recalculate" || action === "regenerate-summary"
+        ? { liveSnapshots: await getLiveSourceSnapshots(), ticks: await getLatestTicks(40) }
+        : {};
+      return json(response, 200, { accepted: true, event: await runSentimentIntelligenceAction(action, body, auditFromRequest(request).userLabel, context) });
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (request.method === "POST" && url.pathname.startsWith("/api/market-intelligence/institutional-intelligence/")) {
+    const action = url.pathname.split("/").pop();
+    const body = await readBody(request).catch(() => ({}));
+    try {
+      const context = action === "recalculate" || action === "regenerate-summary"
+        ? { liveSnapshots: await getLiveSourceSnapshots(), ticks: await getLatestTicks(40) }
+        : {};
+      return json(response, 200, { accepted: true, event: await runInstitutionalIntelligenceAction(action, body, auditFromRequest(request).userLabel, context) });
     } catch (reason) {
       return json(response, reason?.status || 400, {
         error: reason instanceof Error ? reason.message : String(reason),
