@@ -25,7 +25,7 @@ createServer((request, response) => {
         ? `public${pathname}`
       : pathname.startsWith("/workspace/mt5-infrastructure/")
         ? "mt5-infrastructure.html"
-      : pathname === "/market-intelligence" || pathname.startsWith("/market-intelligence/") || pathname.startsWith("/workspace/market-intelligence/")
+      : pathname === "/market-intelligence" || pathname.startsWith("/market-intelligence/") || pathname.startsWith("/workspace/market-intelligence/") || pathname.startsWith("/workspace/data-sources-validation/")
         ? "market-intelligence.html"
       : pathname.slice(1);
   const file = normalize(join(root, requested));

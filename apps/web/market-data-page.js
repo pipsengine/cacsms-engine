@@ -11,7 +11,7 @@ const AUTO_REFRESH_MS = 30000;
 let marketDataRefreshTimer = null;
 
 function ownsCurrentRoute() {
-  return location.pathname.endsWith("/market-data");
+  return location.pathname.endsWith("/market-data") || location.pathname.endsWith("/market-data-providers");
 }
 
 export function unmountMarketDataOperationsCenter() {

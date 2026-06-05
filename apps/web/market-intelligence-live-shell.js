@@ -9,15 +9,54 @@ import { mountSocialSentimentCenter, unmountSocialSentimentCenter } from "./soci
 import { mountAccountPortfolioCenter, unmountAccountPortfolioCenter } from "./account-portfolio-page.js";
 import { mountPropFirmRulesCenter, unmountPropFirmRulesCenter } from "./prop-firm-rules-page.js";
 
+const dataSourcesValidationPrefix = "/workspace/data-sources-validation/";
 const marketIntelligencePrefix = "/workspace/market-intelligence/";
 
+const legacyRouteAliases = {
+  "/market-intelligence": "/workspace/market-intelligence/dashboard",
+  "/market-intelligence/data-sources-feed-health": "/workspace/data-sources-validation/dashboard",
+  "/market-intelligence/institutional-cot-data": "/workspace/data-sources-validation/institutional-cot",
+  "/market-intelligence/account-portfolio-data": "/workspace/data-sources-validation/account-portfolio",
+  "/workspace/market-intelligence/data-sources": "/workspace/data-sources-validation/dashboard",
+  "/workspace/market-intelligence/source-configuration": "/workspace/data-sources-validation/source-configuration",
+  "/workspace/market-intelligence/market-data": "/workspace/data-sources-validation/market-data-providers",
+  "/workspace/market-intelligence/news-sentiment": "/workspace/data-sources-validation/news-sources",
+  "/workspace/market-intelligence/economic-calendar": "/workspace/data-sources-validation/economic-calendar",
+  "/workspace/market-intelligence/social-sentiment": "/workspace/data-sources-validation/social-sentiment",
+  "/workspace/market-intelligence/institutional-cot": "/workspace/data-sources-validation/institutional-cot",
+  "/workspace/market-intelligence/historical-data": "/workspace/data-sources-validation/historical-data",
+  "/workspace/market-intelligence/broker-data": "/workspace/data-sources-validation/broker-data",
+  "/workspace/market-intelligence/account-portfolio": "/workspace/data-sources-validation/account-portfolio",
+  "/workspace/market-intelligence/prop-firm-rules": "/workspace/data-sources-validation/prop-firm-rules",
+  "/workspace/market-intelligence/data-quality-gate": "/workspace/data-sources-validation/data-quality-gate"
+};
+
+const moduleSlugAliases = {
+  "market-data-providers": "market-data",
+  "news-sources": "news-sentiment"
+};
+
+function normalizeRoute(route = location.pathname) {
+  return legacyRouteAliases[route] || route;
+}
+
 function slugForPath(pathname = location.pathname) {
+  pathname = normalizeRoute(pathname);
   const parts = pathname.split("/").filter(Boolean);
   return parts[0] === "workspace" ? parts[2] : parts[1] || "dashboard";
 }
 
-function isMarketIntelligenceRoute(route) {
-  return route.startsWith(marketIntelligencePrefix) || route === "/market-intelligence" || route.startsWith("/market-intelligence/");
+function routeOwner(pathname = location.pathname) {
+  const normalized = normalizeRoute(pathname);
+  return normalized.startsWith(dataSourcesValidationPrefix) ? "card-1" : "card-2";
+}
+
+function moduleSlugFor(slug) {
+  return moduleSlugAliases[slug] || slug;
+}
+
+function isWorkspaceRoute(route) {
+  return route.startsWith(dataSourcesValidationPrefix) || route.startsWith(marketIntelligencePrefix) || route === "/market-intelligence" || route.startsWith("/market-intelligence/");
 }
 
 function unmountCurrentPage() {
@@ -31,33 +70,35 @@ function unmountCurrentPage() {
 
 function renderCurrentPage() {
   const slug = slugForPath();
+  const moduleSlug = moduleSlugFor(slug);
+  const owner = routeOwner();
   unmountCurrentPage();
   sidebar.render();
-  if (slug === "institutional-cot") {
+  if (moduleSlug === "institutional-cot" && owner === "card-1") {
     document.querySelector("#intelligence-content").innerHTML = renderInstitutionalCotCenter();
     bindInstitutionalCotCenter();
-  } else if (slug === "source-configuration") {
+  } else if (moduleSlug === "source-configuration" && owner === "card-1") {
     mountSourceConfigurationCenter();
-  } else if (slug === "market-data") {
+  } else if (moduleSlug === "market-data" && owner === "card-1") {
     mountMarketDataOperationsCenter();
-  } else if (slug === "news-sentiment") {
+  } else if (moduleSlug === "news-sentiment" && owner === "card-1") {
     mountNewsSentimentCenter();
-  } else if (slug === "economic-calendar") {
+  } else if (moduleSlug === "economic-calendar" && owner === "card-1") {
     mountEconomicCalendarCenter();
-  } else if (slug === "social-sentiment") {
+  } else if (moduleSlug === "social-sentiment" && owner === "card-1") {
     mountSocialSentimentCenter();
-  } else if (slug === "account-portfolio") {
+  } else if (moduleSlug === "account-portfolio" && owner === "card-1") {
     mountAccountPortfolioCenter();
-  } else if (slug === "prop-firm-rules") {
+  } else if (moduleSlug === "prop-firm-rules" && owner === "card-1") {
     mountPropFirmRulesCenter();
   } else {
-    document.querySelector("#intelligence-content").innerHTML = renderLiveMarketIntelligencePage(slug);
-    bindLiveMarketIntelligencePage(slug);
+    document.querySelector("#intelligence-content").innerHTML = renderLiveMarketIntelligencePage(slug, { owner });
+    bindLiveMarketIntelligencePage(slug, { owner });
   }
 }
 
 export function navigateMarketIntelligence(route) {
-  if (!isMarketIntelligenceRoute(route)) {
+  if (!isWorkspaceRoute(route)) {
     location.href = route;
     return;
   }
@@ -67,7 +108,7 @@ export function navigateMarketIntelligence(route) {
 
 const sidebar = initEnterpriseSidebar("market-nav", {
   onNavigate(route) {
-    if (!isMarketIntelligenceRoute(route)) return false;
+    if (!isWorkspaceRoute(route)) return false;
     navigateMarketIntelligence(route);
     return true;
   }

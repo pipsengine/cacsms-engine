@@ -1,17 +1,36 @@
+const dataSourcesValidationChildren = [
+  ["Data Sources & Feed Health", "/workspace/data-sources-validation/dashboard"],
+  ["Source Configuration Center", "/workspace/data-sources-validation/source-configuration"],
+  ["Market Data Providers", "/workspace/data-sources-validation/market-data-providers"],
+  ["News & Sentiment Sources", "/workspace/data-sources-validation/news-sources"],
+  ["Economic Calendar", "/workspace/data-sources-validation/economic-calendar"],
+  ["Social & Community Sentiment", "/workspace/data-sources-validation/social-sentiment"],
+  ["Institutional / COT Data", "/workspace/data-sources-validation/institutional-cot"],
+  ["Historical Data", "/workspace/data-sources-validation/historical-data"],
+  ["Broker Data", "/workspace/data-sources-validation/broker-data"],
+  ["Account Portfolio", "/workspace/data-sources-validation/account-portfolio"],
+  ["Prop Firm Rules", "/workspace/data-sources-validation/prop-firm-rules"],
+  ["Data Quality Gate", "/workspace/data-sources-validation/data-quality-gate"],
+  ["Source Validation Logs", "/workspace/data-sources-validation/logs"],
+  ["Card 1 Test Harness", "/workspace/data-sources-validation/test-harness"]
+];
+
 const marketIntelligenceChildren = [
   ["Intelligence Gathering Dashboard", "/workspace/market-intelligence/dashboard"],
-  ["Data Sources Validation", "/workspace/market-intelligence/data-sources"],
-  ["Source Configuration Center", "/workspace/market-intelligence/source-configuration"],
-  ["Market Data Providers", "/workspace/market-intelligence/market-data"],
-  ["News & Sentiment Sources", "/workspace/market-intelligence/news-sentiment"],
-  ["Economic Calendar", "/workspace/market-intelligence/economic-calendar"],
-  ["Social & Community Sentiment", "/workspace/market-intelligence/social-sentiment"],
-  ["Institutional / COT Data", "/workspace/market-intelligence/institutional-cot"],
-  ["Historical Data", "/workspace/market-intelligence/historical-data"],
-  ["Broker Data", "/workspace/market-intelligence/broker-data"],
-  ["Account Portfolio", "/workspace/market-intelligence/account-portfolio"],
-  ["Prop Firm Rules", "/workspace/market-intelligence/prop-firm-rules"],
-  ["Data Quality Gate", "/workspace/market-intelligence/data-quality-gate"]
+  ["Validated Intelligence Package", "/workspace/market-intelligence/validated-package"],
+  ["Source Health Review", "/workspace/market-intelligence/source-health-review"],
+  ["Intelligence Dependency Matrix", "/workspace/market-intelligence/dependency-matrix"],
+  ["Market Environment Intelligence", "/workspace/market-intelligence/market-environment"],
+  ["Macro Intelligence", "/workspace/market-intelligence/macro-intelligence"],
+  ["Sentiment Intelligence", "/workspace/market-intelligence/sentiment-intelligence"],
+  ["Institutional Intelligence", "/workspace/market-intelligence/institutional-intelligence"],
+  ["Broker & Liquidity Intelligence", "/workspace/market-intelligence/broker-liquidity"],
+  ["Portfolio & Account Intelligence", "/workspace/market-intelligence/portfolio-intelligence"],
+  ["Intelligence Scoring Engine", "/workspace/market-intelligence/scoring-engine"],
+  ["Market Intelligence Package Builder", "/workspace/market-intelligence/package-builder"],
+  ["Intelligence Handoff to Asset Scanner", "/workspace/market-intelligence/handoff"],
+  ["Intelligence Audit & Logs", "/workspace/market-intelligence/logs"],
+  ["Card 2 Test Harness", "/workspace/market-intelligence/test-harness"]
 ];
 
 const iconPaths = {
@@ -40,6 +59,7 @@ const iconPaths = {
 export const sidebarFunctions = [
   ["executive", "LayoutDashboard", "Executive Command Center", "LIVE", [["Executive Dashboard", "/"], ["Workflow Dashboard", "/executive-command-center/workflow-dashboard"]], true],
   ["workflow", "Workflow", "End-to-End Workflow", "LIVE", [["Workflow Dashboard", "/workflow/end-to-end"]]],
+  ["data-sources-validation", "ClipboardCheck", "Data Sources Validation", "PASSED", dataSourcesValidationChildren, true],
   ["market-intelligence", "Radar", "Market Intelligence Center", "READY", marketIntelligenceChildren, true],
   ["asset-scanner", "ScanSearch", "20-Asset Universe Scanner", "", [["Scanner Dashboard", "/workspace/asset-scanner/dashboard"]]],
   ["market-analysis", "LineChart", "Market Analysis", "", [["Analysis Dashboard", "/workspace/market-analysis/dashboard"]]],
@@ -65,9 +85,21 @@ export const sidebarFunctions = [
 
 const legacyRoutes = {
   "/market-intelligence": "/workspace/market-intelligence/dashboard",
-  "/market-intelligence/data-sources-feed-health": "/workspace/market-intelligence/data-sources",
-  "/market-intelligence/institutional-cot-data": "/workspace/market-intelligence/institutional-cot",
-  "/market-intelligence/account-portfolio-data": "/workspace/market-intelligence/account-portfolio"
+  "/market-intelligence/data-sources-feed-health": "/workspace/data-sources-validation/dashboard",
+  "/market-intelligence/institutional-cot-data": "/workspace/data-sources-validation/institutional-cot",
+  "/market-intelligence/account-portfolio-data": "/workspace/data-sources-validation/account-portfolio",
+  "/workspace/market-intelligence/data-sources": "/workspace/data-sources-validation/dashboard",
+  "/workspace/market-intelligence/source-configuration": "/workspace/data-sources-validation/source-configuration",
+  "/workspace/market-intelligence/market-data": "/workspace/data-sources-validation/market-data-providers",
+  "/workspace/market-intelligence/news-sentiment": "/workspace/data-sources-validation/news-sources",
+  "/workspace/market-intelligence/economic-calendar": "/workspace/data-sources-validation/economic-calendar",
+  "/workspace/market-intelligence/social-sentiment": "/workspace/data-sources-validation/social-sentiment",
+  "/workspace/market-intelligence/institutional-cot": "/workspace/data-sources-validation/institutional-cot",
+  "/workspace/market-intelligence/historical-data": "/workspace/data-sources-validation/historical-data",
+  "/workspace/market-intelligence/broker-data": "/workspace/data-sources-validation/broker-data",
+  "/workspace/market-intelligence/account-portfolio": "/workspace/data-sources-validation/account-portfolio",
+  "/workspace/market-intelligence/prop-firm-rules": "/workspace/data-sources-validation/prop-firm-rules",
+  "/workspace/market-intelligence/data-quality-gate": "/workspace/data-sources-validation/data-quality-gate"
 };
 
 const sidebarStateKey = "cacsms-enterprise-sidebar";

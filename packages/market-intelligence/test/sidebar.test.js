@@ -2,14 +2,26 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-test("Market Intelligence sidebar defines the required intelligence pages", () => {
+test("Data Sources Validation sidebar defines the required Card 1 pages", () => {
   const navigation = readFileSync("apps/web/lib/navigation/sidebar-config.ts", "utf8");
   for (const page of [
-    "Intelligence Gathering Dashboard", "Data Sources Validation", "Source Configuration Center", "Market Data Providers",
-    "News & Sentiment Sources", "Economic Calendar", "Social & Community Sentiment", "Institutional / COT Data", "Historical Data", "Broker Data",
-    "Account Portfolio", "Prop Firm Rules", "Data Quality Gate"
+    "Data Sources & Feed Health", "Source Configuration Center", "Market Data Providers", "News & Sentiment Sources",
+    "Economic Calendar", "Social & Community Sentiment", "Institutional / COT Data", "Historical Data", "Broker Data",
+    "Account Portfolio", "Prop Firm Rules", "Data Quality Gate", "Source Validation Logs", "Card 1 Test Harness"
   ]) assert.match(navigation, new RegExp(page.replace(/[&/]/g, "\\$&")));
-  assert.doesNotMatch(navigation, /id: "data-sources-validation"/);
+  assert.match(navigation, /id: "data-sources-validation"/);
+});
+
+test("Market Intelligence sidebar defines the required Card 2 pages", () => {
+  const navigation = readFileSync("apps/web/lib/navigation/sidebar-config.ts", "utf8");
+  const intelligence = navigation.slice(navigation.indexOf('id: "market-intelligence"'), navigation.indexOf('id: "asset-scanner"'));
+  for (const page of [
+    "Intelligence Gathering Dashboard", "Validated Intelligence Package", "Source Health Review", "Intelligence Dependency Matrix",
+    "Market Environment Intelligence", "Macro Intelligence", "Sentiment Intelligence", "Institutional Intelligence",
+    "Broker & Liquidity Intelligence", "Portfolio & Account Intelligence", "Intelligence Scoring Engine",
+    "Market Intelligence Package Builder", "Intelligence Handoff to Asset Scanner", "Intelligence Audit & Logs", "Card 2 Test Harness"
+  ]) assert.match(intelligence, new RegExp(page.replace(/[&/]/g, "\\$&")));
+  for (const page of ["Source Configuration Center", "Market Data Providers", "Data Quality Gate"]) assert.doesNotMatch(intelligence, new RegExp(page.replace(/[&/]/g, "\\$&")));
 });
 
 test("enterprise sidebar keeps functions as expand-only buttons and children as links", () => {
@@ -17,11 +29,12 @@ test("enterprise sidebar keeps functions as expand-only buttons and children as 
   assert.match(sidebar, /class="enterprise-sidebar-parent" type="button"/);
   assert.match(sidebar, /class="enterprise-sidebar-child\$\{route === current \? " active" : ""\}" href="\$\{route\}"/);
   assert.doesNotMatch(sidebar, /href="\/workspace\/market-intelligence">Market Intelligence Center/);
-  assert.equal(sidebar.match(/"\/workspace\/market-intelligence\/market-data"/g)?.length, 1);
+  assert.match(sidebar, /"\/workspace\/data-sources-validation\/market-data-providers"/);
+  assert.match(sidebar, /"\/workspace\/market-intelligence\/market-data": "\/workspace\/data-sources-validation\/market-data-providers"/);
   assert.doesNotMatch(sidebar, /function-number/);
   assert.doesNotMatch(sidebar, /\["01"/);
-  assert.doesNotMatch(sidebar, /data-sources-validation/);
-  for (const icon of ["LayoutDashboard", "Workflow", "Radar", "ScanSearch", "LineChart", "Camera", "Brain", "MessagesSquare", "Target", "ShieldAlert", "PlayCircle", "Briefcase", "DatabaseZap", "Server", "MonitorSmartphone", "Activity", "FileBarChart", "ShieldCheck", "Settings"]) assert.match(sidebar, new RegExp(icon));
+  assert.match(sidebar, /data-sources-validation/);
+  for (const icon of ["LayoutDashboard", "Workflow", "ClipboardCheck", "Radar", "ScanSearch", "LineChart", "Camera", "Brain", "MessagesSquare", "Target", "ShieldAlert", "PlayCircle", "Briefcase", "DatabaseZap", "Server", "MonitorSmartphone", "Activity", "FileBarChart", "ShieldCheck", "Settings"]) assert.match(sidebar, new RegExp(icon));
 });
 
 test("enterprise sidebar restores its navigation position across page loads", () => {
@@ -61,25 +74,42 @@ test("dashboard shells install the shared real-time tick and UTC clock runtime",
   assert.match(runtime, /WAITING FOR MT5/);
 });
 
-test("Market Intelligence Center owns gathering, configuration and source pages", () => {
+test("Data Sources Validation owns source configuration and validation pages", () => {
+  const navigation = readFileSync("apps/web/lib/navigation/sidebar-config.ts", "utf8");
+  const validation = navigation.slice(navigation.indexOf('id: "data-sources-validation"'), navigation.indexOf('id: "market-intelligence"'));
+  for (const page of ["Source Configuration Center", "Market Data Providers", "News & Sentiment Sources", "Economic Calendar", "Social & Community Sentiment", "Institutional / COT Data", "Historical Data", "Broker Data", "Account Portfolio", "Prop Firm Rules", "Data Quality Gate"]) assert.match(validation, new RegExp(page.replace(/[&/]/g, "\\$&")));
+  assert.match(validation, /Data Sources & Feed Health/);
+  assert.doesNotMatch(validation, /Market Intelligence Package Builder/);
+});
+
+test("Market Intelligence Center owns intelligence production pages only", () => {
   const navigation = readFileSync("apps/web/lib/navigation/sidebar-config.ts", "utf8");
   const intelligence = navigation.slice(navigation.indexOf('id: "market-intelligence"'), navigation.indexOf('id: "asset-scanner"'));
-  for (const page of ["Market Data Providers", "News & Sentiment Sources", "Economic Calendar", "Social & Community Sentiment", "Institutional / COT Data", "Historical Data", "Broker Data", "Account Portfolio", "Prop Firm Rules", "Data Quality Gate"]) assert.match(intelligence, new RegExp(page.replace(/[&/]/g, "\\$&")));
   assert.match(intelligence, /Intelligence Gathering Dashboard/);
-  assert.match(intelligence, /Data Sources Validation/);
-  assert.match(intelligence, /Source Configuration Center/);
+  assert.match(intelligence, /Market Intelligence Package Builder/);
+  assert.match(intelligence, /Intelligence Handoff to Asset Scanner/);
   assert.doesNotMatch(intelligence, /Data Sources & Feed Health/);
+  assert.doesNotMatch(intelligence, /Source Configuration Center/);
+  assert.doesNotMatch(intelligence, /Market Data Providers/);
 });
 
 test("Market Intelligence workspace routes match the enterprise navigation contract", () => {
   const sidebar = readFileSync("apps/web/lib/navigation/sidebar-config.ts", "utf8");
   for (const route of [
-    "/workspace/market-intelligence/dashboard", "/workspace/market-intelligence/data-sources", "/workspace/market-intelligence/source-configuration",
-    "/workspace/market-intelligence/market-data", "/workspace/market-intelligence/news-sentiment",
-    "/workspace/market-intelligence/economic-calendar", "/workspace/market-intelligence/institutional-cot",
-    "/workspace/market-intelligence/historical-data", "/workspace/market-intelligence/broker-data",
-    "/workspace/market-intelligence/account-portfolio", "/workspace/market-intelligence/prop-firm-rules",
-    "/workspace/market-intelligence/data-quality-gate"
+    "/workspace/data-sources-validation/dashboard", "/workspace/data-sources-validation/source-configuration",
+    "/workspace/data-sources-validation/market-data-providers", "/workspace/data-sources-validation/news-sources",
+    "/workspace/data-sources-validation/economic-calendar", "/workspace/data-sources-validation/institutional-cot",
+    "/workspace/data-sources-validation/historical-data", "/workspace/data-sources-validation/broker-data",
+    "/workspace/data-sources-validation/account-portfolio", "/workspace/data-sources-validation/prop-firm-rules",
+    "/workspace/data-sources-validation/data-quality-gate", "/workspace/data-sources-validation/logs",
+    "/workspace/data-sources-validation/test-harness", "/workspace/market-intelligence/dashboard",
+    "/workspace/market-intelligence/validated-package", "/workspace/market-intelligence/source-health-review",
+    "/workspace/market-intelligence/dependency-matrix", "/workspace/market-intelligence/market-environment",
+    "/workspace/market-intelligence/macro-intelligence", "/workspace/market-intelligence/sentiment-intelligence",
+    "/workspace/market-intelligence/institutional-intelligence", "/workspace/market-intelligence/broker-liquidity",
+    "/workspace/market-intelligence/portfolio-intelligence", "/workspace/market-intelligence/scoring-engine",
+    "/workspace/market-intelligence/package-builder", "/workspace/market-intelligence/handoff",
+    "/workspace/market-intelligence/logs", "/workspace/market-intelligence/test-harness"
   ]) assert.match(sidebar, new RegExp(route.replaceAll("/", "\\/")));
 });
 

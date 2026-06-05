@@ -169,7 +169,7 @@ async function act(button) {
   if (button.hasAttribute("data-live-test") || button.hasAttribute("data-live-refresh")) return;
   const label = normalize(button.textContent);
   if (!label) return;
-  if (includesAny(label, ["open data quality gate"])) return location.assign("/workspace/market-intelligence/data-quality-gate");
+  if (includesAny(label, ["open data quality gate"])) return location.assign("/workspace/data-sources-validation/data-quality-gate");
   if (includesAny(label, ["upload", "import"])) return upload(button.textContent.trim());
   if (includesAny(label, ["export", "download", "generate feed report"])) return download(exportEndpoint(label), button.textContent.trim());
   if (label === "reset") return resetFilters(button);

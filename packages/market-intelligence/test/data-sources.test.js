@@ -13,6 +13,12 @@ test("warns without blocking when optional social data fails", () => {
   assert.equal(result.proceedToStageOne, true);
   assert.match(result.warnings.join(" "), /confidence reduced/);
 });
+test("does not block Card 1 for healthy optional sources with zero quality score", () => {
+  const sources = DATA_SOURCES.map((source) => source.id === "social-sentiment" ? { ...source, status: "SYNCED", healthScore: 0 } : source);
+  const result = evaluateDataQualityGate(sources);
+  assert.equal(result.proceedToStageOne, true);
+  assert.equal(result.rejectReasons.length, 0);
+});
 test("returns the production-structured Card 1 output", () => {
   const result = evaluateDataQualityGate();
   assert.equal(result.card, "data_sources");

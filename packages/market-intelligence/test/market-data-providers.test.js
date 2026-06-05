@@ -78,6 +78,7 @@ test("export status csv includes readiness fields", () => {
 
 test("terminal page renders the market data operations center sections", () => {
   const page = readFileSync("apps/web/market-data-page.js", "utf8");
+  assert.match(page, /endsWith\("\/market-data-providers"\)/);
   for (const section of [
     "Market Data Providers", "Provider Registry", "Live Feed Monitor", "Asset Coverage Matrix",
     "Tick Quality Monitor", "Spread Quality Center", "Latency Monitor", "Data Integrity Engine",

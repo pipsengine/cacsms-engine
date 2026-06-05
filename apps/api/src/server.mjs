@@ -23,6 +23,11 @@ import { ASSET_SCORES, ASSET_UNIVERSE, MOCK_WORKFLOW, WORKFLOW_EVENTS } from "..
 import { createCardOneTestReport } from "../../../packages/workflow/src/card-one.js";
 import { WORKFLOW_CARD_QUEUE } from "../../../packages/workflow/src/index.js";
 import { evaluateDataQualityGate } from "../../../packages/market-intelligence/src/data-sources.js";
+import { getCardTwoDashboard, runCardTwoAction } from "../../../packages/market-intelligence/src/card-two-dashboard.js";
+import { getValidatedPackageDashboard, persistValidatedPackageFromCardOne } from "../../../packages/market-intelligence/src/validated-package.js";
+import { getSourceHealthReviewDashboard, getSourceHealthReviewSlice, runSourceHealthReviewAction } from "../../../packages/market-intelligence/src/source-health-review.js";
+import { getDependencyMatrixDashboard, getDependencyMatrixSlice, runDependencyMatrixAction } from "../../../packages/market-intelligence/src/dependency-matrix.js";
+import { getMarketEnvironmentDashboard, getMarketEnvironmentSlice, runMarketEnvironmentAction } from "../../../packages/market-intelligence/src/market-environment.js";
 import { DATA_QUALITY_GATE_RULES, getDataQualityGateDashboard } from "../../../packages/market-intelligence/src/data-quality-gate.js";
 import { buildAccountPortfolioLiveSourceSnapshot } from "../../../packages/market-intelligence/src/account-portfolio-source-validation.js";
 import { buildPropFirmRulesLiveSourceSnapshot } from "../../../packages/market-intelligence/src/prop-firm-rules-source-validation.js";
@@ -539,7 +544,36 @@ const routes = {
   }),
   "GET /api/market-intelligence/live/dashboard": () => getLiveMarketIntelligenceDashboard(),
   "GET /api/market-intelligence/data-sources": async () => ({ sourceMode: "LIVE_ADAPTERS_ONLY", sources: await getLiveSourceSnapshots() }),
-  "GET /api/market-intelligence/dashboard": () => getLiveMarketIntelligenceDashboard(),
+  "GET /api/market-intelligence/dashboard": () => getCardTwoDashboard(),
+  "GET /api/market-intelligence/card-2/dashboard": () => getCardTwoDashboard(),
+  "GET /api/market-intelligence/card-2/validated-package": () => getValidatedPackageDashboard(),
+  "GET /api/market-intelligence/source-health-review": () => getSourceHealthReviewDashboard(),
+  "GET /api/market-intelligence/source-health-review/summary": () => getSourceHealthReviewSlice("summary"),
+  "GET /api/market-intelligence/source-health-review/freshness": () => getSourceHealthReviewSlice("freshness"),
+  "GET /api/market-intelligence/source-health-review/failures": () => getSourceHealthReviewSlice("failures"),
+  "GET /api/market-intelligence/source-health-review/quality": () => getSourceHealthReviewSlice("quality"),
+  "GET /api/market-intelligence/source-health-review/dependencies": () => getSourceHealthReviewSlice("dependencies"),
+  "GET /api/market-intelligence/source-health-review/rate-limits": () => getSourceHealthReviewSlice("rate-limits"),
+  "GET /api/market-intelligence/source-health-review/security": () => getSourceHealthReviewSlice("security"),
+  "GET /api/market-intelligence/source-health-review/export": () => getSourceHealthReviewSlice("export"),
+  "GET /api/market-intelligence/dependency-matrix": () => getDependencyMatrixDashboard(),
+  "GET /api/market-intelligence/dependency-matrix/summary": () => getDependencyMatrixSlice("summary"),
+  "GET /api/market-intelligence/dependency-matrix/graph": () => getDependencyMatrixSlice("graph"),
+  "GET /api/market-intelligence/dependency-matrix/modules": () => getDependencyMatrixSlice("modules"),
+  "GET /api/market-intelligence/dependency-matrix/sources": () => getDependencyMatrixSlice("sources"),
+  "GET /api/market-intelligence/dependency-matrix/services": () => getDependencyMatrixSlice("services"),
+  "GET /api/market-intelligence/dependency-matrix/database": () => getDependencyMatrixSlice("database"),
+  "GET /api/market-intelligence/dependency-matrix/recommendations": () => getDependencyMatrixSlice("recommendations"),
+  "GET /api/market-intelligence/dependency-matrix/export": () => getDependencyMatrixSlice("export"),
+  "GET /api/market-intelligence/market-environment": () => getMarketEnvironmentDashboard(),
+  "GET /api/market-intelligence/market-environment/summary": () => getMarketEnvironmentSlice("summary"),
+  "GET /api/market-intelligence/market-environment/instruments": () => getMarketEnvironmentSlice("instruments"),
+  "GET /api/market-intelligence/market-environment/inputs": () => getMarketEnvironmentSlice("inputs"),
+  "GET /api/market-intelligence/market-environment/volatility": () => getMarketEnvironmentSlice("volatility"),
+  "GET /api/market-intelligence/market-environment/risk-tone": () => getMarketEnvironmentSlice("risk-tone"),
+  "GET /api/market-intelligence/market-environment/session": () => getMarketEnvironmentSlice("session"),
+  "GET /api/market-intelligence/market-environment/events": () => getMarketEnvironmentSlice("events"),
+  "GET /api/market-intelligence/market-environment/export": () => getMarketEnvironmentSlice("export"),
   "GET /api/market-intelligence/data-sources/health": async () => ({ sourceMode: "LIVE_ADAPTERS_ONLY", sources: await getLiveSourceSnapshots() }),
   "GET /api/market-intelligence/economic-events": () => ({ events: [], status: "NOT_CONFIGURED" }),
   "GET /api/market-intelligence/news-sentiment": () => getNewsDashboard(),
@@ -691,7 +725,11 @@ const actions = {
     workflow = { ...workflow, status: "retrying", retryCount: workflow.retryCount + 1 };
     return record("workflow.stage.started", { stage: workflow.currentStage, retry: workflow.retryCount });
   },
-  "/api/workflow/cards/1/test-live": async () => ({ type: "workflow.card1.live_test.completed", report: cardOneReport = createCardOneTestReport(await getLiveSourceSnapshots()) }),
+  "/api/workflow/cards/1/test-live": async () => {
+    cardOneReport = createCardOneTestReport(await getLiveSourceSnapshots());
+    const packageRecord = await persistValidatedPackageFromCardOne(cardOneReport);
+    return { type: "workflow.card1.live_test.completed", report: cardOneReport, package: packageRecord };
+  },
   "/api/market-intelligence/data-sources/test": async () => ({ type: "market_intelligence.sources.live_probe.completed", ...await getLiveMarketIntelligenceDashboard({ log: true }) }),
   "/api/market-intelligence/data-sources/sync": async () => ({ type: "market_intelligence.sources.live_probe.completed", ...await getLiveMarketIntelligenceDashboard({ log: true }) }),
   "/api/market-intelligence/scan": async () => ({ type: "market_intelligence.scan.rejected", status: "NOT_READY", gate: getDataQualityGateDashboard(await getLiveSourceSnapshots()) }),
@@ -1180,6 +1218,59 @@ const server = createServer(async (request, response) => {
   }
   if (request.method === "POST" && url.pathname === "/api/workflow/cards/1/test-live") {
     return json(response, 200, { accepted: true, event: await actions[url.pathname]() });
+  }
+  if (request.method === "POST" && url.pathname.startsWith("/api/market-intelligence/source-health-review/")) {
+    const action = url.pathname.split("/").pop();
+    const body = await readBody(request).catch(() => ({}));
+    try {
+      const context = action === "run-check"
+        ? { providers: getSourceProviders().providers, liveSnapshots: await getLiveSourceSnapshots() }
+        : {};
+      return json(response, 200, { accepted: true, event: await runSourceHealthReviewAction(action, body, auditFromRequest(request).userLabel, context) });
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (request.method === "POST" && url.pathname.startsWith("/api/market-intelligence/dependency-matrix/")) {
+    const action = url.pathname.split("/").pop();
+    const body = await readBody(request).catch(() => ({}));
+    try {
+      return json(response, 200, { accepted: true, event: await runDependencyMatrixAction(action, body, auditFromRequest(request).userLabel) });
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (request.method === "POST" && url.pathname.startsWith("/api/market-intelligence/market-environment/")) {
+    const action = url.pathname.split("/").pop();
+    const body = await readBody(request).catch(() => ({}));
+    try {
+      const context = action === "recalculate" || action === "regenerate-summary"
+        ? { liveSnapshots: await getLiveSourceSnapshots(), ticks: await getLatestTicks(40) }
+        : {};
+      return json(response, 200, { accepted: true, event: await runMarketEnvironmentAction(action, body, auditFromRequest(request).userLabel, context) });
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (request.method === "POST" && url.pathname.startsWith("/api/market-intelligence/card-2/")) {
+    const action = url.pathname.split("/").pop();
+    try {
+      return json(response, 200, { accepted: true, event: await runCardTwoAction(action) });
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
   }
 
   // Portfolio Intelligence Center Endpoints
