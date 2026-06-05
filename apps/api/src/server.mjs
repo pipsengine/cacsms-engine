@@ -194,6 +194,81 @@ import {
   updatePropFirmRule,
   validatePropFirmInput
 } from "../../../packages/market-intelligence/src/prop-firm-rules.js";
+import {
+  createBrokerLiquidityAlert,
+  exportBrokerLiquidityReport,
+  getBrokerComparisonMatrix,
+  getBrokerExecutionMetrics,
+  getBrokerLiquidityAlerts,
+  getBrokerLiquidityDashboard,
+  getBrokerLiquidityInputs,
+  getBrokerLiquidityRows,
+  getBrokerLiquiditySummary,
+  getBrokerNewsLiquidityRisk,
+  getBrokerSessionLiquidity,
+  getBrokerSpreadMetrics,
+  recalculateBrokerLiquidity,
+  runBrokerLiquidityCheck
+} from "../../../packages/market-intelligence/src/broker-liquidity.js";
+import {
+  createPortfolioIntelligenceAlert,
+  exportPortfolioIntelligenceReport,
+  getPortfolioIntelligenceDashboard,
+  getPortfolioIntelligenceSummary,
+  recalculatePortfolioIntelligence,
+  syncPortfolioIntelligenceAccounts
+} from "../../../packages/market-intelligence/src/portfolio-intelligence.js";
+import {
+  createScoringAlert,
+  createScoringModel,
+  approveScoringEngineModel,
+  exportScoringReport,
+  getScoringEngineAgreements,
+  getScoringEngineConflicts,
+  getScoringEngineDashboard,
+  getScoringEngineHistory,
+  getScoringEngineModel,
+  getScoringEngineRankings,
+  getScoringEngineSummary,
+  recalculateScoringEngine,
+  simulateScoringEngine,
+  transitionScoringModelVersion,
+  updateScoringWeights,
+  validateScoringEngine
+} from "../../../packages/market-intelligence/src/scoring-engine.js";
+import {
+  archiveIntelligencePackage,
+  buildIntelligencePackage,
+  cloneIntelligencePackage,
+  exportIntelligencePackage,
+  getPackageBuilderDashboard,
+  getPackageBuilderDetail,
+  getPackageBuilderHistory,
+  getPackageBuilderInstruments,
+  getPackageBuilderModules,
+  getPackageBuilderSummary,
+  revalidateIntelligencePackage,
+  submitPackageToScoring,
+  validateIntelligencePackage
+} from "../../../packages/market-intelligence/src/package-builder.js";
+import {
+  approveHandoff,
+  archiveHandoff,
+  cancelHandoff,
+  createHandoff,
+  exportHandoff,
+  getHandoffDashboard,
+  getHandoffDestinations,
+  getHandoffDetail,
+  getHandoffFailures,
+  getHandoffHistory,
+  getHandoffQueue,
+  getHandoffSummary,
+  getPackagesReadyForHandoff,
+  retryHandoff,
+  submitHandoff,
+  validateHandoff
+} from "../../../packages/market-intelligence/src/handoff.js";
 
 const port = Number(process.env.API_PORT || 8080);
 const root = fileURLToPath(new URL("../../../", import.meta.url));
@@ -729,6 +804,60 @@ const routes = {
     const d = await getPropFirmRulesDashboard();
     return { status: d.rules.length ? "ready" : "empty", format: "csv", rules: d.rules.length };
   }
+  ,"GET /api/market-intelligence/broker-liquidity": async () => getBrokerLiquidityDashboard()
+  ,"GET /api/market-intelligence/broker-liquidity/summary": async () => getBrokerLiquiditySummary()
+  ,"GET /api/market-intelligence/broker-liquidity/inputs": async () => getBrokerLiquidityInputs()
+  ,"GET /api/market-intelligence/broker-liquidity/brokers": async () => getBrokerLiquidityRows()
+  ,"GET /api/market-intelligence/broker-liquidity/spreads": async () => getBrokerSpreadMetrics()
+  ,"GET /api/market-intelligence/broker-liquidity/execution": async () => getBrokerExecutionMetrics()
+  ,"GET /api/market-intelligence/broker-liquidity/comparison": async () => getBrokerComparisonMatrix()
+  ,"GET /api/market-intelligence/broker-liquidity/session": async () => getBrokerSessionLiquidity()
+  ,"GET /api/market-intelligence/broker-liquidity/news-risk": async () => getBrokerNewsLiquidityRisk()
+  ,"GET /api/market-intelligence/broker-liquidity/alerts": async () => getBrokerLiquidityAlerts()
+  ,"GET /api/market-intelligence/broker-liquidity/export": async () => exportBrokerLiquidityReport()
+  ,"GET /api/market-intelligence/portfolio-intelligence": async () => getPortfolioIntelligenceDashboard()
+  ,"GET /api/market-intelligence/portfolio-intelligence/summary": async () => getPortfolioIntelligenceSummary()
+  ,"GET /api/market-intelligence/portfolio-intelligence/inputs": async () => ({ inputs: (await getPortfolioIntelligenceDashboard()).inputs })
+  ,"GET /api/market-intelligence/portfolio-intelligence/accounts": async () => ({ accounts: (await getPortfolioIntelligenceDashboard()).accounts })
+  ,"GET /api/market-intelligence/portfolio-intelligence/open-positions": async () => ({ openPositions: (await getPortfolioIntelligenceDashboard()).openPositions })
+  ,"GET /api/market-intelligence/portfolio-intelligence/exposure": async () => ({ exposure: (await getPortfolioIntelligenceDashboard()).exposure })
+  ,"GET /api/market-intelligence/portfolio-intelligence/equity-drawdown": async () => ({ equityDrawdown: (await getPortfolioIntelligenceDashboard()).equityDrawdown })
+  ,"GET /api/market-intelligence/portfolio-intelligence/strategies": async () => ({ strategies: (await getPortfolioIntelligenceDashboard()).strategies })
+  ,"GET /api/market-intelligence/portfolio-intelligence/risk-concentration": async () => ({ riskConcentration: (await getPortfolioIntelligenceDashboard()).riskConcentration })
+  ,"GET /api/market-intelligence/portfolio-intelligence/prop-compliance": async () => ({ propCompliance: (await getPortfolioIntelligenceDashboard()).propCompliance })
+  ,"GET /api/market-intelligence/portfolio-intelligence/alerts": async () => ({ alerts: (await getPortfolioIntelligenceDashboard()).alerts })
+  ,"GET /api/market-intelligence/portfolio-intelligence/export": async () => exportPortfolioIntelligenceReport()
+  ,"GET /api/market-intelligence/scoring-engine": async () => getScoringEngineDashboard()
+  ,"GET /api/market-intelligence/scoring-engine/dashboard": async () => getScoringEngineDashboard()
+  ,"GET /api/market-intelligence/scoring-engine/summary": async () => getScoringEngineSummary()
+  ,"GET /api/market-intelligence/scoring-engine/inputs": async () => ({ inputs: (await getScoringEngineDashboard()).inputs })
+  ,"GET /api/market-intelligence/scoring-engine/weights": async () => ({ weights: (await getScoringEngineDashboard()).weights })
+  ,"GET /api/market-intelligence/scoring-engine/breakdown": async () => ({ breakdown: (await getScoringEngineDashboard()).breakdown })
+  ,"GET /api/market-intelligence/scoring-engine/agreement": async () => ({ agreement: (await getScoringEngineDashboard()).agreement })
+  ,"GET /api/market-intelligence/scoring-engine/agreements": async () => getScoringEngineAgreements()
+  ,"GET /api/market-intelligence/scoring-engine/instruments": async () => ({ instruments: (await getScoringEngineDashboard()).instruments })
+  ,"GET /api/market-intelligence/scoring-engine/rankings": async () => getScoringEngineRankings()
+  ,"GET /api/market-intelligence/scoring-engine/history": async () => getScoringEngineHistory()
+  ,"GET /api/market-intelligence/scoring-engine/conflicts": async () => getScoringEngineConflicts()
+  ,"GET /api/market-intelligence/scoring-engine/model": async () => getScoringEngineModel()
+  ,"GET /api/market-intelligence/scoring-engine/models": async () => ({ models: (await getScoringEngineDashboard()).models })
+  ,"GET /api/market-intelligence/scoring-engine/audit": async () => ({ audit: (await getScoringEngineDashboard()).audit })
+  ,"GET /api/market-intelligence/scoring-engine/validation": async () => ({ validation: (await getScoringEngineDashboard()).validation })
+  ,"GET /api/market-intelligence/scoring-engine/alerts": async () => ({ alerts: (await getScoringEngineDashboard()).alerts })
+  ,"GET /api/market-intelligence/package-builder": async () => getPackageBuilderDashboard()
+  ,"GET /api/market-intelligence/package-builder/summary": async () => getPackageBuilderSummary()
+  ,"GET /api/market-intelligence/package-builder/package-types": async () => ({ packageTypes: (await getPackageBuilderDashboard()).packageTypes })
+  ,"GET /api/market-intelligence/package-builder/instruments": async () => getPackageBuilderInstruments()
+  ,"GET /api/market-intelligence/package-builder/modules": async () => getPackageBuilderModules()
+  ,"GET /api/market-intelligence/package-builder/history": async () => getPackageBuilderHistory()
+  ,"GET /api/market-intelligence/handoff": async () => getHandoffDashboard()
+  ,"GET /api/market-intelligence/handoff/summary": async () => getHandoffSummary()
+  ,"GET /api/market-intelligence/handoff/packages-ready": async () => getPackagesReadyForHandoff()
+  ,"GET /api/market-intelligence/handoff/destinations": async () => getHandoffDestinations()
+  ,"GET /api/market-intelligence/handoff/queue": async () => getHandoffQueue()
+  ,"GET /api/market-intelligence/handoff/history": async () => getHandoffHistory()
+  ,"GET /api/market-intelligence/handoff/failures": async () => getHandoffFailures()
+  ,"GET /api/market-intelligence/scoring-engine/export": async () => exportScoringReport()
   ,"GET /api/source-configuration": async () => getSourceConfigurationDashboard(await getLiveSourceSnapshots())
   ,"GET /api/source-configuration/providers": () => getSourceProviders()
   ,"GET /api/source-configuration/health": async () => getSourceHealth(await getLiveSourceSnapshots())
@@ -796,9 +925,15 @@ const actions = {
   ,"/api/market-intelligence/broker-data/connect": () => ({ type: "broker_data.connect.accepted", status: "PENDING_VALIDATION" })
   ,"/api/market-intelligence/broker-data/sync": () => liveAction("broker_data.live_probe.completed", "broker-data")
   ,"/api/market-intelligence/broker-data/upload": () => ({ type: "broker_data.upload.accepted", status: "PENDING_VALIDATION" })
+  ,"/api/market-intelligence/broker-liquidity/recalculate": async () => recalculateBrokerLiquidity()
+  ,"/api/market-intelligence/broker-liquidity/run-check": async () => runBrokerLiquidityCheck()
   ,"/api/market-intelligence/account-portfolio/sync": async () => ({ type: "account_portfolio.sync.completed", ...(await syncPortfolioAccounts()) })
   ,"/api/market-intelligence/account-portfolio/connect": () => ({ type: "account_portfolio.connect.accepted", status: "PENDING_VALIDATION" })
   ,"/api/market-intelligence/account-portfolio/upload": () => ({ type: "account_portfolio.statement_upload.accepted", status: "PENDING_VALIDATION" })
+  ,"/api/market-intelligence/portfolio-intelligence/recalculate": async () => recalculatePortfolioIntelligence()
+  ,"/api/market-intelligence/portfolio-intelligence/sync-accounts": async () => syncPortfolioIntelligenceAccounts()
+  ,"/api/market-intelligence/scoring-engine/recalculate": async () => recalculateScoringEngine()
+  ,"/api/market-intelligence/scoring-engine/validate": async () => validateScoringEngine()
   ,"/api/market-intelligence/prop-firm-rules/import": () => ({ type: "prop_firm_rules.import.accepted", status: "use_post_handler" })
   ,"/api/market-intelligence/prop-firm-rules/sync": () => ({ type: "prop_firm_rules.sync.accepted", status: "use_post_handler" })
   ,"/api/market-intelligence/data-quality-gate/run": async () => ({ type: "data_quality_gate.live_run.completed", ...getDataQualityGateDashboard(await getLiveSourceSnapshots()) })
@@ -830,6 +965,138 @@ const server = createServer(async (request, response) => {
   if (request.method === "GET" && url.pathname.startsWith("/api/market-intelligence/historical-data/")) {
     const id = url.pathname.split("/").at(-1);
     return json(response, 404, { error: "historical_record_not_found", detail: "No live historical archive adapter is configured", id });
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-intelligence/broker-liquidity/alerts") {
+    try {
+      const body = await readBody(request);
+      return json(response, 200, await createBrokerLiquidityAlert(body, auditFromRequest(request).userLabel));
+    } catch (reason) {
+      return json(response, 400, { error: "broker_liquidity_alert_failed", message: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-intelligence/portfolio-intelligence/alerts") {
+    try {
+      const body = await readBody(request);
+      return json(response, 200, await createPortfolioIntelligenceAlert(body, auditFromRequest(request).userLabel));
+    } catch (reason) {
+      return json(response, 400, { error: "portfolio_intelligence_alert_failed", message: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-intelligence/scoring-engine/alerts") {
+    try {
+      return json(response, 200, await createScoringAlert(await readBody(request), auditFromRequest(request).userLabel));
+    } catch (reason) {
+      return json(response, 400, { error: "scoring_alert_failed", message: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-intelligence/scoring-engine/weights") {
+    try {
+      return json(response, 200, await updateScoringWeights(await readBody(request), auditFromRequest(request).userLabel));
+    } catch (reason) {
+      return json(response, 400, { error: "scoring_weights_failed", message: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-intelligence/scoring-engine/simulate") {
+    try {
+      return json(response, 200, await simulateScoringEngine(await readBody(request), auditFromRequest(request).userLabel));
+    } catch (reason) {
+      return json(response, 400, { error: "scoring_simulation_failed", message: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-intelligence/scoring-engine/approve-model") {
+    try {
+      return json(response, 200, await approveScoringEngineModel(await readBody(request), auditFromRequest(request).userLabel));
+    } catch (reason) {
+      return json(response, 400, { error: "scoring_approve_model_failed", message: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-intelligence/scoring-engine/models") {
+    try {
+      return json(response, 200, await createScoringModel(await readBody(request), auditFromRequest(request).userLabel));
+    } catch (reason) {
+      return json(response, 400, { error: "scoring_model_failed", message: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-intelligence/scoring-engine/recalculate-instrument") {
+    const body = await readBody(request).catch(() => ({}));
+    return json(response, 200, await recalculateScoringEngine(auditFromRequest(request).userLabel, body.instrument || "instrument"));
+  }
+  if (request.method === "POST" && url.pathname.startsWith("/api/market-intelligence/scoring-engine/models/")) {
+    const segments = url.pathname.split("/");
+    const id = segments[5];
+    const action = segments[6];
+    if (["submit", "approve", "activate"].includes(action)) {
+      return json(response, 200, await transitionScoringModelVersion(id, action, auditFromRequest(request).userLabel));
+    }
+  }
+  if (url.pathname.startsWith("/api/market-intelligence/handoff/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const id = segments[3];
+    const action = segments[4];
+    try {
+      if (request.method === "GET" && id && action === "export") return json(response, 200, await exportHandoff(id));
+      if (request.method === "GET" && id && !action) {
+        const detail = await getHandoffDetail(id);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "handoff_not_found" });
+      }
+      if (request.method === "POST" && id && action === "validate") return json(response, 200, await validateHandoff(id, auditFromRequest(request).userLabel));
+      if (request.method === "POST" && id && action === "approve") return json(response, 200, await approveHandoff(id, auditFromRequest(request).userLabel));
+      if (request.method === "POST" && id && action === "submit") return json(response, 200, await submitHandoff(id, auditFromRequest(request).userLabel));
+      if (request.method === "POST" && id && action === "retry") return json(response, 200, await retryHandoff(id, auditFromRequest(request).userLabel));
+      if (request.method === "POST" && id && action === "cancel") return json(response, 200, await cancelHandoff(id, auditFromRequest(request).userLabel));
+      if (request.method === "POST" && id && action === "archive") return json(response, 200, await archiveHandoff(id, auditFromRequest(request).userLabel));
+    } catch (reason) {
+      return json(response, reason.message === "handoff_not_found" ? 404 : 400, { error: "handoff_action_failed", message: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-intelligence/handoff/create") {
+    try {
+      return json(response, 200, await createHandoff(await readBody(request), auditFromRequest(request).userLabel));
+    } catch (reason) {
+      return json(response, 400, { error: "handoff_create_failed", message: reason.message });
+    }
+  }
+  if (url.pathname.startsWith("/api/market-intelligence/package-builder/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const id = segments[3];
+    const action = segments[4];
+    try {
+      if (request.method === "GET" && id && action === "export") {
+        return json(response, 200, await exportIntelligencePackage(id));
+      }
+      if (request.method === "GET" && id && !action) {
+        const detail = await getPackageBuilderDetail(id);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "package_not_found" });
+      }
+      if (request.method === "POST" && id && action === "revalidate") {
+        return json(response, 200, await revalidateIntelligencePackage(id, auditFromRequest(request).userLabel));
+      }
+      if (request.method === "POST" && id && action === "submit-to-scoring") {
+        return json(response, 200, await submitPackageToScoring(id, auditFromRequest(request).userLabel));
+      }
+      if (request.method === "POST" && id && action === "clone") {
+        return json(response, 200, await cloneIntelligencePackage(id, auditFromRequest(request).userLabel));
+      }
+      if (request.method === "POST" && id && action === "archive") {
+        return json(response, 200, await archiveIntelligencePackage(id, auditFromRequest(request).userLabel));
+      }
+    } catch (reason) {
+      return json(response, reason.message === "package_not_found" ? 404 : 400, { error: "package_builder_action_failed", message: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-intelligence/package-builder/build") {
+    try {
+      return json(response, 200, await buildIntelligencePackage(await readBody(request), auditFromRequest(request).userLabel));
+    } catch (reason) {
+      return json(response, 400, { error: "package_builder_build_failed", message: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-intelligence/package-builder/validate") {
+    try {
+      return json(response, 200, await validateIntelligencePackage(await readBody(request), auditFromRequest(request).userLabel));
+    } catch (reason) {
+      return json(response, 400, { error: "package_builder_validate_failed", message: reason.message });
+    }
   }
   if (request.method === "DELETE" && url.pathname.startsWith("/api/market-intelligence/broker-data/sources/")) {
     const id = url.pathname.split("/").at(-1);

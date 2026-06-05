@@ -8,6 +8,11 @@ import { mountEconomicCalendarCenter } from "./economic-calendar-page.js";
 import { mountSocialSentimentCenter, unmountSocialSentimentCenter } from "./social-sentiment-page.js";
 import { mountAccountPortfolioCenter, unmountAccountPortfolioCenter } from "./account-portfolio-page.js";
 import { mountPropFirmRulesCenter, unmountPropFirmRulesCenter } from "./prop-firm-rules-page.js";
+import { mountBrokerLiquidityCenter, unmountBrokerLiquidityCenter } from "./broker-liquidity-page.js";
+import { mountPortfolioIntelligenceCenter, unmountPortfolioIntelligenceCenter } from "./portfolio-intelligence-page.js";
+import { mountScoringEngineCenter, unmountScoringEngineCenter } from "./scoring-engine-page.js";
+import { mountPackageBuilderCenter, unmountPackageBuilderCenter } from "./package-builder-page.js";
+import { mountHandoffCenter, unmountHandoffCenter } from "./handoff-page.js";
 
 const dataSourcesValidationPrefix = "/workspace/data-sources-validation/";
 const marketIntelligencePrefix = "/workspace/market-intelligence/";
@@ -66,6 +71,11 @@ function unmountCurrentPage() {
   unmountSocialSentimentCenter();
   unmountAccountPortfolioCenter();
   unmountPropFirmRulesCenter();
+  unmountBrokerLiquidityCenter();
+  unmountPortfolioIntelligenceCenter();
+  unmountScoringEngineCenter();
+  unmountPackageBuilderCenter();
+  unmountHandoffCenter();
 }
 
 function renderCurrentPage() {
@@ -91,6 +101,16 @@ function renderCurrentPage() {
     mountAccountPortfolioCenter();
   } else if (moduleSlug === "prop-firm-rules" && owner === "card-1") {
     mountPropFirmRulesCenter();
+  } else if (moduleSlug === "broker-liquidity" && owner === "card-2") {
+    mountBrokerLiquidityCenter();
+  } else if (moduleSlug === "portfolio-intelligence" && owner === "card-2") {
+    mountPortfolioIntelligenceCenter();
+  } else if (moduleSlug === "scoring-engine" && owner === "card-2") {
+    mountScoringEngineCenter();
+  } else if (moduleSlug === "package-builder" && owner === "card-2") {
+    mountPackageBuilderCenter();
+  } else if (moduleSlug === "handoff" && owner === "card-2") {
+    mountHandoffCenter();
   } else {
     document.querySelector("#intelligence-content").innerHTML = renderLiveMarketIntelligencePage(slug, { owner });
     bindLiveMarketIntelligencePage(slug, { owner });
