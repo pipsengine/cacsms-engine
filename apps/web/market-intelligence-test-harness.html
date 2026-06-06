@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CACSMS Engine | Market Intelligence Test Harness Center</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/readability.css" />
+    <link rel="stylesheet" href="/market-intelligence-test-harness.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/"><span class="brand-mark">C</span><span><strong>CACSMS</strong><small>ENGINE</small></span></a>
+        <label class="global-search"><span class="icon">?</span><input type="search" placeholder="Search test harness..." /><kbd>CTRL K</kbd></label>
+        <div class="topbar-actions">
+          <div class="workflow-pill"><span class="pulse"></span><strong>TESTS</strong><span>SAFE</span></div>
+          <button class="user-menu"><span>CA</span><i></i></button>
+        </div>
+      </header>
+      <aside class="sidebar">
+        <div class="sidebar-heading">CONTROL SYSTEMS</div>
+        <nav id="market-nav" aria-label="Primary navigation"></nav>
+        <div class="sidebar-footer">
+          <div class="operator"><span class="operator-dot"></span><div><small>TEST MODE</small><strong>READ ONLY</strong></div></div>
+          <button id="collapse-sidebar" class="collapse-button">&lt;</button>
+        </div>
+      </aside>
+      <main class="workspace th-workspace">
+        <section class="th-header">
+          <div>
+            <p class="th-eyebrow">MARKET INTELLIGENCE / TEST HARNESS</p>
+            <h1>Market Intelligence Test Harness Center</h1>
+            <p>Safely test live integrations, sync jobs, validation workflows, scoring engines, package builds, handoffs, alerts, and dependency checks before they affect trading decisions.</p>
+          </div>
+          <div class="th-actions">
+            <select id="safety-mode">
+              <option value="read_only" selected>Read-Only Test</option>
+              <option value="dry_run">Dry Run</option>
+              <option value="transactional">Transactional Test</option>
+              <option value="approved_write">Approved Write Test</option>
+              <option value="sandbox_account">Sandbox Account Test</option>
+            </select>
+            <button id="run-test" class="primary-button">Run Test</button>
+            <button id="run-selected" class="secondary-button">Run Selected Tests</button>
+            <button id="run-diagnostic" class="secondary-button">Run Full Diagnostic</button>
+            <button id="export-report" class="secondary-button">Export Test Report</button>
+            <a class="secondary-button" href="/workspace/market-intelligence/logs">Open Logs</a>
+          </div>
+          <div class="th-badges">
+            <span>Production Live</span>
+            <span>Mock Data Disabled</span>
+            <span>Safe Test Mode</span>
+            <span>Read-Only by Default</span>
+            <span id="last-test-run">Last Test Run: -</span>
+          </div>
+        </section>
+
+        <section class="th-rules">
+          <strong>Strict Production Testing Rules</strong>
+          <span>No mock data</span>
+          <span>No fake providers</span>
+          <span>No sample records</span>
+          <span>No destructive writes without approval</span>
+          <span>Dry-run and read-only first</span>
+        </section>
+
+        <section id="summary-grid" class="th-summary"></section>
+
+        <section class="th-tabs">
+          <button class="active" data-tab="catalog-panel">Test Catalog</button>
+          <button data-tab="provider-panel">Provider Connectivity</button>
+          <button data-tab="sync-panel">Sync Jobs</button>
+          <button data-tab="validation-panel">Validation</button>
+          <button data-tab="scoring-panel">Scoring</button>
+          <button data-tab="handoff-panel">Package & Handoff</button>
+          <button data-tab="alert-panel">Alerts / AI</button>
+          <button data-tab="history-panel">History</button>
+        </section>
+
+        <section id="catalog-panel" class="th-panel active">
+          <div class="th-panel-head"><h2>Test Catalog</h2><input id="catalog-search" type="search" placeholder="Search tests..." /></div>
+          <div class="th-table-wrap"><table><thead><tr><th></th><th>Test Name</th><th>Category</th><th>Module</th><th>Description</th><th>Safety Mode</th><th>Requires Approval</th><th>Last Run</th><th>Last Status</th><th>Duration</th><th>Risk Level</th><th>Actions</th></tr></thead><tbody id="catalog-body"><tr><td colspan="12">Loading catalog...</td></tr></tbody></table></div>
+        </section>
+
+        <section id="provider-panel" class="th-panel"><h2>Provider Connectivity Test Panel</h2><div id="provider-tests" class="th-card-grid"></div></section>
+        <section id="sync-panel" class="th-panel"><h2>Sync Job Test Panel</h2><div id="sync-tests" class="th-card-grid"></div></section>
+        <section id="validation-panel" class="th-panel"><h2>Data Validation Test Panel</h2><div id="validation-tests" class="th-card-grid"></div></section>
+        <section id="scoring-panel" class="th-panel"><h2>Scoring Engine Test Panel</h2><div id="scoring-tests" class="th-card-grid"></div></section>
+        <section id="handoff-panel" class="th-panel"><h2>Package and Handoff Test Panel</h2><div id="handoff-tests" class="th-card-grid"></div></section>
+        <section id="alert-panel" class="th-panel"><h2>Alert and AI Output Test Panel</h2><div id="alert-tests" class="th-card-grid"></div></section>
+
+        <section id="history-panel" class="th-panel">
+          <div class="th-panel-head"><h2>Test History</h2><button id="refresh-history" class="secondary-button">Refresh</button></div>
+          <div class="th-table-wrap"><table><thead><tr><th>Test Run ID</th><th>Test Name</th><th>Category</th><th>Module</th><th>Safety Mode</th><th>Status</th><th>Triggered By</th><th>Started At</th><th>Completed At</th><th>Duration</th><th>Failures</th><th>Warnings</th><th>Actions</th></tr></thead><tbody id="history-body"><tr><td colspan="13">Loading history...</td></tr></tbody></table></div>
+        </section>
+
+        <section id="empty-state" class="th-empty hidden">
+          <h2>No Market Intelligence tests have been run yet.</h2>
+          <p>Run a read-only diagnostic to verify source health, sync readiness, package validation, scoring, and handoff safety.</p>
+          <div><button id="empty-run-diagnostic" class="primary-button">Run Full Diagnostic</button><button id="empty-run-source" class="secondary-button">Run Source Tests</button><a class="secondary-button" href="/workspace/market-intelligence/logs">Open Logs</a><a class="secondary-button" href="/workspace/market-intelligence/source-health-review">Open Source Health Review</a></div>
+        </section>
+      </main>
+
+      <aside id="result-drawer" class="th-drawer">
+        <div class="th-drawer-head"><h2>Test Result</h2><button id="close-drawer">&times;</button></div>
+        <div id="result-content" class="th-drawer-body"></div>
+      </aside>
+
+      <footer class="statusbar">
+        <div><span class="dot"></span> TEST MODE <strong>READ-ONLY DEFAULT</strong></div>
+        <div>FABRICATED ROWS <strong>0</strong></div>
+        <div>VALIDATION <strong>PRODUCTION RECORDS</strong></div>
+        <div class="status-spacer"></div>
+        <div id="utc-clock">WAT</div>
+      </footer>
+    </div>
+    <script type="module" src="/real-time-status.js"></script>
+    <script type="module" src="/market-intelligence-test-harness.js"></script>
+  </body>
+</html>

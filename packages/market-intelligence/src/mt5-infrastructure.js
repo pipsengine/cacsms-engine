@@ -32,6 +32,7 @@ export const ONBOARDING_STEPS = Object.freeze([
 ]);
 
 const DEFAULT_SYMBOLS = TARGET_ASSETS;
+const MACHINE_HEALTH_ONLINE = "online";
 
 function emptyInfra() {
   return {
@@ -111,6 +112,10 @@ export function effectiveTerminalConnectionStatus(terminal) {
   return terminal.connection_status === "ONLINE" ? "ONLINE" : terminal.connection_status || heartbeat;
 }
 
+export function displayMachineStatus(status) {
+  return status ? String(status).toUpperCase() : "OFFLINE";
+}
+
 export function summarizeTerminalHealth(terminals) {
   const online = terminals.filter((terminal) =>
     effectiveTerminalConnectionStatus(terminal) === "ONLINE" && terminal.ea_status === "CONNECTED"
@@ -168,10 +173,10 @@ export async function registerTerminalForProvider(providerId, input = {}) {
   const machineName = input.machineName || mt5.machineName || "LOCAL-WORKSTATION";
   const { rows: machines } = await query(
     `INSERT INTO infrastructure.machines (name, hostname, operating_system, agent_version, status, last_seen_at)
-     VALUES ($1, $2, $3, $4, 'ONLINE', now())
-     ON CONFLICT (name) DO UPDATE SET last_seen_at = now(), status = 'ONLINE', updated_at = now()
+     VALUES ($1, $2, $3, $4, $5, now())
+     ON CONFLICT (name) DO UPDATE SET last_seen_at = now(), status = $5, updated_at = now()
      RETURNING id, name`,
-    [machineName, input.hostname || machineName, input.operatingSystem || "Windows", input.agentVersion || "1.0.0"]
+    [machineName, input.hostname || machineName, input.operatingSystem || "Windows", input.agentVersion || "1.0.0", MACHINE_HEALTH_ONLINE]
   );
 
   const onboarding = initialOnboarding({
@@ -578,7 +583,7 @@ export async function listMt5Machines() {
     publicIp: row.public_ip,
     privateIp: row.private_ip,
     mt5Count: row.mt5_count,
-    status: row.status,
+    status: displayMachineStatus(row.status),
     lastSeen: row.last_seen_at
   }));
 }

@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CACSMS Engine | Market Intelligence Operations Logs Center</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/market-intelligence.css" />
+    <link rel="stylesheet" href="/market-intelligence-logs.css" />
+    <link rel="stylesheet" href="/readability.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/"><span class="brand-mark">C</span><span><strong>CACSMS</strong><small>ENGINE</small></span></a>
+        <label class="global-search"><span class="icon">?</span><input type="search" placeholder="Search logs..." /><kbd>CTRL K</kbd></label>
+        <div class="topbar-actions">
+          <div class="workflow-pill"><span class="pulse"></span><strong>LOGS</strong><span>ACTIVE</span></div>
+          <div class="session"><small>ENVIRONMENT</small><strong>PRODUCTION</strong></div>
+          <button class="user-menu"><span>CA</span><i></i></button>
+        </div>
+      </header>
+      <aside class="sidebar">
+        <div class="sidebar-heading">CONTROL SYSTEMS</div>
+        <nav id="market-nav" aria-label="Primary navigation"></nav>
+        <div class="sidebar-footer">
+          <div class="operator"><span class="operator-dot"></span><div><small>AUDIT LOGGING</small><strong>ACTIVE</strong></div></div>
+          <button id="collapse-sidebar" class="collapse-button">&lt;</button>
+        </div>
+      </aside>
+      <main class="workspace logs-workspace">
+        <section class="logs-header">
+          <div>
+            <p class="eyebrow">MARKET INTELLIGENCE / OPERATIONS LOGS</p>
+            <h1>Market Intelligence Operations Logs Center</h1>
+            <p class="subtitle">Review production audit logs, sync logs, validation logs, scoring logs, handoff logs, provider errors, system events, and operational activity across Market Intelligence.</p>
+          </div>
+          <div class="header-actions">
+            <button id="refresh-logs" class="secondary-button">Refresh Logs</button>
+            <button id="export-logs" class="secondary-button">Export Logs</button>
+            <button id="clear-filters" class="secondary-button">Clear Filters</button>
+            <a href="/market-intelligence/source-health-review" class="secondary-button">Open Source Health</a>
+            <a href="/market-intelligence/dependency-matrix" class="secondary-button">Open Dependency Matrix</a>
+          </div>
+          <div class="header-badges">
+            <span class="badge success">Production Live</span>
+            <span class="badge neutral">Mock Data Disabled</span>
+            <span class="badge success">Audit Logging Active</span>
+            <span class="badge neutral" id="last-log-received">Last Log: —</span>
+            <span class="badge error" id="critical-errors-today">Critical Errors: 0</span>
+          </div>
+        </section>
+
+        <section class="logs-summary">
+          <div class="summary-card">
+            <small>Total Logs Today</small>
+            <strong id="total-logs-today">0</strong>
+            <span class="status" id="total-logs-status">—</span>
+          </div>
+          <div class="summary-card">
+            <small>Successful Events</small>
+            <strong id="successful-events">0</strong>
+            <span class="status success">Success</span>
+          </div>
+          <div class="summary-card">
+            <small>Failed Events</small>
+            <strong id="failed-events">0</strong>
+            <span class="status error">Failed</span>
+          </div>
+          <div class="summary-card">
+            <small>Warnings</small>
+            <strong id="warnings">0</strong>
+            <span class="status warning">Warning</span>
+          </div>
+          <div class="summary-card">
+            <small>Critical Errors</small>
+            <strong id="critical-errors">0</strong>
+            <span class="status critical">Critical</span>
+          </div>
+          <div class="summary-card">
+            <small>Sync Events</small>
+            <strong id="sync-events">0</strong>
+            <span class="status neutral">Sync</span>
+          </div>
+          <div class="summary-card">
+            <small>Validation Events</small>
+            <strong id="validation-events">0</strong>
+            <span class="status neutral">Validation</span>
+          </div>
+          <div class="summary-card">
+            <small>Scoring Events</small>
+            <strong id="scoring-events">0</strong>
+            <span class="status neutral">Scoring</span>
+          </div>
+          <div class="summary-card">
+            <small>Handoff Events</small>
+            <strong id="handoff-events">0</strong>
+            <span class="status neutral">Handoff</span>
+          </div>
+          <div class="summary-card">
+            <small>User Actions</small>
+            <strong id="user-actions">0</strong>
+            <span class="status neutral">User</span>
+          </div>
+          <div class="summary-card">
+            <small>Provider Errors</small>
+            <strong id="provider-errors">0</strong>
+            <span class="status error">Provider</span>
+          </div>
+          <div class="summary-card">
+            <small>Unresolved Issues</small>
+            <strong id="unresolved-issues">0</strong>
+            <span class="status warning">Pending</span>
+          </div>
+        </section>
+
+        <section class="logs-filters">
+          <div class="filter-group">
+            <label>Date Range</label>
+            <input type="date" id="filter-date-from" />
+            <span>to</span>
+            <input type="date" id="filter-date-to" />
+          </div>
+          <div class="filter-group">
+            <label>Module</label>
+            <select id="filter-module">
+              <option value="">All Modules</option>
+              <option value="source-sync">Source Sync</option>
+              <option value="source-health">Source Health</option>
+              <option value="provider-error">Provider Error</option>
+              <option value="validation">Data Validation</option>
+              <option value="package-builder">Package Builder</option>
+              <option value="validated-package">Validated Package</option>
+              <option value="scoring-engine">Scoring Engine</option>
+              <option value="decision-engine">Decision Engine</option>
+              <option value="handoff">Handoff</option>
+              <option value="dependency-matrix">Dependency Matrix</option>
+              <option value="market-environment">Market Environment</option>
+              <option value="macro-intelligence">Macro Intelligence</option>
+              <option value="sentiment-intelligence">Sentiment Intelligence</option>
+              <option value="institutional-intelligence">Institutional Intelligence</option>
+              <option value="broker-liquidity">Broker Liquidity</option>
+              <option value="portfolio-intelligence">Portfolio Intelligence</option>
+              <option value="prop-firm-rules">Prop Firm Rules</option>
+              <option value="alert">Alert</option>
+              <option value="permission">Permission</option>
+              <option value="user-activity">User Activity</option>
+              <option value="system-error">System Error</option>
+              <option value="audit">Audit</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Category</label>
+            <select id="filter-category">
+              <option value="">All Categories</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Severity</label>
+            <select id="filter-severity">
+              <option value="">All Severities</option>
+              <option value="info">Info</option>
+              <option value="success">Success</option>
+              <option value="warning">Warning</option>
+              <option value="error">Error</option>
+              <option value="critical">Critical</option>
+              <option value="emergency">Emergency</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Status</label>
+            <select id="filter-status">
+              <option value="">All Statuses</option>
+              <option value="started">Started</option>
+              <option value="completed">Completed</option>
+              <option value="failed">Failed</option>
+              <option value="retrying">Retrying</option>
+              <option value="blocked">Blocked</option>
+              <option value="acknowledged">Acknowledged</option>
+              <option value="resolved">Resolved</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>User</label>
+            <input type="text" id="filter-user" placeholder="User ID or name" />
+          </div>
+          <div class="filter-group">
+            <label>Source / Provider</label>
+            <input type="text" id="filter-source" placeholder="Source or provider name" />
+          </div>
+          <div class="filter-group">
+            <label>Provider</label>
+            <input type="text" id="filter-provider" placeholder="Provider name" />
+          </div>
+          <div class="filter-group">
+            <label>Entity Type</label>
+            <input type="text" id="filter-entity-type" placeholder="Package, handoff, score" />
+          </div>
+          <div class="filter-group">
+            <label>Package / Handoff / Score ID</label>
+            <input type="text" id="filter-entity-id" placeholder="Entity ID" />
+          </div>
+          <div class="filter-group">
+            <label>Action Type</label>
+            <input type="text" id="filter-action" placeholder="Action type" />
+          </div>
+          <div class="filter-group">
+            <label>Correlation ID</label>
+            <input type="text" id="filter-correlation-id" placeholder="Correlation ID" />
+          </div>
+          <div class="filter-group">
+            <label>Environment</label>
+            <select id="filter-environment">
+              <option value="production">Production</option>
+              <option value="staging">Staging</option>
+              <option value="development">Development</option>
+            </select>
+          </div>
+          <button id="apply-filters" class="primary-button">Apply Filters</button>
+        </section>
+
+        <section class="logs-tabs">
+          <button class="tab-button active" data-tab="logs-table">Logs Table</button>
+          <button class="tab-button" data-tab="critical-errors">Critical Errors</button>
+          <button class="tab-button" data-tab="audit-trail">Audit Trail</button>
+          <button class="tab-button" data-tab="metrics">Operational Metrics</button>
+          <button class="tab-button" data-tab="timeline">Timeline View</button>
+        </section>
+
+        <section class="logs-content">
+          <div id="logs-table" class="tab-content active">
+            <div class="table-header">
+              <h2>Market Intelligence Logs</h2>
+              <div class="table-actions">
+                <input type="search" id="search-logs" placeholder="Search logs..." />
+                <select id="page-size">
+                  <option value="25">25 rows</option>
+                  <option value="50" selected>50 rows</option>
+                  <option value="100">100 rows</option>
+                  <option value="500">500 rows</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-container">
+              <table id="logs-table-element">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th>Module</th>
+                    <th>Category</th>
+                    <th>Action</th>
+                    <th>Message</th>
+                    <th>Entity Type</th>
+                    <th>Entity ID</th>
+                    <th>User</th>
+                    <th>Source / Provider</th>
+                    <th>Correlation ID</th>
+                    <th>Duration</th>
+                    <th>Environment</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="logs-table-body">
+                  <tr class="loading-row">
+                    <td colspan="15">Loading logs...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-pagination">
+              <button id="prev-page" class="secondary-button" disabled>Previous</button>
+              <span id="page-info">Page 1 of 1</span>
+              <button id="next-page" class="secondary-button" disabled>Next</button>
+            </div>
+          </div>
+
+          <div id="critical-errors" class="tab-content">
+            <div class="panel-header">
+              <h2>Critical Error Review</h2>
+              <button id="refresh-errors" class="secondary-button">Refresh</button>
+            </div>
+            <div class="table-container">
+              <table id="errors-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Module</th>
+                    <th>Category</th>
+                    <th>Error Code</th>
+                    <th>Message</th>
+                    <th>Affected Entity</th>
+                    <th>Severity</th>
+                    <th>Retry Count</th>
+                    <th>Resolved</th>
+                    <th>Recommended Action</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="errors-table-body">
+                  <tr class="loading-row">
+                    <td colspan="11">Loading errors...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="audit-trail" class="tab-content">
+            <div class="panel-header">
+              <h2>Audit Trail</h2>
+              <button id="refresh-audit" class="secondary-button">Refresh</button>
+            </div>
+            <div class="table-container">
+              <table id="audit-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Entity</th>
+                    <th>Before Value</th>
+                    <th>After Value</th>
+                    <th>Reason / Comment</th>
+                    <th>IP Address</th>
+                    <th>Environment</th>
+                  </tr>
+                </thead>
+                <tbody id="audit-table-body">
+                  <tr class="loading-row">
+                    <td colspan="9">Loading audit logs...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="metrics" class="tab-content">
+            <div class="panel-header">
+              <h2>Operational Metrics</h2>
+              <button id="refresh-metrics" class="secondary-button">Refresh</button>
+            </div>
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <h3>Logs Over Time</h3>
+                <div id="logs-over-time-chart" class="chart-container">
+                  <p class="empty-state">No data available</p>
+                </div>
+              </div>
+              <div class="metric-card">
+                <h3>Errors Over Time</h3>
+                <div id="errors-over-time-chart" class="chart-container">
+                  <p class="empty-state">No data available</p>
+                </div>
+              </div>
+              <div class="metric-card">
+                <h3>Top Failing Sources</h3>
+                <div id="top-failing-sources-chart" class="chart-container">
+                  <p class="empty-state">No data available</p>
+                </div>
+              </div>
+              <div class="metric-card">
+                <h3>Top Error Categories</h3>
+                <div id="top-error-categories-chart" class="chart-container">
+                  <p class="empty-state">No data available</p>
+                </div>
+              </div>
+              <div class="metric-card">
+                <h3>Handoff Success Rate</h3>
+                <div class="metric-value" id="handoff-success-rate">0%</div>
+              </div>
+              <div class="metric-card">
+                <h3>Average Processing Duration</h3>
+                <div class="metric-value" id="avg-processing-duration">0ms</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="timeline" class="tab-content">
+            <div class="panel-header">
+              <h2>Timeline View</h2>
+              <div class="timeline-controls">
+                <input type="text" id="timeline-correlation-id" placeholder="Enter Correlation ID" />
+                <button id="load-timeline" class="primary-button">Load Timeline</button>
+              </div>
+            </div>
+            <div id="timeline-container" class="timeline-container">
+              <p class="empty-state">Enter a Correlation ID to view the timeline of related events.</p>
+            </div>
+          </div>
+        </section>
+
+        <div id="log-detail-drawer" class="drawer">
+          <div class="drawer-header">
+            <h2>Log Details</h2>
+            <button class="close-drawer">&times;</button>
+          </div>
+          <div class="drawer-content" id="drawer-content">
+            <div class="detail-section">
+              <h3>Basic Information</h3>
+              <div class="detail-grid">
+                <div><small>Log ID</small><strong id="detail-log-id">—</strong></div>
+                <div><small>Timestamp</small><strong id="detail-timestamp">—</strong></div>
+                <div><small>Severity</small><strong id="detail-severity">—</strong></div>
+                <div><small>Status</small><strong id="detail-status">—</strong></div>
+                <div><small>Module</small><strong id="detail-module">—</strong></div>
+                <div><small>Category</small><strong id="detail-category">—</strong></div>
+                <div><small>Action</small><strong id="detail-action">—</strong></div>
+                <div><small>Message</small><strong id="detail-message">—</strong></div>
+              </div>
+            </div>
+            <div class="detail-section">
+              <h3>Detailed Description</h3>
+              <p id="detail-description">—</p>
+            </div>
+            <div class="detail-section">
+              <h3>Entity Information</h3>
+              <div class="detail-grid">
+                <div><small>Entity Type</small><strong id="detail-entity-type">—</strong></div>
+                <div><small>Entity ID</small><strong id="detail-entity-id">—</strong></div>
+                <div><small>User</small><strong id="detail-user">—</strong></div>
+                <div><small>IP Address</small><strong id="detail-ip-address">—</strong></div>
+                <div><small>Source / Provider</small><strong id="detail-source">—</strong></div>
+              </div>
+            </div>
+            <div class="detail-section">
+              <h3>Request Information</h3>
+              <div class="detail-grid">
+                <div><small>Request ID</small><strong id="detail-request-id">—</strong></div>
+                <div><small>Correlation ID</small><strong id="detail-correlation-id">—</strong></div>
+                <div><small>Duration</small><strong id="detail-duration">—</strong></div>
+                <div><small>Environment</small><strong id="detail-environment">—</strong></div>
+              </div>
+            </div>
+            <div class="detail-section">
+              <h3>Error Information</h3>
+              <div class="detail-grid">
+                <div><small>Error Code</small><strong id="detail-error-code">—</strong></div>
+              </div>
+              <div class="detail-code">
+                <small>Stack Trace</small>
+                <pre id="detail-stack-trace">—</pre>
+              </div>
+            </div>
+            <div class="detail-section">
+              <h3>Payload Snapshot</h3>
+              <pre id="detail-payload">—</pre>
+            </div>
+            <div class="detail-section">
+              <h3>Value Changes</h3>
+              <div class="detail-grid">
+                <div><small>Before Value</small><pre id="detail-before">—</pre></div>
+                <div><small>After Value</small><pre id="detail-after">—</pre></div>
+              </div>
+            </div>
+            <div class="detail-section">
+              <h3>Resolution</h3>
+              <div class="detail-grid">
+                <div><small>Recommended Action</small><strong id="detail-recommended-action">—</strong></div>
+                <div><small>Resolution Status</small><strong id="detail-resolution-status">—</strong></div>
+                <div><small>Resolved At</small><strong id="detail-resolved-at">—</strong></div>
+                <div><small>Resolved By</small><strong id="detail-resolved-by">—</strong></div>
+              </div>
+            </div>
+            <div class="drawer-actions">
+              <button class="secondary-button" id="copy-log-id">Copy Log ID</button>
+              <button class="secondary-button" id="copy-correlation-id">Copy Correlation ID</button>
+              <button class="secondary-button" id="view-related-logs">View Related Logs</button>
+              <button class="secondary-button" id="acknowledge-log">Acknowledge</button>
+              <button class="secondary-button" id="resolve-log">Mark Resolved</button>
+              <button class="secondary-button" id="create-incident">Create Incident</button>
+              <button class="secondary-button" id="export-log">Export Log</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="incident-modal" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>Create Incident</h2>
+              <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label>Incident Title</label>
+                <input type="text" id="incident-title" required />
+              </div>
+              <div class="form-group">
+                <label>Severity</label>
+                <select id="incident-severity">
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="critical">Critical</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Affected Module</label>
+                <input type="text" id="incident-module" />
+              </div>
+              <div class="form-group">
+                <label>Affected Source</label>
+                <input type="text" id="incident-source" />
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <textarea id="incident-description" rows="4"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Assigned To</label>
+                <input type="text" id="incident-assigned-to" />
+              </div>
+              <div class="form-group">
+                <label>Due Date</label>
+                <input type="date" id="incident-due-date" />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="secondary-button close-modal">Cancel</button>
+              <button class="primary-button" id="submit-incident">Create Incident</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="empty-state" class="empty-state hidden">
+          <div class="empty-state-icon">📋</div>
+          <h2>No Market Intelligence logs found</h2>
+          <p>Production logs will appear here after sync jobs, validations, scoring runs, handoffs, or user actions occur.</p>
+          <div class="empty-state-actions">
+            <a href="/market-intelligence/source-health-review" class="primary-button">Run Source Health Review</a>
+            <a href="/market-intelligence" class="secondary-button">Open Source Registry</a>
+            <a href="/market-intelligence/package-builder" class="secondary-button">Open Package Builder</a>
+            <a href="/market-intelligence/scoring-engine" class="secondary-button">Open Scoring Engine</a>
+          </div>
+        </div>
+      </main>
+      <footer class="statusbar">
+        <div><span class="dot"></span> LOG MODE <strong>PRODUCTION ONLY</strong></div>
+        <div>FABRICATED ROWS <strong>0</strong></div>
+        <div>VALIDATION <strong>AUDIT LOGGING</strong></div>
+        <div class="status-spacer"></div>
+        <div id="utc-clock">UTC</div>
+      </footer>
+    </div>
+    <script type="module" src="/real-time-status.js"></script>
+    <script type="module" src="/market-intelligence-logs.js"></script>
+  </body>
+</html>

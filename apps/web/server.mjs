@@ -21,7 +21,11 @@ createServer((request, response) => {
       ? "workflow.html"
       : pathname === "/executive-command-center/workflow-dashboard"
         ? "executive-workflow-dashboard.html"
-      : pathname.startsWith("/data/")
+    : pathname === "/workspace/market-intelligence/logs" || pathname === "/market-intelligence/logs"
+      ? "market-intelligence-logs.html"
+    : pathname === "/workspace/market-intelligence/test-harness" || pathname === "/market-intelligence/test-harness"
+      ? "market-intelligence-test-harness.html"
+    : pathname.startsWith("/data/")
         ? `public${pathname}`
       : pathname.startsWith("/workspace/mt5-infrastructure/")
         ? "mt5-infrastructure.html"

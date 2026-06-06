@@ -2,10 +2,10 @@
 //| CACSMS Engine Bridge                                             |
 //+------------------------------------------------------------------+
 #property copyright "CACSMS Engine"
-#property version   "1.03"
+#property version   "1.04"
 #property strict
 
-#define CACSMS_EA_VERSION "1.0.3"
+#define CACSMS_EA_VERSION "1.0.4"
 
 input bool SendTicksInHeartbeat = false;
 

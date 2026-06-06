@@ -58,6 +58,32 @@ import {
   saveCustomBrokerServer
 } from "../../../packages/market-intelligence/src/mt5-broker-servers.js";
 import { getDatabaseConfig, testDatabaseConnection } from "../../../packages/market-intelligence/src/db.js";
+import {
+  acknowledgeLog,
+  createIncident,
+  createLog,
+  exportLogs,
+  getAuditLogs,
+  getCriticalErrors,
+  getLogById,
+  getLogCategories,
+  getLogTimeline,
+  getLogsMetrics,
+  getLogsSummary,
+  getMarketIntelligenceLogs,
+  resolveLog
+} from "../../../packages/market-intelligence/src/market-intelligence-logs.js";
+import {
+  exportTestHarnessReport,
+  getTestHarnessCatalog,
+  getTestHarnessDashboard,
+  getTestHarnessHistory,
+  getTestHarnessResult,
+  getTestHarnessSummary,
+  runFullDiagnostic,
+  runSelectedTests,
+  runTestHarnessTest
+} from "../../../packages/market-intelligence/src/market-intelligence-test-harness.js";
 import { getLatestTicks } from "../../../packages/market-intelligence/src/market-data-repository.js";
 import {
   connectNewsProvider,
@@ -691,6 +717,46 @@ const routes = {
   "GET /api/market-intelligence/data-quality-gate/events": () => ({ events: [], source_mode: "LIVE_ADAPTERS_ONLY" }),
   "GET /api/market-intelligence/data-quality-gate/export": () => ({ status: "ready", format: "csv", rules: DATA_QUALITY_GATE_RULES.length }),
   "GET /api/market-intelligence/feed-events": () => ({ events: [] })
+  ,"GET /api/market-intelligence/logs": async url => {
+    const filters = Object.fromEntries(url.searchParams);
+    return getMarketIntelligenceLogs(filters);
+  }
+  ,"GET /api/market-intelligence/logs/summary": async url => {
+    const filters = Object.fromEntries(url.searchParams);
+    return getLogsSummary(filters);
+  }
+  ,"GET /api/market-intelligence/logs/categories": () => getLogCategories()
+  ,"GET /api/market-intelligence/logs/errors": async url => {
+    const filters = Object.fromEntries(url.searchParams);
+    return getCriticalErrors(filters);
+  }
+  ,"GET /api/market-intelligence/logs/audit": async url => {
+    const filters = Object.fromEntries(url.searchParams);
+    return getAuditLogs(filters);
+  }
+  ,"GET /api/market-intelligence/logs/timeline": async url => {
+    const correlationId = url.searchParams.get("correlationId");
+    if (!correlationId) return { timeline: [] };
+    return { timeline: await getLogTimeline(correlationId) };
+  }
+  ,"GET /api/market-intelligence/logs/metrics": async url => {
+    const filters = Object.fromEntries(url.searchParams);
+    return getLogsMetrics(filters);
+  }
+  ,"GET /api/market-intelligence/logs/:id": async url => {
+    const id = url.pathname.split("/").pop();
+    return getLogById(id);
+  }
+  ,"GET /api/market-intelligence/logs/export": async url => {
+    const filters = Object.fromEntries(url.searchParams);
+    const exportType = url.searchParams.get("type") || "csv";
+    return exportLogs(filters, exportType);
+  }
+  ,"GET /api/market-intelligence/test-harness": () => getTestHarnessDashboard()
+  ,"GET /api/market-intelligence/test-harness/summary": () => getTestHarnessSummary()
+  ,"GET /api/market-intelligence/test-harness/catalog": () => getTestHarnessCatalog()
+  ,"GET /api/market-intelligence/test-harness/history": url => getTestHarnessHistory({ limit: url.searchParams.get("limit") || 50 })
+  ,"GET /api/market-intelligence/test-harness/export": () => exportTestHarnessReport()
   ,"GET /api/market-data/providers": async () => getMarketDataOperationsDashboard({ liveProbe: await getMarketDataLiveProbe() })
   ,"GET /api/market-data/providers/health": async () => getMarketDataHealthDashboard({ liveProbe: await getMarketDataLiveProbe() })
   ,"GET /api/market-data/providers/latency": async () => getMarketDataLatencyDashboard({ liveProbe: await getMarketDataLiveProbe() })
@@ -858,9 +924,25 @@ const routes = {
   ,"GET /api/market-intelligence/handoff/history": async () => getHandoffHistory()
   ,"GET /api/market-intelligence/handoff/failures": async () => getHandoffFailures()
   ,"GET /api/market-intelligence/scoring-engine/export": async () => exportScoringReport()
-  ,"GET /api/source-configuration": async () => getSourceConfigurationDashboard(await getLiveSourceSnapshots())
+  ,"GET /api/source-configuration": async () => {
+    try {
+      const snapshots = await getLiveSourceSnapshots();
+      return getSourceConfigurationDashboard(snapshots);
+    } catch (error) {
+      console.warn("[api] /api/source-configuration: getLiveSourceSnapshots failed, using empty snapshots:", error.message);
+      return getSourceConfigurationDashboard([]);
+    }
+  }
   ,"GET /api/source-configuration/providers": () => getSourceProviders()
-  ,"GET /api/source-configuration/health": async () => getSourceHealth(await getLiveSourceSnapshots())
+  ,"GET /api/source-configuration/health": async () => {
+    try {
+      const snapshots = await getLiveSourceSnapshots();
+      return getSourceHealth(snapshots);
+    } catch (error) {
+      console.warn("[api] /api/source-configuration/health: getLiveSourceSnapshots failed, using empty snapshots:", error.message);
+      return getSourceHealth([]);
+    }
+  }
   ,"GET /api/source-configuration/logs": () => getSourceLogs()
   ,"GET /api/source-configuration/export": () => exportSourceConfiguration()
 };
@@ -951,6 +1033,28 @@ const server = createServer(async (request, response) => {
     } catch (error) {
       console.error(`[api] ${request.method} ${url.pathname}:`, error.message);
       return json(response, 503, { error: "service_unavailable", message: error.message });
+    }
+  }
+  if (request.method === "GET" && url.pathname.startsWith("/api/market-intelligence/logs/")) {
+    const id = url.pathname.split("/").at(-1);
+    const permissions = (request.headers["x-cacsms-permissions"] || "").split(",").map(permission => permission.trim());
+    const includeSensitive = url.searchParams.get("sensitive") === "true" && permissions.includes("market_intelligence.logs.view_sensitive");
+    try {
+      const log = await getLogById(id, { includeSensitive });
+      return log ? json(response, 200, log) : json(response, 404, { error: "log_not_found" });
+    } catch (reason) {
+      return json(response, 400, { error: "log_lookup_failed", message: reason.message });
+    }
+  }
+  if (request.method === "GET" && url.pathname.startsWith("/api/market-intelligence/test-harness/results/")) {
+    const id = url.pathname.split("/").at(-1);
+    const permissions = (request.headers["x-cacsms-permissions"] || "").split(",").map(permission => permission.trim());
+    const includeSensitive = url.searchParams.get("sensitive") === "true" && permissions.includes("market_intelligence.test_harness.view_sensitive");
+    try {
+      const result = await getTestHarnessResult(id, { includeSensitive });
+      return result ? json(response, 200, result) : json(response, 404, { error: "test_result_not_found" });
+    } catch (reason) {
+      return json(response, 400, { error: "test_result_lookup_failed", message: reason.message });
     }
   }
   if (request.method === "GET" && url.pathname.startsWith("/api/market-intelligence/data-sources/")) {
@@ -1096,6 +1200,34 @@ const server = createServer(async (request, response) => {
       return json(response, 200, await validateIntelligencePackage(await readBody(request), auditFromRequest(request).userLabel));
     } catch (reason) {
       return json(response, 400, { error: "package_builder_validate_failed", message: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname.startsWith("/api/market-intelligence/logs/")) {
+    const segments = url.pathname.split("/");
+    const id = segments[4];
+    const action = segments[5];
+    try {
+      if (action === "acknowledge") {
+        return json(response, 200, await acknowledgeLog(id, auditFromRequest(request).userId));
+      }
+      if (action === "resolve") {
+        return json(response, 200, await resolveLog(id, auditFromRequest(request).userId));
+      }
+      if (action === "create-incident") {
+        const body = await readBody(request);
+        return json(response, 201, await createIncident(id, body));
+      }
+      return json(response, 404, { error: "log_action_not_found" });
+    } catch (reason) {
+      return json(response, reason.message === "database_not_configured" ? 503 : 400, { error: "log_action_failed", message: reason.message });
+    }
+  }
+  if (request.method === "POST" && url.pathname === "/api/market-intelligence/logs/archive") {
+    try {
+      const body = await readBody(request);
+      return json(response, 200, { status: "archived", ...body });
+    } catch (reason) {
+      return json(response, 400, { error: "logs_archive_failed", message: reason.message });
     }
   }
   if (request.method === "DELETE" && url.pathname.startsWith("/api/market-intelligence/broker-data/sources/")) {
@@ -1293,11 +1425,17 @@ const server = createServer(async (request, response) => {
   }
   if (request.method === "POST" && url.pathname === "/api/mt5/terminals/register") {
     const body = await readBody(request);
+    console.log("[api] /api/mt5/terminals/register request body:", JSON.stringify(body));
     try {
+      if (!body.providerId) {
+        console.error("[api] Missing providerId in request body");
+        return json(response, 400, { error: "provider_id_required", message: "providerId is required in request body" });
+      }
       const terminal = await registerTerminalForProvider(body.providerId, body);
       return json(response, 201, { accepted: true, terminal });
     } catch (reason) {
       const message = reason instanceof Error ? reason.message : String(reason);
+      console.error("[api] /api/mt5/terminals/register error:", message, reason);
       if (message === "database_not_configured") return json(response, 503, { error: message });
       if (message === "provider_not_found") return json(response, 404, { error: message });
       if (message === "duplicate_mt5_terminal_provider") {
@@ -1310,7 +1448,7 @@ const server = createServer(async (request, response) => {
         });
       }
       if (message === "terminal_already_registered") return json(response, 409, { error: message, hint: "This provider already has a registered terminal." });
-      return json(response, 400, { error: message });
+      return json(response, 400, { error: message, details: reason?.details || null });
     }
   }
   if (request.method === "POST" && url.pathname === "/api/mt5/terminals/generate-token") {
@@ -1514,6 +1652,37 @@ const server = createServer(async (request, response) => {
   }
   if (request.method === "POST" && url.pathname === "/api/market-data/providers/sync-all-symbols") {
     return json(response, 200, { accepted: true, ...(await syncAllMarketDataProviderSymbols({ liveProbe: await getMarketDataLiveProbe(), probeFn: probeConfiguredUrl })) });
+  }
+  if (request.method === "POST" && url.pathname.startsWith("/api/market-intelligence/test-harness/")) {
+    const action = url.pathname.split("/").pop();
+    const body = await readBody(request).catch(() => ({}));
+    const audit = auditFromRequest(request);
+    const permissions = (request.headers["x-cacsms-permissions"] || "").split(",").map(permission => permission.trim());
+    const byCategory = {
+      "run-provider-test": "provider-connectivity-check",
+      "run-sync-test": "sync-readiness-check",
+      "run-validation-test": "validation-rule-check",
+      "run-scoring-test": "scoring-engine-validation",
+      "run-handoff-test": "handoff-readiness-check",
+      "run-alert-test": "alert-dry-run-check"
+    };
+    try {
+      if (action === "run") {
+        return json(response, 200, { accepted: true, ...(await runTestHarnessTest({ testId: body.testId, safetyMode: body.safetyMode, actor: audit.userLabel, permissions })) });
+      }
+      if (action === "run-selected") {
+        return json(response, 200, { accepted: true, ...(await runSelectedTests({ testIds: body.testIds || [], safetyMode: body.safetyMode, actor: audit.userLabel, permissions })) });
+      }
+      if (action === "run-full-diagnostic") {
+        return json(response, 200, { accepted: true, ...(await runFullDiagnostic({ safetyMode: body.safetyMode, actor: audit.userLabel, permissions })) });
+      }
+      if (byCategory[action]) {
+        return json(response, 200, { accepted: true, ...(await runTestHarnessTest({ testId: body.testId || byCategory[action], safetyMode: body.safetyMode, actor: audit.userLabel, permissions })) });
+      }
+      return json(response, 404, { error: "test_harness_action_not_found" });
+    } catch (reason) {
+      return json(response, reason?.status || 400, { error: reason instanceof Error ? reason.message : String(reason) });
+    }
   }
   if (request.method === "POST" && url.pathname === "/api/workflow/cards/1/test-live") {
     return json(response, 200, { accepted: true, event: await actions[url.pathname]() });

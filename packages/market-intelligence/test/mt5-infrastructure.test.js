@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   buildLiveFeedDiagnostics,
   buildOnboardingView,
+  displayMachineStatus,
   effectiveTerminalConnectionStatus,
   evaluateMt5WorkflowReadiness,
   summarizeTerminalHealth
@@ -62,4 +63,10 @@ test("expired heartbeat is reported offline across MT5 health summaries", () => 
     averageLatencyMs: 0,
     mt5HealthScore: 0
   });
+});
+
+test("machine health enum values are displayed as uppercase statuses", () => {
+  assert.equal(displayMachineStatus("online"), "ONLINE");
+  assert.equal(displayMachineStatus("offline"), "OFFLINE");
+  assert.equal(displayMachineStatus(null), "OFFLINE");
 });

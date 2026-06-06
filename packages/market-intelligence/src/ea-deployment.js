@@ -550,7 +550,7 @@ async function runDeploymentAction(action, { terminalId, machineId, dataPath = n
 
   if (action === "deploy" || action === "update") {
     await markEaInstalled(terminalId, terminal.provider_id, versionRow.version);
-    await query(`UPDATE infrastructure.machines SET mt5_count = GREATEST(mt5_count, 1), last_seen_at = now(), status = 'ONLINE' WHERE id = $1`, [resolvedMachineId]);
+    await query(`UPDATE infrastructure.machines SET mt5_count = GREATEST(mt5_count, 1), last_seen_at = now(), status = 'online' WHERE id = $1`, [resolvedMachineId]);
   }
 
   await appendDeploymentLog(deployment.id, `${action} completed`, {
