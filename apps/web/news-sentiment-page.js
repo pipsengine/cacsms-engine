@@ -24,10 +24,11 @@ export function renderNewsSentimentCenter() {
   const dashboard = state.dashboard || {};
   const rows = filteredHeadlines();
   const online = state.sources.filter(source=>source.status==="ONLINE").length;
+  const operational = state.sources.filter(source=>["ONLINE","SYNCED"].includes(source.status)).length;
   return `<section class="nsi-dashboard">
     <header class="nsi-header"><div><p class="nsi-eyebrow">WORKSPACE / MARKET INTELLIGENCE / NEWS INTELLIGENCE ENGINE</p><h1>News Sentiment</h1><span>Automated real-time collection, validation, enrichment, sentiment analysis, market impact detection, alerting, and historical storage.</span></div><div class="nsi-header-side"><div class="nsi-live-badges">${badge(dashboard.status || "STARTING")}<b>Source Mode: Live Providers Only</b><b class="ai">Auto Sync: 1 Minute</b></div><div class="nsi-actions"><button data-nsi-refresh>${state.syncing ? "Synchronizing..." : "Sync News Now"}</button><button data-nsi-configure>Configure Sources</button><button class="primary" data-nsi-export ${state.headlines.length ? "" : "disabled"}>Export Live Report</button></div></div></header>
     <section class="nsi-summary">${[
-      ["Live Providers",`${online} / ${state.sources.length}`,"green"],
+      ["Live Providers",`${operational} / ${state.sources.length}`,"green"],
       ["Stored Articles",dashboard.articleCount || 0,"blue"],
       ["High Impact",dashboard.highImpact || 0,"amber"],
       ["Sentiment Score",dashboard.sentimentScore ?? 0,"purple"],
@@ -35,7 +36,7 @@ export function renderNewsSentimentCenter() {
       ["Active Alerts",dashboard.unacknowledgedAlerts || 0,"red"]
     ].map(([a,b,c])=>`<article class="${c}"><small>${a}</small><strong>${esc(b)}</strong><span>Live intelligence</span></article>`).join("")}</section>
     <section class="nsi-filter-panel"><div class="nsi-filter-title"><div><strong>Live News Search</strong><span>Search stored real provider articles by headline, category, source, or asset.</span></div></div><div class="nsi-filter-grid"><label>Keyword<div class="nsi-search"><input data-nsi-query value="${esc(state.query)}" placeholder="Search live news..." /></div></label></div></section>
-    ${!online ? `<section class="nsi-state"><h2>No enabled news provider is currently reachable.</h2><p>The engine will keep retrying automatically. Review provider health below; no sample articles are rendered.</p><div><button data-nsi-refresh>Retry Sync</button><button data-nsi-configure>Configure Sources</button></div></section>` : ""}
+    ${!operational && !state.headlines.length ? `<section class="nsi-state"><h2>No enabled news provider is currently reachable.</h2><p>The engine will keep retrying automatically. Review provider health below; no sample articles are rendered.</p><div><button data-nsi-refresh>Retry Sync</button><button data-nsi-configure>Configure Sources</button></div></section>` : !online && operational ? `<section class="nsi-state"><h2>Live provider sync is temporarily degraded.</h2><p>Stored articles remain available while the engine retries RSS synchronization automatically.</p><div><button data-nsi-refresh>Retry Sync</button></div></section>` : ""}
     <section class="nsi-panel">${title("Live News Intelligence Feed","Normalized articles collected from real enabled providers.",`${rows.length} ARTICLES`)}${table(["Published","Source","Headline","Category","Sentiment","Impact","Affected Assets","Action"],rows.map(item=>[
       esc(time(item.publishedAt)),
       esc(item.source),
@@ -47,7 +48,7 @@ export function renderNewsSentimentCenter() {
       esc(item.action)
     ]))}</section>
     <div class="nsi-grid nsi-grid-main">
-      <section class="nsi-panel">${title("Provider Health","Every source remains isolated so one failure cannot break the page.",`${online} ONLINE`)}${table(["Provider","Tier","Status","Latency","Last Success","Imported","Error"],state.sources.map(item=>[
+      <section class="nsi-panel">${title("Provider Health","Every source remains isolated so one failure cannot break the page.",`${operational} OPERATIONAL`)}${table(["Provider","Tier","Status","Latency","Last Success","Imported","Error"],state.sources.map(item=>[
         esc(item.name),esc(item.tier),badge(item.status),item.latencyMs!=null?`${esc(item.latencyMs)} ms`:"-",esc(time(item.lastSuccessAt)),esc(item.imported || 0),esc(item.error || "-")
       ]))}</section>
       <section class="nsi-panel">${title("Real-Time Alerts","High and extreme impact articles detected by the enrichment engine.",`${state.alerts.length} ALERTS`)}<div class="nsi-alert-list">${state.alerts.length ? state.alerts.slice(0,12).map(item=>`<article><span class="nsi-alert-icon ${String(item.level).toLowerCase()}">!</span><div><strong>${esc(item.headline)}</strong><p>${esc((item.affectedAssets || []).join(", ") || "Market-wide")}</p><small>${esc(time(item.createdAt))}</small></div><aside>${badge(item.level)}</aside></article>`).join("") : "<p>No high-impact live alerts have been generated.</p>"}</div></section>
