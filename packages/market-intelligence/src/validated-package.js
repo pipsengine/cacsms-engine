@@ -1,4 +1,5 @@
 import { isDatabaseConfigured, query, withTransaction } from "./db.js";
+import { ensureActiveWorkflowRun } from "./workflow-run.js";
 
 const REQUIRED_TABLES = [
   "workflow.card_outputs",
@@ -338,8 +339,6 @@ export async function persistValidatedPackageFromCardOne(report) {
   const readiness = await tableReadiness();
   if (!readiness.ready) return null;
 
-  const run = await latestRun();
-  const runId = run?.id || null;
   const packageId = packageIdFromDate(new Date(report.executedAt || Date.now()));
   const sources = arr(report.sources).map(normalizeSource);
   const passedSources = sources.filter(source => String(source.validation).toUpperCase() === "PASSED").length;
@@ -365,6 +364,12 @@ export async function persistValidatedPackageFromCardOne(report) {
   };
 
   return withTransaction(async client => {
+    const run = await ensureActiveWorkflowRun(client, {
+      workflowId: report.testRunId || null,
+      executedAt: report.executedAt || new Date().toISOString(),
+      currentStage: 2
+    });
+    const runId = run.id;
     await client.query(`
       INSERT INTO market.validated_intelligence_packages (
         run_id, package_id, workflow_run_id, status, validation_status, package_status,

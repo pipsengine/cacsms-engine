@@ -34,6 +34,8 @@ test("Card 2 dashboard migration creates the required persistence tables", () =>
 test("API exposes Card 2 dashboard and workflow control endpoints", () => {
   assert.match(api, /GET \/api\/market-intelligence\/card-2\/dashboard/);
   assert.match(api, /runCardTwoAction\(action\)/);
+  assert.match(api, /runCardTwoLiveTest/);
+  assert.match(api, /\/api\/workflow\/cards\/2\/test-live/);
   assert.match(api, /\/api\/market-intelligence\/card-2\//);
 });
 

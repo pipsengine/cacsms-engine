@@ -21,9 +21,10 @@ function loadEnvFile() {
 loadEnvFile();
 import { ASSET_SCORES, ASSET_UNIVERSE, MOCK_WORKFLOW, WORKFLOW_EVENTS } from "../../../packages/workflow/src/mock-data.js";
 import { createCardOneTestReport } from "../../../packages/workflow/src/card-one.js";
+import { createCardTwoTestReport } from "../../../packages/workflow/src/card-two.js";
 import { WORKFLOW_CARD_QUEUE } from "../../../packages/workflow/src/index.js";
 import { evaluateDataQualityGate } from "../../../packages/market-intelligence/src/data-sources.js";
-import { getCardTwoDashboard, runCardTwoAction } from "../../../packages/market-intelligence/src/card-two-dashboard.js";
+import { getCardTwoDashboard, runCardTwoAction, runCardTwoLiveTest } from "../../../packages/market-intelligence/src/card-two-dashboard.js";
 import { getValidatedPackageDashboard, persistValidatedPackageFromCardOne } from "../../../packages/market-intelligence/src/validated-package.js";
 import { getSourceHealthReviewDashboard, getSourceHealthReviewSlice, runSourceHealthReviewAction } from "../../../packages/market-intelligence/src/source-health-review.js";
 import { getDependencyMatrixDashboard, getDependencyMatrixSlice, runDependencyMatrixAction } from "../../../packages/market-intelligence/src/dependency-matrix.js";
@@ -302,6 +303,7 @@ const cotCachePath = fileURLToPath(new URL("../../web/public/data/institutional-
 const cotSyncScriptPath = fileURLToPath(new URL("../../../scripts/sync-cftc-cot.ps1", import.meta.url));
 let workflow = { ...MOCK_WORKFLOW };
 let cardOneReport;
+let cardTwoReport;
 const sourceProbeLog = [];
 const eventLog = WORKFLOW_EVENTS.slice(0, 9).map((type, index) => ({
   id: index + 1, type, workflowId: workflow.workflowId, timestamp: new Date(Date.now() - (9 - index) * 60000).toISOString()
@@ -640,6 +642,7 @@ const routes = {
   "GET /api/workflow/current": () => workflow,
   "GET /api/workflow/events": () => ({ events: eventLog }),
   "GET /api/workflow/cards/1": async () => cardOneReport || createCardOneTestReport(await getLiveSourceSnapshots()),
+  "GET /api/workflow/cards/2": async () => cardTwoReport || createCardTwoTestReport(await getCardTwoDashboard()),
   "GET /api/workflow/cards": () => ({ cards: WORKFLOW_CARD_QUEUE }),
   "GET /api/assets/universe": () => ({ count: ASSET_UNIVERSE.length, assets: ASSET_UNIVERSE }),
   "GET /api/assets/scores": () => ({ workflowId: workflow.workflowId, scores: ASSET_SCORES }),
@@ -972,6 +975,11 @@ const actions = {
     cardOneReport = createCardOneTestReport(await getLiveSourceSnapshots());
     const packageRecord = await persistValidatedPackageFromCardOne(cardOneReport);
     return { type: "workflow.card1.live_test.completed", report: cardOneReport, package: packageRecord };
+  },
+  "/api/workflow/cards/2/test-live": async () => {
+    const event = await runCardTwoLiveTest();
+    cardTwoReport = event.report;
+    return event;
   },
   "/api/market-intelligence/data-sources/test": async () => ({ type: "market_intelligence.sources.live_probe.completed", ...await getLiveMarketIntelligenceDashboard({ log: true }) }),
   "/api/market-intelligence/data-sources/sync": async () => ({ type: "market_intelligence.sources.live_probe.completed", ...await getLiveMarketIntelligenceDashboard({ log: true }) }),
@@ -1684,7 +1692,7 @@ const server = createServer(async (request, response) => {
       return json(response, reason?.status || 400, { error: reason instanceof Error ? reason.message : String(reason) });
     }
   }
-  if (request.method === "POST" && url.pathname === "/api/workflow/cards/1/test-live") {
+  if (request.method === "POST" && (url.pathname === "/api/workflow/cards/1/test-live" || url.pathname === "/api/workflow/cards/2/test-live")) {
     return json(response, 200, { accepted: true, event: await actions[url.pathname]() });
   }
   if (request.method === "POST" && url.pathname.startsWith("/api/market-intelligence/source-health-review/")) {

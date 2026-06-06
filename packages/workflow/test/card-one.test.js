@@ -42,6 +42,6 @@ test("Executive Command Center exposes the Card 1 workflow dashboard and API tes
   assert.match(nav, /executive-command-center\/workflow-dashboard/);
   assert.match(api, /test-live/);
   assert.doesNotMatch(api, /test-pass|test-warning|test-reject|test-missing/);
-  for (const section of ["ACCEPTANCE CHECK MATRIX", "SOURCE EVIDENCE MATRIX", "REJECT / STOP CONDITIONS", "TEST AUDIT TRAIL", "CARD 2 / MARKET INTELLIGENCE GATHERING"]) assert.match(page, new RegExp(section));
+  for (const section of ["ACCEPTANCE CHECK MATRIX", "SOURCE EVIDENCE MATRIX", "REJECT / STOP CONDITIONS", "TEST AUDIT TRAIL", "CARD 2 / MARKET INTELLIGENCE GATHERING", "Run Live Card 2 Test"]) assert.match(page, new RegExp(section));
   for (const card of ["Data Sources Validation", "Market Intelligence Gathering", "20-Asset Universe Scanner", "Post-Trade Analytics & Learning"]) assert.match(page, new RegExp(card));
 });

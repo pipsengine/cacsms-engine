@@ -1,4 +1,7 @@
+import { createCardTwoTestReport } from "../../workflow/src/card-two.js";
 import { isDatabaseConfigured, query, withTransaction } from "./db.js";
+import { getPackageBuilderModules } from "./package-builder.js";
+import { ensureActiveWorkflowRun, loadLatestWorkflowRun } from "./workflow-run.js";
 
 const REQUIRED_TABLES = [
   "workflow.card_inputs",
@@ -96,7 +99,7 @@ async function latestRun() {
            s.completed_at AS stage_completed_at, s.confidence_score, s.duration_ms, s.input_payload, s.output_payload
     FROM workflow.workflow_runs r
     LEFT JOIN workflow.workflow_stages s
-      ON s.run_id = r.id AND (s.stage_order = 2 OR s.stage_key IN ('market_intelligence_gathering', 'market-intelligence-gathering'))
+      ON s.run_id = r.id AND (s.stage_order = 2 OR s.stage_key IN ('market-intelligence', 'market_intelligence_gathering', 'market-intelligence-gathering'))
     ORDER BY r.created_at DESC
     LIMIT 1
   `);
@@ -395,14 +398,18 @@ export async function runCardTwoAction(action) {
     error.missingTables = readiness.missing;
     throw error;
   }
-  const run = await latestRun();
-  if (!run?.id) {
-    const error = new Error("workflow_run_not_found");
-    error.status = 404;
-    throw error;
-  }
   const packageId = `MI-${new Date().toISOString().replaceAll(/[-:.TZ]/g, "").slice(0, 14)}`;
+  const modules = action === "run-card-2-test" ? await getPackageBuilderModules() : null;
   return withTransaction(async client => {
+    let run = await loadLatestWorkflowRun(client);
+    if (!run?.id) {
+      run = await ensureActiveWorkflowRun(client, { currentStage: 2 });
+    }
+    if (!run?.id) {
+      const error = new Error("workflow_run_not_found");
+      error.status = 404;
+      throw error;
+    }
     if (action === "generate-package") {
       const { rows } = await client.query(`
         INSERT INTO market.intelligence_packages (run_id, package_id, status, payload, generated_at)
@@ -431,7 +438,168 @@ export async function runCardTwoAction(action) {
       await client.query("INSERT INTO market.intelligence_logs (run_id, event, source, severity, status) VALUES ($1, 'Package Sent To Card 3', 'card_2', 'info', 'SENT')", [run.id]);
       return { action, handoff: rows[0] };
     }
+    if (action === "run-card-2-test") {
+      return runCardTwoLiveTestInTransaction(client, run, modules);
+    }
     await client.query("INSERT INTO market.intelligence_logs (run_id, event, source, severity, status, payload) VALUES ($1, $2, 'card_2', 'info', 'RECORDED', $3::jsonb)", [run.id, action, JSON.stringify({ action })]);
     return { action, status: "RECORDED" };
   });
+}
+
+const PIPELINE_MODULE_MAP = Object.freeze({
+  market_environment: "market_environment",
+  macro: "macro",
+  sentiment: "sentiment",
+  institutional: "institutional",
+  broker_liquidity: "broker",
+  portfolio: "portfolio"
+});
+
+function averageScore(rows, key) {
+  const values = rows.map(row => Number(row[key])).filter(value => Number.isFinite(value));
+  return values.length ? Math.round(values.reduce((sum, value) => sum + value, 0) / values.length) : null;
+}
+
+function numericScore(value) {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : null;
+}
+
+async function runCardTwoLiveTestInTransaction(client, run, modules) {
+  const executedAt = new Date().toISOString();
+
+  await client.query("DELETE FROM market.market_intelligence WHERE run_id = $1", [run.id]);
+  await client.query("DELETE FROM market.intelligence_scores WHERE run_id = $1", [run.id]);
+
+  for (const [moduleKey, source] of Object.entries(PIPELINE_MODULE_MAP)) {
+    const mod = modules.modules.find(row => row.moduleKey === moduleKey);
+    if (!mod) continue;
+    const status = mod.status === "Passed" ? "COMPLETED" : "WARNING";
+    await client.query(`
+      INSERT INTO market.market_intelligence (run_id, source, sentiment, confidence, payload)
+      VALUES ($1, $2, $3, $4, $5::jsonb)
+    `, [
+      run.id,
+      source,
+      numericScore(mod.health ?? mod.confidence),
+      numericScore(mod.confidence ?? mod.health),
+      JSON.stringify({
+        module: source,
+        status,
+        progress: mod.status === "Passed" ? 100 : 50,
+        freshness: mod.freshness,
+        health: mod.health,
+        completeness: mod.completeness
+      })
+    ]);
+  }
+
+  const requiredModules = modules.modules.filter(row => row.required);
+  const scoredModules = modules.modules.filter(row => row.status === "Passed");
+  const marketIntelligence = averageScore(scoredModules, "health") ?? averageScore(scoredModules, "confidence");
+  const confidence = averageScore(scoredModules, "confidence") ?? marketIntelligence;
+  const readiness = averageScore(requiredModules.filter(row => row.status === "Passed"), "health") ?? confidence;
+  const moduleScore = mod => mod?.status === "Passed" ? numericScore(mod.confidence ?? mod.health) : null;
+  const macro = modules.modules.find(row => row.moduleKey === "macro");
+  const sentiment = modules.modules.find(row => row.moduleKey === "sentiment");
+  const institutional = modules.modules.find(row => row.moduleKey === "institutional");
+  const broker = modules.modules.find(row => row.moduleKey === "broker_liquidity");
+  const portfolio = modules.modules.find(row => row.moduleKey === "portfolio");
+
+  const scoreRows = [
+    ["market_intelligence", SCORE_LABELS.market_intelligence, marketIntelligence],
+    ["macro_risk", SCORE_LABELS.macro_risk, moduleScore(macro)],
+    ["sentiment", SCORE_LABELS.sentiment, moduleScore(sentiment)],
+    ["institutional", SCORE_LABELS.institutional, moduleScore(institutional)],
+    ["liquidity", SCORE_LABELS.liquidity, moduleScore(broker)],
+    ["portfolio_risk", SCORE_LABELS.portfolio_risk, moduleScore(portfolio)],
+    ["confidence", SCORE_LABELS.confidence, confidence],
+    ["readiness", SCORE_LABELS.readiness, readiness]
+  ];
+
+  for (const [scoreKey, scoreLabel, scoreValue] of scoreRows) {
+    const numericValue = numericScore(scoreValue);
+    if (numericValue == null) continue;
+    const status = numericValue >= 85 ? "PASSED" : numericValue >= 70 ? "WARNING" : "FAILED";
+    await client.query(`
+      INSERT INTO market.intelligence_scores (run_id, score_key, score_label, score_value, status, calculated_at)
+      VALUES ($1, $2, $3, $4, $5, $6::timestamptz)
+    `, [run.id, scoreKey, scoreLabel, numericValue, status, executedAt]);
+  }
+
+  const packageId = `MI-${executedAt.replaceAll(/[-:.TZ]/g, "").slice(0, 14)}`;
+  const missingRequired = requiredModules.filter(row => row.status !== "Passed").length;
+  const marketScore = numericScore(marketIntelligence) ?? 0;
+  const confidenceScore = numericScore(confidence) ?? 0;
+  const packageStatus = marketScore < 70 ? "FAILED" : missingRequired || marketScore < 80 || confidenceScore < 85 ? "PASSED_WITH_WARNING" : "PASSED";
+  const packagePayload = {
+    source: "card_2_live_test",
+    modules: scoredModules.map(row => ({ key: row.moduleKey, label: row.moduleLabel, status: row.status, confidence: row.confidence })),
+    scores: Object.fromEntries(scoreRows.filter(([, , value]) => value != null).map(([key, , value]) => [key, value])),
+    generatedAt: executedAt
+  };
+
+  const { rows } = await client.query(`
+    INSERT INTO market.intelligence_packages (run_id, package_id, status, confidence, payload, generated_at, validated_at)
+    VALUES ($1, $2, $3, $4, $5::jsonb, $6::timestamptz, $6::timestamptz)
+    ON CONFLICT (package_id) DO UPDATE SET
+      status = excluded.status,
+      confidence = excluded.confidence,
+      payload = excluded.payload,
+      generated_at = excluded.generated_at,
+      validated_at = excluded.validated_at
+    RETURNING package_id, status, confidence, generated_at
+  `, [run.id, packageId, packageStatus, confidenceScore || null, JSON.stringify(packagePayload), executedAt]);
+
+  await client.query(`
+    INSERT INTO workflow.card_outputs (run_id, card_number, package_id, status, payload, generated_at, validated_at)
+    VALUES ($1, 2, $2, $3, $4::jsonb, $5::timestamptz, $5::timestamptz)
+  `, [run.id, rows[0].package_id, packageStatus, JSON.stringify({ packageId: rows[0].package_id, confidence: rows[0].confidence }), executedAt]);
+
+  await client.query(`
+    UPDATE workflow.workflow_stages
+    SET status = CASE WHEN $2 = 'FAILED' THEN 'failed'::workflow.stage_status ELSE 'running'::workflow.stage_status END,
+        started_at = coalesce(started_at, $3::timestamptz)
+    WHERE run_id = $1 AND stage_order = 2
+  `, [run.id, packageStatus, executedAt]);
+
+  await client.query(`
+    INSERT INTO market.intelligence_logs (run_id, event, source, severity, status, payload)
+    VALUES ($1, 'Card 2 Live Test Completed', 'card_2', 'info', $2, $3::jsonb)
+  `, [run.id, packageStatus, JSON.stringify({ packageId, marketIntelligence, confidence, missingRequired })]);
+
+  return { action: "run-card-2-test", package: rows[0], packageStatus, executedAt };
+}
+
+export async function runCardTwoLiveTest() {
+  if (!isDatabaseConfigured()) {
+    const error = new Error("database_not_configured");
+    error.status = 503;
+    throw error;
+  }
+  const readiness = await tableReadiness();
+  if (!readiness.ready) {
+    const error = new Error("schema_not_ready");
+    error.status = 503;
+    error.missingTables = readiness.missing;
+    throw error;
+  }
+
+  const initial = await getCardTwoDashboard();
+  if (!["RECEIVED", "READY", "PASSED"].includes(String(initial.inputPackage?.status || "").toUpperCase())) {
+    const error = new Error("card1_handoff_missing");
+    error.status = 409;
+    throw error;
+  }
+
+  const modules = await getPackageBuilderModules();
+  await withTransaction(async client => {
+    let run = await loadLatestWorkflowRun(client);
+    if (!run?.id) run = await ensureActiveWorkflowRun(client, { currentStage: 2 });
+    return runCardTwoLiveTestInTransaction(client, run, modules);
+  });
+
+  const dashboard = await getCardTwoDashboard();
+  const report = createCardTwoTestReport(dashboard);
+  return { type: "workflow.card2.live_test.completed", report };
 }
