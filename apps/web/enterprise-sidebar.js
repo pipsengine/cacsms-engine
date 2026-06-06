@@ -33,6 +33,29 @@ const marketIntelligenceChildren = [
   ["Card 2 Test Harness", "/workspace/market-intelligence/test-harness"]
 ];
 
+const universeScannerChildren = [
+  ["Universe Dashboard", "/workspace/universe-scanner/dashboard"],
+  ["Asset Universe Registry", "/workspace/universe-scanner/universe"],
+  ["Currency Strength Engine", "/workspace/universe-scanner/currency-strength"],
+  ["Trend Scanner", "/workspace/universe-scanner/trend-scanner"],
+  ["Market Structure Scanner", "/workspace/universe-scanner/market-structure"],
+  ["Momentum Scanner", "/workspace/universe-scanner/momentum"],
+  ["Volatility Scanner", "/workspace/universe-scanner/volatility"],
+  ["Liquidity Scanner", "/workspace/universe-scanner/liquidity"],
+  ["Institutional Scanner", "/workspace/universe-scanner/institutional"],
+  ["Sentiment Scanner", "/workspace/universe-scanner/sentiment"],
+  ["Macro Scanner", "/workspace/universe-scanner/macro"],
+  ["Economic Event Scanner", "/workspace/universe-scanner/economic-events"],
+  ["Risk Scanner", "/workspace/universe-scanner/risk"],
+  ["Prop Firm Compliance Scanner", "/workspace/universe-scanner/prop-compliance"],
+  ["Opportunity Ranking Engine", "/workspace/universe-scanner/opportunities"],
+  ["Qualified Trades Center", "/workspace/universe-scanner/qualified-trades"],
+  ["AI Opportunity Discovery", "/workspace/universe-scanner/ai-insights"],
+  ["Scanner Control Center", "/workspace/universe-scanner/control-center"],
+  ["Scanner Logs & Diagnostics", "/workspace/universe-scanner/logs"],
+  ["Scanner Test Harness", "/workspace/universe-scanner/test-harness"]
+];
+
 const iconPaths = {
   LayoutDashboard: '<rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/>',
   Workflow: '<rect x="3" y="3" width="6" height="6"/><rect x="15" y="15" width="6" height="6"/><path d="M9 6h4a4 4 0 0 1 4 4v5M15 18h-4a4 4 0 0 1-4-4V9"/>',
@@ -61,7 +84,7 @@ export const sidebarFunctions = [
   ["workflow", "Workflow", "End-to-End Workflow", "LIVE", [["Workflow Dashboard", "/workflow/end-to-end"]]],
   ["data-sources-validation", "ClipboardCheck", "Data Sources Validation", "PASSED", dataSourcesValidationChildren, true],
   ["market-intelligence", "Radar", "Market Intelligence Center", "READY", marketIntelligenceChildren, true],
-  ["asset-scanner", "ScanSearch", "20-Asset Universe Scanner", "", [["Scanner Dashboard", "/workspace/asset-scanner/dashboard"]]],
+  ["asset-scanner", "ScanSearch", "20-Asset Universe Scanner", "READY", universeScannerChildren, true],
   ["market-analysis", "LineChart", "Market Analysis", "", [["Analysis Dashboard", "/workspace/market-analysis/dashboard"]]],
   ["computer-vision", "Camera", "Computer Vision", "BETA", [["Vision Dashboard", "/workspace/computer-vision/dashboard"]]],
   ["ai-decision", "Brain", "AI Decision", "", [["Decision Dashboard", "/workspace/ai-decision/dashboard"]]],

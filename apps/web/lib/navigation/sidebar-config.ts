@@ -62,7 +62,31 @@ export const sidebarFunctions: SidebarFunction[] = [
       page("card-2-test-harness", "Card 2 Test Harness", "/workspace/market-intelligence/test-harness", "workflow.cards.test")
     ]
   },
-  { id: "asset-scanner", icon: "ScanSearch", title: "20-Asset Universe Scanner", children: [page("scanner-dashboard", "Scanner Dashboard", "/workspace/asset-scanner/dashboard")] },
+  {
+    id: "asset-scanner", icon: "ScanSearch", title: "20-Asset Universe Scanner", status: "READY", defaultExpanded: true,
+    children: [
+      page("universe-dashboard", "Universe Dashboard", "/workspace/universe-scanner/dashboard", "universe-scanner:view"),
+      page("asset-universe-registry", "Asset Universe Registry", "/workspace/universe-scanner/universe", "universe-scanner:view"),
+      page("currency-strength", "Currency Strength Engine", "/workspace/universe-scanner/currency-strength", "universe-scanner:view"),
+      page("trend-scanner", "Trend Scanner", "/workspace/universe-scanner/trend-scanner", "universe-scanner:view"),
+      page("market-structure", "Market Structure Scanner", "/workspace/universe-scanner/market-structure", "universe-scanner:view"),
+      page("momentum-scanner", "Momentum Scanner", "/workspace/universe-scanner/momentum", "universe-scanner:view"),
+      page("volatility-scanner", "Volatility Scanner", "/workspace/universe-scanner/volatility", "universe-scanner:view"),
+      page("liquidity-scanner", "Liquidity Scanner", "/workspace/universe-scanner/liquidity", "universe-scanner:view"),
+      page("institutional-scanner", "Institutional Scanner", "/workspace/universe-scanner/institutional", "universe-scanner:view"),
+      page("sentiment-scanner", "Sentiment Scanner", "/workspace/universe-scanner/sentiment", "universe-scanner:view"),
+      page("macro-scanner", "Macro Scanner", "/workspace/universe-scanner/macro", "universe-scanner:view"),
+      page("economic-event-scanner", "Economic Event Scanner", "/workspace/universe-scanner/economic-events", "universe-scanner:view"),
+      page("risk-scanner", "Risk Scanner", "/workspace/universe-scanner/risk", "universe-scanner:view"),
+      page("prop-compliance-scanner", "Prop Firm Compliance Scanner", "/workspace/universe-scanner/prop-compliance", "universe-scanner:view"),
+      page("opportunity-ranking", "Opportunity Ranking Engine", "/workspace/universe-scanner/opportunities", "universe-scanner:view"),
+      page("qualified-trades", "Qualified Trades Center", "/workspace/universe-scanner/qualified-trades", "universe-scanner:view"),
+      page("ai-opportunity-discovery", "AI Opportunity Discovery", "/workspace/universe-scanner/ai-insights", "universe-scanner:view"),
+      page("scanner-control-center", "Scanner Control Center", "/workspace/universe-scanner/control-center", "universe-scanner:operate"),
+      page("scanner-logs", "Scanner Logs & Diagnostics", "/workspace/universe-scanner/logs", "universe-scanner:audit"),
+      page("card-3-test-harness", "Scanner Test Harness", "/workspace/universe-scanner/test-harness", "workflow.cards.test")
+    ]
+  },
   { id: "market-analysis", icon: "LineChart", title: "Market Analysis", children: [page("analysis-dashboard", "Analysis Dashboard", "/workspace/market-analysis/dashboard")] },
   { id: "computer-vision", icon: "Camera", title: "Computer Vision", status: "BETA", children: [page("vision-dashboard", "Vision Dashboard", "/workspace/computer-vision/dashboard")] },
   { id: "ai-decision", icon: "Brain", title: "AI Decision", children: [page("decision-dashboard", "Decision Dashboard", "/workspace/ai-decision/dashboard")] },

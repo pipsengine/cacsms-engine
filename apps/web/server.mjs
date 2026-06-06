@@ -29,6 +29,8 @@ createServer((request, response) => {
         ? `public${pathname}`
       : pathname.startsWith("/workspace/mt5-infrastructure/")
         ? "mt5-infrastructure.html"
+      : pathname === "/workspace/universe-scanner" || pathname.startsWith("/workspace/universe-scanner/")
+        ? "universe-scanner.html"
       : pathname === "/market-intelligence" || pathname.startsWith("/market-intelligence/") || pathname.startsWith("/workspace/market-intelligence/") || pathname.startsWith("/workspace/data-sources-validation/")
         ? "market-intelligence.html"
       : pathname.slice(1);

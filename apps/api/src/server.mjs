@@ -296,6 +296,19 @@ import {
   submitHandoff,
   validateHandoff
 } from "../../../packages/market-intelligence/src/handoff.js";
+import {
+  exportAssetUniverseRegistry,
+  getAssetUniverseDetail,
+  getAssetUniverseRegistry,
+  getAssetUniverseRegistrySlice,
+  runAssetUniverseAction
+} from "../../../packages/market-intelligence/src/asset-universe-registry.js";
+import {
+  exportUniverseScannerDashboard,
+  getUniverseScannerDashboard,
+  getUniverseScannerDashboardSlice,
+  runUniverseScannerDashboardAction
+} from "../../../packages/market-intelligence/src/universe-scanner-dashboard.js";
 
 const port = Number(process.env.API_PORT || 8080);
 const root = fileURLToPath(new URL("../../../", import.meta.url));
@@ -720,6 +733,16 @@ const routes = {
   "GET /api/market-intelligence/data-quality-gate/events": () => ({ events: [], source_mode: "LIVE_ADAPTERS_ONLY" }),
   "GET /api/market-intelligence/data-quality-gate/export": () => ({ status: "ready", format: "csv", rules: DATA_QUALITY_GATE_RULES.length }),
   "GET /api/market-intelligence/feed-events": () => ({ events: [] })
+  ,"GET /api/universe-scanner/dashboard": () => getUniverseScannerDashboard()
+  ,"GET /api/universe-scanner/dashboard/summary": () => getUniverseScannerDashboardSlice("summary")
+  ,"GET /api/universe-scanner/dashboard/pipeline": () => getUniverseScannerDashboardSlice("pipeline")
+  ,"GET /api/universe-scanner/dashboard/assets": () => getUniverseScannerDashboardSlice("assets")
+  ,"GET /api/universe-scanner/dashboard/top-opportunities": () => getUniverseScannerDashboardSlice("top-opportunities")
+  ,"GET /api/universe-scanner/dashboard/rejected": () => getUniverseScannerDashboardSlice("rejected")
+  ,"GET /api/universe-scanner/dashboard/health": () => getUniverseScannerDashboardSlice("health")
+  ,"GET /api/universe-scanner/dashboard/readiness": () => getUniverseScannerDashboardSlice("readiness")
+  ,"GET /api/universe-scanner/dashboard/ai-summary": () => getUniverseScannerDashboardSlice("ai-summary")
+  ,"GET /api/universe-scanner/dashboard/export": () => exportUniverseScannerDashboard()
   ,"GET /api/market-intelligence/logs": async url => {
     const filters = Object.fromEntries(url.searchParams);
     return getMarketIntelligenceLogs(filters);
@@ -1786,6 +1809,18 @@ const server = createServer(async (request, response) => {
     const action = url.pathname.split("/").pop();
     try {
       return json(response, 200, { accepted: true, event: await runCardTwoAction(action) });
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (request.method === "POST" && url.pathname.startsWith("/api/universe-scanner/dashboard/")) {
+    const action = url.pathname.split("/").pop();
+    const body = await readBody(request).catch(() => ({}));
+    try {
+      return json(response, 200, await runUniverseScannerDashboardAction(action, body, auditFromRequest(request).userLabel));
     } catch (reason) {
       return json(response, reason?.status || 400, {
         error: reason instanceof Error ? reason.message : String(reason),

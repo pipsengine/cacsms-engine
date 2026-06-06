@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CACSMS Engine | 20-Asset Universe Scanner</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/universe-scanner.css" />
+    <link rel="stylesheet" href="/readability.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/"><span class="brand-mark">C</span><span><strong>CACSMS</strong><small>ENGINE</small></span></a>
+        <label class="global-search"><span class="icon">?</span><input type="search" placeholder="Search universe scanner..." /><kbd>CTRL K</kbd></label>
+        <div class="topbar-actions"><div class="workflow-pill"><span class="pulse"></span><strong>SCANNER</strong><span>READY</span></div><button class="user-menu"><span>CA</span><i></i></button></div>
+      </header>
+      <aside class="sidebar">
+        <div class="sidebar-heading">CONTROL SYSTEMS</div>
+        <nav id="universe-nav" aria-label="Primary navigation"></nav>
+        <div class="sidebar-footer"><div class="operator"><span class="operator-dot"></span><div><small>CARD 03</small><strong>20-ASSET SCANNER</strong></div></div><button id="collapse-sidebar" class="collapse-button">&lt;</button></div>
+      </aside>
+      <main id="universe-scanner-content" class="workspace"></main>
+      <footer class="statusbar"><div><span class="dot"></span> CARD 03 <strong>READY</strong></div><div>UNIVERSE <strong>20 ASSETS</strong></div><div>MODE <strong>SCANNER</strong></div><div class="status-spacer"></div><div id="utc-clock">WAT</div></footer>
+    </div>
+    <script type="module" src="/real-time-status.js"></script>
+    <script type="module" src="/universe-scanner-page.js"></script>
+  </body>
+</html>
