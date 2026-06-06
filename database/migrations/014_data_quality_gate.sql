@@ -29,8 +29,8 @@ CREATE TABLE IF NOT EXISTS market.data_quality_gate_overrides (
 );
 CREATE INDEX IF NOT EXISTS idx_quality_gate_runs_validated ON market.data_quality_gate_runs(validated_at DESC);
 CREATE INDEX IF NOT EXISTS idx_quality_gate_snapshots_run ON market.data_quality_gate_source_snapshots(gate_run_id,source_id);
-INSERT INTO auth.permissions(permission_key) VALUES
+INSERT INTO auth.permissions(code) VALUES
 ('market_intelligence.data_quality_gate.view'),('market_intelligence.data_quality_gate.run'),
 ('market_intelligence.data_quality_gate.refresh_sources'),('market_intelligence.data_quality_gate.export'),
 ('market_intelligence.data_quality_gate.override'),('market_intelligence.data_quality_gate.view_audit')
-ON CONFLICT DO NOTHING;
+ON CONFLICT(code) DO NOTHING;

@@ -1,0 +1,15 @@
+node_modules
+.git
+.cursor
+**/.cursor
+**/node_modules
+**/__pycache__
+**/.pytest_cache
+**/.venv
+**/dist
+**/build
+**/*.log
+.env.local
+terminals
+agent-transcripts
+assets

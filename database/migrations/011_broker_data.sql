@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS market.broker_comparison_metrics (
   measured_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_broker_market_data_lookup ON market.broker_market_data(instrument,timeframe,price_timestamp DESC);
-INSERT INTO auth.permissions(permission_key) VALUES
+INSERT INTO auth.permissions(code) VALUES
 ('market_intelligence.broker_data.view'),('market_intelligence.broker_data.connect'),('market_intelligence.broker_data.sync'),
 ('market_intelligence.broker_data.upload'),('market_intelligence.broker_data.export'),('market_intelligence.broker_data.configure'),
-('market_intelligence.broker_data.disconnect') ON CONFLICT DO NOTHING;
+('market_intelligence.broker_data.disconnect') ON CONFLICT(code) DO NOTHING;

@@ -79,10 +79,10 @@ CREATE INDEX IF NOT EXISTS idx_portfolio_alerts_status ON market.portfolio_alert
 CREATE INDEX IF NOT EXISTS idx_portfolio_reports_type ON market.portfolio_reports(report_type, created_at DESC);
 
 -- Permissions for the new features
-INSERT INTO auth.permissions(permission_key) VALUES
+INSERT INTO auth.permissions(code) VALUES
 ('market_intelligence.account_portfolio.view_correlations'),
 ('market_intelligence.account_portfolio.view_drawdowns'),
 ('market_intelligence.account_portfolio.compliance_monitor'),
 ('market_intelligence.account_portfolio.generate_reports'),
 ('market_intelligence.account_portfolio.ai_advisor')
-ON CONFLICT DO NOTHING;
+ON CONFLICT(code) DO NOTHING;

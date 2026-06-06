@@ -1,6 +1,22 @@
+name: cacsms-engine
+
+# If Docker Hub DNS fails, set NODE_RUNTIME_IMAGE=frappe/erpnext:v16.21.1 in .env (image already on disk).
+x-node-image: &node-image
+  image: ${NODE_RUNTIME_IMAGE:-node:20-alpine}
+  pull_policy: ${DOCKER_PULL_POLICY:-missing}
+
+x-app-env: &app-env
+  DATABASE_URL: postgres://${POSTGRES_USER:-cacsms}:${POSTGRES_PASSWORD:-Adm1n.c0m}@postgres:5432/${POSTGRES_DB:-db_cacsms-engine}
+  REDIS_URL: redis://redis:6379
+  RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+  API_PORT: "8080"
+  WEB_PORT: "4173"
+  CACSMS_AUTO_SYNC_MS: ${CACSMS_AUTO_SYNC_MS:-30000}
+
 services:
   postgres:
     image: timescale/timescaledb-ha:pg16
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-db_cacsms-engine}
       POSTGRES_USER: ${POSTGRES_USER:-cacsms}
@@ -8,30 +24,99 @@ services:
     ports: ["5432:5432"]
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ../database/migrations/001_foundation.sql:/docker-entrypoint-initdb.d/001_foundation.sql:ro
-      - ../database/migrations/002_level_1_architecture.sql:/docker-entrypoint-initdb.d/002_level_1_architecture.sql:ro
-      - ../database/migrations/003_operational_workflow_foundation.sql:/docker-entrypoint-initdb.d/003_operational_workflow_foundation.sql:ro
-      - ../database/migrations/004_market_intelligence_data_sources.sql:/docker-entrypoint-initdb.d/004_market_intelligence_data_sources.sql:ro
-      - ../database/seeds/001_asset_universe.sql:/docker-entrypoint-initdb.d/005_asset_universe.sql:ro
-      - ../database/seeds/002_operational_defaults.sql:/docker-entrypoint-initdb.d/006_operational_defaults.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cacsms} -d ${POSTGRES_DB:-db_cacsms-engine}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  db-migrate:
+    <<: *node-image
+    user: root
+    working_dir: /app
+    restart: "no"
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-cacsms}:${POSTGRES_PASSWORD:-Adm1n.c0m}@postgres:5432/${POSTGRES_DB:-db_cacsms-engine}
+    volumes:
+      - ..:/app
+      - db-migrate-node-modules:/app/node_modules
+      - npm-cache:/root/.npm
+    entrypoint: ["sh", "-c", "node --input-type=module -e \"import('pg')\" >/dev/null 2>&1 || npm ci --omit=dev --no-audit; node scripts/seed-docker-init-migrations.mjs && node scripts/run-migrations.mjs"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    <<: *node-image
+    user: root
+    restart: unless-stopped
+    working_dir: /app
+    ports: ["8080:8080"]
+    env_file:
+      - ../.env
+    environment:
+      <<: *app-env
+    volumes:
+      - ..:/app
+      - db-migrate-node-modules:/app/node_modules
+      - npm-cache:/root/.npm
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    entrypoint: ["sh", "-c", "node --input-type=module -e \"import('pg')\" >/dev/null 2>&1 || npm ci --omit=dev --no-audit; exec node apps/api/src/server.mjs"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "node", "--input-type=module", "-e", "fetch('http://127.0.0.1:8080/api/system/health').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 90s
+
+  web:
+    <<: *node-image
+    user: root
+    restart: unless-stopped
+    working_dir: /app
+    ports: ["4173:4173"]
+    environment:
+      PORT: "4173"
+      WEB_PORT: "4173"
+    volumes:
+      - ..:/app
+      - db-migrate-node-modules:/app/node_modules
+      - npm-cache:/root/.npm
+    entrypoint: ["sh", "-c", "node --input-type=module -e \"import('pg')\" >/dev/null 2>&1 || npm ci --omit=dev --no-audit; exec node apps/web/server.mjs"]
+    depends_on:
+      api:
+        condition: service_healthy
 
   redis:
     image: redis:7.4-alpine
-    ports: ["6379:6379"]
+    restart: unless-stopped
 
   rabbitmq:
     image: rabbitmq:4.0-management-alpine
-    ports: ["5672:5672", "15672:15672"]
+    restart: unless-stopped
 
   prometheus:
+    profiles: ["observability"]
     image: prom/prometheus:v2.54.1
+    restart: unless-stopped
     command: ["--config.file=/etc/prometheus/prometheus.yml"]
     ports: ["9090:9090"]
     volumes:
       - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
 
   grafana:
+    profiles: ["observability"]
     image: grafana/grafana:11.2.0
+    restart: unless-stopped
     ports: ["3000:3000"]
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-replace-me}
@@ -40,12 +125,16 @@ services:
       - ./observability/grafana-datasources.yml:/etc/grafana/provisioning/datasources/cacsms.yml:ro
 
   loki:
+    profiles: ["observability"]
     image: grafana/loki:3.1.1
+    restart: unless-stopped
     command: ["-config.file=/etc/loki/local-config.yaml"]
     ports: ["3100:3100"]
 
   otel-collector:
+    profiles: ["observability"]
     image: otel/opentelemetry-collector-contrib:0.108.0
+    restart: unless-stopped
     command: ["--config=/etc/otelcol/config.yml"]
     ports: ["4317:4317", "4318:4318", "8889:8889"]
     volumes:
@@ -54,3 +143,5 @@ services:
 volumes:
   postgres-data:
   grafana-data:
+  db-migrate-node-modules:
+  npm-cache:

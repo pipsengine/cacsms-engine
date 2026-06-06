@@ -1,0 +1,5 @@
+# Run the full CACSMS stack from the repo root:
+#   docker compose up -d
+# Open http://localhost:4173 (web) and http://localhost:8080/api/system/health (api)
+include:
+  - path: infrastructure/docker-compose.yml

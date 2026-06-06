@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-05T22:36:51.120Z",
+  "updatedAt": "2026-06-06T03:20:05.703Z",
   "sources": [
     {
       "id": "forex-factory-weekly",
@@ -9,13 +9,13 @@
       "url": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
       "enabled": true,
       "scheduleMs": 60000,
-      "status": "ONLINE",
-      "lastSyncAt": "2026-06-05T22:36:51.119Z",
-      "lastSuccessAt": "2026-06-05T22:36:51.119Z",
-      "latencyMs": 7940,
+      "status": "FAILED",
+      "lastSyncAt": "2026-06-06T03:19:07.020Z",
+      "lastSuccessAt": "2026-06-06T03:17:09.623Z",
+      "latencyMs": 1319,
       "imported": 0,
       "updated": 0,
-      "error": null
+      "error": "HTTP 429"
     }
   ],
   "events": [
@@ -6246,6 +6246,238 @@
   ],
   "syncLogs": [
     {
+      "id": "c654872f-96fb-4262-a449-1ae74421e9e4",
+      "syncedAt": "2026-06-06T03:20:05.698Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f5da4ad3-678b-47af-b74c-e34409ec652c",
+      "syncedAt": "2026-06-06T03:19:07.020Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "22624a64-7bd6-40b4-9a61-e2b151a43e6e",
+      "syncedAt": "2026-06-06T03:18:05.710Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "2bedb13e-4f2e-4aef-8606-e1c5032eb872",
+      "syncedAt": "2026-06-06T03:17:09.623Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "619fa7ff-80cb-4d9f-b839-5b5d33da9634",
+      "syncedAt": "2026-06-06T03:16:05.714Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "e7733de3-7721-41e8-935b-693820a90b10",
+      "syncedAt": "2026-06-06T03:15:09.019Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "c36efb2a-4922-423e-b242-8c984b9ded08",
+      "syncedAt": "2026-06-06T03:14:05.725Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "939c090a-74a3-4679-816e-44dd15122c17",
+      "syncedAt": "2026-06-06T03:13:12.648Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "ce3eda43-94f8-4652-a6e2-92d24165ba5e",
+      "syncedAt": "2026-06-06T03:12:05.733Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "0075b881-5ac5-4273-9b5d-e083cef9d038",
+      "syncedAt": "2026-06-06T03:11:09.194Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "c6774731-0b58-42e0-b3a3-1f2ef6bb4756",
+      "syncedAt": "2026-06-06T03:10:05.737Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "26dce795-46a6-47c1-8348-0f38d1b0975d",
+      "syncedAt": "2026-06-06T03:09:06.872Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "6b74885b-842e-4f2f-a91a-de3d4b63fc36",
+      "syncedAt": "2026-06-06T03:08:05.666Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "d6ade3cf-5999-4e61-98cc-5beedf3a92e3",
+      "syncedAt": "2026-06-06T03:07:09.251Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "79a60a9b-e57e-4741-9e96-9d16d269db50",
+      "syncedAt": "2026-06-06T03:06:05.675Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "aa432276-235c-4497-9dc2-ad86aba35c1b",
+      "syncedAt": "2026-06-06T03:05:09.478Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "145c244d-d838-48ae-a79c-5d09719c9d2d",
+      "syncedAt": "2026-06-06T03:04:05.681Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f6553ae4-da1f-4b8f-b5c3-d89ce8b903dd",
+      "syncedAt": "2026-06-06T03:03:08.495Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "d13d7d97-3b60-4c0d-84ca-475a1724e2ca",
+      "syncedAt": "2026-06-06T03:02:05.691Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "f45acfef-7d09-476f-a98d-691592ed115c",
+      "syncedAt": "2026-06-06T03:01:07.229Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "fda67797-af72-4320-a60c-769e83e2a562",
+      "syncedAt": "2026-06-06T03:00:05.704Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "382fa736-e440-403e-b249-356526d2870f",
+      "syncedAt": "2026-06-06T02:59:09.695Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
+      "id": "a650290a-77ee-447f-8057-c110dacaf15d",
+      "syncedAt": "2026-06-06T02:58:05.705Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "19ec5cac-9f31-4276-84ad-fbb847c7e6e5",
+      "syncedAt": "2026-06-06T02:57:08.925Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "643b22fa-916d-4c22-84ae-2ed1806bad26",
+      "syncedAt": "2026-06-06T02:56:05.622Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "2cde0a49-dd66-4ebf-aec3-eaee9f2af279",
+      "syncedAt": "2026-06-06T02:55:11.966Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "a3ae713f-8704-4ba7-b884-2bccea1c0acb",
+      "syncedAt": "2026-06-06T02:54:08.443Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "1aa512de-1367-426e-90fe-c89c532f6d09",
+      "syncedAt": "2026-06-05T22:41:35.845Z",
+      "sourcesChecked": 0,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 0
+    },
+    {
+      "id": "cc90607a-8ff7-4ff4-b9fd-190612ea2a24",
+      "syncedAt": "2026-06-05T22:40:47.333Z",
+      "sourcesChecked": 1,
+      "eventsImported": 0,
+      "eventsUpdated": 0,
+      "failures": 1
+    },
+    {
       "id": "bcf350f6-cc9c-4508-b46f-ef468e381121",
       "syncedAt": "2026-06-05T22:36:51.119Z",
       "sourcesChecked": 1,
@@ -10012,238 +10244,6 @@
       "eventsImported": 0,
       "eventsUpdated": 0,
       "failures": 1
-    },
-    {
-      "id": "38bf51ce-ed48-47bd-886b-bbb697442cd7",
-      "syncedAt": "2026-06-04T20:55:20.273Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "ad59a9c4-9f0e-429d-8e95-326e426948a8",
-      "syncedAt": "2026-06-04T20:54:21.459Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 1
-    },
-    {
-      "id": "f3bf995f-a425-4be9-b413-63c4bd10e3ee",
-      "syncedAt": "2026-06-04T20:53:20.273Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "ced64a40-9a5a-4b83-a5be-9fcc395b9348",
-      "syncedAt": "2026-06-04T20:52:21.773Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "e27102c7-2293-49cc-bf65-e83ffde9bcfd",
-      "syncedAt": "2026-06-04T20:51:20.262Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "c443de98-b033-4c4a-89b1-3f54ce4306e8",
-      "syncedAt": "2026-06-04T20:50:24.452Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "62c52ca4-29ea-43f6-8ec7-b441f8f2ee22",
-      "syncedAt": "2026-06-04T20:49:20.246Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "bae1eb93-2e1f-4663-85e7-d11bad028bb6",
-      "syncedAt": "2026-06-04T20:48:21.558Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 1
-    },
-    {
-      "id": "f769e706-ff3f-4ddc-8615-53556718d78d",
-      "syncedAt": "2026-06-04T20:47:20.217Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "fdc6cd9f-2c63-4cb0-8a59-c0a4bdc4ecf3",
-      "syncedAt": "2026-06-04T20:46:20.955Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 1
-    },
-    {
-      "id": "51f702c7-255b-4850-888d-6bfe7500c5e4",
-      "syncedAt": "2026-06-04T20:45:20.203Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "e40303b7-0f28-4af6-89e5-c0eb89a5fd7a",
-      "syncedAt": "2026-06-04T20:44:20.323Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 1
-    },
-    {
-      "id": "3f12ea07-c799-47c8-ab8a-9e7fc71d3f50",
-      "syncedAt": "2026-06-04T20:43:20.181Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "3b675244-3841-4298-b127-27d07445286e",
-      "syncedAt": "2026-06-04T20:42:21.731Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "c84336cb-9a6d-429b-847d-4d71344b1209",
-      "syncedAt": "2026-06-04T20:41:20.169Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "36a4d5fe-9ff5-4fff-b6de-bfee0d13d4e8",
-      "syncedAt": "2026-06-04T20:40:21.367Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "cef77c80-40fc-47fc-9351-3f9ed4b1c17f",
-      "syncedAt": "2026-06-04T20:39:20.153Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "5b3aee92-c6a0-4147-9892-20e8dd7bf8c1",
-      "syncedAt": "2026-06-04T20:38:20.431Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 1
-    },
-    {
-      "id": "72a78d33-87ed-45fb-9140-765c27ba333d",
-      "syncedAt": "2026-06-04T20:37:20.146Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "7751b537-07c1-4aa4-9039-e86a972add63",
-      "syncedAt": "2026-06-04T20:36:21.816Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 1
-    },
-    {
-      "id": "d957856c-82e3-4a33-8b03-0a43270781e6",
-      "syncedAt": "2026-06-04T20:35:20.135Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "e442b628-9e9e-4afd-8f0e-7ee133e1804c",
-      "syncedAt": "2026-06-04T20:34:21.915Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 1
-    },
-    {
-      "id": "0f2d645b-c904-47c4-b251-5a90bffa943b",
-      "syncedAt": "2026-06-04T20:33:23.179Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "406b2eb1-a5b5-440a-9a8a-aa5fe12349be",
-      "syncedAt": "2026-06-04T20:32:23.757Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "7da22a88-c77e-439b-a502-386daaae5583",
-      "syncedAt": "2026-06-04T20:31:23.158Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "97b46c41-1b8d-4d57-afc4-965de0baf85a",
-      "syncedAt": "2026-06-04T20:30:27.157Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "5788ab49-2b95-41a3-940f-146d72216d3e",
-      "syncedAt": "2026-06-04T20:24:40.767Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 1
-    },
-    {
-      "id": "4da533ac-c55d-4afb-aeac-a8caf7f50c08",
-      "syncedAt": "2026-06-04T20:23:39.789Z",
-      "sourcesChecked": 0,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
-    },
-    {
-      "id": "304e2786-251e-4d2f-896c-bcc862d63759",
-      "syncedAt": "2026-06-04T20:22:40.719Z",
-      "sourcesChecked": 1,
-      "eventsImported": 0,
-      "eventsUpdated": 0,
-      "failures": 0
     }
   ]
 }

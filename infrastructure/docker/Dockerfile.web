@@ -1,4 +1,13 @@
 FROM node:20-alpine
 WORKDIR /app
-COPY . .
-CMD ["node", "apps/web/server.mjs"]
+RUN apk add --no-cache bash
+COPY package.json package-lock.json ./
+COPY packages ./packages
+COPY apps/web ./apps/web
+RUN npm ci --omit=dev && touch node_modules/.docker-ready
+COPY infrastructure/docker/entrypoint-web.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENV PORT=4173
+ENV WEB_PORT=4173
+EXPOSE 4173
+ENTRYPOINT ["/entrypoint.sh"]

@@ -108,9 +108,9 @@ CREATE INDEX IF NOT EXISTS idx_prop_firm_audit_created ON market.prop_firm_audit
 CREATE INDEX IF NOT EXISTS idx_prop_firm_imports_status ON market.prop_firm_rule_imports(status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_prop_firm_sources_health ON market.prop_firm_source_configs(health_status);
 
-INSERT INTO auth.permissions(permission_key) VALUES
+INSERT INTO auth.permissions(code) VALUES
 ('market_intelligence.prop_firm_rules.update'),
 ('market_intelligence.prop_firm_rules.delete'),
 ('market_intelligence.prop_firm_rules.approve'),
 ('market_intelligence.prop_firm_rules.export')
-ON CONFLICT DO NOTHING;
+ON CONFLICT(code) DO NOTHING;

@@ -2,19 +2,31 @@
 
 CACSMS Engine is the production foundation for an institutional, AI-powered trading operations platform. The repository is organized as a monorepo with a runnable executive command center, PostgreSQL and TimescaleDB foundation, deterministic workflow orchestration primitives, service boundaries, observability configuration, and architecture documentation.
 
-## Quick Start
+## Quick Start (Docker Desktop)
+
+Start Docker Desktop, then from the repository root:
+
+```bash
+npm run docker:up
+```
+
+Open **http://localhost:4173** (web) and **http://localhost:8080/api/system/health** (API).
+
+Stop the stack:
+
+```bash
+npm run docker:down
+```
+
+See [infrastructure/docker/README.md](infrastructure/docker/README.md) for logs, MT5 WebRequest URLs, and optional observability.
+
+## Local development (optional)
 
 ```bash
 npm run dev
 ```
 
-Open `http://localhost:4173`.
-
-`npm run dev` starts both the web console and API in the foreground. Press `Ctrl+C` to stop both. If an earlier preview is occupying the local ports, run:
-
-```bash
-npm run stop
-```
+Use this only when not running the Docker stack. Press `Ctrl+C` to stop, or run `npm run stop` if ports 4173/8080 are still occupied.
 
 ## Validate
 

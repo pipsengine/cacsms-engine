@@ -1,4 +1,16 @@
 BEGIN;
+ALTER TABLE market.economic_calendar_sources ADD COLUMN IF NOT EXISTS source_key text;
+ALTER TABLE market.economic_calendar_sources ADD COLUMN IF NOT EXISTS name text;
+ALTER TABLE market.economic_calendar_sources ADD COLUMN IF NOT EXISTS status text;
+CREATE UNIQUE INDEX IF NOT EXISTS economic_calendar_sources_source_key_uq ON market.economic_calendar_sources(source_key) WHERE source_key IS NOT NULL;
+CREATE TABLE IF NOT EXISTS market.economic_events(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),source_id uuid REFERENCES market.economic_calendar_sources(id),currency text NOT NULL,event_name text NOT NULL,impact text NOT NULL,scheduled_at timestamptz NOT NULL,status text NOT NULL);
+CREATE TABLE IF NOT EXISTS market.economic_event_releases(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),event_id uuid NOT NULL REFERENCES market.economic_events(id) ON DELETE CASCADE,previous_value text,forecast_value text,actual_value text,deviation text,released_at timestamptz);
+CREATE TABLE IF NOT EXISTS market.economic_event_impacts(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),event_id uuid NOT NULL REFERENCES market.economic_events(id) ON DELETE CASCADE,risk_score numeric(7,4),directional_impact text,volatility_impact text);
+CREATE TABLE IF NOT EXISTS market.economic_restriction_windows(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),event_id uuid NOT NULL REFERENCES market.economic_events(id) ON DELETE CASCADE,before_minutes integer NOT NULL,after_minutes integer NOT NULL,action text NOT NULL,enforcement_status text NOT NULL);
+CREATE TABLE IF NOT EXISTS market.central_bank_events(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),bank text NOT NULL,event_name text NOT NULL,scheduled_at timestamptz,risk_level text NOT NULL);
+CREATE TABLE IF NOT EXISTS market.central_bank_bias(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),bank text NOT NULL,policy_bias text NOT NULL,last_rate text,expected_rate text,updated_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS market.economic_event_asset_impact(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),event_id uuid REFERENCES market.economic_events(id) ON DELETE CASCADE,asset text NOT NULL,impact_level text NOT NULL,trading_permission text NOT NULL,notes text);
+CREATE TABLE IF NOT EXISTS market.economic_event_audit_logs(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),event_type text NOT NULL,payload jsonb NOT NULL DEFAULT '{}'::jsonb,created_at timestamptz NOT NULL DEFAULT now());
 ALTER TABLE market.economic_events ADD COLUMN IF NOT EXISTS event_key text;
 ALTER TABLE market.economic_events ADD COLUMN IF NOT EXISTS country text;
 ALTER TABLE market.economic_events ADD COLUMN IF NOT EXISTS category text;

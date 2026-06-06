@@ -40,8 +40,8 @@ CREATE TABLE IF NOT EXISTS market.portfolio_strategy_allocation (
 );
 CREATE INDEX IF NOT EXISTS idx_portfolio_positions_account_status ON market.portfolio_positions(account_id,status);
 CREATE INDEX IF NOT EXISTS idx_portfolio_snapshots_time ON market.portfolio_equity_snapshots(snapshot_at DESC);
-INSERT INTO auth.permissions(permission_key) VALUES
+INSERT INTO auth.permissions(code) VALUES
 ('market_intelligence.account_portfolio.view'),('market_intelligence.account_portfolio.connect'),
 ('market_intelligence.account_portfolio.sync'),('market_intelligence.account_portfolio.export'),
 ('market_intelligence.account_portfolio.view_risk'),('market_intelligence.account_portfolio.manage_notes')
-ON CONFLICT DO NOTHING;
+ON CONFLICT(code) DO NOTHING;

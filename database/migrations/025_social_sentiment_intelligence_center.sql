@@ -49,6 +49,18 @@ CREATE TABLE IF NOT EXISTS market.social_sentiment_scores (
   observed_at timestamptz NOT NULL DEFAULT now()
 );
 
+ALTER TABLE market.social_sentiment_scores ADD COLUMN IF NOT EXISTS post_id uuid REFERENCES market.social_posts(id);
+ALTER TABLE market.social_sentiment_scores ADD COLUMN IF NOT EXISTS instrument text;
+ALTER TABLE market.social_sentiment_scores ADD COLUMN IF NOT EXISTS sentiment text;
+ALTER TABLE market.social_sentiment_scores ADD COLUMN IF NOT EXISTS sentiment_score numeric(7,4);
+ALTER TABLE market.social_sentiment_scores ADD COLUMN IF NOT EXISTS ai_confidence numeric(7,4) NOT NULL DEFAULT 0;
+ALTER TABLE market.social_sentiment_scores ADD COLUMN IF NOT EXISTS crowd_bias text;
+ALTER TABLE market.social_sentiment_scores ADD COLUMN IF NOT EXISTS contrarian_risk text;
+ALTER TABLE market.social_sentiment_scores ADD COLUMN IF NOT EXISTS virality_score numeric(7,4) NOT NULL DEFAULT 0;
+ALTER TABLE market.social_sentiment_scores ADD COLUMN IF NOT EXISTS influence_score numeric(7,4) NOT NULL DEFAULT 0;
+ALTER TABLE market.social_sentiment_scores ADD COLUMN IF NOT EXISTS engagement_score numeric(7,4) NOT NULL DEFAULT 0;
+ALTER TABLE market.social_sentiment_scores ADD COLUMN IF NOT EXISTS topic_momentum numeric(7,4) NOT NULL DEFAULT 0;
+
 CREATE TABLE IF NOT EXISTS market.social_topics (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   topic text UNIQUE NOT NULL,

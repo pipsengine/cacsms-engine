@@ -35,9 +35,17 @@ for (const file of files) {
     await client.query("COMMIT");
     console.log("ok");
   } catch (error) {
+    const message = error.message || String(error);
+    if (/already exists/i.test(message)) {
+      await client.query("ROLLBACK");
+      await client.query("INSERT INTO public.schema_migrations (filename) VALUES ($1) ON CONFLICT (filename) DO NOTHING", [file]);
+      console.log("skip (already exists)");
+      client.release();
+      continue;
+    }
     await client.query("ROLLBACK");
     console.log("failed");
-    console.error(error.message);
+    console.error(message);
     client.release();
     await pool.end();
     process.exit(1);

@@ -39,8 +39,8 @@ CREATE TABLE IF NOT EXISTS market.prop_firm_sync_logs (
 );
 CREATE INDEX IF NOT EXISTS idx_prop_rules_firm_phase ON market.prop_firm_rules(prop_firm_id,phase);
 CREATE INDEX IF NOT EXISTS idx_prop_compliance_risk ON market.prop_firm_compliance_accounts(breach_risk,status);
-INSERT INTO auth.permissions(permission_key) VALUES
+INSERT INTO auth.permissions(code) VALUES
 ('market_intelligence.prop_firm_rules.view'),('market_intelligence.prop_firm_rules.create'),
 ('market_intelligence.prop_firm_rules.import'),('market_intelligence.prop_firm_rules.sync'),
 ('market_intelligence.prop_firm_rules.export'),('market_intelligence.prop_firm_rules.monitor_compliance')
-ON CONFLICT DO NOTHING;
+ON CONFLICT(code) DO NOTHING;
