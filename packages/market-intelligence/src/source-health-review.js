@@ -152,6 +152,58 @@ function liveForProvider(provider, snapshots = []) {
   return snapshots.find(source => source.id === liveId || source.routeSlug === provider.sourceKey) || null;
 }
 
+function isSourceOperational(live, status) {
+  if (["ONLINE", "LIVE", "SYNCED"].includes(status)) return true;
+  const records = Number(live?.records || 0);
+  const healthScore = Number(live?.healthScore || 0);
+  return records > 0 && Boolean(live?.lastSyncAt) && healthScore >= 70;
+}
+
+function syncLogStatus(live, status, provider) {
+  if (isSourceOperational(live, status)) return "COMPLETED";
+  if (status === "NOT_CONFIGURED") return "SKIPPED";
+  return "FAILED";
+}
+
+async function tableExistsForClient(client, tableName) {
+  const [schema, table] = tableName.split(".");
+  const sql = "SELECT COUNT(*)::int AS value FROM information_schema.tables WHERE table_schema = $1 AND table_name = $2";
+  const params = [schema, table];
+  const { rows } = client ? await client.query(sql, params) : await query(sql, params);
+  return Number(rows[0]?.value || 0) > 0;
+}
+
+export async function reconcileUnresolvedSyncFailures(client = null) {
+  const run = client ? (text, params) => client.query(text, params) : (text, params) => query(text, params);
+  await run(`
+    UPDATE market.source_sync_logs failed
+    SET resolved = true
+    WHERE failed.resolved = false
+      AND (lower(failed.status) IN ('failed', 'error') OR failed.error_message IS NOT NULL)
+      AND EXISTS (
+        SELECT 1
+        FROM market.source_sync_logs newer
+        WHERE newer.source_key = failed.source_key
+          AND newer.started_at > failed.started_at
+          AND lower(newer.status) IN ('completed', 'success', 'synced', 'skipped')
+      )
+  `);
+  if (await tableExistsForClient(client, "market.price_ticks")) {
+    await run(`
+      UPDATE market.source_sync_logs
+      SET resolved = true
+      WHERE resolved = false
+        AND source_key IN ('market-data', 'broker-data', 'historical-data')
+        AND (lower(status) IN ('failed', 'error') OR error_message IS NOT NULL)
+        AND EXISTS (
+          SELECT 1 FROM market.price_ticks
+          WHERE observed_at >= now() - interval '6 hours'
+          LIMIT 1
+        )
+    `);
+  }
+}
+
 function healthLabelForScore(score, status) {
   if (status === "NOT_CONFIGURED") return "UNCONFIGURED";
   if (score === null || score === undefined) return "UNKNOWN";
@@ -547,7 +599,8 @@ export class SourceHealthReviewService {
       for (const provider of providers) {
         const live = liveForProvider(provider, liveSnapshots);
         const status = String(live?.status || (provider.enabled ? "NOT_CONFIGURED" : "PAUSED")).toUpperCase();
-        const healthy = ["ONLINE", "LIVE", "SYNCED"].includes(status);
+        const healthy = isSourceOperational(live, status);
+        const syncStatus = syncLogStatus(live, status, provider);
         const healthScore = live?.healthScore === null || live?.healthScore === undefined ? null : Number(live.healthScore);
         const health = healthLabelForScore(healthScore, status);
         const authStatus = credentialStatus(provider);
@@ -623,14 +676,23 @@ export class SourceHealthReviewService {
           registryId,
           sourceKey,
           live?.provider || provider.providerName,
-          healthy ? "COMPLETED" : status === "NOT_CONFIGURED" ? "SKIPPED" : "FAILED",
+          syncStatus,
           Number(live?.records || 0),
           healthy ? (live?.lastSyncAt || new Date().toISOString()) : null,
-          healthy ? null : new Date().toISOString(),
-          healthy ? "info" : provider.required ? "critical" : "warning",
-          live?.probeError || null,
+          syncStatus === "FAILED" ? new Date().toISOString() : null,
+          syncStatus === "FAILED" ? (provider.required ? "critical" : "warning") : "info",
+          syncStatus === "FAILED" ? (live?.probeError || null) : null,
           JSON.stringify({ status, freshness: live?.freshness || null })
         ]);
+        if (healthy) {
+          await client.query(`
+            UPDATE market.source_sync_logs
+            SET resolved = true
+            WHERE source_key = $1
+              AND resolved = false
+              AND (lower(status) IN ('failed', 'error') OR error_message IS NOT NULL)
+          `, [sourceKey]);
+        }
         await client.query(`
           INSERT INTO market.source_credentials (
             registry_id, source_key, authentication_type, credential_status, encryption_status,
@@ -645,7 +707,7 @@ export class SourceHealthReviewService {
           authStatus,
           provider.credentialRef ? "provider_api" : "none",
           authStatus === "VALID" ? "LOW" : "HIGH",
-          provider.credentialRef || null
+          provider.credentialRef || `${sourceKey}:no_external_credential_required`
         ]);
         for (const [module, page, impact, risk] of DEPENDENCY_MAP[sourceKey] || []) {
           await client.query(`
@@ -668,6 +730,7 @@ export class SourceHealthReviewService {
         }
         metrics += 1;
       }
+      await reconcileUnresolvedSyncFailures(client);
       await client.query(
         "INSERT INTO market.source_audit_logs (source_key, event, severity, actor, result, payload) VALUES ('system', 'Source Health Snapshot Persisted', 'info', $1, 'COMPLETED', $2::jsonb)",
         [actor, JSON.stringify({ registered: providers.length, liveSnapshots: liveSnapshots.length })]

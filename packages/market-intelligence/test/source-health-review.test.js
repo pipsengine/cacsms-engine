@@ -23,6 +23,8 @@ test("Source Health Review service reads only production health tables", () => {
     "market.source_audit_logs"
   ]) assert.match(service, new RegExp(table.replace(".", "\\.")));
   assert.doesNotMatch(service, /source-configuration|loadStore|DEFAULT_PROVIDERS|MOCK_|sample data/i);
+  assert.match(service, /reconcileUnresolvedSyncFailures/);
+  assert.match(service, /isSourceOperational/);
 });
 
 test("Source Health Review migration creates the requested persistence tables", () => {

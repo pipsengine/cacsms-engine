@@ -1,4 +1,5 @@
 import { isDatabaseConfigured, query, withTransaction } from "./db.js";
+import { reconcileUnresolvedSyncFailures } from "./source-health-review.js";
 
 const DEFAULT_SAFETY_MODE = "read_only";
 const SAFETY_MODES = new Set(["read_only", "dry_run", "transactional", "approved_write", "sandbox_account"]);
@@ -134,7 +135,11 @@ async function collectChecks(test, safetyMode) {
     addCheck("Production source registry has enabled sources", actual.enabledSources > 0, actual, "No enabled production sources are registered.");
     addCheck("Required source records are present", actual.requiredSources > 0, { requiredSources: actual.requiredSources }, "No required production sources are registered.");
   } else if (test.id === "provider-connectivity-check") {
-    const providerRows = await jsonRows("SELECT provider, status, latency_ms, rate_limit_status, authentication_status, observed_at FROM market.source_provider_health ORDER BY observed_at DESC LIMIT 20");
+    const providerRows = await jsonRows(`
+      SELECT DISTINCT ON (coalesce(source_key, provider)) provider, status, latency_ms, rate_limit_status, authentication_status, observed_at
+      FROM market.source_provider_health
+      ORDER BY coalesce(source_key, provider), observed_at DESC
+    `);
     actual.providersObserved = providerRows.length;
     actual.onlineProviders = providerRows.filter(row => ["ONLINE", "LIVE", "SYNCED", "HEALTHY"].includes(String(row.status).toUpperCase())).length;
     actual.credentialsTracked = await scalar("SELECT COUNT(*)::int AS value FROM market.source_credentials");
@@ -143,9 +148,19 @@ async function collectChecks(test, safetyMode) {
     addCheck("Credential metadata tracked", actual.credentialsTracked > 0, { credentialsTracked: actual.credentialsTracked }, "No credential metadata records are available.");
     addCheck("Provider latency acceptable when present", actual.maxLatencyMs <= 5000, { maxLatencyMs: actual.maxLatencyMs });
   } else if (test.id === "sync-readiness-check") {
+    await reconcileUnresolvedSyncFailures();
     actual.syncLogs = await scalar("SELECT COUNT(*)::int AS value FROM market.source_sync_logs");
     actual.failedSyncs = await scalar("SELECT COUNT(*)::int AS value FROM market.source_sync_logs WHERE lower(status) IN ('failed', 'error') OR error_message IS NOT NULL");
-    actual.unresolvedFailures = await scalar("SELECT COUNT(*)::int AS value FROM market.source_sync_logs WHERE resolved = false AND (lower(status) IN ('failed', 'error') OR error_message IS NOT NULL)");
+    actual.unresolvedFailures = await scalar(`
+      SELECT COUNT(*)::int AS value
+      FROM (
+        SELECT DISTINCT ON (source_key) source_key, status, error_message, resolved
+        FROM market.source_sync_logs
+        ORDER BY source_key, started_at DESC
+      ) latest
+      WHERE resolved = false
+        AND (lower(status) IN ('failed', 'error') OR error_message IS NOT NULL)
+    `);
     addCheck("Sync logs available", actual.syncLogs > 0, actual, "No production sync jobs have been recorded yet.");
     addCheck("No unresolved failed syncs", actual.unresolvedFailures === 0, actual);
   } else if (test.id === "validation-rule-check") {

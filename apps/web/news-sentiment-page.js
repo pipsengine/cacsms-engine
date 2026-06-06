@@ -9,6 +9,7 @@ const title = (heading, copy, action) => `<div class="nsi-section-title"><div><h
 const table = (headers, rows) => `<div class="nsi-table-wrap"><table><thead><tr>${headers.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${rows.length ? rows.map(row=>`<tr>${row.map(x=>`<td>${x}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${headers.length}">No live records match the current view.</td></tr>`}</tbody></table></div>`;
 const time = value => value ? new Date(value).toLocaleString() : "-";
 const assets = value => Array.isArray(value) && value.length ? value.map(item=>`<i>${esc(item)}</i>`).join("") : "-";
+const isNewsRoute = () => location.pathname.endsWith("/news-sentiment") || location.pathname.endsWith("/news-sources");
 
 function filteredHeadlines() {
   const query = state.query.trim().toLowerCase();
@@ -79,14 +80,14 @@ async function load({ sync = false } = {}) {
 
 function render() {
   const root = document.querySelector("#intelligence-content");
-  if (!root || !location.pathname.endsWith("/news-sentiment")) return;
+  if (!root || !isNewsRoute()) return;
   root.innerHTML = renderNewsSentimentCenter();
   bindNewsSentimentCenter();
 }
 
 export function bindNewsSentimentCenter() {
   document.querySelectorAll("[data-nsi-refresh]").forEach(button=>button.addEventListener("click",async()=>{try{await load({ sync:true });}catch(reason){state={...state,loading:false,syncing:false,error:reason.message};}render();}));
-  document.querySelectorAll("[data-nsi-configure]").forEach(button=>button.addEventListener("click",()=>location.assign("/workspace/market-intelligence/source-configuration")));
+  document.querySelectorAll("[data-nsi-configure]").forEach(button=>button.addEventListener("click",()=>location.assign("/workspace/data-sources-validation/source-configuration")));
   document.querySelector("[data-nsi-query]")?.addEventListener("input",event=>{state.query=event.target.value;render();document.querySelector("[data-nsi-query]")?.focus();});
   document.querySelector("[data-nsi-export]")?.addEventListener("click",()=>{const blob=new Blob([JSON.stringify({ exportedAt:new Date().toISOString(), dashboard:state.dashboard, headlines:state.headlines, sources:state.sources, assets:state.assets, alerts:state.alerts },null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="live-news-intelligence-report.json";a.click();URL.revokeObjectURL(a.href);});
 }
@@ -96,5 +97,5 @@ export async function mountNewsSentimentCenter() {
   render();
   try { await load(); } catch (reason) { state = { ...state, loading:false, syncing:false, error:reason.message }; }
   render();
-  refreshTimer = setInterval(async()=>{if(!location.pathname.endsWith("/news-sentiment")) return clearInterval(refreshTimer);try{await load();render();}catch{}},REFRESH_MS);
+  refreshTimer = setInterval(async()=>{if(!isNewsRoute()) return clearInterval(refreshTimer);try{await load();render();}catch{}},REFRESH_MS);
 }

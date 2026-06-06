@@ -1,10 +1,27 @@
 import { initEnterpriseSidebar } from "./enterprise-sidebar.js";
 
 const API = "http://localhost:8080";
+const FETCH_TIMEOUT_MS = 120000;
 let cardOneReport;
 let cardTwoReport;
 let loading = "";
 let error = "";
+
+async function fetchJson(path, { method = "GET", timeoutMs = FETCH_TIMEOUT_MS } = {}) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(`${API}${path}`, { method, signal: controller.signal });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || `Request failed (${response.status})`);
+    return payload;
+  } catch (reason) {
+    if (reason?.name === "AbortError") throw new Error(`Request timed out after ${Math.round(timeoutMs / 1000)}s`);
+    throw reason;
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 const CARD_QUEUE = [
   ["01", "Data Sources Validation", "Live Source Adapter Snapshots", "Validated Intelligence Package", "Market Intelligence Gathering"],
@@ -44,13 +61,13 @@ function pipeline() {
     const acceptance = index === 0
       ? `${cardOneReport?.acceptanceScore ?? 0}%`
       : index === 1
-        ? cardTwoReport ? `${cardTwoReport.acceptanceScore ?? 0}%` : "PENDING"
-        : "PENDING";
+        ? cardTwoReport ? `${cardTwoReport.acceptanceScore ?? 0}%` : status === "READY" ? "TEST REQUIRED" : "LOCKED"
+        : "LOCKED";
     const quality = index === 0
       ? `${cardOneReport?.dataQualityScore ?? 0}%`
       : index === 1
-        ? cardTwoReport ? `${cardTwoReport.dataQualityScore ?? 0}%` : "PENDING"
-        : "PENDING";
+        ? cardTwoReport ? `${cardTwoReport.dataQualityScore ?? 0}%` : status === "READY" ? "TEST REQUIRED" : "LOCKED"
+        : "LOCKED";
     const permission = index === 0
       ? cardOneReport?.workflowPermission || "TEST_REQUIRED"
       : index === 1
@@ -58,8 +75,13 @@ function pipeline() {
         : status === "READY" ? "TEST_REQUIRED" : "LOCKED";
     const active = index === 0 || (index === 1 && cardOneReport?.workflowPermission === "CONTINUE" && !cardTwoReport);
     const nextClass = index === 1 && cardOneReport?.workflowPermission === "CONTINUE" && !cardTwoReport ? "next" : index === 2 && cardTwoReport?.workflowPermission === "CONTINUE" ? "next" : "";
+    const actions = index === 0
+      ? `<div class="ct-pipeline-actions"><button type="button" data-ct-card1>Run Card 1 Test</button></div>`
+      : index === 1 && status !== "LOCKED"
+        ? `<div class="ct-pipeline-actions"><button type="button" data-ct-card2>Run Card 2 Test</button><a href="/workspace/market-intelligence/test-harness">Open Test Harness</a></div>`
+        : "";
     return `<article class="${index === 0 ? "active" : active ? "" : nextClass}">
-      <b>${number}</b><div><strong>${title}</strong><span>Input: ${input}</span><span>Output: ${output}</span><span>Acceptance: ${acceptance} / Quality: ${quality}</span><span>Permission: ${permission}</span><span>Next: ${next}</span></div>${badge(status === "READY" ? "READY" : status)}
+      <b>${number}</b><div><strong>${title}</strong><span>Input: ${input}</span><span>Output: ${output}</span><span>Acceptance: ${acceptance} / Quality: ${quality}</span><span>Permission: ${permission}</span><span>Next: ${next}</span></div>${badge(status === "READY" ? "READY" : status)}${actions}
     </article>`;
   }).join("");
 }
@@ -87,7 +109,7 @@ function cardTwoSection() {
   if (!cardTwoReport) {
     return `
       <article class="ct-card ct-handoff"><div><h2>CARD 2 / MARKET INTELLIGENCE GATHERING</h2><p>Card 1 passed. Run the Card 2 live test to gather intelligence modules, score the package, and emit the Market Intelligence Package for Card 3.</p></div>${badge("READY FOR CARD 2 TESTING")}</article>
-      <section class="ct-toolbar"><div><strong>Card 2 Live Intelligence Test Runner</strong><span>Reads validated Card 1 input, evaluates live intelligence modules from the database, and generates the Market Intelligence Package.</span></div><div><button data-ct-card2>Run Live Card 2 Test</button><a class="ct-link-button" href="/workspace/market-intelligence/dashboard">Open Card 2 Dashboard</a></div></section>`;
+      <section class="ct-toolbar"><div><strong>Card 2 Live Intelligence Test Runner</strong><span>Reads validated Card 1 input, evaluates live intelligence modules from the database, and generates the Market Intelligence Package.</span></div><div><button data-ct-card2>Run Live Card 2 Test</button><a class="ct-link-button" href="/workspace/market-intelligence/test-harness">Open Test Harness</a><a class="ct-link-button" href="/workspace/market-intelligence/dashboard">Open Card 2 Dashboard</a></div></section>`;
   }
   const checkRows = cardTwoReport.checks.map(check => [check.name, check.severity, check.policy, badge(check.status)]);
   const scoreRows = (cardTwoReport.scores || []).filter(score => score.value != null).map(score => [score.label, `${score.value}%`, badge(score.status)]);
@@ -104,8 +126,9 @@ function cardTwoSection() {
 }
 
 function render() {
-  if (loading === "card1") return `<article class="ct-card"><h1>Workflow Dashboard</h1><p>Running Card 1 Data Sources Validation test...</p></article>`;
-  if (loading === "card2") return `<article class="ct-card"><h1>Workflow Dashboard</h1><p>Running Card 2 Market Intelligence Gathering test...</p></article>`;
+  if (loading === "boot") return `<article class="ct-card"><h1>Workflow Dashboard</h1><p>Loading workflow dashboard...</p></article>`;
+  if (loading === "card1") return `<article class="ct-card"><h1>Workflow Dashboard</h1><p>Running Card 1 live validation test. This probes all configured adapters and may take up to 2 minutes.</p></article>`;
+  if (loading === "card2") return `<article class="ct-card"><h1>Workflow Dashboard</h1><p>Running Card 2 intelligence gathering test. This evaluates live modules and may take up to 2 minutes.</p></article>`;
   if (error) return `<article class="ct-card"><h1>Workflow Dashboard</h1><p>${error}</p><button data-ct-card1>Retry Live Card 1 Test</button>${cardOneReport?.workflowPermission === "CONTINUE" ? `<button data-ct-card2>Retry Live Card 2 Test</button>` : ""}</article>`;
   if (!cardOneReport) return "";
   const activeLabel = cardTwoReport ? "CARD 2 MARKET INTELLIGENCE GATHERING" : cardOneReport.nextCard ? "CARD 2 READY FOR TESTING" : "DATA SOURCES VALIDATION";
@@ -116,18 +139,39 @@ function render() {
     <div class="ct-main">${cardOneSection()}${cardTwoSection()}</div></div></section>`;
 }
 
+async function loadDashboard() {
+  loading = "boot";
+  error = "";
+  draw();
+  try {
+    cardOneReport = await fetchJson("/api/workflow/cards/1", { timeoutMs: 30000 });
+    if (cardOneReport.workflowPermission === "CONTINUE") {
+      try {
+        cardTwoReport = await fetchJson("/api/workflow/cards/2", { timeoutMs: 30000 });
+      } catch {
+        cardTwoReport = null;
+      }
+    } else {
+      cardTwoReport = null;
+    }
+  } catch (reason) {
+    error = reason.message || "Unable to load workflow dashboard.";
+  } finally {
+    loading = "";
+    draw();
+  }
+}
+
 async function runCardOne() {
   loading = "card1";
   error = "";
   draw();
   try {
-    const response = await fetch(`${API}/api/workflow/cards/1/test-live`, { method: "POST" });
-    if (!response.ok) throw new Error(`Card 1 test failed (${response.status})`);
-    const payload = await response.json();
+    const payload = await fetchJson("/api/workflow/cards/1/test-live", { method: "POST" });
     cardOneReport = payload.event.report;
     if (cardOneReport.workflowPermission !== "CONTINUE") cardTwoReport = null;
   } catch (reason) {
-    error = reason.message;
+    error = reason.message || "Card 1 live test failed.";
   } finally {
     loading = "";
     draw();
@@ -144,12 +188,10 @@ async function runCardTwo() {
   error = "";
   draw();
   try {
-    const response = await fetch(`${API}/api/workflow/cards/2/test-live`, { method: "POST" });
-    const payload = await response.json();
-    if (!response.ok) throw new Error(payload.error || `Card 2 test failed (${response.status})`);
+    const payload = await fetchJson("/api/workflow/cards/2/test-live", { method: "POST" });
     cardTwoReport = payload.event.report;
   } catch (reason) {
-    error = reason.message;
+    error = reason.message || "Card 2 live test failed.";
   } finally {
     loading = "";
     draw();
@@ -173,6 +215,6 @@ function draw() {
 }
 
 initEnterpriseSidebar("workflow-test-nav");
-runCardOne();
+loadDashboard();
 const nigeriaTime = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZone: "Africa/Lagos" });
 setInterval(() => document.querySelector("#utc-clock").textContent = `WAT ${nigeriaTime.format(new Date())}`, 1000);
