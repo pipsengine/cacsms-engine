@@ -304,6 +304,135 @@ import {
   runAssetUniverseAction
 } from "../../../packages/market-intelligence/src/asset-universe-registry.js";
 import {
+  exportCurrencyStrengthReport,
+  getCurrencyStrengthEngine,
+  getCurrencyStrengthSlice,
+  runCurrencyStrengthAction
+} from "../../../packages/market-intelligence/src/currency-strength-engine.js";
+import {
+  exportTrendScannerReport,
+  getTrendAssetDetail,
+  getTrendScannerEngine,
+  getTrendScannerSlice,
+  runTrendScannerAction
+} from "../../../packages/market-intelligence/src/trend-scanner-engine.js";
+import {
+  exportMarketStructureReport,
+  getMarketStructureAssetDetail,
+  getMarketStructureScannerEngine,
+  getMarketStructureSlice,
+  runMarketStructureAction
+} from "../../../packages/market-intelligence/src/market-structure-scanner-engine.js";
+import {
+  exportMomentumReport,
+  getMomentumAssetDetail,
+  getMomentumScannerEngine,
+  getMomentumSlice,
+  runMomentumAction
+} from "../../../packages/market-intelligence/src/momentum-scanner-engine.js";
+import {
+  exportVolatilityReport,
+  getVolatilityAssetDetail,
+  getVolatilityScannerEngine,
+  getVolatilitySlice,
+  runVolatilityAction
+} from "../../../packages/market-intelligence/src/volatility-scanner-engine.js";
+import {
+  exportLiquidityReport,
+  getLiquidityAssetDetail,
+  getLiquidityScannerEngine,
+  getLiquiditySlice,
+  runLiquidityAction
+} from "../../../packages/market-intelligence/src/liquidity-scanner-engine.js";
+import {
+  exportInstitutionalScannerReport,
+  getInstitutionalScannerAssetDetail,
+  getInstitutionalScannerEngine,
+  getInstitutionalScannerSlice,
+  runInstitutionalScannerAction
+} from "../../../packages/market-intelligence/src/institutional-scanner-engine.js";
+import {
+  exportMacroScannerReport,
+  getMacroScannerAssetDetail,
+  getMacroScannerEngine,
+  getMacroScannerSlice,
+  runMacroScannerAction
+} from "../../../packages/market-intelligence/src/macro-scanner-engine.js";
+import {
+  exportEconomicEventsScannerReport,
+  getEconomicEventsScannerDetail,
+  getEconomicEventsScannerEngine,
+  getEconomicEventsScannerSlice,
+  runEconomicEventsScannerAction
+} from "../../../packages/market-intelligence/src/economic-events-scanner-engine.js";
+import {
+  exportSentimentScannerReport,
+  getSentimentScannerAssetDetail,
+  getSentimentScannerEngine,
+  getSentimentScannerSlice,
+  runSentimentScannerAction
+} from "../../../packages/market-intelligence/src/sentiment-scanner-engine.js";
+import {
+  exportRiskScannerReport,
+  getRiskScannerAssetDetail,
+  getRiskScannerEngine,
+  getRiskScannerSlice,
+  runRiskScannerAction
+} from "../../../packages/market-intelligence/src/risk-scanner-engine.js";
+import {
+  exportPropComplianceScannerReport,
+  getPropComplianceScannerDetail,
+  getPropComplianceScannerEngine,
+  getPropComplianceScannerSlice,
+  runPropComplianceScannerAction
+} from "../../../packages/market-intelligence/src/prop-compliance-scanner-engine.js";
+import {
+  exportOpportunityRankingReport,
+  getOpportunityRankingDetail,
+  getOpportunityRankingEngine,
+  getOpportunityRankingSlice,
+  runOpportunityRankingAction
+} from "../../../packages/market-intelligence/src/opportunity-ranking-engine.js";
+import {
+  exportQualifiedTradesReport,
+  getQualifiedTradeDetail,
+  getQualifiedTradesCenter,
+  getQualifiedTradesSlice,
+  runQualifiedTradesAction
+} from "../../../packages/market-intelligence/src/qualified-trades-engine.js";
+import {
+  exportAiOpportunityInsightsReport,
+  getAiOpportunityInsightDetail,
+  getAiOpportunityInsightsCenter,
+  getAiOpportunityInsightsSlice,
+  runAiOpportunityInsightsAction
+} from "../../../packages/market-intelligence/src/ai-opportunity-insights-engine.js";
+import {
+  exportScannerControlReport,
+  getScannerControlCenter,
+  getScannerControlSlice,
+  runScannerControlAction
+} from "../../../packages/market-intelligence/src/scanner-control-center.js";
+import {
+  exportUniverseScannerLogsReport,
+  getUniverseScannerLogDetail,
+  getUniverseScannerLogsCenter,
+  getUniverseScannerLogsSlice,
+  runUniverseScannerLogAction
+} from "../../../packages/market-intelligence/src/universe-scanner-logs.js";
+import {
+  exportUniverseScannerTestReport,
+  getUniverseScannerCardReadiness,
+  getUniverseScannerTestCatalog,
+  getUniverseScannerTestHarness,
+  getUniverseScannerTestHistory,
+  getUniverseScannerTestResult,
+  getUniverseScannerTestSchedules,
+  getUniverseScannerTestSlice,
+  getUniverseScannerTestSummary,
+  runUniverseScannerHarnessAction
+} from "../../../packages/market-intelligence/src/universe-scanner-test-harness.js";
+import {
   exportUniverseScannerDashboard,
   getUniverseScannerDashboard,
   getUniverseScannerDashboardSlice,
@@ -743,6 +872,217 @@ const routes = {
   ,"GET /api/universe-scanner/dashboard/readiness": () => getUniverseScannerDashboardSlice("readiness")
   ,"GET /api/universe-scanner/dashboard/ai-summary": () => getUniverseScannerDashboardSlice("ai-summary")
   ,"GET /api/universe-scanner/dashboard/export": () => exportUniverseScannerDashboard()
+  ,"GET /api/universe-scanner/universe": () => getAssetUniverseRegistry()
+  ,"GET /api/universe-scanner/universe/summary": () => getAssetUniverseRegistrySlice("summary")
+  ,"GET /api/universe-scanner/universe/assets": () => getAssetUniverseRegistrySlice("assets")
+  ,"GET /api/universe-scanner/universe/asset-classes": () => getAssetUniverseRegistrySlice("asset-classes")
+  ,"GET /api/universe-scanner/universe/mappings": () => getAssetUniverseRegistrySlice("mappings")
+  ,"GET /api/universe-scanner/universe/readiness": () => getAssetUniverseRegistrySlice("readiness")
+  ,"GET /api/universe-scanner/universe/export": () => exportAssetUniverseRegistry()
+  ,"GET /api/universe-scanner/currency-strength": () => getCurrencyStrengthEngine()
+  ,"GET /api/universe-scanner/currency-strength/summary": () => getCurrencyStrengthSlice("summary")
+  ,"GET /api/universe-scanner/currency-strength/matrix": () => getCurrencyStrengthSlice("matrix")
+  ,"GET /api/universe-scanner/currency-strength/pairs": () => getCurrencyStrengthSlice("pairs")
+  ,"GET /api/universe-scanner/currency-strength/rotation": () => getCurrencyStrengthSlice("rotation")
+  ,"GET /api/universe-scanner/currency-strength/heatmap": () => getCurrencyStrengthSlice("heatmap")
+  ,"GET /api/universe-scanner/currency-strength/divergence": () => getCurrencyStrengthSlice("divergence")
+  ,"GET /api/universe-scanner/currency-strength/opportunities": () => getCurrencyStrengthSlice("opportunities")
+  ,"GET /api/universe-scanner/currency-strength/ai-summary": () => getCurrencyStrengthSlice("ai-summary")
+  ,"GET /api/universe-scanner/currency-strength/export": () => exportCurrencyStrengthReport()
+  ,"GET /api/universe-scanner/trend-scanner": () => getTrendScannerEngine()
+  ,"GET /api/universe-scanner/trend-scanner/summary": () => getTrendScannerSlice("summary")
+  ,"GET /api/universe-scanner/trend-scanner/matrix": () => getTrendScannerSlice("matrix")
+  ,"GET /api/universe-scanner/trend-scanner/rankings": () => getTrendScannerSlice("rankings")
+  ,"GET /api/universe-scanner/trend-scanner/continuation": () => getTrendScannerSlice("continuation")
+  ,"GET /api/universe-scanner/trend-scanner/exhaustion": () => getTrendScannerSlice("exhaustion")
+  ,"GET /api/universe-scanner/trend-scanner/breakouts": () => getTrendScannerSlice("breakouts")
+  ,"GET /api/universe-scanner/trend-scanner/heatmap": () => getTrendScannerSlice("heatmap")
+  ,"GET /api/universe-scanner/trend-scanner/ai-summary": () => getTrendScannerSlice("ai-summary")
+  ,"GET /api/universe-scanner/trend-scanner/export": () => exportTrendScannerReport()
+  ,"GET /api/universe-scanner/market-structure": () => getMarketStructureScannerEngine()
+  ,"GET /api/universe-scanner/market-structure/summary": () => getMarketStructureSlice("summary")
+  ,"GET /api/universe-scanner/market-structure/matrix": () => getMarketStructureSlice("matrix")
+  ,"GET /api/universe-scanner/market-structure/rankings": () => getMarketStructureSlice("rankings")
+  ,"GET /api/universe-scanner/market-structure/bos": () => getMarketStructureSlice("bos")
+  ,"GET /api/universe-scanner/market-structure/choch": () => getMarketStructureSlice("choch")
+  ,"GET /api/universe-scanner/market-structure/swing-points": () => getMarketStructureSlice("swing-points")
+  ,"GET /api/universe-scanner/market-structure/heatmap": () => getMarketStructureSlice("heatmap")
+  ,"GET /api/universe-scanner/market-structure/ai-summary": () => getMarketStructureSlice("ai-summary")
+  ,"GET /api/universe-scanner/market-structure/export": () => exportMarketStructureReport()
+  ,"GET /api/universe-scanner/momentum": () => getMomentumScannerEngine()
+  ,"GET /api/universe-scanner/momentum/summary": () => getMomentumSlice("summary")
+  ,"GET /api/universe-scanner/momentum/matrix": () => getMomentumSlice("matrix")
+  ,"GET /api/universe-scanner/momentum/rankings": () => getMomentumSlice("rankings")
+  ,"GET /api/universe-scanner/momentum/acceleration": () => getMomentumSlice("acceleration")
+  ,"GET /api/universe-scanner/momentum/deceleration": () => getMomentumSlice("deceleration")
+  ,"GET /api/universe-scanner/momentum/divergence": () => getMomentumSlice("divergence")
+  ,"GET /api/universe-scanner/momentum/exhaustion": () => getMomentumSlice("exhaustion")
+  ,"GET /api/universe-scanner/momentum/heatmap": () => getMomentumSlice("heatmap")
+  ,"GET /api/universe-scanner/momentum/ai-summary": () => getMomentumSlice("ai-summary")
+  ,"GET /api/universe-scanner/momentum/export": () => exportMomentumReport()
+  ,"GET /api/universe-scanner/volatility": () => getVolatilityScannerEngine()
+  ,"GET /api/universe-scanner/volatility/summary": () => getVolatilitySlice("summary")
+  ,"GET /api/universe-scanner/volatility/matrix": () => getVolatilitySlice("matrix")
+  ,"GET /api/universe-scanner/volatility/rankings": () => getVolatilitySlice("rankings")
+  ,"GET /api/universe-scanner/volatility/expansion": () => getVolatilitySlice("expansion")
+  ,"GET /api/universe-scanner/volatility/compression": () => getVolatilitySlice("compression")
+  ,"GET /api/universe-scanner/volatility/breakout-readiness": () => getVolatilitySlice("breakout-readiness")
+  ,"GET /api/universe-scanner/volatility/abnormal-risk": () => getVolatilitySlice("abnormal-risk")
+  ,"GET /api/universe-scanner/volatility/heatmap": () => getVolatilitySlice("heatmap")
+  ,"GET /api/universe-scanner/volatility/ai-summary": () => getVolatilitySlice("ai-summary")
+  ,"GET /api/universe-scanner/volatility/export": () => exportVolatilityReport()
+  ,"GET /api/universe-scanner/liquidity": () => getLiquidityScannerEngine()
+  ,"GET /api/universe-scanner/liquidity/summary": () => getLiquiditySlice("summary")
+  ,"GET /api/universe-scanner/liquidity/matrix": () => getLiquiditySlice("matrix")
+  ,"GET /api/universe-scanner/liquidity/rankings": () => getLiquiditySlice("rankings")
+  ,"GET /api/universe-scanner/liquidity/buy-side": () => getLiquiditySlice("buy-side")
+  ,"GET /api/universe-scanner/liquidity/sell-side": () => getLiquiditySlice("sell-side")
+  ,"GET /api/universe-scanner/liquidity/sweeps": () => getLiquiditySlice("sweeps")
+  ,"GET /api/universe-scanner/liquidity/voids": () => getLiquiditySlice("voids")
+  ,"GET /api/universe-scanner/liquidity/stop-clusters": () => getLiquiditySlice("stop-clusters")
+  ,"GET /api/universe-scanner/liquidity/broker-risk": () => getLiquiditySlice("broker-risk")
+  ,"GET /api/universe-scanner/liquidity/heatmap": () => getLiquiditySlice("heatmap")
+  ,"GET /api/universe-scanner/liquidity/ai-summary": () => getLiquiditySlice("ai-summary")
+  ,"GET /api/universe-scanner/liquidity/export": () => exportLiquidityReport()
+  ,"GET /api/universe-scanner/institutional": () => getInstitutionalScannerEngine()
+  ,"GET /api/universe-scanner/institutional/summary": () => getInstitutionalScannerSlice("summary")
+  ,"GET /api/universe-scanner/institutional/matrix": () => getInstitutionalScannerSlice("matrix")
+  ,"GET /api/universe-scanner/institutional/rankings": () => getInstitutionalScannerSlice("rankings")
+  ,"GET /api/universe-scanner/institutional/cot-alignment": () => getInstitutionalScannerSlice("cot-alignment")
+  ,"GET /api/universe-scanner/institutional/accumulation-distribution": () => getInstitutionalScannerSlice("accumulation-distribution")
+  ,"GET /api/universe-scanner/institutional/smc": () => getInstitutionalScannerSlice("smc")
+  ,"GET /api/universe-scanner/institutional/liquidity-confirmation": () => getInstitutionalScannerSlice("liquidity-confirmation")
+  ,"GET /api/universe-scanner/institutional/order-blocks-fvg": () => getInstitutionalScannerSlice("order-blocks-fvg")
+  ,"GET /api/universe-scanner/institutional/heatmap": () => getInstitutionalScannerSlice("heatmap")
+  ,"GET /api/universe-scanner/institutional/ai-summary": () => getInstitutionalScannerSlice("ai-summary")
+  ,"GET /api/universe-scanner/institutional/export": () => exportInstitutionalScannerReport()
+  ,"GET /api/universe-scanner/macro": () => getMacroScannerEngine()
+  ,"GET /api/universe-scanner/macro/summary": () => getMacroScannerSlice("summary")
+  ,"GET /api/universe-scanner/macro/matrix": () => getMacroScannerSlice("matrix")
+  ,"GET /api/universe-scanner/macro/rankings": () => getMacroScannerSlice("rankings")
+  ,"GET /api/universe-scanner/macro/currency-bias": () => getMacroScannerSlice("currency-bias")
+  ,"GET /api/universe-scanner/macro/central-banks": () => getMacroScannerSlice("central-banks")
+  ,"GET /api/universe-scanner/macro/yields-rates": () => getMacroScannerSlice("yields-rates")
+  ,"GET /api/universe-scanner/macro/inflation-growth": () => getMacroScannerSlice("inflation-growth")
+  ,"GET /api/universe-scanner/macro/commodity-drivers": () => getMacroScannerSlice("commodity-drivers")
+  ,"GET /api/universe-scanner/macro/divergence": () => getMacroScannerSlice("divergence")
+  ,"GET /api/universe-scanner/macro/heatmap": () => getMacroScannerSlice("heatmap")
+  ,"GET /api/universe-scanner/macro/ai-summary": () => getMacroScannerSlice("ai-summary")
+  ,"GET /api/universe-scanner/macro/export": () => exportMacroScannerReport()
+  ,"GET /api/universe-scanner/economic-events": () => getEconomicEventsScannerEngine()
+  ,"GET /api/universe-scanner/economic-events/summary": () => getEconomicEventsScannerSlice("summary")
+  ,"GET /api/universe-scanner/economic-events/exposure-matrix": () => getEconomicEventsScannerSlice("exposure-matrix")
+  ,"GET /api/universe-scanner/economic-events/rankings": () => getEconomicEventsScannerSlice("rankings")
+  ,"GET /api/universe-scanner/economic-events/upcoming": () => getEconomicEventsScannerSlice("upcoming")
+  ,"GET /api/universe-scanner/economic-events/deviations": () => getEconomicEventsScannerSlice("deviations")
+  ,"GET /api/universe-scanner/economic-events/opportunities": () => getEconomicEventsScannerSlice("opportunities")
+  ,"GET /api/universe-scanner/economic-events/blocked": () => getEconomicEventsScannerSlice("blocked")
+  ,"GET /api/universe-scanner/economic-events/prop-restrictions": () => getEconomicEventsScannerSlice("prop-restrictions")
+  ,"GET /api/universe-scanner/economic-events/volatility-liquidity": () => getEconomicEventsScannerSlice("volatility-liquidity")
+  ,"GET /api/universe-scanner/economic-events/heatmap": () => getEconomicEventsScannerSlice("heatmap")
+  ,"GET /api/universe-scanner/economic-events/ai-summary": () => getEconomicEventsScannerSlice("ai-summary")
+  ,"GET /api/universe-scanner/economic-events/export": () => exportEconomicEventsScannerReport()
+  ,"GET /api/universe-scanner/sentiment": () => getSentimentScannerEngine()
+  ,"GET /api/universe-scanner/sentiment/summary": () => getSentimentScannerSlice("summary")
+  ,"GET /api/universe-scanner/sentiment/matrix": () => getSentimentScannerSlice("matrix")
+  ,"GET /api/universe-scanner/sentiment/rankings": () => getSentimentScannerSlice("rankings")
+  ,"GET /api/universe-scanner/sentiment/news-alignment": () => getSentimentScannerSlice("news-alignment")
+  ,"GET /api/universe-scanner/sentiment/social-alignment": () => getSentimentScannerSlice("social-alignment")
+  ,"GET /api/universe-scanner/sentiment/divergence": () => getSentimentScannerSlice("divergence")
+  ,"GET /api/universe-scanner/sentiment/extreme-risk": () => getSentimentScannerSlice("extreme-risk")
+  ,"GET /api/universe-scanner/sentiment/momentum": () => getSentimentScannerSlice("momentum")
+  ,"GET /api/universe-scanner/sentiment/heatmap": () => getSentimentScannerSlice("heatmap")
+  ,"GET /api/universe-scanner/sentiment/ai-summary": () => getSentimentScannerSlice("ai-summary")
+  ,"GET /api/universe-scanner/sentiment/export": () => exportSentimentScannerReport()
+  ,"GET /api/universe-scanner/risk": () => getRiskScannerEngine()
+  ,"GET /api/universe-scanner/risk/summary": () => getRiskScannerSlice("summary")
+  ,"GET /api/universe-scanner/risk/matrix": () => getRiskScannerSlice("matrix")
+  ,"GET /api/universe-scanner/risk/rankings": () => getRiskScannerSlice("rankings")
+  ,"GET /api/universe-scanner/risk/critical": () => getRiskScannerSlice("critical")
+  ,"GET /api/universe-scanner/risk/news-events": () => getRiskScannerSlice("news-events")
+  ,"GET /api/universe-scanner/risk/broker-execution": () => getRiskScannerSlice("broker-execution")
+  ,"GET /api/universe-scanner/risk/correlation-portfolio": () => getRiskScannerSlice("correlation-portfolio")
+  ,"GET /api/universe-scanner/risk/prop-firm": () => getRiskScannerSlice("prop-firm")
+  ,"GET /api/universe-scanner/risk/recommendations": () => getRiskScannerSlice("recommendations")
+  ,"GET /api/universe-scanner/risk/heatmap": () => getRiskScannerSlice("heatmap")
+  ,"GET /api/universe-scanner/risk/ai-summary": () => getRiskScannerSlice("ai-summary")
+  ,"GET /api/universe-scanner/risk/export": () => exportRiskScannerReport()
+  ,"GET /api/universe-scanner/prop-compliance": () => getPropComplianceScannerEngine()
+  ,"GET /api/universe-scanner/prop-compliance/summary": () => getPropComplianceScannerSlice("summary")
+  ,"GET /api/universe-scanner/prop-compliance/matrix": () => getPropComplianceScannerSlice("matrix")
+  ,"GET /api/universe-scanner/prop-compliance/rankings": () => getPropComplianceScannerSlice("rankings")
+  ,"GET /api/universe-scanner/prop-compliance/accounts": () => getPropComplianceScannerSlice("accounts")
+  ,"GET /api/universe-scanner/prop-compliance/news-restrictions": () => getPropComplianceScannerSlice("news-restrictions")
+  ,"GET /api/universe-scanner/prop-compliance/drawdown-risk": () => getPropComplianceScannerSlice("drawdown-risk")
+  ,"GET /api/universe-scanner/prop-compliance/consistency": () => getPropComplianceScannerSlice("consistency")
+  ,"GET /api/universe-scanner/prop-compliance/instrument-restrictions": () => getPropComplianceScannerSlice("instrument-restrictions")
+  ,"GET /api/universe-scanner/prop-compliance/blocked-assets": () => getPropComplianceScannerSlice("blocked-assets")
+  ,"GET /api/universe-scanner/prop-compliance/recommendations": () => getPropComplianceScannerSlice("recommendations")
+  ,"GET /api/universe-scanner/prop-compliance/heatmap": () => getPropComplianceScannerSlice("heatmap")
+  ,"GET /api/universe-scanner/prop-compliance/ai-summary": () => getPropComplianceScannerSlice("ai-summary")
+  ,"GET /api/universe-scanner/prop-compliance/export": () => exportPropComplianceScannerReport()
+  ,"GET /api/universe-scanner/opportunities": () => getOpportunityRankingEngine()
+  ,"GET /api/universe-scanner/opportunities/summary": () => getOpportunityRankingSlice("summary")
+  ,"GET /api/universe-scanner/opportunities/rankings": () => getOpportunityRankingSlice("rankings")
+  ,"GET /api/universe-scanner/opportunities/buy": () => getOpportunityRankingSlice("buy")
+  ,"GET /api/universe-scanner/opportunities/sell": () => getOpportunityRankingSlice("sell")
+  ,"GET /api/universe-scanner/opportunities/watchlist": () => getOpportunityRankingSlice("watchlist")
+  ,"GET /api/universe-scanner/opportunities/blocked": () => getOpportunityRankingSlice("blocked")
+  ,"GET /api/universe-scanner/opportunities/history": () => getOpportunityRankingSlice("history")
+  ,"GET /api/universe-scanner/opportunities/agreement": () => getOpportunityRankingSlice("agreement")
+  ,"GET /api/universe-scanner/opportunities/readiness": () => getOpportunityRankingSlice("readiness")
+  ,"GET /api/universe-scanner/opportunities/ai-summary": () => getOpportunityRankingSlice("ai-summary")
+  ,"GET /api/universe-scanner/opportunities/export": () => exportOpportunityRankingReport()
+  ,"GET /api/universe-scanner/qualified-trades": () => getQualifiedTradesCenter()
+  ,"GET /api/universe-scanner/qualified-trades/summary": () => getQualifiedTradesSlice("summary")
+  ,"GET /api/universe-scanner/qualified-trades/candidates": () => getQualifiedTradesSlice("candidates")
+  ,"GET /api/universe-scanner/qualified-trades/readiness": () => getQualifiedTradesSlice("readiness")
+  ,"GET /api/universe-scanner/qualified-trades/ready-for-package": () => getQualifiedTradesSlice("ready-for-package")
+  ,"GET /api/universe-scanner/qualified-trades/ready-for-scoring": () => getQualifiedTradesSlice("ready-for-scoring")
+  ,"GET /api/universe-scanner/qualified-trades/review-required": () => getQualifiedTradesSlice("review-required")
+  ,"GET /api/universe-scanner/qualified-trades/blocked-expired": () => getQualifiedTradesSlice("blocked-expired")
+  ,"GET /api/universe-scanner/qualified-trades/ai-summary": () => getQualifiedTradesSlice("ai-summary")
+  ,"GET /api/universe-scanner/qualified-trades/export": () => exportQualifiedTradesReport()
+  ,"GET /api/universe-scanner/ai-insights": () => getAiOpportunityInsightsCenter()
+  ,"GET /api/universe-scanner/ai-insights/summary": () => getAiOpportunityInsightsSlice("summary")
+  ,"GET /api/universe-scanner/ai-insights/universe-summary": () => getAiOpportunityInsightsSlice("universe-summary")
+  ,"GET /api/universe-scanner/ai-insights/top-opportunities": () => getAiOpportunityInsightsSlice("top-opportunities")
+  ,"GET /api/universe-scanner/ai-insights/rejected-blocked": () => getAiOpportunityInsightsSlice("rejected-blocked")
+  ,"GET /api/universe-scanner/ai-insights/agreement": () => getAiOpportunityInsightsSlice("agreement")
+  ,"GET /api/universe-scanner/ai-insights/conflicts": () => getAiOpportunityInsightsSlice("conflicts")
+  ,"GET /api/universe-scanner/ai-insights/risk-narratives": () => getAiOpportunityInsightsSlice("risk-narratives")
+  ,"GET /api/universe-scanner/ai-insights/compliance-narratives": () => getAiOpportunityInsightsSlice("compliance-narratives")
+  ,"GET /api/universe-scanner/ai-insights/review-suggestions": () => getAiOpportunityInsightsSlice("review-suggestions")
+  ,"GET /api/universe-scanner/ai-insights/export": () => exportAiOpportunityInsightsReport()
+  ,"GET /api/universe-scanner/control-center": () => getScannerControlCenter()
+  ,"GET /api/universe-scanner/control-center/summary": () => getScannerControlSlice("summary")
+  ,"GET /api/universe-scanner/control-center/modules": () => getScannerControlSlice("modules")
+  ,"GET /api/universe-scanner/control-center/jobs": () => getScannerControlSlice("jobs")
+  ,"GET /api/universe-scanner/control-center/workers": () => getScannerControlSlice("workers")
+  ,"GET /api/universe-scanner/control-center/schedules": () => getScannerControlSlice("schedules")
+  ,"GET /api/universe-scanner/control-center/safety-checks": () => getScannerControlSlice("safety-checks")
+  ,"GET /api/universe-scanner/control-center/failures": () => getScannerControlSlice("failures")
+  ,"GET /api/universe-scanner/control-center/readiness": () => getScannerControlSlice("readiness")
+  ,"GET /api/universe-scanner/control-center/audit": () => getScannerControlSlice("audit")
+  ,"GET /api/universe-scanner/control-center/ai-summary": () => getScannerControlSlice("ai-summary")
+  ,"GET /api/universe-scanner/control-center/export": () => exportScannerControlReport()
+  ,"GET /api/universe-scanner/logs": () => getUniverseScannerLogsCenter()
+  ,"GET /api/universe-scanner/logs/summary": () => getUniverseScannerLogsSlice("summary")
+  ,"GET /api/universe-scanner/logs/categories": () => getUniverseScannerLogsSlice("categories")
+  ,"GET /api/universe-scanner/logs/errors": () => getUniverseScannerLogsSlice("errors")
+  ,"GET /api/universe-scanner/logs/scan-runs": () => getUniverseScannerLogsSlice("scan-runs")
+  ,"GET /api/universe-scanner/logs/worker-queue": () => getUniverseScannerLogsSlice("worker-queue")
+  ,"GET /api/universe-scanner/logs/audit": () => getUniverseScannerLogsSlice("audit")
+  ,"GET /api/universe-scanner/logs/timeline": url => getUniverseScannerLogsSlice("timeline", Object.fromEntries(url.searchParams))
+  ,"GET /api/universe-scanner/logs/metrics": () => getUniverseScannerLogsSlice("metrics")
+  ,"GET /api/universe-scanner/logs/export": () => exportUniverseScannerLogsReport()
+  ,"GET /api/universe-scanner/test-harness": () => getUniverseScannerTestHarness()
+  ,"GET /api/universe-scanner/test-harness/summary": () => getUniverseScannerTestSummary()
+  ,"GET /api/universe-scanner/test-harness/catalog": () => getUniverseScannerTestCatalog()
+  ,"GET /api/universe-scanner/test-harness/history": () => getUniverseScannerTestHistory()
+  ,"GET /api/universe-scanner/test-harness/schedules": () => getUniverseScannerTestSchedules()
+  ,"GET /api/universe-scanner/test-harness/card-readiness": () => getUniverseScannerCardReadiness()
+  ,"GET /api/universe-scanner/test-harness/export": () => exportUniverseScannerTestReport()
   ,"GET /api/market-intelligence/logs": async url => {
     const filters = Object.fromEntries(url.searchParams);
     return getMarketIntelligenceLogs(filters);
@@ -1821,6 +2161,462 @@ const server = createServer(async (request, response) => {
     const body = await readBody(request).catch(() => ({}));
     try {
       return json(response, 200, await runUniverseScannerDashboardAction(action, body, auditFromRequest(request).userLabel));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/universe/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const body = ["POST", "PATCH", "DELETE"].includes(request.method) ? await readBody(request).catch(() => ({})) : {};
+    const actor = auditFromRequest(request).userLabel;
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "assets", "asset-classes", "mappings", "readiness", "export"].includes(tail)) {
+        const detail = await getAssetUniverseDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "asset_not_found" });
+      }
+      if (request.method === "POST" && tail === "assets" && !sub) {
+        return json(response, 201, await runAssetUniverseAction("create-asset", body, actor));
+      }
+      if (request.method === "POST" && tail === "import" && !sub) {
+        return json(response, 202, await runAssetUniverseAction("import", body, actor));
+      }
+      if (request.method === "POST" && tail === "sync-broker-symbols" && !sub) {
+        return json(response, 202, await runAssetUniverseAction("sync-broker-symbols", body, actor));
+      }
+      if (request.method === "PATCH" && tail && !sub) {
+        return json(response, 200, await runAssetUniverseAction("update-asset", body, actor, tail));
+      }
+      if (request.method === "DELETE" && tail && !sub) {
+        return json(response, 200, await runAssetUniverseAction("delete-asset", body, actor, tail));
+      }
+      if (request.method === "POST" && tail && sub === "run-readiness-check") {
+        return json(response, 200, await runAssetUniverseAction("run-readiness-check", body, actor, tail));
+      }
+      if (request.method === "POST" && tail && sub === "enable-scan") {
+        return json(response, 200, await runAssetUniverseAction("enable-scan", body, actor, tail));
+      }
+      if (request.method === "POST" && tail && sub === "disable-scan") {
+        return json(response, 200, await runAssetUniverseAction("disable-scan", body, actor, tail));
+      }
+      if (request.method === "POST" && tail && sub === "map-symbol") {
+        return json(response, 200, await runAssetUniverseAction("map-symbol", body, actor, tail));
+      }
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        details: reason?.details || undefined,
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (request.method === "POST" && url.pathname.startsWith("/api/universe-scanner/currency-strength/")) {
+    const action = url.pathname.split("/").pop();
+    const body = await readBody(request).catch(() => ({}));
+    try {
+      return json(response, 200, await runCurrencyStrengthAction(action, body, auditFromRequest(request).userLabel));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/trend-scanner/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "matrix", "rankings", "continuation", "exhaustion", "breakouts", "heatmap", "ai-summary", "export"].includes(tail)) {
+        const detail = await getTrendAssetDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "trend_asset_not_found" });
+      }
+      if (request.method === "POST" && tail === "run-scan" && !sub) return json(response, 200, await runTrendScannerAction("run-scan", body, actor));
+      if (request.method === "POST" && tail === "recalculate" && !sub) return json(response, 200, await runTrendScannerAction("recalculate", body, actor));
+      if (request.method === "POST" && tail === "create-alert" && !sub) return json(response, 200, await runTrendScannerAction("create-alert", body, actor));
+      if (request.method === "POST" && tail && sub === "recalculate") return json(response, 200, await runTrendScannerAction("recalculate-asset", body, actor, tail));
+      if (request.method === "POST" && (tail === "regenerate-summary" || tail === "save-summary")) return json(response, 200, await runTrendScannerAction(tail, body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/market-structure/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "matrix", "rankings", "bos", "choch", "swing-points", "heatmap", "ai-summary", "export"].includes(tail)) {
+        const detail = await getMarketStructureAssetDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "market_structure_asset_not_found" });
+      }
+      if (request.method === "POST" && tail === "run-scan" && !sub) return json(response, 200, await runMarketStructureAction("run-scan", body, actor));
+      if (request.method === "POST" && tail === "recalculate" && !sub) return json(response, 200, await runMarketStructureAction("recalculate", body, actor));
+      if (request.method === "POST" && tail === "create-alert" && !sub) return json(response, 200, await runMarketStructureAction("create-alert", body, actor));
+      if (request.method === "POST" && tail && sub === "recalculate") return json(response, 200, await runMarketStructureAction("recalculate-asset", body, actor, tail));
+      if (request.method === "POST" && (tail === "regenerate-summary" || tail === "save-summary")) return json(response, 200, await runMarketStructureAction(tail, body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/momentum/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "matrix", "rankings", "acceleration", "deceleration", "divergence", "exhaustion", "heatmap", "ai-summary", "export"].includes(tail)) {
+        const detail = await getMomentumAssetDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "momentum_asset_not_found" });
+      }
+      if (request.method === "POST" && tail === "run-scan" && !sub) return json(response, 200, await runMomentumAction("run-scan", body, actor));
+      if (request.method === "POST" && tail === "recalculate" && !sub) return json(response, 200, await runMomentumAction("recalculate", body, actor));
+      if (request.method === "POST" && tail === "create-alert" && !sub) return json(response, 200, await runMomentumAction("create-alert", body, actor));
+      if (request.method === "POST" && tail && sub === "recalculate") return json(response, 200, await runMomentumAction("recalculate-asset", body, actor, tail));
+      if (request.method === "POST" && (tail === "regenerate-summary" || tail === "save-summary")) return json(response, 200, await runMomentumAction(tail, body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/volatility/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "matrix", "rankings", "expansion", "compression", "breakout-readiness", "abnormal-risk", "heatmap", "ai-summary", "export"].includes(tail)) {
+        const detail = await getVolatilityAssetDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "volatility_asset_not_found" });
+      }
+      if (request.method === "POST" && tail === "run-scan" && !sub) return json(response, 200, await runVolatilityAction("run-scan", body, actor));
+      if (request.method === "POST" && tail === "recalculate" && !sub) return json(response, 200, await runVolatilityAction("recalculate", body, actor));
+      if (request.method === "POST" && tail === "create-alert" && !sub) return json(response, 200, await runVolatilityAction("create-alert", body, actor));
+      if (request.method === "POST" && tail && sub === "recalculate") return json(response, 200, await runVolatilityAction("recalculate-asset", body, actor, tail));
+      if (request.method === "POST" && (tail === "regenerate-summary" || tail === "save-summary")) return json(response, 200, await runVolatilityAction(tail, body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/liquidity/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "matrix", "rankings", "buy-side", "sell-side", "sweeps", "voids", "stop-clusters", "broker-risk", "heatmap", "ai-summary", "export"].includes(tail)) {
+        const detail = await getLiquidityAssetDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "liquidity_asset_not_found" });
+      }
+      if (request.method === "POST" && tail === "run-scan" && !sub) return json(response, 200, await runLiquidityAction("run-scan", body, actor));
+      if (request.method === "POST" && tail === "recalculate" && !sub) return json(response, 200, await runLiquidityAction("recalculate", body, actor));
+      if (request.method === "POST" && tail === "create-alert" && !sub) return json(response, 200, await runLiquidityAction("create-alert", body, actor));
+      if (request.method === "POST" && tail && sub === "recalculate") return json(response, 200, await runLiquidityAction("recalculate-asset", body, actor, tail));
+      if (request.method === "POST" && (tail === "regenerate-summary" || tail === "save-summary")) return json(response, 200, await runLiquidityAction(tail, body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/institutional/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "matrix", "rankings", "cot-alignment", "accumulation-distribution", "smc", "liquidity-confirmation", "order-blocks-fvg", "heatmap", "ai-summary", "export"].includes(tail)) {
+        const detail = await getInstitutionalScannerAssetDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "institutional_asset_not_found" });
+      }
+      if (request.method === "POST" && tail === "run-scan" && !sub) return json(response, 200, await runInstitutionalScannerAction("run-scan", body, actor));
+      if (request.method === "POST" && tail === "recalculate" && !sub) return json(response, 200, await runInstitutionalScannerAction("recalculate", body, actor));
+      if (request.method === "POST" && tail === "create-alert" && !sub) return json(response, 200, await runInstitutionalScannerAction("create-alert", body, actor));
+      if (request.method === "POST" && tail && sub === "recalculate") return json(response, 200, await runInstitutionalScannerAction("recalculate-asset", body, actor, tail));
+      if (request.method === "POST" && (tail === "regenerate-summary" || tail === "save-summary")) return json(response, 200, await runInstitutionalScannerAction(tail, body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/macro/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "matrix", "rankings", "currency-bias", "central-banks", "yields-rates", "inflation-growth", "commodity-drivers", "divergence", "heatmap", "ai-summary", "export"].includes(tail)) {
+        const detail = await getMacroScannerAssetDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "macro_asset_not_found" });
+      }
+      if (request.method === "POST" && tail === "run-scan" && !sub) return json(response, 200, await runMacroScannerAction("run-scan", body, actor));
+      if (request.method === "POST" && tail === "recalculate" && !sub) return json(response, 200, await runMacroScannerAction("recalculate", body, actor));
+      if (request.method === "POST" && tail === "create-alert" && !sub) return json(response, 200, await runMacroScannerAction("create-alert", body, actor));
+      if (request.method === "POST" && tail && sub === "recalculate") return json(response, 200, await runMacroScannerAction("recalculate-asset", body, actor, tail));
+      if (request.method === "POST" && (tail === "regenerate-summary" || tail === "save-summary")) return json(response, 200, await runMacroScannerAction(tail, body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/economic-events/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "exposure-matrix", "rankings", "upcoming", "deviations", "opportunities", "blocked", "prop-restrictions", "volatility-liquidity", "heatmap", "ai-summary", "export"].includes(tail)) {
+        const detail = await getEconomicEventsScannerDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "economic_event_not_found" });
+      }
+      if (request.method === "POST" && tail === "run-scan" && !sub) return json(response, 200, await runEconomicEventsScannerAction("run-scan", body, actor));
+      if (request.method === "POST" && tail === "recalculate" && !sub) return json(response, 200, await runEconomicEventsScannerAction("recalculate", body, actor));
+      if (request.method === "POST" && tail === "sync-events" && !sub) return json(response, 200, await runEconomicEventsScannerAction("sync-events", body, actor));
+      if (request.method === "POST" && tail === "create-alert" && !sub) return json(response, 200, await runEconomicEventsScannerAction("create-alert", body, actor));
+      if (request.method === "POST" && tail && sub === "recalculate") return json(response, 200, await runEconomicEventsScannerAction("recalculate-event", body, actor, tail));
+      if (request.method === "POST" && (tail === "regenerate-summary" || tail === "save-summary")) return json(response, 200, await runEconomicEventsScannerAction(tail, body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/sentiment/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "matrix", "rankings", "news-alignment", "social-alignment", "divergence", "extreme-risk", "momentum", "heatmap", "ai-summary", "export"].includes(tail)) {
+        const detail = await getSentimentScannerAssetDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "sentiment_asset_not_found" });
+      }
+      if (request.method === "POST" && tail === "run-scan" && !sub) return json(response, 200, await runSentimentScannerAction("run-scan", body, actor));
+      if (request.method === "POST" && tail === "recalculate" && !sub) return json(response, 200, await runSentimentScannerAction("recalculate", body, actor));
+      if (request.method === "POST" && tail === "create-alert" && !sub) return json(response, 200, await runSentimentScannerAction("create-alert", body, actor));
+      if (request.method === "POST" && tail && sub === "recalculate") return json(response, 200, await runSentimentScannerAction("recalculate-asset", body, actor, tail));
+      if (request.method === "POST" && (tail === "regenerate-summary" || tail === "save-summary")) return json(response, 200, await runSentimentScannerAction(tail, body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/risk/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "matrix", "rankings", "critical", "news-events", "broker-execution", "correlation-portfolio", "prop-firm", "recommendations", "heatmap", "ai-summary", "export"].includes(tail)) {
+        const detail = await getRiskScannerAssetDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "risk_asset_not_found" });
+      }
+      if (request.method === "POST" && tail === "run-scan" && !sub) return json(response, 200, await runRiskScannerAction("run-scan", body, actor));
+      if (request.method === "POST" && tail === "recalculate" && !sub) return json(response, 200, await runRiskScannerAction("recalculate", body, actor));
+      if (request.method === "POST" && tail === "create-alert" && !sub) return json(response, 200, await runRiskScannerAction("create-alert", body, actor));
+      if (request.method === "POST" && tail && sub === "recalculate") return json(response, 200, await runRiskScannerAction("recalculate-asset", body, actor, tail));
+      if (request.method === "POST" && (tail === "regenerate-summary" || tail === "save-summary")) return json(response, 200, await runRiskScannerAction(tail, body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/prop-compliance/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "matrix", "rankings", "accounts", "news-restrictions", "drawdown-risk", "consistency", "instrument-restrictions", "blocked-assets", "recommendations", "heatmap", "ai-summary", "export"].includes(tail)) {
+        const detail = await getPropComplianceScannerDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "prop_compliance_asset_not_found" });
+      }
+      if (request.method === "POST" && tail === "run-scan" && !sub) return json(response, 200, await runPropComplianceScannerAction("run-scan", body, actor));
+      if (request.method === "POST" && tail === "recalculate" && !sub) return json(response, 200, await runPropComplianceScannerAction("recalculate", body, actor));
+      if (request.method === "POST" && tail === "sync-rules" && !sub) return json(response, 200, await runPropComplianceScannerAction("sync-rules", body, actor));
+      if (request.method === "POST" && tail === "create-alert" && !sub) return json(response, 200, await runPropComplianceScannerAction("create-alert", body, actor));
+      if (request.method === "POST" && tail && sub === "recalculate") return json(response, 200, await runPropComplianceScannerAction("recalculate-asset", body, actor, tail));
+      if (request.method === "POST" && (tail === "regenerate-summary" || tail === "save-summary")) return json(response, 200, await runPropComplianceScannerAction(tail, body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/opportunities/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "rankings", "buy", "sell", "watchlist", "blocked", "history", "agreement", "readiness", "ai-summary", "export"].includes(tail)) {
+        const detail = await getOpportunityRankingDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "opportunity_asset_not_found" });
+      }
+      if (request.method === "POST" && tail === "run-ranking" && !sub) return json(response, 200, await runOpportunityRankingAction("run-ranking", body, actor));
+      if (request.method === "POST" && tail === "recalculate" && !sub) return json(response, 200, await runOpportunityRankingAction("recalculate", body, actor));
+      if (request.method === "POST" && tail === "create-alert" && !sub) return json(response, 200, await runOpportunityRankingAction("create-alert", body, actor));
+      if (request.method === "POST" && tail && sub === "recalculate") return json(response, 200, await runOpportunityRankingAction("recalculate-asset", body, actor, tail));
+      if (request.method === "POST" && tail && sub === "send-to-qualified") return json(response, 200, await runOpportunityRankingAction("send-to-qualified", body, actor, tail));
+      if (request.method === "POST" && tail && sub === "create-package") return json(response, 200, await runOpportunityRankingAction("create-package", body, actor, tail));
+      if (request.method === "POST" && (tail === "regenerate-summary" || tail === "save-summary")) return json(response, 200, await runOpportunityRankingAction(tail, body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/qualified-trades/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "candidates", "readiness", "ready-for-package", "ready-for-scoring", "review-required", "blocked-expired", "ai-summary", "export"].includes(tail)) {
+        const detail = await getQualifiedTradeDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "qualified_trade_candidate_not_found" });
+      }
+      if (request.method === "POST" && tail === "validate" && !sub) return json(response, 200, await runQualifiedTradesAction("validate", body, actor));
+      if (request.method === "POST" && tail === "create-alert" && !sub) return json(response, 200, await runQualifiedTradesAction("create-alert", body, actor, body.candidateId || null));
+      if (request.method === "POST" && tail && sub === "validate") return json(response, 200, await runQualifiedTradesAction("validate-candidate", body, actor, tail));
+      if (request.method === "POST" && tail && sub === "create-package") return json(response, 200, await runQualifiedTradesAction("create-package", body, actor, tail));
+      if (request.method === "POST" && tail && sub === "send-to-scoring") return json(response, 200, await runQualifiedTradesAction("send-to-scoring", body, actor, tail));
+      if (request.method === "POST" && tail && sub === "mark-review-required") return json(response, 200, await runQualifiedTradesAction("mark-review-required", body, actor, tail));
+      if (request.method === "POST" && tail && sub === "expire") return json(response, 200, await runQualifiedTradesAction("expire", body, actor, tail));
+      if (request.method === "POST" && (tail === "regenerate-summary" || tail === "save-summary")) return json(response, 200, await runQualifiedTradesAction(tail, body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/ai-insights/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "universe-summary", "top-opportunities", "rejected-blocked", "agreement", "conflicts", "risk-narratives", "compliance-narratives", "review-suggestions", "export"].includes(tail)) {
+        const detail = await getAiOpportunityInsightDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "ai_insight_not_found" });
+      }
+      if (request.method === "POST" && tail === "generate" && !sub) return json(response, 200, await runAiOpportunityInsightsAction("generate", body, actor));
+      if (request.method === "POST" && tail === "regenerate" && !sub) return json(response, 200, await runAiOpportunityInsightsAction("regenerate", body, actor));
+      if (request.method === "POST" && tail && sub === "mark-reviewed") return json(response, 200, await runAiOpportunityInsightsAction("mark-reviewed", body, actor, tail));
+      if (request.method === "POST" && tail && sub === "archive") return json(response, 200, await runAiOpportunityInsightsAction("archive", body, actor, tail));
+      if (request.method === "POST" && tail && sub === "create-alert") return json(response, 200, await runAiOpportunityInsightsAction("create-alert", body, actor, tail));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/control-center/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const sub2 = segments[5];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "POST" && tail === "initialize") return json(response, 200, await runScannerControlAction("initialize", body, actor));
+      if (request.method === "POST" && ["run-full-scan", "run-module", "pause", "resume", "stop", "emergency-stop", "change-mode"].includes(tail)) return json(response, 200, await runScannerControlAction(tail, body, actor));
+      if (request.method === "POST" && tail === "jobs" && sub && sub2 === "retry") return json(response, 200, await runScannerControlAction("retry-job", body, actor, sub));
+      if (request.method === "POST" && tail === "jobs" && sub && sub2 === "cancel") return json(response, 200, await runScannerControlAction("cancel-job", body, actor, sub));
+      if (request.method === "POST" && tail === "workers" && sub && sub2 === "restart") return json(response, 200, await runScannerControlAction("restart-worker", body, actor, sub));
+      if (request.method === "POST" && tail === "schedules" && !sub) return json(response, 200, await runScannerControlAction("create-schedule", body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/logs/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    try {
+      if (request.method === "GET" && tail && !sub && !["summary", "categories", "errors", "scan-runs", "worker-queue", "audit", "timeline", "metrics", "export"].includes(tail)) {
+        const detail = await getUniverseScannerLogDetail(tail);
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "scanner_log_not_found" });
+      }
+      if (request.method === "POST" && tail && sub === "acknowledge") return json(response, 200, await runUniverseScannerLogAction("acknowledge", body, actor, tail));
+      if (request.method === "POST" && tail && sub === "resolve") return json(response, 200, await runUniverseScannerLogAction("resolve", body, actor, tail));
+      if (request.method === "POST" && tail && sub === "create-incident") return json(response, 200, await runUniverseScannerLogAction("create-incident", body, actor, tail));
+      if (request.method === "POST" && tail === "archive" && !sub) return json(response, 200, await runUniverseScannerLogAction("archive", body, actor));
+    } catch (reason) {
+      return json(response, reason?.status || 400, {
+        error: reason instanceof Error ? reason.message : String(reason),
+        missingTables: reason?.missingTables || undefined
+      });
+    }
+  }
+  if (url.pathname.startsWith("/api/universe-scanner/test-harness/")) {
+    const segments = url.pathname.split("/").filter(Boolean);
+    const tail = segments[3];
+    const sub = segments[4];
+    const actor = auditFromRequest(request).userLabel;
+    const body = request.method === "POST" ? await readBody(request).catch(() => ({})) : {};
+    const permissions = request.headers["x-permissions"] ? String(request.headers["x-permissions"]).split(",").map(item => item.trim()) : [];
+    try {
+      if (request.method === "GET" && tail === "results" && sub) {
+        const includeSensitive = permissions.includes("universe_scanner.test_harness.view_sensitive");
+        const detail = await getUniverseScannerTestResult(sub, { includeSensitive });
+        return detail ? json(response, 200, detail) : json(response, 404, { error: "scanner_test_result_not_found" });
+      }
+      if (request.method === "GET" && ["summary", "catalog", "history", "schedules", "card-readiness"].includes(tail)) {
+        return json(response, 200, await getUniverseScannerTestSlice(tail));
+      }
+      if (request.method === "POST" && ["run", "run-selected", "run-full-diagnostic", "run-module-test", "run-score-validation", "run-ranking-test", "run-qualified-trades-test", "run-ai-grounding-test", "run-readiness-test"].includes(tail)) {
+        return json(response, 200, await runUniverseScannerHarnessAction(tail, body, actor, permissions));
+      }
     } catch (reason) {
       return json(response, reason?.status || 400, {
         error: reason instanceof Error ? reason.message : String(reason),

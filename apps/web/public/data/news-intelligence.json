@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-06T21:45:35.179Z",
+  "updatedAt": "2026-06-07T07:14:01.996Z",
   "sources": [
     {
       "id": "federal-reserve-press",
@@ -11,12 +11,12 @@
       "enabled": true,
       "scheduleMs": 60000,
       "reputation": 100,
-      "status": "FAILED",
-      "lastSyncAt": "2026-06-06T21:44:35.915Z",
-      "lastSuccessAt": "2026-06-03T10:17:40.844Z",
-      "latencyMs": 755,
+      "status": "ONLINE",
+      "lastSyncAt": "2026-06-07T07:13:40.108Z",
+      "lastSuccessAt": "2026-06-07T05:08:16.672Z",
+      "latencyMs": 411,
       "imported": 0,
-      "error": "fetch failed",
+      "error": null,
       "etag": "W/\"f77ce184a0f2dc1:0\"",
       "lastModified": "Tue, 02 Jun 2026 15:00:15 GMT"
     },
@@ -29,12 +29,12 @@
       "enabled": true,
       "scheduleMs": 60000,
       "reputation": 100,
-      "status": "FAILED",
-      "lastSyncAt": "2026-06-06T21:44:35.916Z",
-      "lastSuccessAt": "2026-06-05T19:18:02.970Z",
-      "latencyMs": 754,
+      "status": "ONLINE",
+      "lastSyncAt": "2026-06-07T07:13:40.710Z",
+      "lastSuccessAt": "2026-06-07T05:08:13.625Z",
+      "latencyMs": 1011,
       "imported": 0,
-      "error": "fetch failed",
+      "error": null,
       "etag": "\"0423780e7f4dc1:0\"",
       "lastModified": "Fri, 05 Jun 2026 12:33:24 GMT"
     },
@@ -48,16 +48,40 @@
       "scheduleMs": 300000,
       "reputation": 100,
       "status": "ONLINE",
-      "lastSyncAt": "2026-06-06T21:45:29.216Z",
-      "lastSuccessAt": "2026-06-06T21:34:31.334Z",
-      "latencyMs": 1254,
+      "lastSyncAt": "2026-06-07T07:13:40.739Z",
+      "lastSuccessAt": "2026-06-07T07:13:40.739Z",
+      "latencyMs": 1039,
       "imported": 0,
       "error": null,
-      "etag": "\"1780780468\"",
-      "lastModified": "Sat, 06 Jun 2026 21:14:28 GMT"
+      "etag": "\"1780816211\"",
+      "lastModified": "Sun, 07 Jun 2026 07:10:11 GMT"
     }
   ],
   "articles": [
+    {
+      "id": "adb6c6eaece1f6b4476697db",
+      "hash": "adb6c6eaece1f6b4476697dbdf70febf4b989bf00d148dcbba92cbe08a84f3e8",
+      "sourceId": "bls-latest-releases",
+      "source": "U.S. Bureau of Labor Statistics",
+      "sourceTier": "Tier 3 Economic",
+      "headline": "Major Economic Indicators Latest Numbers",
+      "summary": "Consumer Price Index (CPI): +0.6% in Apr 2026 News Release Historical Data Unemployment Rate: 4.3% in May 2026 News Release Historical Data Payroll Employment: +172,000(p) in May 2026 News Release Historical Data Average Hourly Earnings: +$0.12(p) in May 2026 News Release Historical Data Producer Price Index - Final Demand: +1.4%(p) in Apr 2026 News Release Historical Data Employment Cost Index (ECI): +0.9% in 1st Qtr of 2026 News Release Historical Data Productivity: +0.3%(r) in 1st Qtr of 2026 News Release Historical Data U.S. Import Price Index: +1.9% in Apr 2026 News Release Historical Data U.S. Export Price Index: +3.3% in Apr 2026 News Release Historical Data p - preliminary",
+      "url": "https://www.bls.gov/bls/",
+      "publishedAt": "2026-06-05T12:33:19.000Z",
+      "discoveredAt": "2026-06-07T05:08:13.490Z",
+      "category": "Inflation",
+      "sentimentScore": 0,
+      "sentiment": "Neutral",
+      "confidence": 55,
+      "impact": "HIGH",
+      "impactScore": 90,
+      "affectedAssets": [
+        "XAUUSD",
+        "NAS100",
+        "US30"
+      ],
+      "action": "Review Risk"
+    },
     {
       "id": "4f4c85b9ce73fb600d1b2520",
       "hash": "4f4c85b9ce73fb600d1b2520d902a107a9e2c98adb1349ee12219b355dff6e65",
@@ -68,7 +92,7 @@
       "summary": "The Securities and Exchange Commission today announced five new members of the&nbsp;Small Business Capital Formation Advisory Committee. The new members were appointed to four-year terms&nbsp;and&nbsp;will join&nbsp;the&nbsp;15&nbsp;current&nbsp;…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-52-sec-announces-new-members-small-business-capital-formation-advisory-committee",
       "publishedAt": "2026-06-04T18:39:49.000Z",
-      "discoveredAt": "2026-06-04T20:12:41.529Z",
+      "discoveredAt": "2026-06-07T05:08:14.163Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -92,7 +116,7 @@
       "summary": "Agencies remove additional references to reputation risk",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20260602a.htm",
       "publishedAt": "2026-06-02T15:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:39.771Z",
+      "discoveredAt": "2026-06-07T05:08:13.253Z",
       "category": "General Market News",
       "sentimentScore": -40,
       "sentiment": "Bearish",
@@ -112,7 +136,7 @@
       "summary": "The Securities and Exchange Commission today published a&nbsp;Draft Strategic Plan&nbsp;that focuses on returning the agency to the core mission set by Congress more than 90 years ago: protecting investors; maintaining fair, orderly, and efficient…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-51-sec-publishes-draft-strategic-plan-public-comment",
       "publishedAt": "2026-06-02T14:30:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.014Z",
+      "discoveredAt": "2026-06-07T05:08:14.285Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -127,30 +151,6 @@
       "action": "Monitor"
     },
     {
-      "id": "adb6c6eaece1f6b4476697db",
-      "hash": "adb6c6eaece1f6b4476697dbdf70febf4b989bf00d148dcbba92cbe08a84f3e8",
-      "sourceId": "bls-latest-releases",
-      "source": "U.S. Bureau of Labor Statistics",
-      "sourceTier": "Tier 3 Economic",
-      "headline": "Major Economic Indicators Latest Numbers",
-      "summary": "Consumer Price Index (CPI): +0.6% in Apr 2026 News Release Historical Data Unemployment Rate: 4.3% in Apr 2026 News Release Historical Data Payroll Employment: +115,000(p) in Apr 2026 News Release Historical Data Average Hourly Earnings: +$0.06(p) in Apr 2026 News Release Historical Data Producer Price Index - Final Demand: +1.4%(p) in Apr 2026 News Release Historical Data Employment Cost Index (ECI): +0.9% in 1st Qtr of 2026 News Release Historical Data Productivity: +0.8% in 1st Qtr of 2026 News Release Historical Data U.S. Import Price Index: +1.9% in Apr 2026 News Release Historical Data U.S. Export Price Index: +3.3% in Apr 2026 News Release Historical Data p - preliminary",
-      "url": "https://www.bls.gov/bls/",
-      "publishedAt": "2026-06-02T14:09:05.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.313Z",
-      "category": "Inflation",
-      "sentimentScore": 0,
-      "sentiment": "Neutral",
-      "confidence": 55,
-      "impact": "HIGH",
-      "impactScore": 90,
-      "affectedAssets": [
-        "XAUUSD",
-        "NAS100",
-        "US30"
-      ],
-      "action": "Review Risk"
-    },
-    {
       "id": "462adeffe169108082100ca5",
       "hash": "462adeffe169108082100ca593f06fec0330474dc6d3820ec741aab0124e3940",
       "sourceId": "sec-press-releases",
@@ -160,7 +160,7 @@
       "summary": "The Securities and Exchange Commission today announced&nbsp;four&nbsp;new members to fill vacancies on its Investor Advisory Committee.&nbsp;Three of the four new members&nbsp;will serve four-year terms,&nbsp;while the fourth new member will serve as the…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-50-sec-announces-four-new-members-investor-advisory-committee",
       "publishedAt": "2026-06-01T16:39:44.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.062Z",
+      "discoveredAt": "2026-06-07T05:08:14.417Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -184,7 +184,7 @@
       "summary": "The Securities and Exchange Commission today proposed the rescission of overly burdensome and costly rules that require companies to provide certain climate-related information in their registration statements and annual reports. The Commission’s…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-49-sec-proposes-rescission-climate-related-disclosure-rules",
       "publishedAt": "2026-05-29T14:50:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.110Z",
+      "discoveredAt": "2026-06-07T05:08:14.609Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -208,7 +208,7 @@
       "summary": "Federal Reserve Board issues enforcement actions with former employee of Atlantic Union Bank and former employee of Frost Bank",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20260528a.htm",
       "publishedAt": "2026-05-28T15:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:39.782Z",
+      "discoveredAt": "2026-06-07T05:08:13.261Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -230,7 +230,7 @@
       "summary": "The Securities and Exchange Commission’s&nbsp;Investor Advisory Committee will hold a public meeting at the SEC Headquarters in Washington D.C. on June 4 at 10 a.m. ET to discuss private markets, passive index funds, and recommendations regarding fund…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-48-sec-investor-advisory-committee-host-june-4-meeting",
       "publishedAt": "2026-05-27T14:59:13.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.260Z",
+      "discoveredAt": "2026-06-07T05:08:14.617Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -254,7 +254,7 @@
       "summary": "Minutes of the Board's discount rate meeting on April 20 and 29, 2026",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260526a.htm",
       "publishedAt": "2026-05-26T18:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:39.828Z",
+      "discoveredAt": "2026-06-07T05:08:13.622Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -278,7 +278,7 @@
       "summary": "Kevin Warsh takes oath of office as chairman and a member of the Board of Governors of the Federal Reserve System, and the Federal Open Market Committee unanimously selects Warsh as its chairman",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/other20260522a.htm",
       "publishedAt": "2026-05-22T20:15:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:39.878Z",
+      "discoveredAt": "2026-06-07T05:08:13.809Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -300,7 +300,7 @@
       "summary": "Agencies publish resolution plan feedback letters for certain domestic and foreign banking organizations",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20260522a.htm",
       "publishedAt": "2026-05-22T20:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:39.920Z",
+      "discoveredAt": "2026-06-07T05:08:13.823Z",
       "category": "Banking",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -320,7 +320,7 @@
       "summary": "Federal Reserve Board issues enforcement action with former employee of Commerce Bank",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20260521a.htm",
       "publishedAt": "2026-05-21T15:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:39.963Z",
+      "discoveredAt": "2026-06-07T05:08:13.915Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -342,7 +342,7 @@
       "summary": "The Securities and Exchange Commission and National Futures Association (NFA) today announced that they have entered into a Memorandum of Understanding (MOU) to enhance their cooperation, coordination, and information sharing in areas of common…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-47-sec-nfa-announce-memorandum-understanding-further-harmonize-regulatory-coordination",
       "publishedAt": "2026-05-21T12:51:10.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.417Z",
+      "discoveredAt": "2026-06-07T05:08:14.620Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -366,7 +366,7 @@
       "summary": "Federal Reserve Board requests public comment on a proposal to establish a \"payment account,\" which legally eligible financial institutions could use for the specific purpose of clearing and settling their payments",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/other20260520a.htm",
       "publishedAt": "2026-05-20T20:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.005Z",
+      "discoveredAt": "2026-06-07T05:08:13.999Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -388,7 +388,7 @@
       "summary": "Minutes of the Federal Open Market Committee, April 28-29, 2026",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260520a.htm",
       "publishedAt": "2026-05-20T18:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.055Z",
+      "discoveredAt": "2026-06-07T05:08:14.101Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -408,7 +408,7 @@
       "summary": "The Securities and Exchange Commission today proposed amendments to its rules and forms governing registered offerings that are designed to increase efficiency, flexibility, and cost savings for public companies while maintaining robust investor…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-46-sec-proposes-transformative-reforms-help-public-companies-conduct-registered-offerings-simplify",
       "publishedAt": "2026-05-19T14:55:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.463Z",
+      "discoveredAt": "2026-06-07T05:08:14.787Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -432,7 +432,7 @@
       "summary": "The Securities and Exchange Commission today rescinded a policy, codified in Rule 202.5(e) of its informal rules of procedures, stating that when it chooses to settle an enforcement action in which a sanction is imposed, it will not settle unless the…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-45-sec-rescinds-policy-regarding-denials-settlements-enforcement-actions",
       "publishedAt": "2026-05-18T16:33:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.506Z",
+      "discoveredAt": "2026-06-07T05:08:14.955Z",
       "category": "Geopolitics",
       "sentimentScore": -20,
       "sentiment": "Bearish",
@@ -456,7 +456,7 @@
       "summary": "Federal Reserve Board names Jerome H. Powell as chair pro tempore; Powell will serve as chair pro tempore until Kevin M. Warsh is sworn in as the new chair",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/other20260515a.htm",
       "publishedAt": "2026-05-15T21:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.102Z",
+      "discoveredAt": "2026-06-07T05:08:14.214Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -478,7 +478,7 @@
       "summary": "Federal Reserve Board announces approval of application by the Stephen M. Calk 2025 Trust",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/orders20260515a.htm",
       "publishedAt": "2026-05-15T20:30:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.143Z",
+      "discoveredAt": "2026-06-07T05:08:14.341Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -500,7 +500,7 @@
       "summary": "Federal Reserve Board announces it does not object to the conversion of United Texas Bank, of Dallas, Texas, from a bank supervised by the Federal Reserve to a national bank supervised by the Office of the Comptroller of the Currency",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/orders20260515b.htm",
       "publishedAt": "2026-05-15T20:30:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.292Z",
+      "discoveredAt": "2026-06-07T05:08:14.481Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -522,7 +522,7 @@
       "summary": "Federal Reserve Board announces termination of enforcement actions with UBS Group AG, Credit Suisse AG, Credit Suisse Holdings (USA), Inc., and Credit Suisse AG, New York Branch",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20260515a.htm",
       "publishedAt": "2026-05-15T15:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.340Z",
+      "discoveredAt": "2026-06-07T05:08:14.486Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -544,7 +544,7 @@
       "summary": "Stephen I. Miran submits his resignation as a member of the Federal Reserve Board, effective when or shortly before his successor on the Board is sworn in",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/other20260514b.htm",
       "publishedAt": "2026-05-14T18:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.385Z",
+      "discoveredAt": "2026-06-07T05:08:14.640Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -566,7 +566,7 @@
       "summary": "Federal Reserve Board releases results from two surveys of senior financial officers at banks about their views on discount window operating days and their strategies and practices for managing reserve balances",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/other20260514a.htm",
       "publishedAt": "2026-05-14T14:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.433Z",
+      "discoveredAt": "2026-06-07T05:08:14.882Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -588,7 +588,7 @@
       "summary": "Federal Reserve Board issues Economic Well-Being of U.S. Households in 2025 report",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/other20260513a.htm",
       "publishedAt": "2026-05-13T15:30:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.478Z",
+      "discoveredAt": "2026-06-07T05:08:15.085Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -610,7 +610,7 @@
       "summary": "Federal Reserve Board announces termination of enforcement actions with F & M Holding Company, Inc. and Thread Bancorp, Inc.",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20260512a.htm",
       "publishedAt": "2026-05-12T15:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.629Z",
+      "discoveredAt": "2026-06-07T05:08:15.151Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -632,7 +632,7 @@
       "summary": "Federal Reserve Board announces approval of related applications by Columbia Bank MHC, and Columbia Financial, Inc.",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/orders20260508a.htm",
       "publishedAt": "2026-05-08T21:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.674Z",
+      "discoveredAt": "2026-06-07T05:08:15.719Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -654,7 +654,7 @@
       "summary": "The Securities and Exchange Commission today charged 21 individuals for their alleged involvement in a decade-long insider trading scheme that used information misappropriated from multiple global law firms and resulted in millions of dollars in illicit…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-44-sec-charges-21-individuals-alleged-wide-reaching-insider-trading-scheme",
       "publishedAt": "2026-05-06T23:24:19.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.545Z",
+      "discoveredAt": "2026-06-07T05:08:14.967Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -678,7 +678,7 @@
       "summary": "Staff in the Securities and Exchange Commission’s Divisions of Investment Management and Corporation Finance issued guidance addressing certain questions regarding the application of the federal securities laws to pooled employer plans (PEPs), which help…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-43-sec-divisions-investment-management-corporation-finance-issue-staff-guidance-supporting-retirement",
       "publishedAt": "2026-05-05T20:23:55.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.583Z",
+      "discoveredAt": "2026-06-07T05:08:14.976Z",
       "category": "Corporate Earnings",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -702,7 +702,7 @@
       "summary": "The Securities and Exchange Commission today proposed rule and form amendments that would give public companies the option of filing semiannual reports in lieu of quarterly reports to meet their interim reporting obligations under the federal securities…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-42-sec-proposes-amendments-permit-optional-semiannual-reporting-public-companies",
       "publishedAt": "2026-05-05T15:54:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.623Z",
+      "discoveredAt": "2026-06-07T05:08:15.294Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -726,7 +726,7 @@
       "summary": "Agencies issue host state loan-to-deposit ratios",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20260501a.htm",
       "publishedAt": "2026-05-01T15:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.719Z",
+      "discoveredAt": "2026-06-07T05:08:15.928Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -746,7 +746,7 @@
       "summary": "The Securities and Exchange Commission today announced that Jason Burt, Deputy Director of the Division of Enforcement (Specialized Units), will depart the agency on May 1, 2026, after more than 22 years of public service.“Jason’s exceptional leadership…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-41-deputy-director-enforcement-jason-burt-conclude-his-tenure-sec",
       "publishedAt": "2026-04-30T20:30:36.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.671Z",
+      "discoveredAt": "2026-06-07T05:08:16.097Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -770,7 +770,7 @@
       "summary": "Federal Reserve issues FOMC statement",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260429a.htm",
       "publishedAt": "2026-04-29T18:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.765Z",
+      "discoveredAt": "2026-06-07T05:08:15.963Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -792,7 +792,7 @@
       "summary": "Federal Reserve Board announces approval of application by OceanFirst Financial Corp.",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/orders20260424a.htm",
       "publishedAt": "2026-04-24T20:00:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.806Z",
+      "discoveredAt": "2026-06-07T05:08:16.622Z",
       "category": "Central Banks",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -814,7 +814,7 @@
       "summary": "The Securities and Exchange Commission (SEC) and the Commodity Futures Trading Commission (CFTC) jointly proposed amendments to reduce private fund reporting burdens while enabling the continued collection of necessary and appropriate information. The…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-40-sec-cftc-jointly-propose-amendments-reduce-private-fund-reporting-burdens",
       "publishedAt": "2026-04-20T14:45:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.716Z",
+      "discoveredAt": "2026-06-07T05:08:16.468Z",
       "category": "Commodities",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -838,7 +838,7 @@
       "summary": "The Securities and Exchange Commission today announced the launch of Material Matters With SEC Chairman Paul Atkins, a new podcast that provides stakeholders and the investing public with exclusive interviews and insights around the agency’s policy and…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-39-chairman-atkins-launches-material-matters-podcast",
       "publishedAt": "2026-04-16T17:02:47.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.763Z",
+      "discoveredAt": "2026-06-07T05:08:16.887Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -862,7 +862,7 @@
       "summary": "The Securities and Exchange Commission’s Small Business Capital Formation Advisory Committee announced that it will hold a meeting on Tuesday, April 28, 2026 at 10:00 a.m. to explore ways to encourage more companies to go public.The meeting will be open…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-38-sec-small-business-advisory-committee-explore-ways-encourage-more-ipos",
       "publishedAt": "2026-04-16T15:45:04.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.918Z",
+      "discoveredAt": "2026-06-07T05:08:16.934Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -886,7 +886,7 @@
       "summary": "The Securities and Exchange Commission today issued a concept release soliciting public comment in support of a comprehensive review of the Consolidated Audit Trail (CAT) and other audit trails and related data sources currently used in the regulation of…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-37-sec-seeks-public-comment-consolidated-audit-trail-other-audit-trails-data-sources",
       "publishedAt": "2026-04-16T13:55:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.956Z",
+      "discoveredAt": "2026-06-07T05:08:16.974Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -910,7 +910,7 @@
       "summary": "The Securities and Exchange Commission today issued a conditional exemptive order that permits customer cross-margining of cash market positions in U.S. Treasury securities cleared by a registered clearing agency and futures positions in U.S. Treasury…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-36-sec-approves-exemptive-order-proposed-rule-change-permit-customer-cross-margining-us-treasury-market",
       "publishedAt": "2026-04-15T19:45:51.000Z",
-      "discoveredAt": "2026-06-03T10:17:40.998Z",
+      "discoveredAt": "2026-06-07T05:08:17.037Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -934,7 +934,7 @@
       "summary": "The Securities and Exchange Commission today announced that David Woodcock has been appointed Director of the Division of Enforcement, effective May 4, 2026. Mr. Woodcock is currently a partner in the Dallas and Washington, D.C. offices of Gibson, Dunn…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-35-sec-appoints-david-woodcock-director-division-enforcement",
       "publishedAt": "2026-04-08T16:20:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:41.048Z",
+      "discoveredAt": "2026-06-07T05:08:17.089Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -958,7 +958,7 @@
       "summary": "The Securities and Exchange Commission today announced enforcement results for the fiscal year that ended on September 30, 2025.Central to an effective enforcement program is determining which cases to bring and responsibly stewarding Commission…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-34",
       "publishedAt": "2026-04-07T19:48:30.000Z",
-      "discoveredAt": "2026-06-03T10:17:41.093Z",
+      "discoveredAt": "2026-06-07T05:08:17.176Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -982,7 +982,7 @@
       "summary": "The Securities and Exchange Commission today announced the agenda and panelists for its April 16, 2026, roundtable on options market structure.The roundtable will be held at the SEC’s headquarters at 100 F Street, N.E., Washington, D.C., from 9 a.m. to 3…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-33-sec-announces-agenda-panelists-roundtable-options-market-structure",
       "publishedAt": "2026-04-02T20:44:29.000Z",
-      "discoveredAt": "2026-06-03T10:17:41.136Z",
+      "discoveredAt": "2026-06-07T05:08:17.216Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -1006,7 +1006,7 @@
       "summary": "The Securities and Exchange Commission’s Office of Investor Education and Assistance (OIEA) today announced that as part of April’s National Financial Literacy Month it will highlight financial planning tools and resources on&nbsp;Investor.gov to…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-32-sec-highlights-financial-independence-during-financial-literacy-month",
       "publishedAt": "2026-03-31T13:52:09.000Z",
-      "discoveredAt": "2026-06-03T10:17:41.181Z",
+      "discoveredAt": "2026-06-07T05:08:17.293Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -1030,7 +1030,7 @@
       "summary": "The Securities and Exchange Commission today approved an amendment to the National Market System Plan governing the Consolidated Audit Trail (“CAT”) and provided exemptive relief from certain requirements of Rule 17a-1 under the Securities Exchange Act…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-31-sec-approves-amendment-nms-plan-further-reduce-costs-consolidated-audit-trail",
       "publishedAt": "2026-03-27T20:04:54.000Z",
-      "discoveredAt": "2026-06-03T10:17:41.221Z",
+      "discoveredAt": "2026-06-07T05:08:17.397Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -1054,7 +1054,7 @@
       "summary": "The Securities and Exchange Commission (SEC) today issued an interpretation clarifying how the federal securities laws apply to certain crypto assets and transactions involving crypto assets. This is a major step in the Commission’s efforts to provide…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-30-sec-clarifies-application-federal-securities-laws-crypto-assets",
       "publishedAt": "2026-03-17T19:45:25.000Z",
-      "discoveredAt": "2026-06-03T10:17:41.269Z",
+      "discoveredAt": "2026-06-07T05:08:17.436Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -1078,7 +1078,7 @@
       "summary": "The Securities and Exchange Commission’s Division of Economic and Risk Analysis (DERA) published a new report on security based swap dealers (SBSDs) and updated statistics and data visualizations on initial public offerings (IPOs), follow-on registered…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-29-sec-publishes-data-public-private-offerings-municipal-advisors-transfer-agents-securities-based-swap",
       "publishedAt": "2026-03-17T19:13:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:41.310Z",
+      "discoveredAt": "2026-06-07T05:08:17.471Z",
       "category": "Economic Data",
       "sentimentScore": -20,
       "sentiment": "Bearish",
@@ -1102,31 +1102,7 @@
       "summary": "The Securities and Exchange Commission today proposed amendments to Exchange Act Rule 15c2-11, which sets out certain information gathering and review requirements for broker-dealers that publish quotations for, or maintain a continuous quoted market in…",
       "url": "https://www.sec.gov/newsroom/press-releases/2026-28-sec-proposes-amendments-exchange-act-rule-15c2-11",
       "publishedAt": "2026-03-16T19:15:00.000Z",
-      "discoveredAt": "2026-06-03T10:17:41.360Z",
-      "category": "General Market News",
-      "sentimentScore": 0,
-      "sentiment": "Neutral",
-      "confidence": 55,
-      "impact": "MEDIUM",
-      "impactScore": 78,
-      "affectedAssets": [
-        "USD",
-        "NAS100",
-        "US30"
-      ],
-      "action": "Monitor"
-    },
-    {
-      "id": "1d2493774efefb354dd51d37",
-      "hash": "1d2493774efefb354dd51d371311161b7282d256ceafe5d08460c6d59f4d0df8",
-      "sourceId": "sec-press-releases",
-      "source": "U.S. SEC Press Releases",
-      "sourceTier": "Tier 3 Economic",
-      "headline": "SEC Announces Enforcement Division Director Judge Margaret A. Ryan Has Resigned From Agency",
-      "summary": "The Securities and Exchange Commission today announced that Judge Margaret A. Ryan has resigned from her role as Director of the Division of Enforcement. Principal Deputy Director Sam Waldon has been named Acting Director of the Division, effective March…",
-      "url": "https://www.sec.gov/newsroom/press-releases/2026-27-sec-announces-enforcement-division-director-judge-margaret-ryan-has-resigned-agency",
-      "publishedAt": "2026-03-16T18:09:04.000Z",
-      "discoveredAt": "2026-06-03T10:17:41.410Z",
+      "discoveredAt": "2026-06-07T05:08:17.695Z",
       "category": "General Market News",
       "sentimentScore": 0,
       "sentiment": "Neutral",
@@ -1143,9 +1119,9 @@
   ],
   "alerts": [
     {
-      "id": "3bc7846c-f8a6-4a11-a38d-11af5496db3a",
+      "id": "c267e69a-c2e9-4128-8f0a-f6b10910b34a",
       "articleId": "30a996a8dc6e2e99e35c6a21",
-      "createdAt": "2026-06-03T10:17:41.415Z",
+      "createdAt": "2026-06-07T05:08:17.902Z",
       "level": "HIGH",
       "headline": "SEC Rescinds Policy Regarding Denials of Settlements in Enforcement Actions",
       "affectedAssets": [
@@ -1156,9 +1132,9 @@
       "acknowledged": false
     },
     {
-      "id": "826adb04-04f4-4124-9e22-a0d141503558",
+      "id": "69ac8fa0-ccc9-460e-ab10-44cc2146176f",
       "articleId": "6e889f94689d89a2850b2751",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Federal Reserve Board announces approval of application by OceanFirst Financial Corp.",
       "affectedAssets": [
@@ -1167,9 +1143,9 @@
       "acknowledged": false
     },
     {
-      "id": "0bcb04b7-986d-418d-9edd-3e2c313494e3",
+      "id": "a252b197-51eb-4300-9061-27a6cc15df48",
       "articleId": "61591e8256ea777ae36bb2b9",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Federal Reserve issues FOMC statement",
       "affectedAssets": [
@@ -1178,9 +1154,9 @@
       "acknowledged": false
     },
     {
-      "id": "b301dd4a-fa93-41ed-bf0b-5ea275de9351",
+      "id": "aa7b3b29-9670-4464-a986-f350d1b4b178",
       "articleId": "4f147f0d6297fbca4b63349b",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Federal Reserve Board announces approval of related applications by Columbia Bank MHC, and Columbia Financial, Inc.",
       "affectedAssets": [
@@ -1189,9 +1165,9 @@
       "acknowledged": false
     },
     {
-      "id": "ddf79eb8-3896-4717-b9d5-0aa0095f91cb",
+      "id": "ab02a242-6cff-499b-8d6e-1bdb096eb481",
       "articleId": "be6253d092ce9f6daeb76ec9",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Federal Reserve Board announces termination of enforcement actions with F & M Holding Company, Inc. and Thread Bancorp, Inc.",
       "affectedAssets": [
@@ -1200,9 +1176,9 @@
       "acknowledged": false
     },
     {
-      "id": "acfeda98-86e2-47f3-8598-669930ffb7e9",
+      "id": "8c00a743-fde3-4ca1-bbe7-e162286540f3",
       "articleId": "701c37ba0e9a952e925911ef",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Federal Reserve Board issues Economic Well-Being of U.S. Households in 2025 report",
       "affectedAssets": [
@@ -1211,9 +1187,9 @@
       "acknowledged": false
     },
     {
-      "id": "a28d5a66-158a-40b7-ac4e-a8f3869611e5",
+      "id": "50175825-e0e1-4751-b3bf-c1aec055ffa5",
       "articleId": "ec637a3c6baf5918597d7d6b",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Federal Reserve Board releases results from two surveys of senior financial officers at banks about their views on discount window operating days and their strategies and practices for managing reserve balances",
       "affectedAssets": [
@@ -1222,9 +1198,9 @@
       "acknowledged": false
     },
     {
-      "id": "9f932fd5-ad15-485c-a2cc-6555521eaa58",
+      "id": "71c5fab1-1105-4c1b-85a0-94206046de7e",
       "articleId": "71061aff50d07135a8414898",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Stephen I. Miran submits his resignation as a member of the Federal Reserve Board, effective when or shortly before his successor on the Board is sworn in",
       "affectedAssets": [
@@ -1233,9 +1209,9 @@
       "acknowledged": false
     },
     {
-      "id": "cdd49aed-9cd5-4818-a53f-b6ab75cc6576",
+      "id": "bbe28f80-6751-469e-b81d-c4becccfc1d1",
       "articleId": "c7791a338c8859f55d3af121",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Federal Reserve Board announces termination of enforcement actions with UBS Group AG, Credit Suisse AG, Credit Suisse Holdings (USA), Inc., and Credit Suisse AG, New York Branch",
       "affectedAssets": [
@@ -1244,9 +1220,9 @@
       "acknowledged": false
     },
     {
-      "id": "3bf231aa-22c6-48e9-a373-712309040943",
+      "id": "5c82b27c-668a-4da8-a4bf-e3dea051660d",
       "articleId": "01b7c35471b2a95177c921f0",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Federal Reserve Board announces it does not object to the conversion of United Texas Bank, of Dallas, Texas, from a bank supervised by the Federal Reserve to a national bank supervised by the Office of the Comptroller of the Currency",
       "affectedAssets": [
@@ -1255,9 +1231,9 @@
       "acknowledged": false
     },
     {
-      "id": "4f2b6d1a-b6ce-409f-a9df-f1c089a772a8",
+      "id": "5e38d0eb-8e28-4433-ab7e-d9dc8eb61a40",
       "articleId": "5efad9003b4a5391f4fb187a",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Federal Reserve Board announces approval of application by the Stephen M. Calk 2025 Trust",
       "affectedAssets": [
@@ -1266,9 +1242,9 @@
       "acknowledged": false
     },
     {
-      "id": "d42212a5-2bce-45f0-8a24-6fa5256a44c9",
+      "id": "b613fb1e-9db8-4f28-b8c1-7cec44f9006f",
       "articleId": "eaadbc50c274b8335fad95b6",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Federal Reserve Board names Jerome H. Powell as chair pro tempore; Powell will serve as chair pro tempore until Kevin M. Warsh is sworn in as the new chair",
       "affectedAssets": [
@@ -1277,9 +1253,9 @@
       "acknowledged": false
     },
     {
-      "id": "384e25c4-58ec-4f97-ab5a-93c7da91b360",
+      "id": "0daf5437-484c-4adf-a637-90829227dd7e",
       "articleId": "6023da4b158de16398745ec7",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Federal Reserve Board requests public comment on a proposal to establish a \"payment account,\" which legally eligible financial institutions could use for the specific purpose of clearing and settling their payments",
       "affectedAssets": [
@@ -1288,9 +1264,9 @@
       "acknowledged": false
     },
     {
-      "id": "e4e77fb7-58a7-42cf-a8d1-f583b5e8782d",
+      "id": "127d3c80-f388-479c-aff7-f186c03af551",
       "articleId": "948c96c7b94b77efb7013ede",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Federal Reserve Board issues enforcement action with former employee of Commerce Bank",
       "affectedAssets": [
@@ -1299,9 +1275,9 @@
       "acknowledged": false
     },
     {
-      "id": "569dad8c-7129-4ca1-94e7-eb0641d1d6d3",
+      "id": "6f2ddb75-c444-4413-a601-1e91ebf66b5b",
       "articleId": "eb1f8513fe06625eab44b2c5",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Kevin Warsh takes oath of office as chairman and a member of the Board of Governors of the Federal Reserve System, and the Federal Open Market Committee unanimously selects Warsh as its chairman",
       "affectedAssets": [
@@ -1310,9 +1286,9 @@
       "acknowledged": false
     },
     {
-      "id": "8eb26ee5-8a6a-465e-a59c-0be9414fa5bb",
+      "id": "cb48b80c-462e-4e0d-beeb-8d8f7597391b",
       "articleId": "3cf2e12f7d180db250fb1e09",
-      "createdAt": "2026-06-03T10:17:40.844Z",
+      "createdAt": "2026-06-07T05:08:16.672Z",
       "level": "HIGH",
       "headline": "Federal Reserve Board issues enforcement actions with former employee of Atlantic Union Bank and former employee of Frost Bank",
       "affectedAssets": [
@@ -1321,9 +1297,9 @@
       "acknowledged": false
     },
     {
-      "id": "dc50c745-bbdc-48d5-a429-ec5440f6bf38",
+      "id": "a87a300f-702d-4e5d-81db-050402c3d477",
       "articleId": "adb6c6eaece1f6b4476697db",
-      "createdAt": "2026-06-03T10:17:40.363Z",
+      "createdAt": "2026-06-07T05:08:13.625Z",
       "level": "HIGH",
       "headline": "Major Economic Indicators Latest Numbers",
       "affectedAssets": [
@@ -1336,3504 +1312,900 @@
   ],
   "syncLogs": [
     {
-      "id": "44b98a3b-fe4e-4c46-b865-3c5d3889d8dc",
-      "syncedAt": "2026-06-06T21:45:35.173Z",
+      "id": "66a77c35-ef36-444a-b1a6-50a2add4e8f3",
+      "syncedAt": "2026-06-07T07:14:01.992Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "5a6ac329-b20d-4739-b3bb-bfec907b79cd",
-      "syncedAt": "2026-06-06T21:45:29.216Z",
+      "id": "5d625cb3-6554-4353-8902-0fbbc415614f",
+      "syncedAt": "2026-06-07T07:13:40.739Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "b14f6b41-7c87-4eae-bfee-94631507b989",
+      "syncedAt": "2026-06-07T07:13:01.965Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "f365b4d1-0d1e-4ffe-96a7-15bc0fd827d7",
+      "syncedAt": "2026-06-07T07:12:39.687Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "11d600a9-1256-4685-9933-5f012cecd8dc",
+      "syncedAt": "2026-06-07T07:12:02.702Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "a5136a76-f55a-4319-b14b-bb9a0a02ea7f",
+      "syncedAt": "2026-06-07T07:11:39.683Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "3d8074f4-4286-49e6-bbb7-0d3b6c5476e8",
+      "syncedAt": "2026-06-07T07:11:01.920Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "0a153ff4-b257-40e9-9cfa-564c8e6e625e",
+      "syncedAt": "2026-06-07T07:10:40.713Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "4c004a98-400a-403a-afbc-60750cc14e43",
+      "syncedAt": "2026-06-07T07:10:01.884Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "440ba043-5293-4e73-95e1-5cfb69cb543d",
+      "syncedAt": "2026-06-07T07:09:39.673Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "ae92169b-f72b-44f6-b6fb-992ff3c4672a",
+      "syncedAt": "2026-06-07T07:09:02.621Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "a50204d0-d657-43b3-bc8c-e77e2a913cc5",
+      "syncedAt": "2026-06-07T07:08:39.663Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "c3dcbebd-ff9c-49b2-a60c-902e7357388c",
+      "syncedAt": "2026-06-07T07:08:02.586Z",
       "sourcesChecked": 1,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "a2fb9cb1-d1e7-46a7-9af3-a5632c9ba384",
-      "syncedAt": "2026-06-06T21:44:35.916Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "57a9bd6e-961d-4ddf-9fe8-f41b5d24d0d8",
-      "syncedAt": "2026-06-06T21:44:27.955Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "6b10fa82-55fb-496f-939f-d2253aaa0bc9",
-      "syncedAt": "2026-06-06T21:43:35.164Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "cc11ebed-1fc2-478c-bc47-6eaecd5266ef",
-      "syncedAt": "2026-06-06T21:43:29.565Z",
+      "id": "659729eb-9165-4d44-901d-0bb4f5f02112",
+      "syncedAt": "2026-06-07T07:07:40.822Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "fc79de53-2f86-4d32-94f5-3e456c961720",
-      "syncedAt": "2026-06-06T21:42:35.147Z",
+      "id": "7c06f0c1-1ad9-4176-9982-6248d8179a0f",
+      "syncedAt": "2026-06-07T07:07:01.802Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "cfd81a5c-b037-4571-a4d3-4e9521bd7858",
-      "syncedAt": "2026-06-06T21:42:27.939Z",
+      "id": "54c24a70-5571-4519-a319-4029c9086e9c",
+      "syncedAt": "2026-06-07T07:06:39.648Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "9c5572ae-d4d7-472f-b727-f958a8968b5d",
-      "syncedAt": "2026-06-06T21:41:35.902Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "2945e4dd-5ad8-4ae7-8976-b20ae884da4d",
-      "syncedAt": "2026-06-06T21:41:27.940Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "3c9cea25-0d73-43bb-906e-ef5fc89d220a",
-      "syncedAt": "2026-06-06T21:40:35.138Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "aebc94c1-e614-4b04-9e19-54d2655dd85c",
-      "syncedAt": "2026-06-06T21:40:29.554Z",
+      "id": "d34e736a-115b-4d22-9075-ec4d37e1b811",
+      "syncedAt": "2026-06-07T07:06:02.525Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "ab0b8c47-2952-4980-8af3-9610a1ba88a7",
-      "syncedAt": "2026-06-06T21:39:35.880Z",
+      "id": "f4621006-7b0b-480d-a10e-349e1924e172",
+      "syncedAt": "2026-06-07T07:05:39.644Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "4d8a1504-2164-4827-91a9-1c56f963553b",
+      "syncedAt": "2026-06-07T07:05:01.741Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "7fd30806-4860-4a04-9cb4-2fa19ed68879",
+      "syncedAt": "2026-06-07T07:04:40.762Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "8aea55d2-a424-4c70-b8d3-11ab86232e91",
+      "syncedAt": "2026-06-07T07:04:01.711Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "9354c996-44af-4021-a7ee-f1d99feacdd7",
+      "syncedAt": "2026-06-07T07:03:39.641Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "94537f6c-5ae5-4e99-be6d-30ef88faa63e",
+      "syncedAt": "2026-06-07T07:03:02.448Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "904c6bda-df73-479a-840f-8ae7a77e7c22",
+      "syncedAt": "2026-06-07T07:02:40.984Z",
       "sourcesChecked": 1,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "1244dc43-efea-44bc-b60d-2704607dcf50",
-      "syncedAt": "2026-06-06T21:39:27.929Z",
+      "id": "68dcaafe-41db-49f9-8a82-7aa75d73b8fc",
+      "syncedAt": "2026-06-07T07:02:01.663Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "0aa86aa0-b78f-4389-98cd-2326bf29a178",
-      "syncedAt": "2026-06-06T21:38:35.868Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "14c51369-67ba-4057-b590-756ac9f055d4",
-      "syncedAt": "2026-06-06T21:38:27.914Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "115cb61d-525e-4ccc-871e-14b63ed69b55",
-      "syncedAt": "2026-06-06T21:37:35.100Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "8cc0101b-e00d-404f-b8c5-4aea9435c423",
-      "syncedAt": "2026-06-06T21:37:29.185Z",
+      "id": "6c1c9597-dd95-4af3-9212-98acbef33a8d",
+      "syncedAt": "2026-06-07T07:01:40.675Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "461722dc-ba84-4870-85bd-a8580e05c583",
-      "syncedAt": "2026-06-06T21:36:35.089Z",
+      "id": "b9b72c17-11f1-42da-8eb2-0c1403c31dec",
+      "syncedAt": "2026-06-07T07:01:01.633Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "eaa4275a-f970-4152-b5ed-dce5b1084780",
-      "syncedAt": "2026-06-06T21:36:27.900Z",
+      "id": "bf90e60d-90fb-4f9d-abd6-2885e73e36b2",
+      "syncedAt": "2026-06-07T07:00:39.614Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "9a8315aa-6626-441a-a712-00ffd0e3dd99",
-      "syncedAt": "2026-06-06T21:35:35.833Z",
+      "id": "db23a971-1550-4d9f-97b1-9f5cad226911",
+      "syncedAt": "2026-06-07T07:00:02.360Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
-      "failures": 2
+      "failures": 0
     },
     {
-      "id": "c5c72e06-5ec8-4013-9454-da3e0544f2fc",
-      "syncedAt": "2026-06-06T21:35:27.891Z",
+      "id": "b776a629-11b0-4f0f-9115-415099720eb3",
+      "syncedAt": "2026-06-07T06:59:39.600Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "8454dedf-def5-4a58-83c4-2b265be96081",
-      "syncedAt": "2026-06-06T21:34:35.065Z",
+      "id": "81d0ebf9-0e61-400f-ab2c-000e21408765",
+      "syncedAt": "2026-06-07T06:59:01.598Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "2ebc636e-f925-46d9-af83-988988f3031a",
-      "syncedAt": "2026-06-06T21:34:31.341Z",
+      "id": "60dfdd35-5c88-4111-8467-ee88db101e7b",
+      "syncedAt": "2026-06-07T06:58:40.682Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "56e147c3-8300-439a-a5c6-5c7196e10dcd",
+      "syncedAt": "2026-06-07T06:58:01.544Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "bb8d8ecf-66d4-4af2-b7e5-2593ceae764d",
+      "syncedAt": "2026-06-07T06:57:39.577Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "e26900d1-785a-45cf-a5bd-91c38d744193",
+      "syncedAt": "2026-06-07T06:57:02.283Z",
       "sourcesChecked": 3,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "85d5b29f-719a-4420-8202-34c066cb2df2",
-      "syncedAt": "2026-06-06T21:33:35.053Z",
+      "id": "ee9e0120-164e-4dc9-b7b7-bead227ee278",
+      "syncedAt": "2026-06-07T06:56:39.571Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "f25b1684-724c-479b-927a-c4b56cb944ec",
-      "syncedAt": "2026-06-06T21:32:35.798Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "a7169b53-8ac2-4e03-9cfd-725152d20a1d",
-      "syncedAt": "2026-06-06T21:31:35.045Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "2cf3e5cf-4cfb-484e-8128-b8ac36183a7d",
-      "syncedAt": "2026-06-06T21:30:35.790Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "78936933-340b-473c-aaf1-9fe61295c312",
-      "syncedAt": "2026-06-06T21:29:35.018Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "9e81077f-106b-452b-ba09-3505114f7810",
-      "syncedAt": "2026-06-06T21:28:35.761Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "fffbb08e-14b9-4a0f-b624-e42b535a075c",
-      "syncedAt": "2026-06-06T21:27:34.994Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "a55b0d29-e2be-44f1-99e3-fd096ece252f",
-      "syncedAt": "2026-06-06T21:26:35.735Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "d4fd71e2-13c7-4925-9f88-5b04424f7d45",
-      "syncedAt": "2026-06-06T21:25:34.985Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "ca29ddd2-193d-4b38-b458-aa068196e0b9",
-      "syncedAt": "2026-06-06T21:24:35.723Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "7132f90c-8741-4d27-a34b-77813fa6f9f5",
-      "syncedAt": "2026-06-06T21:23:34.958Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "b6699403-9d13-45a2-8937-12d6cfbb84fd",
-      "syncedAt": "2026-06-06T21:22:35.705Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "6d90a630-59c3-436f-b30f-fc4db9c0f9d0",
-      "syncedAt": "2026-06-06T21:21:34.933Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "a1ca163f-cd26-45e1-9f10-3935ab795c27",
-      "syncedAt": "2026-06-06T21:20:35.676Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "520c6eab-93bd-49d7-9537-78d56ec05d8b",
-      "syncedAt": "2026-06-06T21:19:34.906Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "cac76bbe-04fa-47eb-b545-82709adfe8df",
-      "syncedAt": "2026-06-06T21:18:35.656Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "cd5469df-4658-4ccd-b71e-4a214fc2f521",
-      "syncedAt": "2026-06-06T21:17:34.884Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "11706493-3254-4c83-9383-03fb498f6cce",
-      "syncedAt": "2026-06-06T21:16:56.380Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "ec22bc56-f147-4954-9c60-17a15510e5f8",
-      "syncedAt": "2026-06-06T21:15:34.896Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "fb0e39c5-a1b2-48e8-a014-8001da27fdee",
-      "syncedAt": "2026-06-06T21:14:55.886Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "5f243da8-2bc5-4846-99d6-d3418b0986c0",
-      "syncedAt": "2026-06-06T21:13:34.896Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "929ad00b-39db-44cf-b21f-e40bb0d23ffa",
-      "syncedAt": "2026-06-06T21:12:55.929Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "1126a1db-b856-4fca-bbae-03efeecaae45",
-      "syncedAt": "2026-06-06T21:11:34.916Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "2b4f7c88-cefe-4944-9877-25ffa7d388e3",
-      "syncedAt": "2026-06-06T21:10:56.415Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "afbe1560-e167-417b-bd3b-a5579bded955",
-      "syncedAt": "2026-06-06T21:09:34.926Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "3b953193-ddc4-4608-8bf2-2510f78afcb5",
-      "syncedAt": "2026-06-06T21:08:55.920Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "7cc8cc35-c806-4376-a0fd-a2225e083bfc",
-      "syncedAt": "2026-06-06T21:07:34.935Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "5b1d81e3-47d9-4689-ac69-3acc1ac80357",
-      "syncedAt": "2026-06-06T21:06:55.925Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "c88b64eb-7eca-4264-a0f8-425bdc55b3d6",
-      "syncedAt": "2026-06-06T21:05:34.941Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "ea3270e9-c021-40ff-9866-050efafae949",
-      "syncedAt": "2026-06-06T21:04:56.438Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "060600dd-81b4-4d43-9f1c-d068b51f7862",
-      "syncedAt": "2026-06-06T21:03:34.951Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "f2b317f3-96be-41c5-a5a1-037bed392d5d",
-      "syncedAt": "2026-06-06T21:02:55.941Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "fd7867a9-0acf-4b71-80f5-6690743b71b5",
-      "syncedAt": "2026-06-06T21:01:34.960Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "313f0c53-4d9e-40c1-9df4-8bb257595171",
-      "syncedAt": "2026-06-06T21:00:55.956Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "164fa0a9-d051-4671-97b0-eab00f33ddba",
-      "syncedAt": "2026-06-06T20:59:34.983Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "867e58ca-f628-4db9-bf93-a27a4558f130",
-      "syncedAt": "2026-06-06T20:58:56.463Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "9241a15c-a1d4-4fa4-bdd6-f20f46730fae",
-      "syncedAt": "2026-06-06T20:57:34.979Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "d3a5a372-8931-4165-8564-7a8dbb28f30c",
-      "syncedAt": "2026-06-06T20:56:55.974Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "b447387b-a4ff-4bbb-86cf-c2da3f9b12e4",
-      "syncedAt": "2026-06-06T20:55:34.988Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "cd111440-8cfd-4db5-baa7-195f27bdf95e",
-      "syncedAt": "2026-06-06T20:54:55.981Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "1e6b72d2-3569-434e-a51f-e3c190d7111d",
-      "syncedAt": "2026-06-06T20:53:35.001Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "ece9ce2e-f663-4f79-9801-5f0a16f9af01",
-      "syncedAt": "2026-06-06T20:52:56.498Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "8f7f6f86-b1b2-435e-97bd-714a4ac0d28a",
-      "syncedAt": "2026-06-06T20:10:08.813Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "0e9f5c93-4469-47c6-864e-e799134b9f7f",
-      "syncedAt": "2026-06-06T20:09:27.476Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "d54debd5-01df-418c-be95-86fc1524a027",
-      "syncedAt": "2026-06-06T20:08:06.215Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "2c7b1e74-b831-4918-ba57-542b06b04d12",
-      "syncedAt": "2026-06-06T20:07:27.979Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "341b618b-ae87-4bf6-803f-f869a81171fb",
-      "syncedAt": "2026-06-06T20:06:06.219Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "ab79f7ba-f84e-489b-99cd-e2ad4f39be09",
-      "syncedAt": "2026-06-06T20:05:27.482Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "6f2b82d5-d342-4b4b-a2fe-43645fdab9a1",
-      "syncedAt": "2026-06-06T20:04:06.239Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "f7d92bb8-b6ed-48fd-9af2-75d722590c62",
-      "syncedAt": "2026-06-06T20:03:27.497Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "9ebe990b-adaa-4286-b07e-296dcccfe674",
-      "syncedAt": "2026-06-06T20:02:06.245Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "8b8400b4-6650-4dda-ab3f-312c6bd0cf40",
-      "syncedAt": "2026-06-06T20:01:28.000Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "aa224744-1dce-4ee9-969e-76f113cd717a",
-      "syncedAt": "2026-06-06T20:00:06.249Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "edff2680-cd82-4e33-83f5-725b7915d731",
-      "syncedAt": "2026-06-06T19:59:27.505Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "571e127d-c8c3-4971-9e01-8abb20086c5f",
-      "syncedAt": "2026-06-06T19:58:06.264Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "59b640fd-1ada-44ce-b725-8ac4ab6ba770",
-      "syncedAt": "2026-06-06T19:57:27.521Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "e6e5b546-5b4e-4e37-b447-b3dbf01ecee2",
-      "syncedAt": "2026-06-06T19:56:06.269Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "50133155-58e3-4726-a185-d4351348ec66",
-      "syncedAt": "2026-06-06T19:55:28.026Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "2c7abd91-d4a0-40b8-a8a2-88702e9a14b8",
-      "syncedAt": "2026-06-06T19:54:06.289Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "c7a98857-4719-4c73-aabe-be8fc25633ad",
-      "syncedAt": "2026-06-06T19:53:27.544Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "acd4a468-46da-45a7-a74b-49900c35bbf7",
-      "syncedAt": "2026-06-06T19:52:06.288Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "5b14b281-6c91-4da0-a1c4-4d707b247973",
-      "syncedAt": "2026-06-06T19:51:27.548Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "e1df7756-3d6e-4b97-b243-aaac8d6df4dc",
-      "syncedAt": "2026-06-06T19:50:06.295Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "2d288ad6-e948-46ad-9c37-94856cd88c5e",
-      "syncedAt": "2026-06-06T19:49:28.060Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "f2b4161d-613b-4f64-8600-1a0a06ebe79a",
-      "syncedAt": "2026-06-06T19:48:06.305Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "16a1371a-6c38-45da-9132-ab71df3039ec",
-      "syncedAt": "2026-06-06T19:47:27.571Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "7ad430a6-ea74-4bd4-b631-df837efdfa30",
-      "syncedAt": "2026-06-06T19:46:06.316Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "64335ffb-f98a-484c-86d1-5428fa8c772e",
-      "syncedAt": "2026-06-06T19:45:27.585Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "f139e1df-c6a8-4d85-a40e-720cd908042a",
-      "syncedAt": "2026-06-06T19:44:06.317Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "40e3c359-add6-4446-9706-0fd9205fa6be",
-      "syncedAt": "2026-06-06T19:43:28.092Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "dea40e9a-353d-4f6a-81c4-c2099d131d08",
-      "syncedAt": "2026-06-06T19:42:06.334Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "3f4b8cb5-50d8-4a82-8531-2a442e279d2a",
-      "syncedAt": "2026-06-06T19:41:27.591Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "9493f496-fe81-471b-a0c0-4e376b101d2d",
-      "syncedAt": "2026-06-06T19:40:06.340Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "02e27407-027e-429a-9717-4bd0625fce91",
-      "syncedAt": "2026-06-06T19:39:27.601Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "cfdfd03b-3205-4378-98f5-43065a9e6766",
-      "syncedAt": "2026-06-06T19:38:06.345Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "94ce93e9-80bb-49fd-b011-788cee20198f",
-      "syncedAt": "2026-06-06T19:37:28.109Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "c915fe94-5d71-4d2f-8e00-8f5d1df3b19c",
-      "syncedAt": "2026-06-06T19:36:06.357Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "38e8f629-0990-450c-a9c2-93fc01d142e2",
-      "syncedAt": "2026-06-06T19:35:27.623Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "a497b786-5fad-4ab4-9b44-56437b6d487f",
-      "syncedAt": "2026-06-06T19:34:06.374Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "93110410-ba16-4f3d-bdff-40eda5541c32",
-      "syncedAt": "2026-06-06T19:33:27.632Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "bf8efd98-339f-4ded-916d-363d4ee15784",
-      "syncedAt": "2026-06-06T19:32:06.381Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "e4d36668-1e22-48ad-ad54-5d4098bc4413",
-      "syncedAt": "2026-06-06T19:31:28.141Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "b37738da-3eae-489d-9bda-cc0b852f234b",
-      "syncedAt": "2026-06-06T19:30:06.388Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "9b791efc-ebdf-4c77-a48f-caca59c0238c",
-      "syncedAt": "2026-06-06T19:29:27.648Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "b51c6b75-fbfe-481b-a858-5d500f1d567c",
-      "syncedAt": "2026-06-06T19:28:06.398Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "8ca77415-4f7c-429f-8f55-b1895b56fcb3",
-      "syncedAt": "2026-06-06T19:27:27.655Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "8140f91e-518e-48fd-a3ec-f96e456a5949",
-      "syncedAt": "2026-06-06T19:26:06.404Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "cc0843d5-2c8c-483e-843d-d46fb0c0be01",
-      "syncedAt": "2026-06-06T19:25:28.168Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "be0378fb-a960-44c2-89de-adaa3022b560",
-      "syncedAt": "2026-06-06T19:24:06.415Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "79e5897c-9f04-4cc3-a38a-858b5bf97819",
-      "syncedAt": "2026-06-06T19:23:27.681Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "dd3b8800-f66c-4a18-8044-b7a157823f44",
-      "syncedAt": "2026-06-06T19:22:06.426Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "b277e9c5-0d79-4dd8-a701-db2d67e87d7f",
-      "syncedAt": "2026-06-06T19:21:27.685Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "a45ffd14-6b9e-4a47-8eca-be09b7ab611c",
-      "syncedAt": "2026-06-06T19:20:06.436Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "161481ce-405a-4664-b2d2-a6689040e810",
-      "syncedAt": "2026-06-06T19:19:28.206Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "887f9955-7be2-49be-a999-c1332c8a7749",
-      "syncedAt": "2026-06-06T19:18:06.450Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "ab8aa48c-2188-45fc-ab30-f1b9a906c259",
-      "syncedAt": "2026-06-06T19:17:27.710Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "267af886-4b85-4fd5-a851-2cea47c70f83",
-      "syncedAt": "2026-06-06T19:16:06.462Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "90ea3314-5392-45f3-a79c-41cc9da2ab72",
-      "syncedAt": "2026-06-06T19:15:27.718Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "7f5d84bb-d229-40c1-a84a-b26fb00ea835",
-      "syncedAt": "2026-06-06T19:14:06.464Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "80ade18f-56e3-46e1-ab88-83e149fe6c93",
-      "syncedAt": "2026-06-06T19:13:28.222Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "1ab474ff-33bf-4cd3-b8eb-dbb6e2ccc8d7",
-      "syncedAt": "2026-06-06T19:12:06.470Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "22c69c01-a285-401a-b4dd-4c13363ef437",
-      "syncedAt": "2026-06-06T19:11:27.746Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "5f104eac-f4ba-4fa0-9f9a-7783a9ccd29f",
-      "syncedAt": "2026-06-06T19:10:06.489Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "d119aca0-352a-4b51-a98e-3f0acf483866",
-      "syncedAt": "2026-06-06T19:09:27.764Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "c1a20d4d-b8e3-4558-ade7-4a686f831e9b",
-      "syncedAt": "2026-06-06T19:08:06.496Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "90cbbd71-aecd-4f2c-b0f8-015f30907116",
-      "syncedAt": "2026-06-06T19:07:28.261Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "4f73a220-1169-43e4-941a-16e4fdfa9f9d",
-      "syncedAt": "2026-06-06T19:06:06.505Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "a39c0bf6-2793-45c9-a152-857e277c58da",
-      "syncedAt": "2026-06-06T19:05:27.761Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "77946914-e987-4bac-a1ed-e336361a351c",
-      "syncedAt": "2026-06-06T19:04:06.507Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "20424f4a-d7e0-4204-be71-e022444f9120",
-      "syncedAt": "2026-06-06T19:03:27.775Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "70b71f8d-097c-4acd-95e6-fac652a54806",
-      "syncedAt": "2026-06-06T19:02:06.524Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "399259f9-c794-4e65-812c-241161533914",
-      "syncedAt": "2026-06-06T19:01:28.281Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "72ccea6d-fb06-4972-84d7-3933fcfca76f",
-      "syncedAt": "2026-06-06T19:00:06.535Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "3a3da5fe-de66-4469-9995-68b2c70eb3c6",
-      "syncedAt": "2026-06-06T18:59:27.789Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "5f10a979-2e4a-4a12-8a34-75f843c1a5ab",
-      "syncedAt": "2026-06-06T18:58:06.547Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "e96ba846-fa97-4263-b1d8-29d0d7f5076d",
-      "syncedAt": "2026-06-06T18:57:27.810Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "7c60bf7c-5386-433d-828e-9b57d6b7c4e0",
-      "syncedAt": "2026-06-06T18:56:06.552Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "5f405c86-769f-43cb-ba9d-1ad5b364dc4e",
-      "syncedAt": "2026-06-06T18:55:28.318Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "01b54753-5dc4-43b2-9898-f308af05823e",
-      "syncedAt": "2026-06-06T18:54:06.557Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "ac50fbad-85e4-4747-a22e-3b4841d5233f",
-      "syncedAt": "2026-06-06T18:53:27.827Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "7b73702d-a2f0-487c-baff-ecd66251bdb6",
-      "syncedAt": "2026-06-06T18:52:06.571Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "fba6eef7-596f-41d4-b420-b384e0ba4839",
-      "syncedAt": "2026-06-06T18:51:27.836Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "e21a4940-a898-48f2-8a83-a409032e7ef9",
-      "syncedAt": "2026-06-06T18:50:06.585Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "8fd5c32c-5cf3-415f-9890-21af657141f4",
-      "syncedAt": "2026-06-06T18:49:28.336Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "b2b242c5-dd0a-4b9c-9a60-c1227dce4d53",
-      "syncedAt": "2026-06-06T18:48:06.593Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "21e87631-8247-48b0-ac3f-0142a102b045",
-      "syncedAt": "2026-06-06T18:47:27.859Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "66e9a85b-4631-4932-be39-ebdada9930f4",
-      "syncedAt": "2026-06-06T18:46:06.607Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "38f6fe20-aaa8-4c85-957b-8ddf211fc939",
-      "syncedAt": "2026-06-06T18:45:27.862Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "728d30f5-1a2b-4998-bd11-c08dc8df9f44",
-      "syncedAt": "2026-06-06T18:44:06.611Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "008b3fe1-4abd-4244-9c98-7ae467e709c4",
-      "syncedAt": "2026-06-06T18:43:28.369Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "647e1e23-cced-4fbc-8f71-017519cdbeaf",
-      "syncedAt": "2026-06-06T18:42:06.627Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "6cc84132-5115-48d8-83cc-4475fece66ef",
-      "syncedAt": "2026-06-06T18:41:27.886Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "87e3090a-ac40-4354-ac0e-d7309e425284",
-      "syncedAt": "2026-06-06T18:40:06.632Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "784ef03b-d265-44f8-b62f-d70448127681",
-      "syncedAt": "2026-06-06T18:39:27.903Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "329e338a-2ad8-46e5-a60b-a972d38ebd1e",
-      "syncedAt": "2026-06-06T18:38:06.644Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "19bb67a2-9cc6-4e95-9be7-72bf8cadad4c",
-      "syncedAt": "2026-06-06T18:37:29.460Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "16db98c3-6d1e-4f99-a2e4-ca44eb25743d",
-      "syncedAt": "2026-06-06T16:21:02.357Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "80af970f-edda-4d7a-8a8a-a050ca65d6b7",
-      "syncedAt": "2026-06-06T16:20:50.826Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "a182e3c4-6a98-4017-bc3e-359963c18619",
-      "syncedAt": "2026-06-06T16:20:02.354Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "462e2b8b-c3d6-43a0-9146-607060813325",
-      "syncedAt": "2026-06-06T16:19:50.815Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "99b2bac2-d487-4190-b43d-7e53374a354b",
-      "syncedAt": "2026-06-06T16:19:02.336Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "d4797550-e086-4707-847a-fa98cadea4bb",
-      "syncedAt": "2026-06-06T16:18:50.813Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "2f6f7e00-897c-43f5-9712-4601349d5e34",
-      "syncedAt": "2026-06-06T16:18:02.323Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "1e72eb88-90ed-4e1c-88d1-612fad9ec2de",
-      "syncedAt": "2026-06-06T16:17:50.802Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "57f019cb-8262-416f-aef3-e8338e4ae743",
-      "syncedAt": "2026-06-06T16:17:02.301Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "a648cb40-dd8c-4faa-9db2-d801d4deb404",
-      "syncedAt": "2026-06-06T16:16:50.789Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "c2a4a0fb-5008-4edd-9964-f1cefd51fa7f",
-      "syncedAt": "2026-06-06T16:16:02.281Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "07833a39-ccdc-4322-a0a9-dc8d4fb0cc95",
-      "syncedAt": "2026-06-06T16:15:50.776Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "4c6c4743-c7b9-4356-8a7e-34f4a79712af",
-      "syncedAt": "2026-06-06T16:15:02.272Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "e1986cfb-0614-4971-a56d-3d9e458cd4ca",
-      "syncedAt": "2026-06-06T16:14:50.778Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "9b813d86-469f-487e-83b5-3cb58b0f3f9e",
-      "syncedAt": "2026-06-06T16:14:02.256Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "14490fa9-c1dd-4f7e-8b5b-9666f089e1ac",
-      "syncedAt": "2026-06-06T16:13:50.762Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "4946c77e-d0cb-4033-9651-591a4b2a1ec3",
-      "syncedAt": "2026-06-06T16:13:02.244Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "73f80ef1-041f-4fba-b68a-76c7dd6e2e1e",
-      "syncedAt": "2026-06-06T16:12:50.755Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "5647c437-7076-4dbc-a884-5bf255923845",
-      "syncedAt": "2026-06-06T16:12:02.240Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "00955c08-66cc-46de-b7e1-fa70b562fe50",
-      "syncedAt": "2026-06-06T16:11:50.750Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "d1a358aa-a5d1-4e0a-8fae-a549d0d1de92",
-      "syncedAt": "2026-06-06T16:11:02.211Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "718ff2a8-cdf4-439b-ac47-33b94b893045",
-      "syncedAt": "2026-06-06T16:10:50.739Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "3056a3cd-a34c-423f-ac5d-dbd272c29abb",
-      "syncedAt": "2026-06-06T16:10:02.202Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "65c2996a-c5bd-4e1b-aeb0-e88f0ec2fc2f",
-      "syncedAt": "2026-06-06T16:09:50.733Z",
+      "id": "895bedd2-6d2d-4726-99f2-e20a44588160",
+      "syncedAt": "2026-06-07T06:56:01.512Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "5151ac46-245d-4288-9725-1b1f1b257075",
-      "syncedAt": "2026-06-06T16:09:02.194Z",
+      "id": "4271b58f-283f-4235-a450-246b18bc2f65",
+      "syncedAt": "2026-06-07T06:55:40.792Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "45d000ab-407e-41e2-a0ee-23d9e31a4ae5",
-      "syncedAt": "2026-06-06T16:08:50.725Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "e1430dd2-0b71-4e0e-bb2f-8e66c24134ef",
-      "syncedAt": "2026-06-06T16:08:02.172Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "558c0b80-6a2f-4663-a2fd-e348b09b5911",
-      "syncedAt": "2026-06-06T16:07:50.713Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "85cef4ba-05fa-4496-a05f-0570d41bf5b8",
-      "syncedAt": "2026-06-06T16:07:02.158Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "ef2459d4-fcd0-4e4a-b716-b8a8e7b8fda8",
-      "syncedAt": "2026-06-06T16:06:50.702Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "59832daa-b817-4e5b-a9f4-3ff2c7916202",
-      "syncedAt": "2026-06-06T16:06:02.148Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "609ca771-86c2-4dac-b809-b5c1a1f55ece",
-      "syncedAt": "2026-06-06T16:05:50.690Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "5799ba12-cf63-4b81-9734-6b135ef21f50",
-      "syncedAt": "2026-06-06T16:05:02.132Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "9af66070-221b-4c37-a97a-8abcfdf94da3",
-      "syncedAt": "2026-06-06T16:04:50.679Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "789a1464-8dbf-4c73-8c09-f1a3b254a87b",
-      "syncedAt": "2026-06-06T16:04:02.119Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "c036f216-d424-41c8-9585-a4a89a993529",
-      "syncedAt": "2026-06-06T16:03:50.665Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "69c2e1d7-41aa-47bb-a67a-06323cdc878a",
-      "syncedAt": "2026-06-06T16:03:02.100Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "0da646e5-f541-44db-b5f7-c786d9328baa",
-      "syncedAt": "2026-06-06T16:02:50.660Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "1ccb7398-fa30-476e-850f-1e9b703ed9c7",
-      "syncedAt": "2026-06-06T16:02:02.098Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "75be5e31-f6b9-4dcd-82c7-a12debcd5751",
-      "syncedAt": "2026-06-06T16:01:50.655Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "d0df01f6-3b0c-4b31-aa28-3f07b29fcddd",
-      "syncedAt": "2026-06-06T16:01:02.088Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "fbb6b784-a055-4fa6-a286-330a6b81b051",
-      "syncedAt": "2026-06-06T16:00:50.641Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "b01b5639-0a2a-49f5-aa1f-6e7f48e235ff",
-      "syncedAt": "2026-06-06T16:00:02.077Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "03dc3bb1-333e-4ce5-8d13-87135da4f2db",
-      "syncedAt": "2026-06-06T15:59:50.640Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
       "failures": 0
-    },
-    {
-      "id": "4cc748f0-36dc-4dcb-b077-380a45463e40",
-      "syncedAt": "2026-06-06T15:59:02.056Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
     },
     {
-      "id": "2c410160-c556-46cd-8fdc-3ef398f4dec8",
-      "syncedAt": "2026-06-06T15:58:50.634Z",
+      "id": "1660fdbf-3a7d-461b-912a-5c7a3a53b8ae",
+      "syncedAt": "2026-06-07T06:55:01.460Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
-    },
-    {
-      "id": "76f46efb-6cae-45f3-98a3-c3562b6bc3e4",
-      "syncedAt": "2026-06-06T15:58:02.039Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
     },
     {
-      "id": "e1a7185d-ec07-44b3-8773-a226d6b7aaf9",
-      "syncedAt": "2026-06-06T15:57:50.632Z",
+      "id": "a24d05e9-dc05-4ae0-bca3-40ac3f7dd2f8",
+      "syncedAt": "2026-06-07T06:54:39.551Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "c4383022-226b-4953-832c-468fa898758e",
-      "syncedAt": "2026-06-06T15:57:02.030Z",
+      "id": "166b90c1-bc71-4955-8a09-84b01d3bfabe",
+      "syncedAt": "2026-06-07T06:54:02.186Z",
       "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "427afec7-79b3-4814-a3b0-897b4b3844ea",
-      "syncedAt": "2026-06-06T15:56:50.623Z",
-      "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
-    },
-    {
-      "id": "aace4a98-d523-48b7-84f6-47c7e9ac63c4",
-      "syncedAt": "2026-06-06T15:56:02.021Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
     },
     {
-      "id": "61cda009-d2a2-4cdf-a35c-70618d606137",
-      "syncedAt": "2026-06-06T15:55:50.621Z",
+      "id": "9846cd9c-b2db-4e26-adf3-0449f73a9a0c",
+      "syncedAt": "2026-06-07T06:53:39.537Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
-    },
-    {
-      "id": "53e71bb1-7f2e-4544-a913-b90e1d9222be",
-      "syncedAt": "2026-06-06T15:55:02.002Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
     },
     {
-      "id": "b08d9db7-cd9f-40f2-84af-e0f4aefef68b",
-      "syncedAt": "2026-06-06T15:54:50.610Z",
+      "id": "c2bc1f62-4f16-4629-83de-b552d7b57691",
+      "syncedAt": "2026-06-07T06:53:01.402Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "28bd6729-ce77-4023-aa4d-2e747b6e7be2",
-      "syncedAt": "2026-06-06T15:54:01.988Z",
+      "id": "f0148de3-09f8-477e-9e37-982648436049",
+      "syncedAt": "2026-06-07T06:52:40.602Z",
       "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "ddfb0f39-1397-4d41-b253-d7c3130266da",
-      "syncedAt": "2026-06-06T15:53:50.604Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "a99237e1-9f16-4dd9-9bee-118ecfb1e1cc",
-      "syncedAt": "2026-06-06T15:53:01.976Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "bb045194-e52d-4299-b330-b18c2a6a30c4",
-      "syncedAt": "2026-06-06T15:52:53.623Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "a3e69995-c23b-49ee-a3ff-1192d2d29b78",
-      "syncedAt": "2026-06-06T14:49:55.854Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "b0702679-59e5-44f0-ba3e-f0e672eba023",
-      "syncedAt": "2026-06-06T14:39:45.512Z",
-      "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
-    },
-    {
-      "id": "c5fd5a96-fe01-4692-91f9-ecf000c2d949",
-      "syncedAt": "2026-06-06T14:39:07.950Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
     },
     {
-      "id": "ce20bf03-4473-4a21-890a-21cc37155bff",
-      "syncedAt": "2026-06-06T14:38:45.497Z",
+      "id": "4b94aed9-c1b4-4f90-a6bf-118e1324a455",
+      "syncedAt": "2026-06-07T06:52:01.371Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
-    },
-    {
-      "id": "adeaea63-3d58-4a27-b565-0966eda998d8",
-      "syncedAt": "2026-06-06T14:38:07.939Z",
-      "sourcesChecked": 1,
-      "articlesImported": 0,
-      "failures": 1
     },
     {
-      "id": "b0740b95-a283-4f2c-92f4-4dda8a50e6a1",
-      "syncedAt": "2026-06-06T14:37:46.323Z",
+      "id": "e71a2f6c-6aa7-45ed-9feb-ecf3c9444387",
+      "syncedAt": "2026-06-07T06:51:40.610Z",
       "sourcesChecked": 1,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "8604b114-43b0-4515-bf19-9b7b1429616c",
-      "syncedAt": "2026-06-06T14:37:07.920Z",
-      "sourcesChecked": 1,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "2d3027ab-1f59-4029-bab4-8766592f4702",
-      "syncedAt": "2026-06-06T14:36:45.489Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "9251f755-8def-43f3-88c1-acb48678d55a",
-      "syncedAt": "2026-06-06T14:36:07.920Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "305394b7-4520-4342-996d-f0ea1e768cab",
-      "syncedAt": "2026-06-06T14:35:45.476Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "50ea45d7-5925-4e45-bebb-531553f140e8",
-      "syncedAt": "2026-06-06T14:35:07.911Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "64a2a4ee-24db-48f5-8472-63ddfc7d3c96",
-      "syncedAt": "2026-06-06T14:34:45.472Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "c65f96d1-ece4-4aa8-b788-c33e7cccac1e",
-      "syncedAt": "2026-06-06T14:34:07.963Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "f9d9f49b-a170-40e2-92a9-b683eeeb9062",
-      "syncedAt": "2026-06-06T14:33:47.079Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "5b7f6c04-6807-4175-bd55-0f34e63432ba",
-      "syncedAt": "2026-06-06T14:33:07.907Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "9f0ace6e-d0ff-459f-9990-420f0a1469c7",
-      "syncedAt": "2026-06-06T14:32:18.615Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "b2a0045e-c30f-4514-a634-0430dc8237bd",
-      "syncedAt": "2026-06-06T14:31:07.913Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "c000dd1a-bf1e-4364-b8cf-db87b26b861c",
-      "syncedAt": "2026-06-06T14:30:17.941Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "05a7792a-56ab-4d5b-be95-8ec8a6d3e32b",
-      "syncedAt": "2026-06-06T14:29:07.923Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "73515d25-7fc3-441c-823f-eac1f14cc9b7",
-      "syncedAt": "2026-06-06T14:28:17.948Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "809b185c-0433-4aef-b736-50c2e8c807c7",
-      "syncedAt": "2026-06-06T14:27:07.939Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "1cf291b4-970d-4ec9-aafb-3f47a8b8e0e3",
-      "syncedAt": "2026-06-06T14:26:18.517Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "2effba47-59ae-4b14-b33e-6eb48b0a0ca5",
-      "syncedAt": "2026-06-06T14:25:07.940Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "b1b6ab01-0158-4847-a5f3-e646b13316a4",
-      "syncedAt": "2026-06-06T14:24:17.966Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "e2715a60-6a59-452d-bef6-049787cce869",
-      "syncedAt": "2026-06-06T14:23:07.960Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "d9654983-6e7d-4b90-8435-9b644c05066f",
-      "syncedAt": "2026-06-06T14:22:17.978Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "f5d2c890-550e-4d3d-b725-87a6be16200f",
-      "syncedAt": "2026-06-06T14:21:07.962Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "a0549aad-46cd-49ec-87b7-610ebb6cae72",
-      "syncedAt": "2026-06-06T14:20:23.789Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "f75524cf-b9a3-49d1-a7f6-21dae50b8f63",
-      "syncedAt": "2026-06-06T14:20:07.974Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "2cd8de3a-867f-43b2-9833-ee73f8d2fec2",
-      "syncedAt": "2026-06-06T14:19:27.315Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "2cc6f2ec-8d59-4d3d-8bcd-5b0790584f71",
-      "syncedAt": "2026-06-06T14:19:07.975Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "5ed950f4-60a7-4f25-8528-aab6cd6137bc",
-      "syncedAt": "2026-06-06T14:18:18.148Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "b0c9acef-8dbe-43c7-b5c2-d2856dab17fa",
-      "syncedAt": "2026-06-06T14:17:07.993Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "370a2e1d-645d-4555-82af-f316e5383131",
-      "syncedAt": "2026-06-06T14:16:19.970Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "57896e4b-b804-4b69-a244-185e6693b15b",
-      "syncedAt": "2026-06-06T14:12:25.638Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "053a8ba9-8db5-4112-a181-e83c3a8052dd",
-      "syncedAt": "2026-06-06T14:12:21.239Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "fa4133bf-7715-43a8-8c2f-adf4610cf786",
-      "syncedAt": "2026-06-06T14:11:25.623Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "c1d9ff0a-d8be-4b5b-a862-fd056453b80f",
-      "syncedAt": "2026-06-06T14:11:21.240Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "f294e2ff-c1d7-4888-8749-66dcd87df281",
-      "syncedAt": "2026-06-06T14:10:25.617Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "e44911f4-dc37-4b27-8892-58e878c0f0bc",
-      "syncedAt": "2026-06-06T14:10:21.240Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "68d60590-8daf-4c27-a443-2a26167ab9c7",
-      "syncedAt": "2026-06-06T14:09:25.612Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "fc2bc361-5f16-461e-914c-cb74afad77d3",
-      "syncedAt": "2026-06-06T14:09:21.240Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "1e73a7b1-4e18-4133-8e6e-c2c21dff06ac",
-      "syncedAt": "2026-06-06T14:08:25.593Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "a9948902-ec29-43d6-ac4e-8012789e61c9",
-      "syncedAt": "2026-06-06T14:08:21.240Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "eee7bd6f-d38e-45ea-8578-25633b010301",
-      "syncedAt": "2026-06-06T14:07:25.584Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "c0f0c36e-5e18-4575-963a-13c125776c84",
-      "syncedAt": "2026-06-06T14:07:21.239Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "028ca11e-6bc0-4f8e-a8ba-7611a4bdeb6e",
-      "syncedAt": "2026-06-06T14:06:25.575Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "dc3d441f-b7b2-442d-bd52-143f7049b3d5",
-      "syncedAt": "2026-06-06T14:06:21.239Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "6532cdd4-e3ba-4d8d-b6bb-151e9e5c8b96",
-      "syncedAt": "2026-06-06T14:05:25.567Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "761b7277-0818-4af0-ba4f-f79419092489",
-      "syncedAt": "2026-06-06T14:05:21.238Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "3d46c946-4a8f-488d-894b-a945e8ca87c5",
-      "syncedAt": "2026-06-06T14:04:25.553Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "8b301cc0-8528-4809-b258-396eb67955b2",
-      "syncedAt": "2026-06-06T14:04:23.706Z",
+      "id": "7a70a08d-a85a-40f5-8b64-8230adbc51b5",
+      "syncedAt": "2026-06-07T06:51:02.111Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "cfc81960-af3d-4834-9756-787f839b152d",
-      "syncedAt": "2026-06-06T14:03:25.543Z",
+      "id": "a546856b-7e65-4f8a-84cd-c210730b360c",
+      "syncedAt": "2026-06-07T06:50:39.508Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "6cfc259d-16b4-4c93-b992-7a14466148c1",
-      "syncedAt": "2026-06-06T14:03:21.236Z",
+      "id": "3285756c-edaf-497d-a9ec-759c21ceba63",
+      "syncedAt": "2026-06-07T06:50:01.316Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "94b47ccd-7796-485a-bb8c-dc6310faa516",
-      "syncedAt": "2026-06-06T14:02:25.549Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "150e06b8-209b-4965-86ee-c36c8366a247",
-      "syncedAt": "2026-06-06T14:02:21.236Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "9508ee96-7b04-41fa-9d31-8783739361b3",
-      "syncedAt": "2026-06-06T14:01:25.541Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "77105cbd-9477-4a1a-bfc0-4fff4396a975",
-      "syncedAt": "2026-06-06T14:01:21.236Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "2652f29a-ccc3-4b0c-a183-40e6871290b0",
-      "syncedAt": "2026-06-06T14:00:25.726Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "581345c6-913d-4f8f-bfc1-748015b4b4ca",
-      "syncedAt": "2026-06-06T14:00:23.883Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "dd954347-fa6b-4c47-bdfb-a5ba60eae8eb",
-      "syncedAt": "2026-06-06T13:59:51.155Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "01a6c324-ee34-432c-b821-9e4fe8cf49da",
-      "syncedAt": "2026-06-06T13:59:25.511Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "30f7f102-fc5e-49f8-aea0-4dac4cb54c0c",
-      "syncedAt": "2026-06-06T13:59:01.622Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "5b96559a-b585-4e02-8602-84297565f83a",
-      "syncedAt": "2026-06-06T13:58:25.509Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "861e3d04-c1a7-4b19-97e1-0ba660c89a1d",
-      "syncedAt": "2026-06-06T13:58:11.549Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "c25d314a-c278-4e79-8937-a955bfbc9fa2",
-      "syncedAt": "2026-06-06T13:57:25.497Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "2cba9f32-c0c7-41ee-8a00-69f7b773f012",
-      "syncedAt": "2026-06-06T13:57:11.549Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "07df373b-6c79-44ba-80e0-33216aac5055",
-      "syncedAt": "2026-06-06T13:56:25.475Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "9de85993-8ee4-4807-b27c-7be5b844d67d",
-      "syncedAt": "2026-06-06T13:56:11.549Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "7d0deecd-bb66-4340-a2d1-cd9ca900e939",
-      "syncedAt": "2026-06-06T13:55:25.463Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "dfb8552e-4ed2-4a3f-8cd9-cf9bf8a79064",
-      "syncedAt": "2026-06-06T13:55:11.548Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "77901621-16eb-484b-9494-1672391d3901",
-      "syncedAt": "2026-06-06T13:54:25.460Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "98284ee4-9f6c-47bd-81cd-ab6ed05f9587",
-      "syncedAt": "2026-06-06T13:54:12.622Z",
+      "id": "40619228-82c1-4a91-9ad6-f3cd30bb96f4",
+      "syncedAt": "2026-06-07T06:49:40.543Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "2ffc91e0-b2d8-48a2-9a0c-d6b5a119568b",
-      "syncedAt": "2026-06-06T13:53:25.449Z",
+      "id": "c1f880e9-1a78-48a3-a9ac-beac448ed3f2",
+      "syncedAt": "2026-06-07T06:49:01.297Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "3f89fca7-b353-4c9a-8ff7-f17d9b5676c8",
-      "syncedAt": "2026-06-06T13:53:11.545Z",
+      "id": "3796d902-9013-4420-a98c-ef3c78f64ebb",
+      "syncedAt": "2026-06-07T06:48:39.489Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "64897a66-f04f-471a-85ce-7a33d3c0c252",
-      "syncedAt": "2026-06-06T13:52:25.451Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "5b63bf3a-6bf0-4e63-9a8c-5abeada10a42",
-      "syncedAt": "2026-06-06T13:52:11.543Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "ea3357fc-bd2a-48b4-86f2-598a8f490cc9",
-      "syncedAt": "2026-06-06T13:51:25.436Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "935d1951-9013-413b-a545-7221bbf03ed2",
-      "syncedAt": "2026-06-06T13:51:11.543Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "808c5a99-8dde-4b1c-b9e4-0cb8e8d28648",
-      "syncedAt": "2026-06-06T13:50:25.423Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "c54331ec-a0d6-4184-904c-5826324ff13a",
-      "syncedAt": "2026-06-06T13:50:11.544Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "f1af4d1f-8fd1-4969-9f60-4117b6330aad",
-      "syncedAt": "2026-06-06T13:49:25.412Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "9428d11c-b021-4cad-b62b-6ce0a475d99b",
-      "syncedAt": "2026-06-06T13:49:11.541Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "4acf401c-9f3a-428e-8725-d0b2af9f0507",
-      "syncedAt": "2026-06-06T13:48:25.399Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "f9ca38ce-48cf-4f9c-a77f-3258a9750125",
-      "syncedAt": "2026-06-06T13:48:11.540Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "e0140898-ff87-490e-83bf-9765152fc0f2",
-      "syncedAt": "2026-06-06T13:47:25.390Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "b849b85a-38a2-4ff5-9b73-7909d9d9453a",
-      "syncedAt": "2026-06-06T13:47:12.566Z",
+      "id": "1f5acecc-ac5a-4614-85fa-d1a92133ace5",
+      "syncedAt": "2026-06-07T06:48:02.028Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "c273bc3d-0e88-40ac-96f4-9fcd1de6762f",
-      "syncedAt": "2026-06-06T13:46:25.373Z",
+      "id": "e21cc49b-526f-484e-9fec-068879b6ca17",
+      "syncedAt": "2026-06-07T06:47:39.481Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "28c2f0b4-e781-4c02-a2db-18eb78799675",
-      "syncedAt": "2026-06-06T13:46:11.540Z",
+      "id": "feb91cdc-1618-45b9-acaa-466aeb0786da",
+      "syncedAt": "2026-06-07T06:47:01.243Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "d226ffe3-0ac6-4aa3-abfa-d3e951726ebd",
-      "syncedAt": "2026-06-06T13:45:25.386Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "450bc2a0-f4d6-4dde-bcc5-b6d643612760",
-      "syncedAt": "2026-06-06T13:45:11.543Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "2a0d23a2-7589-4a0d-82b7-f144e1271361",
-      "syncedAt": "2026-06-06T13:44:25.352Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "ccb21d8f-b0c2-45c5-bf23-cbe0311f362a",
-      "syncedAt": "2026-06-06T13:44:11.540Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "421821ce-c182-4ddf-9c70-eecd77d98e3f",
-      "syncedAt": "2026-06-06T13:43:25.344Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "5cabec5e-89bc-4882-892a-aa7064d720c7",
-      "syncedAt": "2026-06-06T13:43:11.538Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "70aaeefb-b426-48e6-816b-5656b1493f71",
-      "syncedAt": "2026-06-06T13:42:25.330Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "67e926b6-c32c-44aa-986c-7fb8a36a4ba1",
-      "syncedAt": "2026-06-06T13:42:12.698Z",
+      "id": "83e7f4fd-084c-4d3b-8695-b2cc05be6936",
+      "syncedAt": "2026-06-07T06:46:40.529Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "00b07349-701b-4fa0-88e4-5b13383072f6",
-      "syncedAt": "2026-06-06T13:41:25.316Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "a3c0ad7a-dfe9-4174-97d3-074aa041c535",
-      "syncedAt": "2026-06-06T13:41:11.535Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "d7ae0efe-5dfd-408d-bd47-2f0dccf1d6ec",
-      "syncedAt": "2026-06-06T13:40:25.323Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "2d4ec6f0-9dee-476c-b302-0b50d3d57d8c",
-      "syncedAt": "2026-06-06T13:40:11.537Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "c81ee8d8-af0c-4660-83c2-f62c8ed6ad20",
-      "syncedAt": "2026-06-06T13:39:25.315Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "24eb6ecc-b6de-4d02-b69a-7eef20d05229",
-      "syncedAt": "2026-06-06T13:39:11.536Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "504feff0-d5f1-47b7-924a-e977fd89cdc6",
-      "syncedAt": "2026-06-06T13:38:25.283Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "0f1a9ce0-ac1f-4a71-824f-790dfae85601",
-      "syncedAt": "2026-06-06T13:38:12.596Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "e613678c-a427-4c88-810b-c40beb6ae31a",
-      "syncedAt": "2026-06-06T13:37:25.279Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "b0fb47fb-fe3a-466a-9977-9e1a1ab1e888",
-      "syncedAt": "2026-06-06T13:37:11.534Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "885b9487-755e-4015-a73d-d9d2474d861a",
-      "syncedAt": "2026-06-06T13:36:25.281Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "cf2d82b9-650b-45b4-b875-20037eeb09bb",
-      "syncedAt": "2026-06-06T13:36:11.535Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "f0c30b64-574d-45e4-a191-955ebc26edb6",
-      "syncedAt": "2026-06-06T13:35:25.274Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "7d6bd2b5-03c7-4d80-93b7-efcc803c0ed8",
-      "syncedAt": "2026-06-06T13:35:11.535Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "1ff68eaa-7642-45a3-9463-61b5fbf91369",
-      "syncedAt": "2026-06-06T13:34:25.258Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "e1c18e8c-544d-44c0-919d-b648652f36b6",
-      "syncedAt": "2026-06-06T13:34:13.286Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "2e087dcf-2f54-40cc-b2c3-b7c8ac98f371",
-      "syncedAt": "2026-06-06T13:33:25.236Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "5922de70-35b0-4c26-8097-0af313788213",
-      "syncedAt": "2026-06-06T13:33:11.534Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "97371110-4275-49a2-9440-319577623b29",
-      "syncedAt": "2026-06-06T13:32:25.248Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "97a1c117-1bd5-493c-84ae-23c668db11ac",
-      "syncedAt": "2026-06-06T13:32:11.533Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "f87cc737-8e6f-43a5-a05b-ad772780313d",
-      "syncedAt": "2026-06-06T13:31:25.231Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "b31c5764-0b29-4cdc-8a70-40257e827cae",
-      "syncedAt": "2026-06-06T13:31:13.361Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "d0d9a773-5b2d-4af4-b7f3-438732980e17",
-      "syncedAt": "2026-06-06T13:30:12.820Z",
+      "id": "62e41769-dcae-4a95-a48b-0e248d1f2467",
+      "syncedAt": "2026-06-07T06:46:01.969Z",
       "sourcesChecked": 1,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "9c1fa0e2-2ec9-4ab1-988c-362e8fd2a501",
-      "syncedAt": "2026-06-06T13:30:10.333Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "c148fe7d-5b8b-499e-b592-86669aa37afc",
-      "syncedAt": "2026-06-06T13:20:12.539Z",
+      "id": "f4a761b2-5a82-4a41-93e8-bac84368a687",
+      "syncedAt": "2026-06-07T06:45:39.470Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "4da7a0b4-1dc6-45b8-bc3e-ef9199aa3660",
-      "syncedAt": "2026-06-06T13:19:32.426Z",
+      "id": "b3b8a4a9-4306-4707-81d8-12e21ad8cf20",
+      "syncedAt": "2026-06-07T06:45:01.942Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "087ba501-1df3-462c-9240-9eadfab52a4e",
+      "syncedAt": "2026-06-07T06:44:39.454Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "f9acdea5-7bd3-46d5-a60c-3e80d03dabb8",
+      "syncedAt": "2026-06-07T06:44:01.166Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "dd37fdd7-fb44-4ef5-be1d-174ea520e64e",
+      "syncedAt": "2026-06-07T06:43:40.511Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "f95e1355-ae18-418f-a852-94e1256a1c30",
+      "syncedAt": "2026-06-07T06:43:01.138Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "917ee4fc-a18a-4f0f-aeca-0b7dea3e6861",
+      "syncedAt": "2026-06-07T06:42:39.425Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "701e80cd-977c-4c96-a44d-e94c13f63782",
+      "syncedAt": "2026-06-07T06:42:01.865Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "db7bdae2-53a2-4bad-b99c-9262e93b7578",
+      "syncedAt": "2026-06-07T06:41:39.422Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "a9148d45-989d-484c-b4d4-dea61ee70226",
+      "syncedAt": "2026-06-07T06:41:01.077Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "767040a7-b8d2-4e39-a209-e7e11b411409",
+      "syncedAt": "2026-06-07T06:40:43.172Z",
       "sourcesChecked": 3,
       "articlesImported": 0,
-      "failures": 3
+      "failures": 0
     },
     {
-      "id": "6120e322-2a7d-4117-8b00-4b860617ede3",
-      "syncedAt": "2026-06-06T13:19:12.539Z",
+      "id": "77028464-e67e-4182-96e5-4caec8bd1074",
+      "syncedAt": "2026-06-07T06:40:20.864Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "58aa2be0-2b68-4f6c-b381-1e96b6b27cf8",
-      "syncedAt": "2026-06-06T13:18:32.409Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "fd6856cf-7d74-4b08-ad58-62c364a22848",
-      "syncedAt": "2026-06-06T13:18:12.540Z",
+      "id": "04e5a562-6e44-4ab1-8e37-25e14f44b4d3",
+      "syncedAt": "2026-06-07T06:40:01.045Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "ea75e98d-b093-4463-a7c6-ddd8ff7807d7",
-      "syncedAt": "2026-06-06T13:17:32.398Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "cb4a2173-5d48-471a-90dd-42541cdf46f9",
-      "syncedAt": "2026-06-06T13:17:12.537Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "aa31345d-6107-49e8-a54c-19e2857e5432",
-      "syncedAt": "2026-06-06T13:16:32.384Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "27c9a94b-fa8f-496f-af0a-0c2c34638614",
-      "syncedAt": "2026-06-06T13:16:13.636Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "50bce904-94d0-4925-94c3-1ca0e8ee2585",
-      "syncedAt": "2026-06-06T13:15:32.373Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "54f03b0e-70cd-432c-838f-ec56787a9b40",
-      "syncedAt": "2026-06-06T13:15:12.536Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "df6303d5-5617-41c8-9009-22dd94a1b122",
-      "syncedAt": "2026-06-06T13:14:32.379Z",
+      "id": "fac37cf7-5b19-45f7-9a39-205ea23184aa",
+      "syncedAt": "2026-06-07T06:39:23.061Z",
       "sourcesChecked": 3,
       "articlesImported": 0,
-      "failures": 3
+      "failures": 0
     },
     {
-      "id": "88371c7a-2df1-4396-baee-2aba1417fc35",
-      "syncedAt": "2026-06-06T13:14:12.536Z",
+      "id": "f1edbe99-4759-415e-9f1e-d63ceb23b1f4",
+      "syncedAt": "2026-06-07T06:39:01.024Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "b41ac9db-bf3d-4af1-8730-efa154b68ed7",
-      "syncedAt": "2026-06-06T13:13:32.368Z",
-      "sourcesChecked": 2,
+      "id": "14aa6e62-61ca-48e4-8d81-7dbf4188deb5",
+      "syncedAt": "2026-06-07T06:38:43.611Z",
+      "sourcesChecked": 3,
       "articlesImported": 0,
-      "failures": 2
+      "failures": 0
     },
     {
-      "id": "0ab60fab-7363-4fbc-ad29-f195b2b1f8fd",
-      "syncedAt": "2026-06-06T13:13:12.535Z",
+      "id": "e2db6d0e-d623-4670-8158-68dd789acb88",
+      "syncedAt": "2026-06-07T06:38:01.029Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "c13b7368-7de0-41a5-aa6c-1a6df8c9d880",
-      "syncedAt": "2026-06-06T13:12:32.354Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "44073743-0f8f-47a2-88cb-46805fd49634",
-      "syncedAt": "2026-06-06T13:12:12.535Z",
+      "id": "b724e106-fa0d-4a43-9fd9-132ab7232790",
+      "syncedAt": "2026-06-07T06:37:41.674Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "3ee70295-eb52-418e-a1af-91c03d94ea30",
-      "syncedAt": "2026-06-06T13:11:32.341Z",
+      "id": "aa577743-64bc-4d8b-8502-ddec84ea3f39",
+      "syncedAt": "2026-06-07T06:37:01.787Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
-      "failures": 2
+      "failures": 0
     },
     {
-      "id": "8800e568-844f-4b6f-a94d-ab28bc312386",
-      "syncedAt": "2026-06-06T13:11:12.535Z",
+      "id": "1c1a1451-21c9-4cc3-9632-94713292cf0e",
+      "syncedAt": "2026-06-07T06:36:41.673Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "f430eb49-1ed7-4b0f-9ccb-1d8ec377b598",
-      "syncedAt": "2026-06-06T13:10:32.326Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "5dbaf736-4402-4153-93ad-36b409ca438a",
-      "syncedAt": "2026-06-06T13:10:12.534Z",
+      "id": "d2e5b570-6f03-4a85-9828-d795749a96e3",
+      "syncedAt": "2026-06-07T06:36:01.030Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "a53d5087-e0af-4f82-8804-5df7fcb6f742",
-      "syncedAt": "2026-06-06T13:09:32.314Z",
+      "id": "1eb6a58c-787c-4906-b7d5-df793332942b",
+      "syncedAt": "2026-06-07T06:35:42.744Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
-      "failures": 2
+      "failures": 0
     },
     {
-      "id": "dec11b0a-23dc-4806-a488-5b4ce6ee5705",
-      "syncedAt": "2026-06-06T13:09:13.602Z",
+      "id": "682abcdf-0a53-4449-99a7-7619dbe2ff77",
+      "syncedAt": "2026-06-07T06:35:01.030Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "be806b4c-26d6-409d-a27d-2de5cb7f45bd",
+      "syncedAt": "2026-06-07T06:34:41.669Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "3133a601-094d-4231-be60-1d7c6ec3817a",
+      "syncedAt": "2026-06-07T06:34:01.780Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "17525c0a-f79f-496f-bfc6-7dd854ac306c",
+      "syncedAt": "2026-06-07T06:33:41.661Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "6461cfcd-928c-454a-ad6e-abbeefe83afb",
+      "syncedAt": "2026-06-07T06:33:01.778Z",
       "sourcesChecked": 1,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "e81c702e-b095-405d-b37e-90259ac08c0e",
-      "syncedAt": "2026-06-06T13:08:32.308Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "0e86edb3-38b6-4252-8bf4-f53efbfbd5e9",
-      "syncedAt": "2026-06-06T13:08:12.535Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "c575bc4f-46c7-4a5e-a391-e934ec4139a1",
-      "syncedAt": "2026-06-06T13:07:32.295Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "e2e2b2dd-b9b2-4cfd-8d2c-54b7476e849f",
-      "syncedAt": "2026-06-06T13:07:12.533Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "893819a3-312e-48c0-8275-de4fb578f21b",
-      "syncedAt": "2026-06-06T13:06:32.286Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "453f91e8-af74-468a-bd73-97bdd3c78d60",
-      "syncedAt": "2026-06-06T13:06:12.531Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "ade3df2e-b4cc-4adb-a973-3998c26e6826",
-      "syncedAt": "2026-06-06T13:05:32.264Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "f50f6099-f102-47b7-84d8-36f3f936368c",
-      "syncedAt": "2026-06-06T13:05:13.984Z",
+      "id": "a0876e57-de0f-482f-8257-83253c48aec4",
+      "syncedAt": "2026-06-07T06:32:42.760Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "6fa115e3-23d5-4c34-b1a4-32c43b77da3a",
-      "syncedAt": "2026-06-06T13:04:32.255Z",
+      "id": "e04bdf72-e83b-4033-939e-1aa35ce15128",
+      "syncedAt": "2026-06-07T06:32:01.030Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "4ca67469-5297-406a-90dd-b1f752ea6d67",
-      "syncedAt": "2026-06-06T13:04:12.531Z",
+      "id": "41458b4e-35ef-4564-b8b4-aa8519ffed21",
+      "syncedAt": "2026-06-07T06:31:41.639Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "b51d1963-3bba-41b2-8c80-6fd8cc1fb675",
-      "syncedAt": "2026-06-06T13:04:05.140Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "f663d400-3f8d-4c44-8c0c-f5e1c0ffcc86",
-      "syncedAt": "2026-06-06T13:03:32.255Z",
+      "id": "ac01c3b1-6390-4289-a8d9-a42577b5e8ce",
+      "syncedAt": "2026-06-07T06:31:01.791Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
-      "failures": 2
+      "failures": 0
     },
     {
-      "id": "2c80d4a9-a67a-4fa7-89bd-0cc59416645c",
-      "syncedAt": "2026-06-06T13:03:12.531Z",
+      "id": "7c4d8828-c200-4058-92a6-34351fa56e04",
+      "syncedAt": "2026-06-07T06:30:41.631Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "cffecea9-5749-4c23-9863-04d10aaf6fe0",
-      "syncedAt": "2026-06-06T13:02:32.232Z",
+      "id": "ffc916dd-a428-4a91-839e-02106fa13eb2",
+      "syncedAt": "2026-06-07T06:30:01.049Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "0f54350d-c81e-4b6a-94de-f4cc93c83074",
+      "syncedAt": "2026-06-07T06:29:43.252Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
-      "failures": 2
+      "failures": 0
     },
     {
-      "id": "20ef3887-9824-4620-ba18-50c2b3b5b32f",
-      "syncedAt": "2026-06-06T13:02:12.530Z",
+      "id": "f1e87db7-ca56-4b33-bec2-3d874205c735",
+      "syncedAt": "2026-06-07T06:29:01.022Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "f6ee5d34-a528-4e83-b0b9-e099fda9618d",
-      "syncedAt": "2026-06-06T13:01:32.226Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "b5bcdc31-f22c-4e5e-99e7-4c830ba53a3c",
-      "syncedAt": "2026-06-06T13:01:12.516Z",
+      "id": "de1f6c61-e838-4536-983b-47d62849e764",
+      "syncedAt": "2026-06-07T06:28:41.620Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "736a967b-7e08-48c4-a192-11ac8ec077a7",
-      "syncedAt": "2026-06-06T13:00:32.218Z",
+      "id": "1b9d6645-e16f-4670-9ae6-f0e58db2dc69",
+      "syncedAt": "2026-06-07T06:28:01.783Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "701bc9b9-9507-4b1e-815d-725125ab27ef",
-      "syncedAt": "2026-06-06T13:00:12.516Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "e5dc577c-c094-471b-ae91-8b64cdaaf830",
-      "syncedAt": "2026-06-06T12:59:32.204Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "820f24aa-c27b-4dc1-a085-0c3b40a4be86",
-      "syncedAt": "2026-06-06T12:59:12.516Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "97104171-774e-4404-a466-dd34b75c3015",
-      "syncedAt": "2026-06-06T12:58:32.191Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "72754b21-1d11-44eb-9486-22deeb6ef711",
-      "syncedAt": "2026-06-06T12:58:12.516Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "dea35f14-0d6d-47d9-bcfa-0076edf559ba",
-      "syncedAt": "2026-06-06T12:57:32.175Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "ed880c7a-ab41-4483-a141-2a5b4694f7e0",
-      "syncedAt": "2026-06-06T12:57:12.516Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "9d4b1982-2d49-4ee3-9210-2798c3f15290",
-      "syncedAt": "2026-06-06T12:56:32.167Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "f4b1c62e-c420-4e4f-ba66-fb9fd50c9730",
-      "syncedAt": "2026-06-06T12:56:12.515Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "6730e609-f8d5-4e83-914f-70ca10fbc124",
-      "syncedAt": "2026-06-06T12:55:32.154Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "07a53c54-bb22-4a00-aa1f-60a953d9718f",
-      "syncedAt": "2026-06-06T12:55:12.516Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "7508d3c9-dbeb-418b-80e9-f6ad8f193b8e",
-      "syncedAt": "2026-06-06T12:54:32.142Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "ff4cb44b-a690-4052-b4f7-3f15ce42f156",
-      "syncedAt": "2026-06-06T12:54:12.513Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "a9f41001-e4fd-439e-a81e-b4dcb6e7d6ca",
-      "syncedAt": "2026-06-06T12:53:32.134Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "930e9cb2-21d9-48ca-a259-64c987af0ece",
-      "syncedAt": "2026-06-06T12:53:12.512Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "c53a29d6-b55e-4fb3-a2be-8072044ae401",
-      "syncedAt": "2026-06-06T12:52:32.122Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "7c073ee2-f106-40d9-8ae9-4601e8fd339a",
-      "syncedAt": "2026-06-06T12:52:12.513Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "aaea4535-0d78-43e6-b5a6-023a9c984474",
-      "syncedAt": "2026-06-06T12:51:32.113Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "4e293ec9-5a6c-474d-8b42-e7da1948f157",
-      "syncedAt": "2026-06-06T12:51:12.512Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "d68a2ce4-2e53-4749-8259-0304c4dbbf96",
-      "syncedAt": "2026-06-06T12:50:32.100Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "336835f2-0c49-48d1-9043-6119bfafaf80",
-      "syncedAt": "2026-06-06T12:50:12.513Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "242ffadb-a63a-49e1-807d-5a5ca5f20fbc",
-      "syncedAt": "2026-06-06T12:49:32.085Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "a834c778-45d6-417c-8e72-bcdb436c05f3",
-      "syncedAt": "2026-06-06T12:49:12.511Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "363352b8-8edd-4210-aaf2-8f2a2ba6539a",
-      "syncedAt": "2026-06-06T12:48:32.075Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "67c21a26-0177-4fbc-9d9b-3261554747ec",
-      "syncedAt": "2026-06-06T12:48:12.510Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "3fbabf41-28e2-4d45-a8cb-798dc55c9684",
-      "syncedAt": "2026-06-06T12:47:32.062Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "f9436b07-2e70-4443-9835-fb5be34bb85c",
-      "syncedAt": "2026-06-06T12:47:12.511Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "b2f9c73d-4d88-4329-bb61-71ebfa93825e",
-      "syncedAt": "2026-06-06T12:46:32.053Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "318c5cfe-46e9-43f1-8606-df2608ce0c79",
-      "syncedAt": "2026-06-06T12:46:12.510Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "08d1ddbd-3049-4a37-a710-77fd8a20a672",
-      "syncedAt": "2026-06-06T12:45:32.037Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "58efaf23-d470-4343-a8c8-34e76e75f200",
-      "syncedAt": "2026-06-06T12:45:12.509Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "c8197594-db68-44db-9e30-689d290889ef",
-      "syncedAt": "2026-06-06T12:44:32.023Z",
-      "sourcesChecked": 1,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "c6ec9431-583a-4c55-b2b2-64ff1d62d32f",
-      "syncedAt": "2026-06-06T12:44:13.941Z",
+      "id": "06cd6f9d-58c7-4d3d-a830-c085a15e80a1",
+      "syncedAt": "2026-06-07T06:27:43.382Z",
       "sourcesChecked": 1,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "6ce0ccd7-d01c-4caa-946a-ee7650a4bcf6",
-      "syncedAt": "2026-06-06T12:43:32.010Z",
-      "sourcesChecked": 1,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "2e87c1b4-ecf3-42ef-bcd5-3cd04fd79049",
-      "syncedAt": "2026-06-06T12:43:12.509Z",
+      "id": "94cb4dab-a573-4b38-87c0-e6cf18908e33",
+      "syncedAt": "2026-06-07T06:27:01.021Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "4f0a496e-1f5a-4f68-a4f3-d5bb06449661",
-      "syncedAt": "2026-06-06T12:42:32.008Z",
+      "id": "3eff17a0-e79c-4d37-a3c6-f44506e92ee6",
+      "syncedAt": "2026-06-07T06:26:43.593Z",
       "sourcesChecked": 2,
       "articlesImported": 0,
-      "failures": 2
+      "failures": 0
     },
     {
-      "id": "1e08b537-fdcb-48e2-b502-42df553252d1",
-      "syncedAt": "2026-06-06T12:42:12.508Z",
+      "id": "b3bf1866-191b-4f66-b3a8-2e61bcb55d23",
+      "syncedAt": "2026-06-07T06:22:26.581Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "d728d58a-0991-4c24-a05a-f97ac01fdcb7",
+      "syncedAt": "2026-06-07T06:07:16.704Z",
       "sourcesChecked": 0,
       "articlesImported": 0,
       "failures": 0
     },
     {
-      "id": "ac517b27-0958-48a7-8cda-d61d092d90cd",
-      "syncedAt": "2026-06-06T12:41:31.990Z",
+      "id": "c09e1f51-84bc-4fcd-9f10-b81a672284a7",
+      "syncedAt": "2026-06-07T06:06:45.078Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "80b35fb4-d8c9-424d-bb1e-0be667d0597d",
+      "syncedAt": "2026-06-07T06:06:37.676Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "5a21a1c8-974e-470a-a091-ac16623d0834",
+      "syncedAt": "2026-06-07T05:22:05.959Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "22af4345-ebf4-4795-98c9-f8cbd3b8f81f",
+      "syncedAt": "2026-06-07T05:21:11.980Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "ce91ac36-865a-4b67-9a4b-7cade8f913c3",
+      "syncedAt": "2026-06-07T05:20:45.235Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "b03dadc5-3cab-4a29-8ff1-9a0a9735ee9d",
+      "syncedAt": "2026-06-07T05:20:12.742Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "6f3a8328-547f-4811-896d-4e71f7820fe1",
+      "syncedAt": "2026-06-07T05:19:45.218Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "f2aecc04-9d6c-45c2-9640-99509bc0c7c1",
+      "syncedAt": "2026-06-07T05:19:11.967Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "9dffd747-2244-4807-9a62-e8335f125c8f",
+      "syncedAt": "2026-06-07T05:18:47.418Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "3058e370-7b89-4944-b09a-b148549bc15b",
+      "syncedAt": "2026-06-07T05:18:17.455Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "91ab8e02-f000-4cab-81b0-23fe6ef298a0",
+      "syncedAt": "2026-06-07T05:18:11.969Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "85a1c4a9-df64-4edf-8c26-20a2a7d6b02e",
+      "syncedAt": "2026-06-07T05:17:19.727Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "09076186-969d-46a0-9895-3567c8012b38",
+      "syncedAt": "2026-06-07T05:17:11.961Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "9a7b1835-bba7-448b-9c7e-dfa50bacba94",
+      "syncedAt": "2026-06-07T05:17:11.332Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "fa4f3aa6-d520-4845-8608-c38081428315",
+      "syncedAt": "2026-06-07T05:16:12.897Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "301a5710-7f4a-4696-ada8-50dd121cfcc8",
+      "syncedAt": "2026-06-07T05:15:11.942Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "2b724131-1110-43e6-b477-3b314a5677b1",
+      "syncedAt": "2026-06-07T05:15:11.321Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "557540bd-eac6-4e2f-ae61-609989404276",
+      "syncedAt": "2026-06-07T05:14:13.188Z",
+      "sourcesChecked": 3,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "3c2af707-e08d-4d4d-b21c-e91ab9d63ffc",
+      "syncedAt": "2026-06-07T05:13:11.936Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "a6225739-bffc-4cb4-8264-e9c108fb0d8b",
+      "syncedAt": "2026-06-07T05:13:11.302Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "028efa04-d47a-4c54-bafa-08567bda26da",
+      "syncedAt": "2026-06-07T05:12:12.687Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "0ff804ee-fe7f-4f36-92e1-3762265e3f06",
+      "syncedAt": "2026-06-07T05:11:11.918Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "d28c78de-ad44-48b8-961e-bf38dc67805d",
+      "syncedAt": "2026-06-07T05:11:11.286Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "97a1afda-da93-4968-ae4f-353f189dce98",
+      "syncedAt": "2026-06-07T05:10:12.675Z",
+      "sourcesChecked": 2,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "f417b986-3cf0-476c-a4bb-3c1f7e774f9d",
+      "syncedAt": "2026-06-07T05:09:11.899Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "9273d276-fcc4-48ef-82f6-73c9a819b3fe",
+      "syncedAt": "2026-06-07T05:09:11.270Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "c7b22532-de8d-4479-be1f-5acb07c54dde",
+      "syncedAt": "2026-06-07T05:08:17.902Z",
+      "sourcesChecked": 3,
+      "articlesImported": 46,
+      "failures": 0
+    },
+    {
+      "id": "1069034b-c210-40fb-9305-6d23bed62e34",
+      "syncedAt": "2026-06-07T05:08:11.892Z",
+      "sourcesChecked": 0,
+      "articlesImported": 0,
+      "failures": 0
+    },
+    {
+      "id": "900c5508-90ec-454c-8cdf-50031a2740f7",
+      "syncedAt": "2026-06-07T05:07:12.906Z",
       "sourcesChecked": 3,
       "articlesImported": 0,
       "failures": 3
-    },
-    {
-      "id": "14a65bc2-a5d9-422e-8a47-9b8491cf3c84",
-      "syncedAt": "2026-06-06T12:41:12.508Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "720a7d68-45ae-48fd-a919-c4bb2c190ca6",
-      "syncedAt": "2026-06-06T12:40:31.979Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "7a2df663-bcf1-4781-b36c-97087f988660",
-      "syncedAt": "2026-06-06T12:40:12.508Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "7a162ddd-c115-4345-92dc-32077ebd27ba",
-      "syncedAt": "2026-06-06T12:39:31.965Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "785e3404-df33-49f1-8e3e-6a47767fc7ce",
-      "syncedAt": "2026-06-06T12:39:12.505Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "4ebc56f4-cad1-4331-a857-5cd26b8f4415",
-      "syncedAt": "2026-06-06T12:38:31.953Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "58058bc8-3b52-430f-920a-851222ddbf00",
-      "syncedAt": "2026-06-06T12:38:12.505Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "5d5199b9-e853-4aa3-9ba7-0820ac7499f4",
-      "syncedAt": "2026-06-06T12:37:31.938Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "e418f117-22c2-46af-8f4d-c5fe02730d1c",
-      "syncedAt": "2026-06-06T12:37:12.505Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "a7a88665-d54f-44a1-ac56-0468db04d386",
-      "syncedAt": "2026-06-06T12:36:31.928Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "630cf947-0cb5-4903-9936-8d810bd65616",
-      "syncedAt": "2026-06-06T12:36:12.504Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "2a96224a-3797-4d9f-8c86-fb1e288984fa",
-      "syncedAt": "2026-06-06T12:35:31.914Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "a29797e9-b3a2-4f18-9ac0-86b64924f3a6",
-      "syncedAt": "2026-06-06T12:35:12.505Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "ac87f5fd-1db9-4bf0-b35d-0ccd8c6dbcd4",
-      "syncedAt": "2026-06-06T12:34:31.900Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "327404ed-593c-4448-ab99-e615855b4da5",
-      "syncedAt": "2026-06-06T12:34:12.504Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "d0dce58e-6484-4538-93e0-aab8495115b0",
-      "syncedAt": "2026-06-06T12:33:31.887Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "dbddea68-19da-4774-8489-f97feb21fb81",
-      "syncedAt": "2026-06-06T12:33:12.502Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "73b89c56-733b-4971-8131-187ae818b6ee",
-      "syncedAt": "2026-06-06T12:32:31.878Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "3b704ab1-cc6b-4d45-81d7-5662d7b99b53",
-      "syncedAt": "2026-06-06T12:32:12.501Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "5037e445-2d9f-4ca7-8c9f-6d6f0ccc703a",
-      "syncedAt": "2026-06-06T12:31:31.866Z",
-      "sourcesChecked": 1,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "6a3f1e9d-fd62-48d7-8fa7-a7e454345262",
-      "syncedAt": "2026-06-06T12:31:13.991Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "bbc9eff0-874d-4691-8c2c-3eee1c41bc9d",
-      "syncedAt": "2026-06-06T12:30:31.849Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "be361c12-9523-40e8-b423-3a49d7570b8d",
-      "syncedAt": "2026-06-06T12:30:12.501Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "9f54d28a-faa8-425e-80b3-c4cae2954475",
-      "syncedAt": "2026-06-06T12:29:31.895Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "b7f60d14-e521-4ebb-b76c-f718f84cad8d",
-      "syncedAt": "2026-06-06T12:29:12.501Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "a7e49b22-9d38-4ea0-a3fc-590a33241e5c",
-      "syncedAt": "2026-06-06T12:28:31.824Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "5a4b05c8-3b6c-4656-9c04-4314324be974",
-      "syncedAt": "2026-06-06T12:28:12.500Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "77f3c5f1-de61-4f97-be4b-b9cc87c5b3cb",
-      "syncedAt": "2026-06-06T12:27:31.811Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "a193905a-7987-4bb1-a6e0-06c1b9455cc3",
-      "syncedAt": "2026-06-06T12:27:12.500Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "87b72629-8228-4632-b9a7-a95b4f85c7ea",
-      "syncedAt": "2026-06-06T12:26:31.805Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "886a835d-b3f8-4c51-9a1a-c5913970a77e",
-      "syncedAt": "2026-06-06T12:26:12.501Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "f9fb2ed1-a93e-4b8b-a434-a7cac52d4b86",
-      "syncedAt": "2026-06-06T12:25:31.785Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "123b8601-44d9-440b-a833-5f70809c32f0",
-      "syncedAt": "2026-06-06T12:25:12.499Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "7eb66eac-1f41-42e3-ad0a-d6f9e708ea1c",
-      "syncedAt": "2026-06-06T12:24:31.775Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "d9dbd175-0998-4d24-9847-a776d63435ac",
-      "syncedAt": "2026-06-06T12:24:12.499Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "6821db16-4576-4aaf-9c73-6723d3ab8bc2",
-      "syncedAt": "2026-06-06T12:23:31.765Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "f1d58109-03d6-4130-9abd-7c33259a2f99",
-      "syncedAt": "2026-06-06T12:23:12.498Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "10a7eaf9-39bb-40d8-b586-9bcc2e3a5ac1",
-      "syncedAt": "2026-06-06T12:22:31.753Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "988aff76-e941-4f96-9df7-cf8c6dfb3a55",
-      "syncedAt": "2026-06-06T12:22:12.499Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "657cbd5b-1f0b-425a-83d8-439cc1926a7a",
-      "syncedAt": "2026-06-06T12:21:31.739Z",
-      "sourcesChecked": 1,
-      "articlesImported": 0,
-      "failures": 1
-    },
-    {
-      "id": "7f3a0b92-4904-40c4-8080-13db15a2ac49",
-      "syncedAt": "2026-06-06T12:21:13.957Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "010385c8-9117-4e74-8934-7aeba0c1c70e",
-      "syncedAt": "2026-06-06T12:20:31.723Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "488c838f-4296-4c46-8830-d92c7b529356",
-      "syncedAt": "2026-06-06T12:20:12.494Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "26f1761f-9073-4762-9d8d-b2f9ebac65eb",
-      "syncedAt": "2026-06-06T12:19:31.732Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "dada3d24-94d4-4e9d-918b-f002ff3ebb84",
-      "syncedAt": "2026-06-06T12:19:12.494Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "0a7498c5-0ef6-4466-830d-603cd3a2985f",
-      "syncedAt": "2026-06-06T12:18:31.722Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "2427965f-6106-4273-b270-e1f598e489e1",
-      "syncedAt": "2026-06-06T12:18:12.495Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "3291037f-3186-40a0-b0c6-52541f5753ea",
-      "syncedAt": "2026-06-06T12:17:31.698Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "45c70858-b426-43f6-8696-8341041c8b34",
-      "syncedAt": "2026-06-06T12:17:12.494Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "5e670913-99c0-4ca2-82ee-ed66735138e5",
-      "syncedAt": "2026-06-06T12:16:31.686Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "22825d19-515f-4d25-998c-50e1609ca024",
-      "syncedAt": "2026-06-06T12:16:12.494Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "a81dd053-a021-44df-adc0-a9475c111ea6",
-      "syncedAt": "2026-06-06T12:15:31.669Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "014e38e0-a875-47b2-a763-1ecc475255e0",
-      "syncedAt": "2026-06-06T12:15:12.493Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "21722ce5-462b-4cab-86ec-34a82db5a744",
-      "syncedAt": "2026-06-06T12:14:31.659Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "9a54a55c-3d7e-4602-b1aa-33d4df466144",
-      "syncedAt": "2026-06-06T12:14:12.494Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "3a212027-4f15-47e2-b90e-f855b70a1237",
-      "syncedAt": "2026-06-06T12:13:31.651Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "e323571a-87b7-4d46-b4d4-21f17307921e",
-      "syncedAt": "2026-06-06T12:13:12.494Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "397d50e3-1919-4b7e-a3be-f67a8ea85c53",
-      "syncedAt": "2026-06-06T12:12:31.632Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "707a9353-75ca-494e-8657-641860ff6556",
-      "syncedAt": "2026-06-06T12:12:12.492Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "ccb1b034-7b5a-4aac-8032-99e8f42d2005",
-      "syncedAt": "2026-06-06T12:11:31.621Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "a767c215-9b47-4d40-b306-79802b1343ba",
-      "syncedAt": "2026-06-06T12:11:12.493Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "a5be5e8f-53ee-42b9-801c-7c5675328ccc",
-      "syncedAt": "2026-06-06T12:10:31.610Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "669f0712-29cf-4ff3-858c-4b09c3098949",
-      "syncedAt": "2026-06-06T12:10:12.492Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "fdc79551-1bd6-4532-aada-3499253af3f3",
-      "syncedAt": "2026-06-06T12:09:31.604Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "c5609282-a264-466b-a1ae-97015b4d015f",
-      "syncedAt": "2026-06-06T12:09:12.493Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "c1f19467-f87d-4f7b-88f7-7a1e28e5e2d8",
-      "syncedAt": "2026-06-06T12:08:31.593Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "0e46fd25-0b80-4c2b-a289-bc810c4d4fba",
-      "syncedAt": "2026-06-06T12:08:12.491Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "62849744-bddf-46d1-83b1-48cc655b5f9d",
-      "syncedAt": "2026-06-06T12:07:31.576Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "489c8397-a7d4-400d-a843-abc9bd8da58c",
-      "syncedAt": "2026-06-06T12:07:12.491Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "b2765ffa-3165-4166-b78d-e31c70c8c948",
-      "syncedAt": "2026-06-06T12:06:31.569Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "51239004-5302-4d6d-af15-2981acb2fdb1",
-      "syncedAt": "2026-06-06T12:06:12.488Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "dab386f0-c36a-473d-8e5d-f857b7f93294",
-      "syncedAt": "2026-06-06T12:05:31.565Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "d1812546-9494-46bc-8fe5-07f678ec66b5",
-      "syncedAt": "2026-06-06T12:05:12.488Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "9513a2a9-9053-4184-baa5-2137fc13bef5",
-      "syncedAt": "2026-06-06T12:04:31.545Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "d3138542-74ff-4cfb-9ec2-48078483d080",
-      "syncedAt": "2026-06-06T12:04:12.488Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "e6efb0fb-bbab-4f3d-8db2-fc599321ac1e",
-      "syncedAt": "2026-06-06T12:03:31.536Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "ac1a0e84-c772-431f-8353-d1d2bdb51a75",
-      "syncedAt": "2026-06-06T12:03:12.489Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "638a8bd3-dca7-4628-aa62-35a4cac1f408",
-      "syncedAt": "2026-06-06T12:02:31.524Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
-    },
-    {
-      "id": "63c305e7-7581-42db-8f1a-7dd28b8ad9aa",
-      "syncedAt": "2026-06-06T12:02:12.489Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "fcd252cc-5b72-4744-a951-0b4962e7b495",
-      "syncedAt": "2026-06-06T12:01:31.508Z",
-      "sourcesChecked": 3,
-      "articlesImported": 0,
-      "failures": 3
-    },
-    {
-      "id": "ae6322c8-3939-42cc-974d-4192e5e51dfe",
-      "syncedAt": "2026-06-06T12:01:12.488Z",
-      "sourcesChecked": 0,
-      "articlesImported": 0,
-      "failures": 0
-    },
-    {
-      "id": "38487394-854a-4da4-a69d-688f74101cbf",
-      "syncedAt": "2026-06-06T12:00:31.495Z",
-      "sourcesChecked": 2,
-      "articlesImported": 0,
-      "failures": 2
     }
   ]
 }

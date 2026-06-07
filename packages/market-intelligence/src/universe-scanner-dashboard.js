@@ -1,4 +1,12 @@
 import { isDatabaseConfigured, query, withTransaction } from "./db.js";
+import {
+  getInstitutionalLiveSource,
+  getLiquidityLiveSource,
+  getMomentumLiveSource,
+  getTrendLiveSource,
+  getVolatilityLiveSource,
+  syncAssetUniverseFromLiveSources
+} from "./universe-live-source-adapter.js";
 
 export const UNIVERSE_SCANNER_TABLES = Object.freeze([
   "market.asset_universe",
@@ -350,12 +358,100 @@ async function aiSummary(run) {
   return rows[0] ? { ...rows[0], scannerConfidence: round(rows[0].scannerConfidence) } : null;
 }
 
+async function liveSourceDashboard() {
+  await syncAssetUniverseFromLiveSources("universe-dashboard-live-source");
+  const [trend, momentum, volatility, liquidity, institutional, pipelineRows] = await Promise.all([
+    getTrendLiveSource(),
+    getMomentumLiveSource(),
+    getVolatilityLiveSource(),
+    getLiquidityLiveSource(),
+    getInstitutionalLiveSource(),
+    pipeline(null)
+  ]);
+  const byAsset = new Map();
+  const merge = (asset, patch) => {
+    if (!asset) return;
+    byAsset.set(asset, { ...(byAsset.get(asset) || { asset, assetClass: patch.assetClass || "Forex" }), ...patch });
+  };
+  for (const row of trend.scores) merge(row.asset, { assetClass: row.assetClass, trendScore: row.trendScore, confidenceScore: row.confidence, lastScanned: row.lastScanned });
+  for (const row of momentum.scores) merge(row.asset, { assetClass: row.assetClass, momentumScore: row.momentumScore, confidenceScore: row.confidence, lastScanned: row.lastScanned });
+  for (const row of volatility.scores) merge(row.asset, { assetClass: row.assetClass, volatilityScore: row.volatilityScore, confidenceScore: row.confidence, lastScanned: row.lastScanned });
+  for (const row of liquidity.scores) merge(row.asset, { assetClass: row.assetClass, liquidityScore: row.liquidityScore, confidenceScore: row.confidence, qualification: row.qualification, lastScanned: row.lastScanned });
+  for (const row of institutional.scores) merge(row.asset, { assetClass: row.assetClass, institutionalScore: row.institutionalScore, confidenceScore: round(row.confidence), qualification: row.qualification, lastScanned: row.lastScanned });
+  const assetRows = [...byAsset.values()].map(row => {
+    const componentScores = [row.trendScore, row.momentumScore, row.volatilityScore, row.liquidityScore, row.institutionalScore].filter(value => value !== null && value !== undefined);
+    const opportunityScore = componentScores.length ? round(componentScores.reduce((sum, value) => sum + Number(value), 0) / componentScores.length) : null;
+    const confidenceScore = row.confidenceScore ?? null;
+    const qualification = row.qualification || (opportunityScore >= 70 ? "Qualified" : opportunityScore >= 40 ? "Watchlist" : "Insufficient Data");
+    return {
+      ...row,
+      brokerSymbol: row.asset,
+      status: "Live Source",
+      lastPrice: null,
+      spread: null,
+      sentimentScore: null,
+      macroScore: null,
+      riskScore: null,
+      complianceScore: null,
+      opportunityScore,
+      confidenceScore,
+      qualification
+    };
+  }).sort((a, b) => Number(b.opportunityScore || 0) - Number(a.opportunityScore || 0));
+  const summaryRow = {
+    assetsScanned: assetRows.length,
+    activeAssets: assetRows.length,
+    qualifiedOpportunities: assetRows.filter(row => row.qualification === "Qualified").length,
+    watchlistOpportunities: assetRows.filter(row => row.qualification === "Watchlist").length,
+    rejectedAssets: assetRows.filter(row => row.qualification === "Rejected").length,
+    blockedAssets: assetRows.filter(row => row.qualification === "Blocked").length,
+    eliteOpportunities: assetRows.filter(row => Number(row.opportunityScore || 0) >= 85).length,
+    highRiskAssets: assetRows.filter(row => ["Rejected", "Blocked"].includes(row.qualification)).length,
+    averageOpportunityScore: avg(assetRows.map(row => row.opportunityScore)),
+    averageConfidenceScore: avg(assetRows.map(row => row.confidenceScore)),
+    scannerHealthScore: avg([trend.scores.length, momentum.scores.length, volatility.scores.length, liquidity.scores.length, institutional.scores.length].map(count => count ? 100 : 0)),
+    card3ReadinessScore: null,
+    status: assetRows.length ? "Ready With Warnings" : "Insufficient Data"
+  };
+  return {
+    sourceMode: "LIVE_MARKET_INTELLIGENCE_SOURCES",
+    mockDataDisabled: true,
+    status: assetRows.length ? "READY" : "EMPTY",
+    schemaReady: true,
+    permissions: permissions(),
+    badges: {
+      productionLive: true,
+      mockDataDisabled: true,
+      liveAssetsOnly: true,
+      lastScan: assetRows.map(row => row.lastScanned).filter(Boolean).sort().at(-1) || null,
+      scannerStatus: "Live Source Bridge",
+      card3Readiness: summaryRow.status
+    },
+    summary: summaryRow,
+    pipeline: pipelineRows.map(row => ({ ...row, status: row.status === "Not Configured" ? "Live Source" : row.status, recordsProcessed: row.recordsProcessed || assetRows.length })),
+    assets: assetRows,
+    topOpportunities: {
+      topBuyCandidates: rankRows(assetRows.slice(0, 10).map(row => ({ asset: row.asset, direction: "Review", opportunityScore: row.opportunityScore, confidence: row.confidenceScore, riskScore: row.riskScore, mainReason: "Live scanner source alignment" }))),
+      topSellCandidates: [],
+      topInstitutionalSetups: rankRows(assetRows.filter(row => row.institutionalScore !== null && row.institutionalScore !== undefined).slice(0, 10).map(row => ({ asset: row.asset, direction: "Institutional", opportunityScore: row.institutionalScore, confidence: row.confidenceScore, riskScore: row.riskScore, mainReason: "Live institutional intelligence" }))),
+      topPropSafeOpportunities: [],
+      topHighConfidenceAssets: rankRows(assetRows.slice().sort((a, b) => Number(b.confidenceScore || 0) - Number(a.confidenceScore || 0)).slice(0, 10).map(row => ({ asset: row.asset, direction: "Review", opportunityScore: row.opportunityScore, confidence: row.confidenceScore, riskScore: row.riskScore, mainReason: "Highest live confidence" })))
+    },
+    rejected: [],
+    health: null,
+    distribution: ["Elite", "Qualified", "Watchlist", "Rejected", "Blocked", "Insufficient Data"].map(qualification => ({ qualification, count: qualification === "Elite" ? summaryRow.eliteOpportunities : assetRows.filter(row => row.qualification === qualification).length })),
+    readiness: { status: summaryRow.status, score: summaryRow.scannerHealthScore, checks: [{ name: "Live source records available", status: assetRows.length ? "Passed" : "Insufficient Data" }] },
+    aiSummary: null,
+    emptyState: assetRows.length ? null : emptyDashboard("EMPTY", "No live scanner source rows are available.").emptyState
+  };
+}
+
 export async function getUniverseScannerDashboard() {
   if (!isDatabaseConfigured()) return emptyDashboard("DATABASE_NOT_CONFIGURED", "DATABASE_URL is not configured.");
   const readinessState = await tableReadiness();
   if (!readinessState.ready) return emptyDashboard("SCHEMA_NOT_READY", `Missing tables: ${readinessState.missing.join(", ")}`, readinessState.missing);
   const run = await latestRun();
-  if (!run) return emptyDashboard("EMPTY", "No universe scan has been completed yet.");
+  if (!run) return liveSourceDashboard();
   const [summaryRow, pipelineRows, assetRows, topRows, rejectedRows, healthRow, distributionRows, aiRow] = await Promise.all([
     summary(run),
     pipeline(run),
@@ -366,6 +462,7 @@ export async function getUniverseScannerDashboard() {
     distribution(run),
     aiSummary(run)
   ]);
+  if (!assetRows.length) return liveSourceDashboard();
   const readinessRow = await readiness(run, summaryRow, pipelineRows);
   return {
     sourceMode: "PRODUCTION_RECORDS_ONLY",
