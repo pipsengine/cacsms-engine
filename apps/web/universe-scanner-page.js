@@ -2524,7 +2524,7 @@ function renderHarnessHeader(data) {
   return `<section class="scanner-dashboard-header">
     <div><p class="scanner-eyebrow">Card 03 / Test Harness</p><h1>Universe Scanner Test Harness Center</h1><p>Safely test live scanner modules, score engines, opportunity ranking, qualified trades, AI insights, orchestration, readiness checks, and Card 3 workflow output.</p></div>
     <aside class="scanner-badge-panel"><span>Production Live</span><span>Mock Data Disabled</span><span>Safe Test Mode</span><span>Read-Only by Default</span><strong>Last Test Run: ${dt(badges.lastTestRun)}</strong></aside>
-    <div class="scanner-action-bar">${actionButton("Run Test", "harness-run", "primary")}${actionButton("Run Selected Tests", "harness-run-selected")}${actionButton("Run Full Scanner Diagnostic", "harness-run-full")}<a href="${API}${testHarnessRoute}/export" target="_blank" rel="noreferrer">Export Test Report</a><a href="/workspace/universe-scanner/logs">Open Logs</a></div>
+    <div class="scanner-action-bar">${actionButton("Run Test", "harness-run", "primary")}${actionButton("Bootstrap Pipeline", "harness-bootstrap")}${actionButton("Run Selected Tests", "harness-run-selected")}${actionButton("Run Full Scanner Diagnostic", "harness-run-full")}<a href="${API}${testHarnessRoute}/export" target="_blank" rel="noreferrer">Export Test Report</a><a href="/workspace/universe-scanner/logs">Open Logs</a></div>
   </section>`;
 }
 
@@ -3316,6 +3316,15 @@ async function runAction(action) {
         return loadTestHarness();
       } catch (reason) {
         state.error = reason.message || "Unable to run selected scanner tests.";
+        return renderHarnessCenter();
+      }
+    }
+    if (action === "harness-bootstrap") {
+      try {
+        await fetchJson(`${testHarnessRoute}/bootstrap-pipeline`, { method: "POST", body: JSON.stringify({}) });
+        return loadTestHarness();
+      } catch (reason) {
+        state.error = reason.message || "Unable to bootstrap scanner pipeline.";
         return renderHarnessCenter();
       }
     }

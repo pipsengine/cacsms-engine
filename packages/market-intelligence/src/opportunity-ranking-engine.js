@@ -455,6 +455,8 @@ export async function runOpportunityRankingAction(action, body = {}, actor = "ap
       await client.query(`INSERT INTO market.asset_opportunity_ranking_runs (run_key, status, completed_at, duration_ms, assets_ranked, health, triggered_by, payload) VALUES ($1,'Completed',now(),$2,$3,$4,$5,$6::jsonb)`, [runKey, Date.now() - started, data.summary.assetsRanked, data.summary.rankingEngineHealth, actor, JSON.stringify({ action })]);
       await client.query(`INSERT INTO market.asset_opportunity_audit_logs (user_name, action, entity_type, reason, payload) VALUES ($1,$2,'opportunity_ranking',$3,$4::jsonb)`, [actor, action, body.reason || null, JSON.stringify({ assetsRanked: data.summary.assetsRanked, status: data.status })]);
     });
+    const { persistOpportunityRankings } = await import("./scanner-pipeline-sync.js");
+    await persistOpportunityRankings(actor);
     return { accepted: true, type: `opportunity_ranking.${action}`, status: data.status, assetsRanked: data.summary.assetsRanked };
   }
   if (action === "recalculate-asset" || action === "send-to-qualified" || action === "create-package") {

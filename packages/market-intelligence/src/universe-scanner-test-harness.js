@@ -1,4 +1,5 @@
 import { isDatabaseConfigured, query, withTransaction } from "./db.js";
+import { bootstrapScannerPipeline, readCalendarEvents } from "./scanner-pipeline-sync.js";
 
 const DEFAULT_SAFETY_MODE = "Read-Only Test";
 const SAFETY_MODES = ["Read-Only Test", "Dry Run", "Transactional Test", "Approved Write Test", "Sandbox Account Test"];
@@ -302,16 +303,29 @@ async function validateNumericRanges(tableName, min, max) {
 }
 
 async function collectDataInputChecks(target) {
+  const brokerMappings = await scalar("SELECT COUNT(*)::int AS value FROM market.broker_symbol_mappings WHERE is_active = true").catch(() => 0)
+    + await scalar("SELECT COUNT(*)::int AS value FROM market.asset_universe WHERE broker_symbol IS NOT NULL AND broker_symbol <> ''");
+  const livePrices = Math.max(
+    await scalar("SELECT COUNT(*)::int AS value FROM market.asset_scan_results WHERE last_price IS NOT NULL"),
+    await scalar("SELECT COUNT(DISTINCT symbol)::int AS value FROM market.market_data_ticks").catch(() => 0)
+  );
+  const historicalCandles = Math.max(
+    await scalar("SELECT COUNT(*)::int AS value FROM market.historical_candles").catch(() => 0),
+    await scalar("SELECT COUNT(*)::int AS value FROM market.historical_market_data").catch(() => 0)
+  );
   const actual = {
     assetUniverse: await scalar("SELECT COUNT(*)::int AS value FROM market.asset_universe"),
     activeAssets: await scalar("SELECT COUNT(*)::int AS value FROM market.asset_universe WHERE active = true OR lower(status) = 'active'"),
     scanEnabledAssets: await scalar("SELECT COUNT(*)::int AS value FROM market.asset_universe WHERE scanner_enabled = true OR scan_enabled = true").catch(() => 0),
-    brokerMappings: await scalar("SELECT COUNT(*)::int AS value FROM market.asset_universe WHERE broker_symbol IS NOT NULL AND broker_symbol <> ''"),
-    livePrices: await scalar("SELECT COUNT(*)::int AS value FROM market.asset_scan_results WHERE last_price IS NOT NULL"),
-    historicalCandles: await scalar("SELECT COUNT(*)::int AS value FROM market.historical_candles").catch(() => 0),
+    brokerMappings,
+    livePrices,
+    historicalCandles,
     sourceHealth: await scalar("SELECT COUNT(*)::int AS value FROM market.source_health_metrics").catch(() => 0),
     dependencies: await scalar("SELECT COUNT(*)::int AS value FROM market.source_dependencies").catch(() => 0),
-    economicEvents: await scalar("SELECT COUNT(*)::int AS value FROM market.economic_events"),
+    economicEvents: Math.max(
+      await scalar("SELECT COUNT(*)::int AS value FROM market.economic_events"),
+      readCalendarEvents().length
+    ),
     newsArticles: await scalar("SELECT COUNT(*)::int AS value FROM market.news_articles").catch(() => 0),
     socialItems: await scalar("SELECT COUNT(*)::int AS value FROM market.social_sentiment_items").catch(() => 0),
     macroInputs: await scalar("SELECT COUNT(*)::int AS value FROM market.macro_data_inputs").catch(() => 0),
@@ -780,8 +794,15 @@ export async function runUniverseScannerSelectedTests({ testIds = [], safetyMode
   return { status: "Completed", results };
 }
 
-export async function runUniverseScannerFullDiagnostic({ safetyMode = DEFAULT_SAFETY_MODE, actor = "api", permissions = [] } = {}) {
+export async function runUniverseScannerFullDiagnostic({ safetyMode = DEFAULT_SAFETY_MODE, actor = "api", permissions = [], bootstrap = true } = {}) {
   const startedAt = new Date().toISOString();
+  if (bootstrap) {
+    try {
+      await bootstrapScannerPipeline({ actor });
+    } catch (error) {
+      console.warn("[universe-scanner-test-harness] pipeline bootstrap skipped:", error.message);
+    }
+  }
   const runs = [];
   for (const testId of FULL_DIAGNOSTIC_SEQUENCE) runs.push(await runUniverseScannerTest({ testId, safetyMode, actor, permissions }));
   const passed = runs.filter(item => item.run.status === "Passed").length;
@@ -821,7 +842,8 @@ export async function runUniverseScannerHarnessAction(action, body = {}, actor =
     return runUniverseScannerTest({ testId: body.testId || testMap[action] || "data-input-readiness", safetyMode, actor, permissions });
   }
   if (action === "run-selected") return runUniverseScannerSelectedTests({ testIds: body.testIds || [], safetyMode, actor, permissions });
-  if (action === "run-full-diagnostic") return runUniverseScannerFullDiagnostic({ safetyMode, actor, permissions });
+  if (action === "run-full-diagnostic") return runUniverseScannerFullDiagnostic({ safetyMode, actor, permissions, bootstrap: body.bootstrap !== false });
+  if (action === "bootstrap-pipeline") return bootstrapScannerPipeline({ actor });
   throw Object.assign(new Error("unsupported_scanner_test_action"), { status: 400 });
 }
 

@@ -2614,7 +2614,7 @@ const server = createServer(async (request, response) => {
       if (request.method === "GET" && ["summary", "catalog", "history", "schedules", "card-readiness"].includes(tail)) {
         return json(response, 200, await getUniverseScannerTestSlice(tail));
       }
-      if (request.method === "POST" && ["run", "run-selected", "run-full-diagnostic", "run-module-test", "run-score-validation", "run-ranking-test", "run-qualified-trades-test", "run-ai-grounding-test", "run-readiness-test"].includes(tail)) {
+      if (request.method === "POST" && ["run", "run-selected", "run-full-diagnostic", "bootstrap-pipeline", "run-module-test", "run-score-validation", "run-ranking-test", "run-qualified-trades-test", "run-ai-grounding-test", "run-readiness-test"].includes(tail)) {
         return json(response, 200, await runUniverseScannerHarnessAction(tail, body, actor, permissions));
       }
     } catch (reason) {
