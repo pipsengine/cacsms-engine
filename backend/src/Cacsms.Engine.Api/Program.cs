@@ -44,6 +44,7 @@ app.UseAuthorization();
 app.MapGet("/health", () => Results.Ok(new { status = "Healthy", service = "Cacsms Engine API" }));
 app.MapWorkflowEndpoints();
 app.MapTradingUniverseEndpoints();
+app.MapDecisioningEndpoints();
 app.MapHub<TradingHub>("/hubs/trading");
 
 app.Run();

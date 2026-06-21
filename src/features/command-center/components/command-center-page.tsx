@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import {
   AlertCircle,
@@ -19,6 +19,7 @@ import {
   CircleDollarSign,
   ClipboardCheck,
   Clock,
+  Bot,
   Download,
   ExternalLink,
   Eye,
@@ -108,33 +109,39 @@ const workflowLinks = [
   { label: "Learning note", href: "/learning-center/trade-journal" },
 ];
 
+const unimplementedPageStatus = { status: "Not Implemented", completion: 0, tone: "red" } as const;
+
 const lifecycleStages = [
-  { number: "01", name: "Market Intelligence", module: "Market Intelligence", submodules: 9, pages: 9, outputs: ["Market Bias", "Session Analysis", "Symbol Opportunities"], pageDetails: ["Market Overview", "Symbol Watchlist", "Multi-Timeframe", "Session Analysis", "Volatility", "Correlation", "News Impact", "Sentiment", "Fundamental"], status: "Designed", completion: 100, tone: "green", icon: Network },
-  { number: "02", name: "Opportunity Detection", module: "AI Decision Engine", submodules: 2, pages: 2, outputs: ["AI Scanned Setups", "Opportunity Ranking"], pageDetails: ["Opportunity Scanner", "AI Recommendations"], status: "Designed", completion: 100, tone: "green", icon: Target },
-  { number: "03", name: "AI Decision Engine", module: "AI Decision Engine", submodules: 8, pages: 8, outputs: ["Trade Recommendation", "Confidence Score", "Risk Assessment"], pageDetails: ["Opportunity Scanner", "Entry Validation", "Mode Selection", "Confidence Score", "Trade Reasoning", "Avoided Trades", "Recommendations", "Decision History"], status: "Designed", completion: 100, tone: "green", icon: Brain },
-  { number: "04", name: "Trade Execution", module: "Trade Execution", submodules: 8, pages: 8, outputs: ["Orders", "Positions", "Broker Confirmation"], pageDetails: ["Symbol Selection", "Order Setup", "Market Orders", "Pending Orders", "Order Validation", "MT5 Routing", "Broker Logs", "Slippage & Spread"], status: "Designed", completion: 100, tone: "green", icon: RadioTower },
-  { number: "05", name: "Trade Management", module: "Trade Management", submodules: 9, pages: 9, outputs: ["Open Trades", "Basket Monitoring", "Position Control"], pageDetails: ["Open Trades", "Basket Trades", "Position Monitoring", "Profit Lock", "Break-Even", "Trailing Stop", "Partial Close", "Exit Manager", "Closed Trades"], status: "Designed", completion: 100, tone: "green", icon: BriefcaseBusiness },
-  { number: "06", name: "Risk Management", module: "Risk Management", submodules: 10, pages: 10, outputs: ["Exposure Monitoring", "Drawdown Control", "Compliance"], pageDetails: ["Risk Dashboard", "Daily Loss", "Weekly Loss", "Monthly Loss", "Drawdown", "Equity Protection", "Margin Protection", "Position Limits", "Correlation Exposure", "Prop Firm Rules"], status: "Designed", completion: 100, tone: "green", icon: ShieldCheck },
-  { number: "07", name: "Profit Lock Engine", module: "Trade Management", submodules: 1, pages: 1, outputs: ["Locked Profit", "Dynamic Protection"], pageDetails: ["Profit Lock Manager"], status: "Designed", completion: 100, tone: "green", icon: Lock },
-  { number: "08", name: "Exit Manager", module: "Trade Management", submodules: 2, pages: 2, outputs: ["Closed Trades", "Exit Decisions"], pageDetails: ["Exit Manager", "Closed Trades"], status: "Designed", completion: 100, tone: "green", icon: CheckCircle2 },
-  { number: "09", name: "Performance Analytics", module: "Performance Analytics", submodules: 10, pages: 10, outputs: ["KPIs", "Performance Metrics"], pageDetails: ["Profit & Loss", "Win/Loss", "Drawdown", "Symbols", "Strategies", "Sessions", "Trade Duration", "Risk Reward", "Equity Curve", "Monthly Returns"], status: "Designed", completion: 100, tone: "green", icon: Gauge },
-  { number: "10", name: "Reporting Engine", module: "Reports", submodules: 9, pages: 9, outputs: ["Reports", "Exports"], pageDetails: ["Daily Report", "Weekly Report", "Monthly Report", "Trade History", "Risk Report", "Broker Report", "User Activity", "AI Decisions", "Export Center"], status: "Designed", completion: 100, tone: "green", icon: FileSpreadsheet },
-  { number: "11", name: "Alert Engine", module: "Alerts & Notifications", submodules: 8, pages: 8, outputs: ["Notifications", "Risk Alerts"], pageDetails: ["Trade Alerts", "Risk Alerts", "Profit Lock", "Connection", "News", "Drawdown", "Channel Settings", "Alert History"], status: "Designed", completion: 100, tone: "green", icon: Bell },
-  { number: "12", name: "Learning Center", module: "Learning Center", submodules: 9, pages: 9, outputs: ["Trade Lessons", "AI Explanations"], pageDetails: ["Trade Journal", "Case Studies", "Winning Trades", "Losing Trades", "Market Replay", "Strategy Lessons", "AI Decisions", "Knowledge Base", "Training Materials"], status: "Testing", completion: 70, tone: "orange", icon: BookOpen },
-  { number: "13", name: "Audit Trail", module: "Administration / Security", submodules: 4, pages: 4, outputs: ["Audit Records", "Compliance Logs"], pageDetails: ["Admin Audit Logs", "Security Logs", "Security Audit Trail", "Compliance Rules"], status: "Blocked", completion: 10, tone: "red", icon: ClipboardCheck },
+  { number: "01", name: "Market Intelligence", module: "Market Intelligence", submodules: 27, pages: 27, outputs: ["Market Bias", "Top-Down Bias", "Session Analysis", "Symbol Opportunities"], pageDetails: ["Market Overview", "Symbol Watchlist", "Multi-Timeframe", "Multi-Timeframe Bias", "Candle Direction", "Structure Alignment", "HTF Conflict Detector", "Execution Timeframe Confirmation", "Bias Alignment Gate", "H8 Session Candles", "D1 Candle Predictor", "Session Analysis", "Volatility", "Correlation", "News Impact", "Sentiment", "Market Regimes", "Historical Similarity", "No-Trade Conditions"], ...unimplementedPageStatus, icon: Network },
+  { number: "02", name: "Macro Intelligence", module: "Macro Intelligence", submodules: 12, pages: 12, outputs: ["Macro Bias", "Rate Differential", "Currency Strength Ranking"], pageDetails: ["Macro Overview", "COT Positioning", "COT Crowding", "Interest Rate Differential", "Central Bank Bias", "Yield Spread Monitor", "Currency Strength Matrix", "Strong-vs-Weak Selector", "Macro Risk Calendar", "Macro Bias Score", "Macro + Technical Confluence", "Data Source Health"], ...unimplementedPageStatus, icon: BarChart3 },
+  { number: "03", name: "Advanced Algorithms", module: "Advanced Algorithms", submodules: 17, pages: 17, outputs: ["Top-Down Bias", "Historical Similarity", "Candle Intelligence", "D1 Projection", "Ensemble Prediction"], pageDetails: ["Algorithm Overview", "Market Regime Classifier", "Feature Engineering", "Multi-Timeframe Bias Model", "Historical Pattern Memory", "Candle Intelligence", "H8-to-D1 Predictor", "Ensemble Prediction", "Bayesian Confidence", "Probability Calibration", "Walk-Forward Validation", "Anomaly Detection", "Execution Quality", "Strategy Decay", "RL Trade Manager", "Quantum-Inspired Optimizer", "Model Governance"], ...unimplementedPageStatus, icon: Bot },
+  { number: "04", name: "Opportunity Detection", module: "AI Decision Engine", submodules: 2, pages: 2, outputs: ["AI Scanned Setups", "Opportunity Ranking"], pageDetails: ["Opportunity Scanner", "AI Recommendations"], ...unimplementedPageStatus, icon: Target },
+  { number: "05", name: "AI Decision Engine", module: "AI Decision Engine", submodules: 36, pages: 36, outputs: ["Trade Recommendation", "Confidence Score", "Risk Assessment"], pageDetails: ["Opportunity Scanner", "Entry Validation", "Mode Selection", "Confidence Score", "MTF Bias Gate", "HTF Conflict Gate", "Macro Bias Gate", "Historical Similarity Gate", "Candle Intelligence Gate", "H8-to-D1 Gate", "Currency Strength Gate", "Rate Differential Gate", "COT Gate", "Advanced Algorithm Gate", "Ensemble Prediction Gate", "Bayesian Gate", "Calibration Gate", "Anomaly Gate", "Execution Quality Gate", "Institutional Prediction", "Probability Forecast", "85% Gate", "Confidence Decay", "Liquidity Target", "Prediction Tracking", "Strategy Gate", "Market Regime Gate", "Risk Gate", "News Gate", "Broker Gate", "AI Confidence Gate", "No-Trade Engine", "Recommendations", "Decision History"], ...unimplementedPageStatus, icon: Brain },
+  { number: "06", name: "Trade Execution", module: "Trade Execution", submodules: 12, pages: 12, outputs: ["Orders", "Positions", "Broker Confirmation"], pageDetails: ["Symbol Selection", "Order Setup", "Market Orders", "Pending Orders", "Order Validation", "Execution Approval", "Spread Gate", "Slippage Gate", "Broker Readiness", "MT5 Routing", "Broker Logs", "Slippage & Spread"], ...unimplementedPageStatus, icon: RadioTower },
+  { number: "07", name: "Trade Management", module: "Trade Management", submodules: 13, pages: 13, outputs: ["Open Trades", "Basket Monitoring", "Position Control"], pageDetails: ["Open Trades", "Basket Trades", "Position Monitoring", "Profit Lock", "Break-Even", "Trailing Stop", "Partial Close", "Basket Profit Protection", "Equity Protection", "Session Close Exits", "AI Exit Validation", "Exit Manager", "Closed Trades"], ...unimplementedPageStatus, icon: BriefcaseBusiness },
+  { number: "08", name: "Risk Management", module: "Risk Management", submodules: 20, pages: 20, outputs: ["Exposure Monitoring", "Drawdown Control", "Compliance"], pageDetails: ["Risk Dashboard", "Daily Loss", "Weekly Loss", "Monthly Loss", "Drawdown", "Equity Protection", "Margin Protection", "Position Limits", "Correlation Exposure", "Prop Firm Rules", "Risk-Off Engine", "No-Trade Rules", "Equity Growth Guardrails", "Compounding Control", "Daily Profit Lockdown", "XAUUSD Risk Limits", "Loss Guard", "Auto-Disable", "Expectancy Protection", "Exposure Reduction"], ...unimplementedPageStatus, icon: ShieldCheck },
+  { number: "09", name: "Profit Lock Engine", module: "Trade Management", submodules: 1, pages: 1, outputs: ["Locked Profit", "Dynamic Protection"], pageDetails: ["Profit Lock Manager"], ...unimplementedPageStatus, icon: Lock },
+  { number: "10", name: "Exit Manager", module: "Trade Management", submodules: 2, pages: 2, outputs: ["Closed Trades", "Exit Decisions"], pageDetails: ["Exit Manager", "Closed Trades"], ...unimplementedPageStatus, icon: CheckCircle2 },
+  { number: "11", name: "Performance Analytics", module: "Performance Analytics", submodules: 19, pages: 19, outputs: ["KPIs", "Performance Metrics"], pageDetails: ["Profit & Loss", "Win/Loss", "Drawdown", "Symbols", "Strategies", "Sessions", "Trade Duration", "Risk Reward", "Expectancy", "Profit Factor", "Recovery Factor", "Consecutive Losses", "Strategy Decay", "Risk-Adjusted Performance", "30% Growth Tracking", "60% Win Rate", "85% Prediction Accuracy", "Equity Curve", "Monthly Returns"], ...unimplementedPageStatus, icon: Gauge },
+  { number: "12", name: "Reporting Engine", module: "Reports", submodules: 9, pages: 9, outputs: ["Reports", "Exports"], pageDetails: ["Daily Report", "Weekly Report", "Monthly Report", "Trade History", "Risk Report", "Broker Report", "User Activity", "AI Decisions", "Export Center"], ...unimplementedPageStatus, icon: FileSpreadsheet },
+  { number: "13", name: "Alert Engine", module: "Alerts & Notifications", submodules: 8, pages: 8, outputs: ["Notifications", "Risk Alerts"], pageDetails: ["Trade Alerts", "Risk Alerts", "Profit Lock", "Connection", "News", "Drawdown", "Channel Settings", "Alert History"], ...unimplementedPageStatus, icon: Bell },
+  { number: "14", name: "Learning Center", module: "Learning Center", submodules: 15, pages: 15, outputs: ["Trade Lessons", "AI Explanations"], pageDetails: ["Trade Journal", "Trade Explanations", "Market Snapshots", "Entry/Exit Review", "Strategy Outcome Review", "Risk Decision Review", "Case Studies", "Winning Trades", "Losing Trades", "Market Replay", "Strategy Lessons", "AI Decisions", "Model Improvement Queue", "Knowledge Base", "Training Materials"], ...unimplementedPageStatus, icon: BookOpen },
+  { number: "15", name: "Audit Trail", module: "Administration / Security", submodules: 4, pages: 4, outputs: ["Audit Records", "Compliance Logs"], pageDetails: ["Admin Audit Logs", "Security Logs", "Security Audit Trail", "Compliance Rules"], ...unimplementedPageStatus, icon: ClipboardCheck },
 ];
 
 const traceabilityRecords = ["Trade ID", "Decision ID", "Order ID", "Position ID", "Close ID", "Report ID", "Lesson ID", "Audit ID"];
 
 const supportServices = [
-  { name: "Accounts & Brokers", count: 7, completion: 100, items: ["Trading Accounts", "MT5 Terminals", "Broker Connections"], tone: "slate" },
-  { name: "Strategy Management", count: 9, completion: 100, items: ["Strategy Library", "Strategy Conditions", "Performance"], tone: "orange" },
-  { name: "Backtesting & Simulation", count: 8, completion: 90, items: ["Backtest Dashboard", "Market Replay", "Optimization"], tone: "pink" },
-  { name: "User Management", count: 8, completion: 95, items: ["Users", "Roles", "Permissions"], tone: "sky" },
-  { name: "Administration", count: 9, completion: 85, items: ["System Settings", "Trading Settings"], tone: "zinc" },
-  { name: "Security & Compliance", count: 8, completion: 80, items: ["Authentication", "RBAC", "Audit Controls"], tone: "red" },
-  { name: "System Monitoring", count: 8, completion: 90, items: ["MT5 Bridge Health", "API Monitoring", "Logs"], tone: "cyan" },
-  { name: "Data Management", count: 4, completion: 75, items: ["SQL Server", "Redis", "Backup", "Synchronization"], tone: "blue" },
+  { name: "Accounts & Brokers", count: 7, completion: 0, items: ["Trading Accounts", "MT5 Terminals", "Broker Connections"], tone: "red" },
+  { name: "Macro Intelligence", count: 12, completion: 0, items: ["COT Positioning", "Interest Rates", "Currency Strength"], tone: "red" },
+  { name: "Advanced Algorithms", count: 16, completion: 0, items: ["Historical Memory", "Candle Intelligence", "H8-to-D1 Predictor"], tone: "red" },
+  { name: "Strategy Management", count: 28, completion: 0, items: ["Strategy Library", "Best Strategy Set", "A-Grade Setups"], tone: "red" },
+  { name: "Backtesting & Simulation", count: 12, completion: 0, items: ["Backtest Dashboard", "Walk-Forward", "Live Shadow"], tone: "red" },
+  { name: "User Management", count: 8, completion: 0, items: ["Users", "Roles", "Permissions"], tone: "red" },
+  { name: "Administration", count: 9, completion: 0, items: ["System Settings", "Trading Settings"], tone: "red" },
+  { name: "Security & Compliance", count: 8, completion: 0, items: ["Authentication", "RBAC", "Audit Controls"], tone: "red" },
+  { name: "System Monitoring", count: 8, completion: 0, items: ["MT5 Bridge Health", "API Monitoring", "Logs"], tone: "red" },
+  { name: "Data Management", count: 4, completion: 0, items: ["SQL Server", "Redis", "Backup", "Synchronization"], tone: "red" },
 ];
 
 const designPrinciples = [
@@ -148,7 +155,7 @@ const designPrinciples = [
   { title: "Modular & Scalable", detail: "Services can evolve independently.", icon: SlidersHorizontal },
 ];
 
-type DecisionStatus = "Not Started" | "Pending" | "In Progress" | "Completed";
+type DecisionStatus = "Not Implemented" | "Not Started" | "Pending" | "In Progress" | "Completed";
 
 type DecisionStage = {
   number: string;
@@ -172,6 +179,7 @@ type DecisionPhase = {
 };
 
 const approvedTradingSymbols = ["GBPUSD", "EURUSD", "AUDUSD", "USDJPY", "GBPJPY", "EURJPY", "USDCAD", "XAUUSD", "US30", "SP500", "NASDAQ100"];
+const unimplementedDecisionStatus = { status: "Not Implemented", progress: 0 } as const;
 
 const decisionPhases: DecisionPhase[] = [
   {
@@ -179,15 +187,26 @@ const decisionPhases: DecisionPhase[] = [
     goal: "Identify high-probability opportunities across the selected trading universe.",
     output: "Potential Trade Setup Identified",
     stages: [
-      { number: "01", title: "Trading Mode Selection", route: "/decision-workflow/trading-mode-selection", module: "Trading Control Center", description: "Select and validate the active trading mode before analysis begins.", actionsLabel: "Modes / Actions", actions: ["Institutional Mode", "Retail Mode", "Hybrid Mode", "Auto Mode", "Validate enabled mode", "Confirm permission", "Log mode selection"], output: "Active Trading Mode", status: "Completed", progress: 100 },
-      { number: "02", title: "Symbol Selection", route: "/decision-workflow/symbol-selection", module: "Symbol Selection Engine", description: "Scan the approved symbol universe and select the candidate symbol.", actionsLabel: "Actions", actions: ["Scan approved 11 symbols", "Filter eligible candidates", "Prioritize XAUUSD", "Select candidate symbol"], output: "Candidate Symbol", status: "Completed", progress: 100 },
-      { number: "03", title: "Symbol Eligibility Check", route: "/decision-workflow/symbol-eligibility", module: "Symbol Eligibility Engine", description: "Confirm the candidate symbol can be traded under live account constraints.", actionsLabel: "Checks", actions: ["Market open", "Spread acceptable", "Volatility acceptable", "News restriction", "Daily symbol limit", "Basket exposure", "Prop firm restriction", "Risk permission"], output: "Eligible or Not Eligible", status: "Completed", progress: 100 },
-      { number: "04", title: "Symbol Classification", route: "/decision-workflow/symbol-classification", module: "Symbol Classification Engine", description: "Classify symbol type and apply trading-style restrictions.", actionsLabel: "Classification / Rules", actions: ["Forex", "Commodity", "Index", "XAUUSD scalping-enabled", "Indices: US30, SP500, NASDAQ100", "Others: Forex"], output: "Symbol Category and Trading Rule", status: "Completed", progress: 100 },
-      { number: "05", title: "Analysis Path Selection", route: "/decision-workflow/analysis-path-selection", module: "Analysis Router", description: "Route the opportunity through institutional, retail, hybrid, or auto analysis.", actionsLabel: "Paths / Rules", actions: ["Institutional Path", "Retail Path", "Hybrid Path", "Auto selects dynamically", "Hybrid uses confluence"], output: "Selected Analysis Framework", status: "Completed", progress: 100 },
-      { number: "06A", title: "Institutional Analysis", route: "/decision-workflow/institutional-analysis", module: "Institutional Engine", description: "Run smart-money and institutional setup checks.", actionsLabel: "Checks", actions: ["Liquidity analysis", "Order blocks", "Fair value gaps", "Stop hunts", "Market structure", "Smart money concepts", "Institutional bias"], output: "Institutional Setup", status: "Completed", progress: 100 },
-      { number: "06B", title: "Retail Analysis", route: "/decision-workflow/retail-analysis", module: "Retail Engine", description: "Run retail technical-analysis and timing checks.", actionsLabel: "Checks", actions: ["Top-down analysis", "Support and resistance", "Trend direction", "Candlestick confirmation", "Pullback detection", "Multi-timeframe bias", "Entry timing"], output: "Retail Setup", status: "Completed", progress: 100 },
-      { number: "06C", title: "Hybrid Confluence", route: "/decision-workflow/hybrid-confluence", module: "Hybrid Confluence Engine", description: "Merge institutional and retail evidence into a single confluence score.", actionsLabel: "Checks", actions: ["Institutional bias", "Retail bias", "Multi-timeframe confluence", "Entry timing", "Risk/reward check", "Session alignment"], output: "Hybrid Setup", status: "In Progress", progress: 65 },
-      { number: "07", title: "Opportunity Detection", route: "/decision-workflow/opportunity-detection", module: "Opportunity Scanner", description: "Detect, rank, and pass a potential setup into validation.", actionsLabel: "Detection / Actions", actions: ["Buy opportunity", "Sell opportunity", "Watchlist setup", "Detect valid setup", "Rank opportunity", "Assign confidence", "Pass to validation"], output: "Potential Trade Setup", status: "Pending", progress: 20 },
+      { number: "01", title: "Trading Mode Selection", route: "/decision-workflow/trading-mode-selection", module: "Trading Control Center", description: "Select and validate one of the three trading modes before analysis begins.", actionsLabel: "Modes / Actions", actions: ["Institutional Mode", "Retail Mode", "Hybrid Mode", "Validate selected mode", "Confirm permission", "Log mode selection"], output: "Active Trading Mode", ...unimplementedDecisionStatus },
+      { number: "02", title: "Symbol Selection", route: "/decision-workflow/symbol-selection", module: "Symbol Selection Engine", description: "Scan the approved symbol universe and select the candidate symbol.", actionsLabel: "Actions", actions: ["Scan approved 11 symbols", "Filter eligible candidates", "Prioritize XAUUSD", "Select candidate symbol"], output: "Candidate Symbol", ...unimplementedDecisionStatus },
+      { number: "03", title: "Symbol Eligibility Check", route: "/decision-workflow/symbol-eligibility", module: "Symbol Eligibility Engine", description: "Confirm the candidate symbol can be traded under live account constraints.", actionsLabel: "Checks", actions: ["Market open", "Spread acceptable", "Volatility acceptable", "News restriction", "Daily symbol limit", "Basket exposure", "Prop firm restriction", "Risk permission"], output: "Eligible or Not Eligible", ...unimplementedDecisionStatus },
+      { number: "04", title: "Symbol Classification", route: "/decision-workflow/symbol-classification", module: "Symbol Classification Engine", description: "Classify symbol type and apply trading-style restrictions.", actionsLabel: "Classification / Rules", actions: ["Forex", "Commodity", "Index", "XAUUSD scalping-enabled", "Indices: US30, SP500, NASDAQ100", "Others: Forex"], output: "Symbol Category and Trading Rule", ...unimplementedDecisionStatus },
+      { number: "05", title: "Macro Data Intake", route: "/decision-workflow/macro-data-intake", module: "Macro Intelligence", description: "Load the slow-bias data package before technical analysis starts.", actionsLabel: "Data / Sources", actions: ["COT positioning", "Interest-rate data", "Central bank bias", "Yield spread direction", "Macro calendar", "Data freshness check"], output: "Macro Data Snapshot", ...unimplementedDecisionStatus },
+      { number: "06", title: "Currency Strength Matrix", route: "/decision-workflow/currency-strength-matrix", module: "Macro Intelligence", description: "Rank base and quote currencies to prioritize strong-vs-weak opportunities.", actionsLabel: "Matrix Checks", actions: ["Rank USD, EUR, GBP, JPY, CHF, CAD, AUD, NZD", "Strongest currency", "Weakest currency", "Pair strength spread", "Avoid strong-vs-strong", "Avoid weak-vs-weak"], output: "Currency Strength Ranking", ...unimplementedDecisionStatus },
+      { number: "07", title: "Macro Confluence Gate", route: "/decision-workflow/macro-confluence-gate", module: "Macro Intelligence", description: "Convert COT, rates, central-bank bias, and currency strength into a macro approval score.", actionsLabel: "Gates", actions: ["COT bias score", "Rate differential score", "Central bank score", "Currency strength score", "Macro risk filter", "Approve, penalize, or block"], output: "Macro Bias Score", ...unimplementedDecisionStatus },
+      { number: "08", title: "Analysis Path Selection", route: "/decision-workflow/analysis-path-selection", module: "Analysis Router", description: "Route the opportunity through institutional, retail, or hybrid analysis after macro bias is known.", actionsLabel: "Paths / Rules", actions: ["Institutional Path", "Retail Path", "Hybrid Path", "Institutional mimics institutional order flow", "Retail mimics retail technical behavior", "Hybrid requires macro, institutional, and retail confluence"], output: "Selected Analysis Framework", ...unimplementedDecisionStatus },
+      { number: "09", title: "Top-Down Bias Analysis", route: "/decision-workflow/top-down-bias-analysis", module: "Multi-Timeframe Bias Engine", description: "Score MN, W1, D1, H8, H4, H1, and M15 candle/structure direction into a final directional bias.", actionsLabel: "Timeframe Stack", actions: ["MN macro direction", "W1 institutional swing", "D1 daily intent", "H8 session-cycle direction", "H4 structure", "H1 intraday bias", "M15 execution confirmation", "HTF conflict detection"], output: "Directional Bias and Trade Permission", ...unimplementedDecisionStatus },
+      { number: "10A", title: "Institutional Analysis", route: "/decision-workflow/institutional-analysis", module: "Institutional Engine", description: "Run smart-money and institutional setup checks.", actionsLabel: "Checks", actions: ["Liquidity analysis", "Order blocks", "Fair value gaps", "Stop hunts", "Market structure", "Smart money concepts", "Institutional bias"], output: "Institutional Setup", ...unimplementedDecisionStatus },
+      { number: "10B", title: "Retail Analysis", route: "/decision-workflow/retail-analysis", module: "Retail Engine", description: "Run retail technical-analysis and timing checks.", actionsLabel: "Checks", actions: ["Top-down analysis", "Support and resistance", "Trend direction", "Candlestick confirmation", "Pullback detection", "Multi-timeframe bias", "Entry timing"], output: "Retail Setup", ...unimplementedDecisionStatus },
+      { number: "09C", title: "Hybrid Confluence", route: "/decision-workflow/hybrid-confluence", module: "Hybrid Confluence Engine", description: "Merge macro, institutional, and retail evidence into a single confluence score.", actionsLabel: "Checks", actions: ["Macro bias", "Currency strength", "Institutional bias", "Retail bias", "Multi-timeframe confluence", "Entry timing", "Risk/reward check", "Session alignment"], output: "Hybrid Setup", ...unimplementedDecisionStatus },
+      { number: "10", title: "Historical Pattern Memory", route: "/decision-workflow/historical-pattern-memory", module: "Advanced Algorithms", description: "Compare the current setup against similar historical contexts and outcomes.", actionsLabel: "Similarity Checks", actions: ["Symbol context", "Session context", "Regime match", "Macro match", "Candle structure match", "Liquidity behavior match", "Outcome distribution"], output: "Historical Similarity Score", ...unimplementedDecisionStatus },
+      { number: "11", title: "Candle Intelligence", route: "/decision-workflow/candle-intelligence", module: "Advanced Algorithms", description: "Classify candle pressure, rejection, absorption, continuation, exhaustion, and displacement.", actionsLabel: "Candle Features", actions: ["Body size", "Wick ratios", "Close location", "Sequence direction", "Displacement", "Rejection", "Indecision", "Liquidity grab"], output: "Candle Intelligence Score", ...unimplementedDecisionStatus },
+      { number: "12", title: "H8-to-D1 Direction Predictor", route: "/decision-workflow/h8-d1-direction-predictor", module: "Advanced Algorithms", description: "Use Asian, London, and New York H8 session candles to project the developing D1 candle direction.", actionsLabel: "H8 Session Logic", actions: ["Asian range", "London expansion", "New York continuation", "Session high/low sweep", "D1 body projection", "D1 wick risk"], output: "Projected D1 Direction", ...unimplementedDecisionStatus },
+      { number: "13", title: "Advanced Feature Engineering", route: "/decision-workflow/advanced-feature-engineering", module: "Advanced Algorithms", description: "Build the decision feature vector from macro, market, institutional, retail, candle, history, risk, and execution inputs.", actionsLabel: "Feature Inputs", actions: ["Regime features", "Macro features", "Historical features", "Candle features", "H8/D1 features", "Institutional features", "Retail features", "Risk features"], output: "Decision Feature Vector", ...unimplementedDecisionStatus },
+      { number: "14", title: "Ensemble Prediction", route: "/decision-workflow/ensemble-prediction", module: "Advanced Algorithms", description: "Combine rule-based, statistical, historical, candle, and model-driven predictors into one ensemble probability.", actionsLabel: "Models / Checks", actions: ["Rules model", "Statistical model", "Historical memory model", "Candle model", "Regime model", "Macro model", "Weighted ensemble"], output: "Ensemble Prediction Score", ...unimplementedDecisionStatus },
+      { number: "15", title: "Bayesian Confidence Update", route: "/decision-workflow/bayesian-confidence-update", module: "Advanced Algorithms", description: "Update trade confidence as new evidence confirms or weakens the setup.", actionsLabel: "Evidence Updates", actions: ["Prior probability", "Historical evidence", "Candle evidence", "H8/D1 evidence", "Macro evidence", "Institutional evidence", "Retail evidence", "Posterior confidence"], output: "Bayesian Confidence Score", ...unimplementedDecisionStatus },
+      { number: "16", title: "Probability Calibration", route: "/decision-workflow/probability-calibration", module: "Advanced Algorithms", description: "Validate that stated confidence matches historical out-of-sample outcomes.", actionsLabel: "Calibration Checks", actions: ["Historical hit rate", "Prediction bucket accuracy", "Walk-forward result", "Brier score", "Calibration penalty", "Confidence cap"], output: "Calibrated Probability", ...unimplementedDecisionStatus },
+      { number: "17", title: "Opportunity Detection", route: "/decision-workflow/opportunity-detection", module: "Opportunity Scanner", description: "Detect, rank, and pass a potential setup into validation.", actionsLabel: "Detection / Actions", actions: ["Buy opportunity", "Sell opportunity", "Watchlist setup", "Detect valid setup", "Rank opportunity", "Assign confidence", "Pass to validation"], output: "Potential Trade Setup", ...unimplementedDecisionStatus },
     ],
   },
   {
@@ -196,12 +215,14 @@ const decisionPhases: DecisionPhase[] = [
     input: "Potential Trade Setup Identified",
     output: "Open Position or No-Trade Log",
     stages: [
-      { number: "08", title: "Opportunity Validation", route: "/decision-workflow/opportunity-validation", module: "Opportunity Validation Engine", description: "Validate market structure, timing, and event risk before decisioning.", actionsLabel: "Checks", actions: ["Market structure", "Pullback or retracement", "Candle confirmation", "Volume confirmation", "Session timing", "Spread check", "News impact", "Entry timing"], output: "Valid Setup or Rejected Setup", status: "Completed", progress: 100 },
-      { number: "09", title: "Risk Assessment", route: "/decision-workflow/risk-assessment", module: "Risk Engine", description: "Score the setup against position, drawdown, margin, and exposure rules.", actionsLabel: "Checks", actions: ["Position size", "Risk percentage", "Drawdown impact", "Margin impact", "Correlation exposure", "Basket exposure", "Account exposure"], output: "Risk Score", status: "Completed", progress: 100 },
-      { number: "10", title: "AI Decision Engine", route: "/decision-workflow/ai-decision-engine", module: "AI Decision Engine", description: "Generate the formal AI decision record and trade intent.", actionsLabel: "Decision Record", actions: ["BUY / SELL / WAIT", "NO TRADE / REJECTED", "Selected mode", "Selected symbol", "Trading style", "Confidence score", "Risk score", "Direction", "Reason", "Holding time", "Strategy used", "Entry timing reason"], output: "AI Decision", status: "In Progress", progress: 70 },
-      { number: "11", title: "Risk Approval", route: "/decision-workflow/risk-approval", module: "Risk Approval Engine", description: "Approve or block the decision using account and prop-firm guardrails.", actionsLabel: "Checks", actions: ["Daily loss limit", "Weekly loss limit", "Monthly loss limit", "Drawdown limit", "Account exposure", "Margin level", "Basket limit", "Prop firm rules"], output: "Approved or Blocked", status: "In Progress", progress: 60 },
-      { number: "12", title: "Execution Approval", route: "/decision-workflow/execution-approval", module: "Execution Approval Engine", description: "Confirm broker, MT5, spread, order, and account readiness.", actionsLabel: "Checks", actions: ["MT5 connection", "Broker status", "Spread condition", "Slippage tolerance", "Order type", "Lot size", "Stop loss", "Take profit", "Account mode"], output: "Ready, Wait, or Cancel", status: "In Progress", progress: 50 },
-      { number: "13", title: "Trade Execution / No-Trade Log", route: "/decision-workflow/trade-execution", module: "Trade Execution Engine", description: "Execute approved orders or preserve rejected decisions for learning and audit.", actionsLabel: "If Approved / Not Approved", actions: ["Place market, limit, or stop order", "Route order to MT5", "Confirm broker response", "Generate order ID", "Generate position ID", "Log no-trade reason", "Save rejected decision", "Send to learning and audit"], output: "Order Executed or No-Trade Logged", status: "Pending", progress: 10 },
+      { number: "18", title: "Opportunity Validation", route: "/decision-workflow/opportunity-validation", module: "Opportunity Validation Engine", description: "Validate market structure, macro alignment, historical/candle confidence, timing, and event risk before decisioning.", actionsLabel: "Checks", actions: ["Macro alignment", "Currency strength alignment", "Historical similarity", "Candle intelligence", "H8/D1 projection", "Ensemble prediction", "Bayesian confidence", "Calibration check", "Entry timing"], output: "Valid Setup or Rejected Setup", ...unimplementedDecisionStatus },
+      { number: "19", title: "Anomaly Detection", route: "/decision-workflow/anomaly-detection", module: "Advanced Algorithms", description: "Block trades when spread, volatility, broker, price action, or data behavior becomes abnormal.", actionsLabel: "Anomaly Checks", actions: ["Spread anomaly", "Volatility shock", "Latency anomaly", "Data gap", "Broker rejection risk", "News shock", "Candle expansion anomaly"], output: "Normal or Blocked", ...unimplementedDecisionStatus },
+      { number: "20", title: "Risk Assessment", route: "/decision-workflow/risk-assessment", module: "Risk Engine", description: "Score the setup against position, drawdown, margin, and exposure rules.", actionsLabel: "Checks", actions: ["Position size", "Risk percentage", "Drawdown impact", "Margin impact", "Correlation exposure", "Basket exposure", "Account exposure"], output: "Risk Score", ...unimplementedDecisionStatus },
+      { number: "21", title: "Execution Quality Scoring", route: "/decision-workflow/execution-quality-scoring", module: "Advanced Algorithms", description: "Score broker, spread, slippage, latency, and fill quality before allowing autonomous execution.", actionsLabel: "Execution Checks", actions: ["Spread quality", "Slippage quality", "Latency quality", "Fill reliability", "Broker readiness", "Reject if poor quality"], output: "Execution Quality Score", ...unimplementedDecisionStatus },
+      { number: "22", title: "AI Decision Engine", route: "/decision-workflow/ai-decision-engine", module: "AI Decision Engine", description: "Generate the formal AI decision record and trade intent.", actionsLabel: "Decision Record", actions: ["BUY / SELL / WAIT", "NO TRADE / REJECTED", "Selected mode", "Selected symbol", "Historical similarity", "Candle score", "H8/D1 projection", "Macro bias score", "Ensemble score", "Bayesian score", "Calibrated probability", "Execution quality", "Confidence score", "Risk score"], output: "AI Decision", ...unimplementedDecisionStatus },
+      { number: "23", title: "Risk Approval", route: "/decision-workflow/risk-approval", module: "Risk Approval Engine", description: "Approve or block the decision using account and prop-firm guardrails.", actionsLabel: "Checks", actions: ["Daily loss limit", "Weekly loss limit", "Monthly loss limit", "Drawdown limit", "Account exposure", "Margin level", "Basket limit", "Prop firm rules"], output: "Approved or Blocked", ...unimplementedDecisionStatus },
+      { number: "24", title: "Execution Approval", route: "/decision-workflow/execution-approval", module: "Execution Approval Engine", description: "Confirm broker, MT5, spread, order, and account readiness.", actionsLabel: "Checks", actions: ["MT5 connection", "Broker status", "Spread condition", "Slippage tolerance", "Order type", "Lot size", "Stop loss", "Take profit", "Account environment"], output: "Ready, Wait, or Cancel", ...unimplementedDecisionStatus },
+      { number: "25", title: "Trade Execution / No-Trade Log", route: "/decision-workflow/trade-execution", module: "Trade Execution Engine", description: "Execute approved orders or preserve rejected decisions for learning and audit.", actionsLabel: "If Approved / Not Approved", actions: ["Place market, limit, or stop order", "Route order to MT5", "Confirm broker response", "Generate order ID", "Generate position ID", "Log no-trade reason", "Save rejected decision", "Send to learning and audit"], output: "Order Executed or No-Trade Logged", ...unimplementedDecisionStatus },
     ],
   },
   {
@@ -210,11 +231,11 @@ const decisionPhases: DecisionPhase[] = [
     input: "Open Position",
     output: "Protected Position / Closed Trade",
     stages: [
-      { number: "14", title: "Trade Monitoring", route: "/decision-workflow/trade-monitoring", module: "Trade Management Engine", description: "Track live position health and market context after execution.", actionsLabel: "Tracks", actions: ["Floating profit/loss", "Price movement", "Candle direction", "Basket exposure", "Spread change", "News impact", "Position health"], output: "Live Position Status", status: "Completed", progress: 100 },
-      { number: "15", title: "Profit Lock Engine", route: "/decision-workflow/profit-lock", module: "Profit Protection Engine", description: "Protect profitable trades with configurable and dynamic profit locks.", actionsLabel: "Actions / Examples", actions: ["Break-even protection", "Profit lock levels", "Dynamic trailing stop", "Partial close", "Basket profit lock", "Equity protection", "+10", "+20", "+50", "+100", "Dynamic lock"], output: "Locked Profit", status: "Completed", progress: 100 },
-      { number: "16", title: "Risk Control", route: "/decision-workflow/risk-control", module: "Risk Control Engine", description: "Reduce exposure and protect the account when risk conditions change.", actionsLabel: "Actions", actions: ["Exposure reduction", "Partial close", "Basket control", "Drawdown protection", "Emergency exit", "Risk-based position reduction"], output: "Risk Protected", status: "In Progress", progress: 60 },
-      { number: "17", title: "Exit Decision", route: "/decision-workflow/exit-decision", module: "Exit Manager", description: "Determine whether position closure is required by profit, risk, or market logic.", actionsLabel: "Exit Triggers", actions: ["Take profit hit", "Stop loss hit", "AI exit signal", "Profit lock exit", "Risk rule exit", "Session close", "Reversal signal"], output: "Exit Decision", status: "In Progress", progress: 40 },
-      { number: "18", title: "Trade Closure", route: "/decision-workflow/trade-closure", module: "Trade Closure Engine", description: "Close the position and update trade/account records.", actionsLabel: "Actions", actions: ["Close position", "Confirm broker closure", "Update records", "Calculate profit/loss", "Update account equity"], output: "Closed Trade", status: "Pending", progress: 15 },
+      { number: "14", title: "Trade Monitoring", route: "/decision-workflow/trade-monitoring", module: "Trade Management Engine", description: "Track live position health and market context after execution.", actionsLabel: "Tracks", actions: ["Floating profit/loss", "Price movement", "Candle direction", "Basket exposure", "Spread change", "News impact", "Position health"], output: "Live Position Status", ...unimplementedDecisionStatus },
+      { number: "15", title: "Profit Lock Engine", route: "/decision-workflow/profit-lock", module: "Profit Protection Engine", description: "Protect profitable trades with configurable and dynamic profit locks.", actionsLabel: "Actions / Examples", actions: ["Break-even protection", "Profit lock levels", "Dynamic trailing stop", "Partial close", "Basket profit lock", "Equity protection", "+10", "+20", "+50", "+100", "Dynamic lock"], output: "Locked Profit", ...unimplementedDecisionStatus },
+      { number: "16", title: "Risk Control", route: "/decision-workflow/risk-control", module: "Risk Control Engine", description: "Reduce exposure and protect the account when risk conditions change.", actionsLabel: "Actions", actions: ["Exposure reduction", "Partial close", "Basket control", "Drawdown protection", "Emergency exit", "Risk-based position reduction"], output: "Risk Protected", ...unimplementedDecisionStatus },
+      { number: "17", title: "Exit Decision", route: "/decision-workflow/exit-decision", module: "Exit Manager", description: "Determine whether position closure is required by profit, risk, or market logic.", actionsLabel: "Exit Triggers", actions: ["Take profit hit", "Stop loss hit", "AI exit signal", "Profit lock exit", "Risk rule exit", "Session close", "Reversal signal"], output: "Exit Decision", ...unimplementedDecisionStatus },
+      { number: "18", title: "Trade Closure", route: "/decision-workflow/trade-closure", module: "Trade Closure Engine", description: "Close the position and update trade/account records.", actionsLabel: "Actions", actions: ["Close position", "Confirm broker closure", "Update records", "Calculate profit/loss", "Update account equity"], output: "Closed Trade", ...unimplementedDecisionStatus },
     ],
   },
   {
@@ -223,23 +244,23 @@ const decisionPhases: DecisionPhase[] = [
     input: "Closed Trade",
     output: "Insights, Reports, Learning Records, and Audit Records",
     stages: [
-      { number: "19", title: "Performance Analytics", route: "/decision-workflow/performance-analytics", module: "Performance Analytics Engine", description: "Measure trade, strategy, symbol, and session performance after closure.", actionsLabel: "Analytics", actions: ["Trade metrics", "Win/loss analysis", "Equity curve", "Strategy performance", "Symbol performance", "Session performance"], output: "Performance Report", status: "In Progress", progress: 45 },
-      { number: "20", title: "Learning Center", route: "/decision-workflow/learning-center", module: "Learning Center", description: "Document AI explanations, decisions, outcomes, and lessons learned.", actionsLabel: "Documents", actions: ["Why trade was taken", "Why trade was rejected", "Why profit was locked", "Why trade was closed", "Lessons learned", "AI explanations"], output: "Trade Lessons", status: "In Progress", progress: 35 },
-      { number: "21", title: "Report Generation", route: "/decision-workflow/report-generation", module: "Reporting Engine", description: "Generate scheduled and ad hoc reports with export formats.", actionsLabel: "Reports / Exports", actions: ["Daily report", "Weekly report", "Monthly report", "Custom report", "Export data", "PDF", "Excel", "CSV"], output: "Reports and Exports", status: "Pending", progress: 20 },
-      { number: "22", title: "Audit Trail", route: "/decision-workflow/audit-trail", module: "Audit Engine", description: "Record the complete evidence chain for compliance and accountability.", actionsLabel: "Logs", actions: ["Mode and symbol", "AI decisions", "Risk approvals", "Executions", "User/system actions", "Timestamps", "Compliance logs", "Account records", "Broker response"], output: "Audit Records", status: "Not Started", progress: 0 },
+      { number: "19", title: "Performance Analytics", route: "/decision-workflow/performance-analytics", module: "Performance Analytics Engine", description: "Measure trade, strategy, symbol, and session performance after closure.", actionsLabel: "Analytics", actions: ["Trade metrics", "Win/loss analysis", "Equity curve", "Strategy performance", "Symbol performance", "Session performance"], output: "Performance Report", ...unimplementedDecisionStatus },
+      { number: "20", title: "Learning Center", route: "/decision-workflow/learning-center", module: "Learning Center", description: "Document AI explanations, decisions, outcomes, and lessons learned.", actionsLabel: "Documents", actions: ["Why trade was taken", "Why trade was rejected", "Why profit was locked", "Why trade was closed", "Lessons learned", "AI explanations"], output: "Trade Lessons", ...unimplementedDecisionStatus },
+      { number: "21", title: "Report Generation", route: "/decision-workflow/report-generation", module: "Reporting Engine", description: "Generate scheduled and ad hoc reports with export formats.", actionsLabel: "Reports / Exports", actions: ["Daily report", "Weekly report", "Monthly report", "Custom report", "Export data", "PDF", "Excel", "CSV"], output: "Reports and Exports", ...unimplementedDecisionStatus },
+      { number: "22", title: "Audit Trail", route: "/decision-workflow/audit-trail", module: "Audit Engine", description: "Record the complete evidence chain for compliance and accountability.", actionsLabel: "Logs", actions: ["Mode and symbol", "AI decisions", "Risk approvals", "Executions", "User/system actions", "Timestamps", "Compliance logs", "Account records", "Broker response"], output: "Audit Records", ...unimplementedDecisionStatus },
     ],
   },
 ];
 
 const decisionSupportingServices = [
-  { name: "Accounts & Brokers", route: "/accounts-brokers", submodules: ["Trading Accounts", "MT5 Terminals", "Broker Connections", "Account Sync"], status: "Completed" as DecisionStatus, progress: 100 },
-  { name: "Strategy Management", route: "/strategy-management", submodules: ["Strategy Library", "Strategy Conditions", "Performance Tracking", "Strategy Allocation"], status: "In Progress" as DecisionStatus, progress: 90 },
-  { name: "Backtesting & Simulation", route: "/backtesting", submodules: ["Backtest Dashboard", "Market Replay", "Optimization", "Walk-Forward Testing"], status: "In Progress" as DecisionStatus, progress: 70 },
-  { name: "User Management", route: "/user-management", submodules: ["Users & Profiles", "Roles & Permissions", "Account Assignment", "Login Sessions"], status: "Completed" as DecisionStatus, progress: 100 },
-  { name: "Administration", route: "/administration", submodules: ["System Settings", "Trading Settings", "Risk Settings", "Global Controls"], status: "In Progress" as DecisionStatus, progress: 80 },
-  { name: "Security & Compliance", route: "/security-compliance", submodules: ["Authentication & MFA", "RBAC & Permissions", "Compliance Rules", "Audit Trail"], status: "In Progress" as DecisionStatus, progress: 75 },
-  { name: "System Monitoring", route: "/system-monitoring", submodules: ["MT5 Bridge Health", "API Monitoring", "Latency & Errors", "System Logs"], status: "In Progress" as DecisionStatus, progress: 85 },
-  { name: "Data Management", route: "/data-management", submodules: ["SQL Server", "Redis Cache", "Backup & Restore", "Data Synchronization"], status: "In Progress" as DecisionStatus, progress: 60 },
+  { name: "Accounts & Brokers", route: "/accounts-brokers", submodules: ["Trading Accounts", "MT5 Terminals", "Broker Connections", "Account Sync"], ...unimplementedDecisionStatus },
+  { name: "Strategy Management", route: "/strategy-management", submodules: ["Best Strategy Set", "A-Grade Setups", "Performance Tracking", "Strategy Allocation"], ...unimplementedDecisionStatus },
+  { name: "Backtesting & Simulation", route: "/backtesting", submodules: ["Backtest Dashboard", "Market Replay", "Optimization", "Walk-Forward Testing"], ...unimplementedDecisionStatus },
+  { name: "User Management", route: "/user-management", submodules: ["Users & Profiles", "Roles & Permissions", "Account Assignment", "Login Sessions"], ...unimplementedDecisionStatus },
+  { name: "Administration", route: "/administration", submodules: ["System Settings", "Trading Settings", "Risk Settings", "Global Controls"], ...unimplementedDecisionStatus },
+  { name: "Security & Compliance", route: "/security-compliance", submodules: ["Authentication & MFA", "RBAC & Permissions", "Compliance Rules", "Audit Trail"], ...unimplementedDecisionStatus },
+  { name: "System Monitoring", route: "/system-monitoring", submodules: ["MT5 Bridge Health", "API Monitoring", "Latency & Errors", "System Logs"], ...unimplementedDecisionStatus },
+  { name: "Data Management", route: "/data-management", submodules: ["SQL Server", "Redis Cache", "Prediction History", "Market Snapshots"], ...unimplementedDecisionStatus },
 ];
 
 const sharedDecisionIdentifiers = ["modeId", "symbolId", "setupId", "decisionId", "riskAssessmentId", "approvalId", "orderId", "positionId", "closeId", "reportId", "lessonId", "auditId", "accountId", "userId", "strategyId"];
@@ -247,28 +268,40 @@ const learningLoop = ["Audit Trail", "Learning Center", "AI Model Improvement", 
 
 const projectStatusSummary = [
   { label: "Total Stages", count: 22, percent: 100, description: "All Workflow Stages", status: "Total", icon: Archive },
-  { label: "Completed", count: 12, percent: 54.5, description: "Stages fully completed and verified", status: "Completed", icon: CheckCircle2 },
-  { label: "In Progress", count: 6, percent: 27.3, description: "Stages currently under development", status: "In Progress", icon: RefreshCw },
-  { label: "Pending", count: 3, percent: 13.6, description: "Awaiting implementation", status: "Pending", icon: Clock },
-  { label: "Not Started", count: 1, percent: 4.6, description: "No development activity yet", status: "Not Started", icon: Play },
+  { label: "Implemented", count: 0, percent: 0, description: "Dedicated pages completed and verified", status: "Completed", icon: CheckCircle2 },
+  { label: "In Development", count: 0, percent: 0, description: "Dedicated pages currently being built", status: "In Progress", icon: RefreshCw },
+  { label: "Pending", count: 0, percent: 0, description: "Queued for implementation", status: "Pending", icon: Clock },
+  { label: "Not Implemented", count: 22, percent: 100, description: "Linked workflow pages do not have dedicated implementations yet", status: "Not Implemented", icon: AlertCircle },
 ];
 
 const projectStatusLegend = [
-  { label: "Completed", rule: "100%", description: "Stage completed and verified", status: "Completed", icon: CheckCircle2 },
-  { label: "In Progress", rule: "25%-99%", description: "Work actively progressing", status: "In Progress", icon: RefreshCw },
-  { label: "Pending", rule: "1%-24%", description: "Awaiting action or dependency", status: "Pending", icon: Clock },
-  { label: "Not Started", rule: "0%", description: "No work initiated", status: "Not Started", icon: Play },
+  { label: "Implemented", rule: "100%", description: "Dedicated page exists and has been verified", status: "Completed", icon: CheckCircle2 },
+  { label: "In Development", rule: "1%-99%", description: "Dedicated page implementation has started", status: "In Progress", icon: RefreshCw },
+  { label: "Pending", rule: "Queued", description: "Ready to implement after dependencies", status: "Pending", icon: Clock },
+  { label: "Not Implemented", rule: "0%", description: "Only linked through the workflow shell for now", status: "Not Implemented", icon: AlertCircle },
 ];
 
-const progressTrendPoints = [42, 48, 53, 58, 63, 68, 72];
+const progressTrendPoints = [0, 0, 0, 0, 0, 0, 0];
 
 export function CommandCenterPage({ path }: { path: string }) {
   const page = findPageByPath(path);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (typeof window === "undefined") return false;
+
+    return window.localStorage.getItem("cacsms.sidebar.collapsed") === "true";
+  });
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [engineRunning, setEngineRunning] = useState(true);
   const [activeTab, setActiveTab] = useState("Operations");
+
+  const toggleSidebar = () => {
+    setSidebarCollapsed((value) => {
+      const nextValue = !value;
+      window.localStorage.setItem("cacsms.sidebar.collapsed", String(nextValue));
+      return nextValue;
+    });
+  };
 
   if (!page) {
     return null;
@@ -296,9 +329,9 @@ export function CommandCenterPage({ path }: { path: string }) {
   return (
     <AppLayout
       collapsed={sidebarCollapsed}
-      onToggleSidebar={() => setSidebarCollapsed((value) => !value)}
+      onToggleSidebar={toggleSidebar}
       topbar={<Topbar engineRunning={engineRunning} onToggleEngine={() => setEngineRunning((value) => !value)} onOpenDrawer={() => setDrawerOpen(true)} />}
-      sidebar={<Sidebar collapsed={sidebarCollapsed} currentPath={page.path} onToggle={() => setSidebarCollapsed((value) => !value)} />}
+      sidebar={<Sidebar collapsed={sidebarCollapsed} currentPath={page.path} onToggle={toggleSidebar} />}
     >
       {isLifecycleStatusPage ? (
         <LifecycleStatusBoard page={page} />
@@ -383,9 +416,58 @@ function AppLayout({
 
 function Sidebar({ collapsed, currentPath, onToggle }: { collapsed: boolean; currentPath: string; onToggle: () => void }) {
   const sections = visibleNavigationSections(activeRole);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const [openModulePath, setOpenModulePath] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+
+    return window.sessionStorage.getItem("cacsms.sidebar.openModulePath");
+  });
+
+  useLayoutEffect(() => {
+    const clearOpenModuleOnRefresh = () => {
+      window.sessionStorage.removeItem("cacsms.sidebar.openModulePath");
+    };
+
+    window.addEventListener("beforeunload", clearOpenModuleOnRefresh);
+    return () => window.removeEventListener("beforeunload", clearOpenModuleOnRefresh);
+  }, []);
+
+  useLayoutEffect(() => {
+    const savedScrollTop = window.sessionStorage.getItem("cacsms.sidebar.scrollTop");
+
+    if (savedScrollTop && sidebarRef.current) {
+      sidebarRef.current.scrollTop = Number(savedScrollTop);
+    }
+  }, [currentPath]);
+
+  const rememberSidebarPosition = () => {
+    if (sidebarRef.current) {
+      window.sessionStorage.setItem("cacsms.sidebar.scrollTop", String(sidebarRef.current.scrollTop));
+    }
+  };
+
+  const toggleModule = (modulePath: string) => {
+    setOpenModulePath((currentPath) => {
+      const nextPath = currentPath === modulePath ? null : modulePath;
+
+      if (nextPath) {
+        window.sessionStorage.setItem("cacsms.sidebar.openModulePath", nextPath);
+      } else {
+        window.sessionStorage.removeItem("cacsms.sidebar.openModulePath");
+      }
+
+      return nextPath;
+    });
+  };
+
+  const handleNavigate = (modulePath: string) => {
+    rememberSidebarPosition();
+    setOpenModulePath(modulePath);
+    window.sessionStorage.setItem("cacsms.sidebar.openModulePath", modulePath);
+  };
 
   return (
-    <aside className="sidebar">
+    <aside className="sidebar" ref={sidebarRef} data-collapsed={collapsed}>
       <div className="brand-block">
         <div className="brand-mark">CE</div>
         {!collapsed && (
@@ -395,12 +477,20 @@ function Sidebar({ collapsed, currentPath, onToggle }: { collapsed: boolean; cur
           </div>
         )}
         <button className="sidebar-collapse-button" onClick={onToggle} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}>
-          {collapsed ? <ChevronRight size={17} /> : <ChevronDown className="collapse-left-icon" size={17} />}
+          {collapsed ? <ChevronRight size={17} /> : <ChevronRight className="collapse-left-icon" size={17} />}
         </button>
       </div>
       <nav className="sidebar-nav" aria-label="Primary modules">
         {sections.map((section) => (
-          <SidebarSection key={section.title} section={section} currentPath={currentPath} collapsed={collapsed} />
+          <SidebarSection
+            key={section.title}
+            section={section}
+            currentPath={currentPath}
+            collapsed={collapsed}
+            openModulePath={openModulePath}
+            onToggleModule={toggleModule}
+            onNavigate={handleNavigate}
+          />
         ))}
       </nav>
     </aside>
@@ -411,20 +501,33 @@ function SidebarSection({
   section,
   currentPath,
   collapsed,
+  openModulePath,
+  onToggleModule,
+  onNavigate,
 }: {
   section: ReturnType<typeof visibleNavigationSections>[number];
   currentPath: string;
   collapsed: boolean;
+  openModulePath: string | null;
+  onToggleModule: (modulePath: string) => void;
+  onNavigate: (modulePath: string) => void;
 }) {
   const active = section.modules.some((module) => currentPath === module.path || currentPath.startsWith(`${module.path}/`));
-  const [open, setOpen] = useState(active || section.title === "Command");
   const pageCount = section.modules.reduce((sum, module) => sum + module.submodules.length, 0);
 
   if (collapsed) {
     return (
       <div className="sidebar-section collapsed-section">
         {section.modules.map((module) => (
-          <SidebarGroup key={module.path} module={module} currentPath={currentPath} collapsed={collapsed} />
+          <SidebarGroup
+            key={module.path}
+            module={module}
+            currentPath={currentPath}
+            collapsed={collapsed}
+            expanded={false}
+            onToggle={() => onToggleModule(module.path)}
+            onNavigate={() => onNavigate(module.path)}
+          />
         ))}
       </div>
     );
@@ -432,34 +535,52 @@ function SidebarSection({
 
   return (
     <section className={clsx("sidebar-section", active && "active")}>
-      <button className="section-toggle" onClick={() => setOpen((value) => !value)} aria-expanded={open}>
+      <div className="section-toggle" aria-label={section.title}>
         <span>
           <strong>{section.title}</strong>
           <small>{section.description}</small>
         </span>
         <em>{section.modules.length}/{pageCount}</em>
-        {open ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
-      </button>
-      {open && (
-        <div className="section-branches">
-          {section.modules.map((module) => (
-            <SidebarGroup key={module.path} module={module} currentPath={currentPath} collapsed={collapsed} />
-          ))}
-        </div>
-      )}
+      </div>
+      <div className="section-branches">
+        {section.modules.map((module) => (
+          <SidebarGroup
+            key={module.path}
+            module={module}
+            currentPath={currentPath}
+            collapsed={collapsed}
+            expanded={openModulePath === module.path}
+            onToggle={() => onToggleModule(module.path)}
+            onNavigate={() => onNavigate(module.path)}
+          />
+        ))}
+      </div>
     </section>
   );
 }
 
-function SidebarGroup({ module, currentPath, collapsed }: { module: Module; currentPath: string; collapsed: boolean }) {
-  const [open, setOpen] = useState(currentPath.startsWith(module.path));
+function SidebarGroup({
+  module,
+  currentPath,
+  collapsed,
+  expanded,
+  onToggle,
+  onNavigate,
+}: {
+  module: Module;
+  currentPath: string;
+  collapsed: boolean;
+  expanded: boolean;
+  onToggle: () => void;
+  onNavigate: () => void;
+}) {
   const Icon = module.icon;
   const active = currentPath === module.path || currentPath.startsWith(`${module.path}/`);
 
   return (
     <div className="sidebar-group">
       <div className={clsx("sidebar-row", active && "active")}>
-        <Link href={module.path} className="sidebar-link" title={module.title}>
+        <Link href={module.path} className="sidebar-link" title={module.title} onClick={onNavigate}>
           <span className={clsx("tree-node-icon", `node-${module.color}`)}>
             <Icon size={16} />
           </span>
@@ -471,15 +592,15 @@ function SidebarGroup({ module, currentPath, collapsed }: { module: Module; curr
           )}
         </Link>
         {!collapsed && (
-          <button className="sidebar-expander" onClick={() => setOpen((value) => !value)} aria-label={`Toggle ${module.title}`}>
-            {open ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
+          <button className="sidebar-expander" onClick={onToggle} aria-label={`Toggle ${module.title}`} aria-expanded={expanded}>
+            {expanded ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
           </button>
         )}
       </div>
-      {!collapsed && open && (
+      {!collapsed && expanded && (
         <div className="sidebar-subitems">
           {module.submodules.map((submodule, index) => (
-            <Link key={submodule.path} className={clsx("sidebar-subitem", currentPath === submodule.path && "active")} href={submodule.path}>
+            <Link key={submodule.path} className={clsx("sidebar-subitem", currentPath === submodule.path && "active")} href={submodule.path} onClick={onNavigate}>
               <span>{index + 1}</span>
               <strong>{submodule.title}</strong>
             </Link>
@@ -597,11 +718,11 @@ function PageHeader({
 function LifecycleStatusBoard({ page }: { page: ResolvedPage }) {
   const statusSummary = [
     { label: "Total Stages", value: lifecycleStages.length, tone: "neutral" as StatusTone },
-    { label: "Designed", value: lifecycleStages.filter((stage) => stage.status === "Designed").length, tone: "success" as StatusTone },
+    { label: "Implemented", value: 0, tone: "success" as StatusTone },
     { label: "In Development", value: 0, tone: "info" as StatusTone },
-    { label: "Testing", value: lifecycleStages.filter((stage) => stage.status === "Testing").length, tone: "warning" as StatusTone },
+    { label: "Testing", value: 0, tone: "warning" as StatusTone },
     { label: "Pending", value: 0, tone: "neutral" as StatusTone },
-    { label: "Blocked", value: lifecycleStages.filter((stage) => stage.status === "Blocked").length, tone: "danger" as StatusTone },
+    { label: "Not Implemented", value: lifecycleStages.filter((stage) => stage.status === "Not Implemented").length, tone: "danger" as StatusTone },
   ];
 
   return (
@@ -612,7 +733,7 @@ function LifecycleStatusBoard({ page }: { page: ResolvedPage }) {
           <p className="eyebrow">Cacsms Engine</p>
           <h1>END-TO-END TRADE LIFECYCLE TRACEABILITY</h1>
           <p>
-            Track every trade from Market Intelligence to Audit Trail with complete transparency, traceability, accountability, and lifecycle monitoring.
+            Track linked system pages from Market Intelligence to Audit Trail and show whether each page has a dedicated implementation.
           </p>
         </div>
         <div className="design-summary-grid">
@@ -629,10 +750,10 @@ function LifecycleStatusBoard({ page }: { page: ResolvedPage }) {
       <section className="architecture-panel">
         <div className="architecture-heading">
           <div>
-            <h2>Design Status Workflow</h2>
+            <h2>Implementation Status Workflow</h2>
             <p>Horizontal lifecycle architecture spanning market signal, execution, monitoring, reporting, learning, and audit readiness.</p>
           </div>
-          <StatusBadge tone="success">Enterprise Architecture Board</StatusBadge>
+          <StatusBadge tone="danger">Linked Pages Not Implemented</StatusBadge>
         </div>
         <div className="lifecycle-stage-scroll">
           <div className="lifecycle-stage-lane">
@@ -667,7 +788,7 @@ function LifecycleStatusBoard({ page }: { page: ResolvedPage }) {
         <div className="architecture-heading">
           <div>
             <h2>Supporting Services Layer</h2>
-            <p>Platform services run horizontally across all stages and keep execution governed, observable, and recoverable.</p>
+            <p>Linked support pages run horizontally across all stages and are tracked here until their dedicated implementations exist.</p>
           </div>
         </div>
         <div className="service-card-grid">
@@ -784,7 +905,7 @@ function OverallProjectStatusDashboard() {
       ...stage,
       phase: phase.title.replace(/^Phase \d+:\s*/, ""),
       owner: stage.module,
-      lastUpdated: stage.status === "Completed" ? "21 Jun 2026" : stage.status === "Not Started" ? "Pending" : "In Review",
+      lastUpdated: "Pending implementation",
     })),
   );
 
@@ -822,14 +943,11 @@ function OverallProjectStatusDashboard() {
 
       <section className="overall-completion-panel">
         <h2>OVERALL COMPLETION</h2>
-        <strong>72%</strong>
+        <strong>0%</strong>
         <div className="segmented-progress" aria-label="Overall project segmented progress">
-          <span className="segment-completed" style={{ width: "54.5%" }}>54.5%</span>
-          <span className="segment-progress" style={{ width: "27.3%" }}>27.3%</span>
-          <span className="segment-pending" style={{ width: "13.6%" }}>13.6%</span>
-          <span className="segment-not-started" style={{ width: "4.6%" }}>4.6%</span>
+          <span className="segment-not-started" style={{ width: "100%" }}>Not Implemented 100%</span>
         </div>
-        <p>Overall project completion across all 22 workflow stages.</p>
+        <p>Dedicated implementation completion across all 22 workflow stages.</p>
 
         <div className="project-legend-grid">
           {projectStatusLegend.map((item) => {
@@ -852,23 +970,23 @@ function OverallProjectStatusDashboard() {
         <section className="project-info-card">
           <h2><AlertCircle size={18} /> Progress Calculation</h2>
           <p>Overall Completion = Sum of all stage progress percentages / Total number of stages.</p>
-          <strong>Formula-backed project progress with stage-level accountability.</strong>
+          <strong>All linked workflow stages are currently recorded at 0% implementation.</strong>
         </section>
 
         <section className="project-health-card">
           <h2>Project Health</h2>
-          <strong>Good</strong>
-          <p>72% overall completion with active development across remaining stages.</p>
+          <strong>Not Implemented</strong>
+          <p>No dedicated workflow pages have been implemented yet.</p>
         </section>
 
         <section className="donut-card">
           <h2>Status Distribution</h2>
           <div className="status-donut" />
           <div>
-            <span>Completed 54.5%</span>
-            <span>In Progress 27.3%</span>
-            <span>Pending 13.6%</span>
-            <span>Not Started 4.6%</span>
+            <span>Implemented 0%</span>
+            <span>In Development 0%</span>
+            <span>Pending 0%</span>
+            <span>Not Implemented 100%</span>
           </div>
         </section>
 
@@ -880,19 +998,19 @@ function OverallProjectStatusDashboard() {
             ))}
           </div>
           <div className="trend-metrics">
-            <span>Completed: 72%</span>
-            <span>Remaining: 28%</span>
-            <span>Velocity: +6% weekly</span>
+            <span>Implemented: 0%</span>
+            <span>Remaining: 100%</span>
+            <span>Velocity: Not started</span>
           </div>
         </section>
       </div>
 
       <section className="forecast-grid">
-        <article><span>Current Completion</span><strong>72%</strong></article>
-        <article><span>Remaining</span><strong>28%</strong></article>
-        <article><span>Estimated Completion Date</span><strong>July 18, 2026</strong></article>
-        <article><span>Development Velocity</span><strong>Good</strong></article>
-        <article><span>Projected Completion Trend</span><strong>On Track</strong></article>
+        <article><span>Current Completion</span><strong>0%</strong></article>
+        <article><span>Remaining</span><strong>100%</strong></article>
+        <article><span>Estimated Completion Date</span><strong>Not scheduled</strong></article>
+        <article><span>Development Velocity</span><strong>Not started</strong></article>
+        <article><span>Projected Completion Trend</span><strong>Awaiting implementation</strong></article>
       </section>
 
       <details className="stage-breakdown" open>
@@ -1002,7 +1120,12 @@ function DecisionStageCard({ stage, showArrow }: { stage: DecisionStage; showArr
           <span>Dependencies</span>
         </div>
       </Link>
-      {showArrow && <ChevronRight className="decision-stage-arrow" size={22} />}
+      {showArrow && (
+        <div className="decision-stage-connector" aria-hidden="true">
+          <span />
+          <ChevronDown size={22} />
+        </div>
+      )}
     </div>
   );
 }
@@ -1071,7 +1194,9 @@ function SupportServiceCard({ service }: { service: (typeof supportServices)[num
     <article className={clsx("support-service-card", `service-${service.tone}`)}>
       <div>
         <h3>{service.name}</h3>
-        <StatusBadge tone={service.completion >= 90 ? "success" : service.completion >= 80 ? "warning" : "info"}>{service.completion}%</StatusBadge>
+        <StatusBadge tone={service.completion === 0 ? "danger" : service.completion >= 90 ? "success" : service.completion >= 80 ? "warning" : "info"}>
+          {service.completion === 0 ? "Not Implemented" : `${service.completion}%`}
+        </StatusBadge>
       </div>
       <p>{service.count} submodules</p>
       <div>
@@ -1084,6 +1209,7 @@ function SupportServiceCard({ service }: { service: (typeof supportServices)[num
 }
 
 function statusToneFromStage(status: string): StatusTone {
+  if (status === "Not Implemented") return "danger";
   if (status === "Designed") return "success";
   if (status === "Testing") return "warning";
   if (status === "Blocked") return "danger";
@@ -1092,6 +1218,7 @@ function statusToneFromStage(status: string): StatusTone {
 }
 
 function statusToneFromDecision(status: DecisionStatus): StatusTone {
+  if (status === "Not Implemented") return "danger";
   if (status === "Completed") return "success";
   if (status === "In Progress") return "warning";
   if (status === "Pending") return "danger";

@@ -21,8 +21,12 @@
   --purple: #9333ea;
   --sky: #0284c7;
   --zinc: #52525b;
-  --sidebar: #101827;
-  --sidebar-soft: #192337;
+  --sidebar: #0f172a;
+  --sidebar-soft: #1e293b;
+  --sidebar-border: #233047;
+  --sidebar-text: #e5e7eb;
+  --sidebar-muted: #94a3b8;
+  --sidebar-accent: #3b82f6;
 }
 
 * {
@@ -54,24 +58,42 @@ button {
 }
 
 .app-shell {
-  display: grid;
-  grid-template-columns: 340px minmax(0, 1fr);
+  --sidebar-width: 340px;
   min-height: 100vh;
   background: var(--bg);
 }
 
 .app-shell.sidebar-collapsed {
-  grid-template-columns: 76px minmax(0, 1fr);
+  --sidebar-width: 88px;
 }
 
 .sidebar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  z-index: 40;
+  width: var(--sidebar-width);
   height: 100vh;
+  height: 100dvh;
   overflow-y: auto;
-  background: linear-gradient(180deg, var(--sidebar), #0c1220);
-  color: #e5edf7;
-  border-right: 1px solid #1f2a3d;
+  scrollbar-color: #334155 #0f172a;
+  background: var(--sidebar);
+  color: var(--sidebar-text);
+  border-right: 1px solid var(--sidebar-border);
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  border: 2px solid #0f172a;
+  border-radius: 999px;
+  background: #334155;
 }
 
 .brand-block {
@@ -79,12 +101,14 @@ button {
   align-items: center;
   gap: 12px;
   padding: 18px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--sidebar-border);
 }
 
 .sidebar-collapsed .brand-block {
-  justify-content: center;
-  padding: 16px 10px;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 14px 10px 12px;
 }
 
 .brand-mark {
@@ -93,8 +117,8 @@ button {
   width: 42px;
   height: 42px;
   border-radius: 8px;
-  background: #f8fafc;
-  color: #111827;
+  background: #e0f2fe;
+  color: #0f172a;
   font-weight: 800;
 }
 
@@ -104,7 +128,7 @@ button {
 }
 
 .brand-block span {
-  color: #94a3b8;
+  color: var(--sidebar-muted);
   font-size: 12px;
 }
 
@@ -114,29 +138,28 @@ button {
   width: 34px;
   height: 34px;
   margin-left: auto;
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  border: 1px solid #334155;
   border-radius: 8px;
-  background: rgba(148, 163, 184, 0.1);
-  color: #dbeafe;
+  background: #111c30;
+  color: var(--sidebar-text);
 }
 
 .sidebar-collapse-button:hover {
-  background: rgba(96, 165, 250, 0.18);
+  border-color: #475569;
+  background: #1e293b;
 }
 
 .sidebar-collapsed .sidebar-collapse-button {
-  position: absolute;
-  top: 58px;
-  right: 10px;
-  width: 26px;
-  height: 26px;
+  position: static;
+  width: 38px;
+  height: 32px;
   margin-left: 0;
-  background: #2563eb;
+  background: var(--sidebar-accent);
   color: #ffffff;
 }
 
 .collapse-left-icon {
-  transform: rotate(90deg);
+  transform: rotate(180deg);
 }
 
 .sidebar-nav {
@@ -146,24 +169,25 @@ button {
 }
 
 .sidebar-collapsed .sidebar-nav {
-  gap: 8px;
-  padding: 44px 10px 12px;
+  gap: 10px;
+  padding: 12px 14px;
 }
 
 .sidebar-section {
   border: 1px solid rgba(148, 163, 184, 0.12);
   border-radius: 8px;
-  background: rgba(15, 23, 42, 0.28);
+  background: #111c30;
 }
 
 .sidebar-section.active {
-  border-color: rgba(96, 165, 250, 0.34);
-  background: rgba(25, 35, 55, 0.62);
+  border-color: rgba(59, 130, 246, 0.38);
+  background: #162238;
 }
 
 .collapsed-section {
   display: grid;
-  gap: 6px;
+  justify-items: center;
+  gap: 8px;
   border: 0;
   background: transparent;
 }
@@ -179,12 +203,8 @@ button {
   border-radius: 8px;
   padding: 10px;
   background: transparent;
-  color: #dbeafe;
+  color: var(--sidebar-text);
   text-align: left;
-}
-
-.section-toggle:hover {
-  background: rgba(148, 163, 184, 0.1);
 }
 
 .section-toggle span {
@@ -195,7 +215,7 @@ button {
 
 .section-toggle strong {
   overflow: hidden;
-  color: #ffffff;
+  color: #f8fafc;
   font-size: 12px;
   text-overflow: ellipsis;
   text-transform: uppercase;
@@ -204,7 +224,7 @@ button {
 
 .section-toggle small {
   overflow: hidden;
-  color: #91a0b6;
+  color: var(--sidebar-muted);
   font-size: 11px;
   line-height: 1.25;
   text-overflow: ellipsis;
@@ -213,7 +233,7 @@ button {
 
 .section-toggle em {
   min-width: 46px;
-  border: 1px solid rgba(148, 163, 184, 0.22);
+  border: 1px solid #334155;
   border-radius: 999px;
   padding: 3px 7px;
   color: #bfdbfe;
@@ -237,11 +257,29 @@ button {
 }
 
 .sidebar-collapsed .sidebar-row {
-  display: block;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
 }
 
 .sidebar-row.active {
+  position: relative;
   background: var(--sidebar-soft);
+}
+
+.sidebar-row.active::before {
+  content: "";
+  position: absolute;
+  inset: 7px auto 7px 0;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--sidebar-accent);
+}
+
+.sidebar-collapsed .sidebar-row.active::before {
+  inset: 10px auto 10px -6px;
 }
 
 .sidebar-link {
@@ -258,8 +296,11 @@ button {
 
 .sidebar-collapsed .sidebar-link {
   justify-content: center;
-  min-height: 42px;
-  padding: 7px;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 10px;
 }
 
 .sidebar-row.active .sidebar-link {
@@ -288,7 +329,7 @@ button {
   gap: 3px;
   margin: 3px 0 8px 19px;
   padding-left: 18px;
-  border-left: 1px solid rgba(148, 163, 184, 0.24);
+  border-left: 1px solid #334155;
 }
 
 .sidebar-subitem {
@@ -299,14 +340,14 @@ button {
   min-height: 30px;
   border-radius: 7px;
   padding: 5px 8px;
-  color: #9aa8ba;
+  color: var(--sidebar-muted);
   font-size: 12px;
 }
 
 .sidebar-subitem.active,
 .sidebar-subitem:hover {
   color: #ffffff;
-  background: rgba(96, 165, 250, 0.12);
+  background: rgba(59, 130, 246, 0.14);
 }
 
 .sidebar-subitem span {
@@ -315,7 +356,7 @@ button {
   width: 22px;
   height: 20px;
   border-radius: 6px;
-  background: rgba(148, 163, 184, 0.12);
+  background: #1e293b;
   color: #bfdbfe;
   font-size: 10px;
   font-weight: 850;
@@ -360,6 +401,7 @@ button {
 
 .workspace {
   min-width: 0;
+  margin-left: var(--sidebar-width);
   overflow-x: hidden;
   background: var(--bg);
 }
@@ -1008,6 +1050,7 @@ th {
 .project-summary-card.decision-in-progress svg { background: var(--orange); }
 .project-summary-card.decision-pending svg { background: var(--red); }
 .project-summary-card.decision-not-started svg { background: #6b7280; }
+.project-summary-card.decision-not-implemented svg { background: var(--red); }
 
 .overall-completion-panel {
   display: grid;
@@ -1065,7 +1108,7 @@ th {
 .segment-completed { background: linear-gradient(135deg, #16a34a, #22c55e); }
 .segment-progress { background: linear-gradient(135deg, #f97316, #fb923c); }
 .segment-pending { background: linear-gradient(135deg, #dc2626, #ef4444); }
-.segment-not-started { background: linear-gradient(135deg, #6b7280, #9ca3af); }
+.segment-not-started { background: linear-gradient(135deg, #dc2626, #ef4444); }
 
 .project-legend-grid {
   display: grid;
@@ -1183,7 +1226,7 @@ th {
   width: 120px;
   height: 120px;
   border-radius: 999px;
-  background: conic-gradient(var(--green) 0 54.5%, var(--orange) 54.5% 81.8%, var(--red) 81.8% 95.4%, #6b7280 95.4% 100%);
+  background: conic-gradient(var(--red) 0 100%);
   box-shadow: inset 0 0 0 28px #ffffff;
 }
 
@@ -1404,18 +1447,22 @@ th {
 
 .decision-phase-panel {
   display: grid;
-  grid-template-columns: 148px minmax(0, 1fr);
-  gap: 12px;
-  padding: 12px;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 18px;
 }
 
 .decision-phase-card {
   display: grid;
   align-content: start;
   gap: 10px;
-  min-height: 100%;
+  min-height: 0;
+  align-self: start;
+  position: sticky;
+  top: 88px;
   border-radius: 8px;
-  padding: 14px 12px;
+  padding: 18px;
   color: #ffffff;
 }
 
@@ -1446,6 +1493,7 @@ th {
 
 .decision-phase-body {
   min-width: 0;
+  overflow: visible;
 }
 
 .symbol-chip-grid {
@@ -1554,31 +1602,37 @@ th {
 
 .decision-stage-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
-  gap: 20px 26px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  align-items: start;
+  min-width: 0;
 }
 
 .decision-stage-wrap {
-  position: relative;
+  display: grid;
+  gap: 0;
   min-width: 0;
 }
 
 .decision-stage-card {
   display: grid;
   gap: 8px;
-  min-height: 316px;
+  width: 100%;
+  min-height: 0;
   border: 1px solid var(--line);
   border-top: 5px solid #94a3b8;
   border-radius: 8px;
-  padding: 10px;
+  padding: 16px;
   color: var(--text);
 }
 
 .decision-card-top {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, max-content);
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  min-width: 0;
 }
 
 .decision-card-top > span {
@@ -1594,9 +1648,10 @@ th {
 
 .decision-stage-card h3 {
   margin: 0;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.2;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 
 .decision-stage-card p {
@@ -1608,7 +1663,7 @@ th {
 
 .decision-description {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
@@ -1638,7 +1693,7 @@ th {
   padding: 4px 7px;
   background: #ffffff;
   color: var(--text);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
 }
 
@@ -1693,20 +1748,22 @@ th {
   border-radius: inherit;
 }
 
-.decision-stage-arrow {
-  position: absolute;
-  top: 50%;
-  right: -24px;
-  z-index: 1;
-  transform: translateY(-50%);
-  color: #94a3b8;
+.decision-stage-connector {
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  color: #64748b;
 }
 
-.decision-stage-wrap:nth-child(4n) .decision-stage-arrow {
-  top: 50%;
-  right: -24px;
-  bottom: auto;
-  transform: translateY(-50%);
+.decision-stage-connector span {
+  width: 2px;
+  height: 24px;
+  background: #cbd5e1;
+}
+
+.decision-stage-connector svg {
+  margin-top: -6px;
+  color: #64748b;
 }
 
 .decision-completed {
@@ -1727,6 +1784,12 @@ th {
   background: #fff1f2;
 }
 
+.decision-not-implemented {
+  border-color: #fecaca;
+  border-top-color: var(--red);
+  background: #fff1f2;
+}
+
 .decision-not-started {
   border-color: #cbd5e1;
   border-top-color: #94a3b8;
@@ -1742,6 +1805,7 @@ th {
 .decision-progress .decision-completed { background: var(--green); }
 .decision-progress .decision-in-progress { background: var(--orange); }
 .decision-progress .decision-pending { background: var(--red); }
+.decision-progress .decision-not-implemented { background: var(--red); }
 .decision-progress .decision-not-started { background: #94a3b8; }
 
 .learning-loop-panel {
@@ -2495,25 +2559,6 @@ th {
     grid-template-columns: 1fr 1fr;
   }
 
-  .decision-stage-grid {
-    grid-template-columns: repeat(3, minmax(240px, 1fr));
-    gap: 30px 32px;
-  }
-
-  .decision-stage-wrap:nth-child(4n) .decision-stage-arrow {
-    top: 50%;
-    right: -28px;
-    bottom: auto;
-    transform: translateY(-50%);
-  }
-
-  .decision-stage-wrap:nth-child(3n) .decision-stage-arrow {
-    top: auto;
-    right: 50%;
-    bottom: -24px;
-    display: block;
-    transform: translateX(50%) rotate(90deg);
-  }
 }
 
 @media (max-width: 920px) {
@@ -2524,6 +2569,10 @@ th {
 
   .sidebar {
     display: none;
+  }
+
+  .workspace {
+    margin-left: 0;
   }
 
   .mobile-toggle {
@@ -2592,7 +2641,6 @@ th {
   .lifecycle-stage-lane,
   .service-card-grid,
   .design-summary-grid,
-  .decision-stage-grid,
   .decision-services-grid,
   .decision-summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2619,25 +2667,6 @@ th {
 
   .lifecycle-hero h1 {
     font-size: clamp(26px, 7vw, 34px);
-  }
-
-  .decision-stage-grid {
-    gap: 30px 28px;
-  }
-
-  .decision-stage-wrap:nth-child(3n) .decision-stage-arrow {
-    top: 50%;
-    right: -24px;
-    bottom: auto;
-    transform: translateY(-50%);
-  }
-
-  .decision-stage-wrap:nth-child(2n) .decision-stage-arrow {
-    top: auto;
-    right: 50%;
-    bottom: -24px;
-    display: block;
-    transform: translateX(50%) rotate(90deg);
   }
 
   .decision-phase-header {
@@ -2765,11 +2794,18 @@ th {
     padding: 12px;
   }
 
+  .decision-phase-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .decision-phase-card {
+    position: static;
+  }
+
   .lifecycle-stage-lane,
   .service-card-grid,
   .design-summary-grid,
   .principles-grid,
-  .decision-stage-grid,
   .decision-services-grid,
   .decision-summary-grid,
   .project-summary-grid,
@@ -2826,29 +2862,6 @@ th {
   }
 
   .lifecycle-stage-wrap:last-child .stage-arrow {
-    display: none;
-  }
-
-  .decision-stage-grid {
-    gap: 34px;
-  }
-
-  .decision-stage-card {
-    min-height: auto;
-  }
-
-  .decision-stage-arrow,
-  .decision-stage-wrap:nth-child(2n) .decision-stage-arrow,
-  .decision-stage-wrap:nth-child(3n) .decision-stage-arrow,
-  .decision-stage-wrap:nth-child(4n) .decision-stage-arrow {
-    top: auto;
-    right: 50%;
-    bottom: -26px;
-    display: block;
-    transform: translateX(50%) rotate(90deg);
-  }
-
-  .decision-stage-wrap:last-child .decision-stage-arrow {
     display: none;
   }
 
