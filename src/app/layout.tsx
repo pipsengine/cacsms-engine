@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Autonomous AI Forex Command Center",
-  description: "Enterprise trading command center for autonomous AI forex operations.",
+  title: "Cacsms Engine",
+  description: "Enterprise command center for autonomous AI forex trading operations.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

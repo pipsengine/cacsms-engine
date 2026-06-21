@@ -2,6 +2,12 @@ node_modules
 .next
 out
 dist
+bin
+obj
+backend/**/bin
+backend/**/obj
+__pycache__
+.pytest_cache
 *.log
 *.tsbuildinfo
 .env*

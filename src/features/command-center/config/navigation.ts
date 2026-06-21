@@ -55,6 +55,12 @@ export type Module = {
   requiredFeatures: string[];
 };
 
+export type NavigationSection = {
+  title: string;
+  description: string;
+  moduleTitles: string[];
+};
+
 export type ResolvedPage = {
   module: Module;
   submodule?: Submodule;
@@ -99,6 +105,8 @@ export const modules: Module[] = [
       ["Market Watch", "market-watch"],
       ["Today's Opportunities", "opportunities"],
       ["System Health", "system-health"],
+      ["Trade Lifecycle Design Status", "trade-lifecycle-status"],
+      ["AI Decision Status Workflow", "ai-decision-status-workflow"],
     ].map(toSubmodule("/dashboard")),
     linkedModules: ["AI Decision Engine", "Trade Execution", "Trade Management", "Risk Management", "Performance Analytics", "Alerts & Notifications", "Reports", "System Monitoring"],
     requiredFeatures: ["Total equity", "Balance", "Floating P/L", "Daily P/L", "Weekly P/L", "Monthly P/L", "Open trades", "Closed trades", "Active symbols", "Active strategies", "Current trading mode", "Risk status", "MT5 bridge status", "Broker connection status", "AI confidence summary", "Latest decisions", "Latest alerts"],
@@ -505,8 +513,49 @@ export const platformIntegrations = [
   { label: "MFA / Identity", value: "Enforced", icon: Scale },
 ];
 
+export const navigationSections: NavigationSection[] = [
+  {
+    title: "Command",
+    description: "Executive visibility and engine control",
+    moduleTitles: ["Dashboard", "Trading Control Center"],
+  },
+  {
+    title: "Market & AI Intelligence",
+    description: "Signal discovery, institutional/retail analysis, and AI decisions",
+    moduleTitles: ["Market Intelligence", "Institutional Engine", "Retail Engine", "AI Decision Engine"],
+  },
+  {
+    title: "Trading Operations",
+    description: "Execution, lifecycle management, risk, brokers, and strategies",
+    moduleTitles: ["Trade Execution", "Trade Management", "Risk Management", "Accounts & Brokers", "Strategy Management"],
+  },
+  {
+    title: "Research & Analytics",
+    description: "Testing, analytics, reporting, alerts, and learning records",
+    moduleTitles: ["Backtesting & Simulation", "Performance Analytics", "Reports", "Alerts & Notifications", "Learning Center"],
+  },
+  {
+    title: "Platform Governance",
+    description: "Users, administration, security, compliance, and monitoring",
+    moduleTitles: ["User Management", "Administration", "Security & Compliance", "System Monitoring"],
+  },
+];
+
 export function visibleModules(role: Role = activeRole) {
   return modules.filter((module) => module.roles.includes(role));
+}
+
+export function visibleNavigationSections(role: Role = activeRole) {
+  const visible = visibleModules(role);
+
+  return navigationSections
+    .map((section) => ({
+      ...section,
+      modules: section.moduleTitles
+        .map((title) => visible.find((module) => module.title === title))
+        .filter((module): module is Module => Boolean(module)),
+    }))
+    .filter((section) => section.modules.length > 0);
 }
 
 export function findModuleByTitle(title: string) {
@@ -516,6 +565,20 @@ export function findModuleByTitle(title: string) {
 export function findPageByPath(path: string): ResolvedPage | undefined {
   const normalizedPath = path.replace(/\/$/, "") || "/dashboard";
   const module = modules.find((item) => item.path === normalizedPath || item.submodules.some((submodule) => submodule.path === normalizedPath));
+  if (!module && normalizedPath.startsWith("/decision-workflow/")) {
+    const decisionModule = modules.find((item) => item.title === "AI Decision Engine");
+    if (!decisionModule) return undefined;
+
+    return {
+      module: decisionModule,
+      submodule: {
+        title: titleFromPath(normalizedPath),
+        path: normalizedPath,
+      },
+      path: normalizedPath,
+    };
+  }
+
   if (!module) return undefined;
 
   return {
@@ -530,4 +593,14 @@ function toSubmodule(basePath: string) {
     title,
     path: `${basePath}/${slug}`,
   });
+}
+
+function titleFromPath(path: string) {
+  return path
+    .split("/")
+    .filter(Boolean)
+    .at(-1)
+    ?.split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ") ?? "Decision Workflow Detail";
 }

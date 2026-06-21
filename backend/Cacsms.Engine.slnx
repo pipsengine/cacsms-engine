@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Cacsms.Engine.Api/Cacsms.Engine.Api.csproj" />
+    <Project Path="src/Cacsms.Engine.Application/Cacsms.Engine.Application.csproj" />
+    <Project Path="src/Cacsms.Engine.Domain/Cacsms.Engine.Domain.csproj" />
+    <Project Path="src/Cacsms.Engine.Infrastructure/Cacsms.Engine.Infrastructure.csproj" />
+    <Project Path="src/Cacsms.Engine.Mt5Bridge/Cacsms.Engine.Mt5Bridge.csproj" />
+    <Project Path="src/Cacsms.Engine.Worker/Cacsms.Engine.Worker.csproj" />
+  </Folder>
+</Solution>

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { CommandCenterPage } from "@/components/command-center-page";
-import { findPageByPath } from "@/lib/navigation";
+import { CommandCenterPage } from "@/features/command-center/components/command-center-page";
+import { findPageByPath } from "@/features/command-center/config/navigation";
 
 type RouteParams = {
   params: Promise<{ slug: string[] }>;
