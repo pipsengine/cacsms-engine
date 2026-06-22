@@ -1,0 +1,182 @@
+Build Roadmap
+This is ordered so each phase produces something usable before the next layer of complexity. The guiding principle: decision support first, execution later.
+
+Where You Are Now
+Layer	Status
+Frontend shell
+Strong — routes, nav, UI patterns
+Decisioning API
+Real — weighted scoring + gates in HybridDecisionService
+Data flow
+Missing — UI never calls /api/*
+Persistence
+In-memory only
+MT5 / workers
+Log loops, no protocol
+Auth
+Not started
+Phase 0 — Make the Shell Talk to the Backend (1–2 weeks)
+Goal: One real page that proves frontend ↔ API ↔ IIS proxy works.
+
+Deliverables
+
+Add src/lib/api-client.ts — thin fetch wrapper for /api/* (same origin via IIS).
+Wire one page — e.g. /ai-decision-engine/recommendations or a new /decision-workbench:
+GET /api/trading-universe/symbols
+POST /api/decisioning/hybrid-evaluate
+Replace hardcoded metrics on that page with API response fields (Recommendation, ConfidenceScore, NoTradeReasons, Evidence).
+Add loading / error states (you already have placeholders in command-center-page.tsx).
+Why first: Everything else depends on this. No DB, no MT5, no auth required.
+
+API surface already available:
+
+GET  /health
+GET  /api/trading-universe/symbols
+GET  /api/workflow/status
+POST /api/decisioning/hybrid-evaluate
+POST /api/decisioning/macro-evaluate
+POST /api/decisioning/advanced-algorithm-evaluate
+POST /api/decisioning/market-memory-evaluate
+POST /api/decisioning/multi-timeframe-bias-evaluate
+Input form: HybridDecisionRequest in HybridDecisionDtos.cs — ~40 fields with sensible defaults. Start with a small form (symbol, mode, biases, a few booleans) and expand.
+
+Phase 1 — Decision Workbench MVP (2–3 weeks)
+Goal: A product you can demo: “submit setup → get governed trade recommendation.”
+
+Decision Workbench UI
+ASP.NET Core API
+HybridDecisionService
+MacroIntelligenceService
+MultiTimeframeBiasService
+Recommendation + Reasons + Evidence
+Deliverables
+
+#	Item	Notes
+1
+Decision workbench feature
+src/features/decision-workbench/ — form, results panel, gate breakdown
+2
+Orchestration endpoint
+POST /api/decisioning/evaluate-full — runs MTF → macro → memory → hybrid in one call
+3
+Persist decisions
+IDecisionRecordRepository + SQL Server (or SQLite for dev) — store request/response + timestamp
+4
+Decision history list
+GET /api/decisions — feed “Decision History” submodule
+5
+Workflow status from reality
+Replace hardcoded WorkflowStatusService stages with counts from DB + feature flags
+Success criteria
+
+User can evaluate XAUUSD in Hybrid mode and see Execute vs NoTrade with reasons.
+Last 50 decisions are queryable.
+Dashboard “AI Confidence” can read from latest decision (not fake $248,920).
+Explicitly out of scope: MT5, live market data, Python AI, auth.
+
+Phase 2 — Platform Foundation (3–4 weeks)
+Goal: Shared infrastructure so features stop being one-off.
+
+Deliverables
+
+Database choice — SQL Server 2022 (already in product copy) or PostgreSQL; EF Core in Cacsms.Engine.Infrastructure/Persistence.
+Core entities — DecisionRecord, WorkflowStageStatus, AuditEvent, TradingAccount (minimal).
+ASP.NET Identity + RBAC — align with roles in navigation.ts (Super Administrator, Trader, Risk Manager, etc.).
+API conventions — validation, problem details, correlation IDs (Serilog already wired).
+Frontend data layer — TanStack Query (declared in stack doc, not in package.json yet) + optional Zustand for filters.
+CORS / env config — NEXT_PUBLIC_API_BASE for dev when not behind IIS.
+Success criteria
+
+Login required for API (except /health).
+Role gates which nav modules appear (replace hardcoded activeRole = "Super Administrator").
+Decisions and audit events survive restarts.
+Phase 3 — Real-Time & Observability (2 weeks)
+Goal: Live updates without polling everything.
+
+Deliverables
+
+SignalR hub usage — TradingHub already mapped at /hubs/trading; publish on decision create / engine state change.
+Frontend SignalR client — subscribe on dashboard + decision workbench.
+OpenTelemetry export — traces for decision pipeline (instrumentation exists in Program.cs).
+System Monitoring page — replace static pills with /health + hub connection status + last bridge heartbeat.
+Phase 4 — Market & Intelligence Inputs (4–6 weeks)
+Goal: Move from manual form fields toward structured intelligence — still no execution.
+
+Deliverables
+
+Track	Work
+Market Intelligence
+Symbol metadata, session windows, spread thresholds (from config/DB, not MT5 yet)
+Macro
+External data adapters behind IMacroDataProvider (COT, rates — mocked then real)
+Workers
+MarketScanningWorker writes scan results to DB instead of logging symbol count
+Python AI
+Run ai/services/decision_assistance + market_classification; wire AiDecisionHttpClient (currently returns "WAIT")
+Orchestration: Backend remains source of truth; Python augments scores, does not bypass gates.
+
+Phase 5 — Paper / Demo Execution (4–6 weeks)
+Goal: End-to-end lifecycle on demo account — still governed, not “YOLO auto.”
+
+MT5 EA
+WebSocket
+Mt5BridgeWorker
+Trading Services
+Database
+SignalR
+Frontend
+Deliverables
+
+WebSocket protocol — EA ↔ Mt5BridgeWorker (replace heartbeat loop in Mt5BridgeWorker.cs).
+Order intents — POST /api/execution/intents — only if hybrid decision = Execute and risk approved.
+Manual approval mode — Trader clicks “Approve” before bridge routes (matches product vision).
+Position sync — open/closed positions in DB; Trade Management “Open Trades” reads real data.
+Kill switch — Trading Control Center stop engine → API rejects new intents.
+Success criteria
+
+Demo account: decision → approval → MT5 order → position visible in UI.
+Full trace: decisionId → orderId → positionId.
+Phase 6 — Risk, Reporting & Learning (ongoing)
+Goal: Match the governance story in the nav catalog.
+
+Prioritized slices
+
+Risk Management — daily loss, drawdown, consecutive loss rules (already in HybridDecisionService.ApplyRiskGates; promote to account-level service).
+Reports — QuestPDF/ClosedXML for daily decision + trade report.
+Learning Center — attach decision + outcome; “why no trade” from NoTradeReasons.
+Alerts — email/Telegram on risk breach, bridge disconnect.
+Backtesting — strategy replay against stored decisions (later).
+Recommended Build Order (Summary)
+Phase 0  Connect UI → API                    ← start here
+Phase 1  Decision workbench + save history
+Phase 2  Auth + DB + roles
+Phase 3  SignalR + monitoring
+Phase 4  Market/macro inputs + Python AI
+Phase 5  MT5 paper execution
+Phase 6  Risk, reports, learning loop
+Phase 0 — Concrete First Sprint
+If you want to start coding immediately, this is the smallest useful slice:
+
+Step	Task
+1
+src/lib/api.ts — getSymbols(), evaluateHybrid(payload)
+2
+src/features/decision-workbench/components/decision-workbench.tsx — form + result card
+3
+Route /decision-workbench in navigation.ts or dedicated src/app/decision-workbench/page.tsx
+4
+Smoke test: npm run dev + backend on :5000 + IIS or Next rewrites in dev
+5
+Optional: POST /api/decisioning/evaluate-full to reduce 5 client round-trips to 1
+Demo narrative: “Pick EURUSD, Hybrid mode, set biases and flags → engine returns Execute/NoTrade, confidence, and every gate that failed.”
+
+Risks to Watch
+Risk	Mitigation
+Building 200+ nav pages before one flow works
+Implement modules only when backend exists; keep workflow boards as status docs
+MT5 too early
+Phase 5 only after decisions are stored and approved manually
+Workflow % fiction
+Drive status from DB + tests, not WorkflowStatusService constants
+Scope creep on AI
+Keep HybridDecisionService as gatekeeper; Python is advisory until calibrated

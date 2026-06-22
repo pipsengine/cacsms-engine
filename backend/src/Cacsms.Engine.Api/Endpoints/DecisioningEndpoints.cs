@@ -13,6 +13,15 @@ public static class DecisioningEndpoints
             return Results.Ok(decisionService.Evaluate(request));
         });
 
+        group.MapPost("/hybrid-evaluate/persisted", async (
+            HybridDecisionRequest request,
+            IDecisionHistoryService decisionHistoryService,
+            CancellationToken cancellationToken) =>
+        {
+            var persisted = await decisionHistoryService.EvaluateAndSaveAsync(request, cancellationToken);
+            return Results.Ok(persisted);
+        });
+
         group.MapPost("/macro-evaluate", (MacroIntelligenceRequest request, IMacroIntelligenceService macroService) =>
         {
             return Results.Ok(macroService.Evaluate(request));

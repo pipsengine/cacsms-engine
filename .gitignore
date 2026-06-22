@@ -6,6 +6,7 @@ bin
 obj
 backend/**/bin
 backend/**/obj
+backend/**/data/*.db
 __pycache__
 .pytest_cache
 *.log

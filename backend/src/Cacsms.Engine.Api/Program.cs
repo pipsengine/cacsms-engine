@@ -45,6 +45,7 @@ app.MapGet("/health", () => Results.Ok(new { status = "Healthy", service = "Cacs
 app.MapWorkflowEndpoints();
 app.MapTradingUniverseEndpoints();
 app.MapDecisioningEndpoints();
+app.MapDecisionHistoryEndpoints();
 app.MapHub<TradingHub>("/hubs/trading");
 
 app.Run();

@@ -64,6 +64,7 @@ import {
   visibleNavigationSections,
   findPageByPath,
 } from "@/features/command-center/config/navigation";
+import { DecisionWorkbenchBoard } from "@/features/decision-workbench/components/decision-workbench-board";
 
 type StatusTone = "success" | "warning" | "danger" | "neutral" | "info";
 
@@ -325,6 +326,8 @@ export function CommandCenterPage({ path }: { path: string }) {
 
   const isLifecycleStatusPage = page.path === "/dashboard/trade-lifecycle-status";
   const isDecisionStatusWorkflowPage = page.path === "/dashboard/ai-decision-status-workflow";
+  const isDecisionWorkbenchPage =
+    page.path === "/ai-decision-engine/decision-workbench" || page.path === "/ai-decision-engine/history";
 
   return (
     <AppLayout
@@ -337,6 +340,8 @@ export function CommandCenterPage({ path }: { path: string }) {
         <LifecycleStatusBoard page={page} />
       ) : isDecisionStatusWorkflowPage ? (
         <DecisionStatusWorkflowBoard page={page} />
+      ) : isDecisionWorkbenchPage ? (
+        <DecisionWorkbenchBoard page={page} Breadcrumbs={Breadcrumbs} />
       ) : (
         <>
           <Breadcrumbs page={page} />

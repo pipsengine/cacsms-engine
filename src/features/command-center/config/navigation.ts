@@ -286,6 +286,7 @@ export const modules: Module[] = [
     submodules: [
       ["Opportunity Scanner", "opportunities"],
       ["Entry Validation", "entry-validation"],
+      ["Decision Workbench", "decision-workbench"],
       ["Mode Selection Logic", "mode-selection"],
       ["Confidence Score", "confidence"],
       ["Multi-Timeframe Bias Gate", "multi-timeframe-bias-gate"],
