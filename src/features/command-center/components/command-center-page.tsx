@@ -284,6 +284,52 @@ const projectStatusLegend = [
 
 const progressTrendPoints = [0, 0, 0, 0, 0, 0, 0];
 
+const engineControlMetrics = [
+  { label: "Engine State", value: "Running", delta: "Autonomous guard active", tone: "success" as const },
+  { label: "Trading Permission", value: "Paused", delta: "Manual approval required", tone: "warning" as const },
+  { label: "Mode", value: "Hybrid", delta: "Default profit mode", tone: "info" as const },
+  { label: "Environment", value: "Demo", delta: "Live locked", tone: "success" as const },
+  { label: "Risk Envelope", value: "0.8%", delta: "Max per trade", tone: "info" as const },
+  { label: "Last Heartbeat", value: "4s", delta: "MT5 bridge online", tone: "success" as const },
+];
+
+const engineReadinessChecks = [
+  { name: "Backend API", status: "Healthy", detail: "REST and SignalR contracts reachable", tone: "success" as const },
+  { name: "MT5 Bridge", status: "Connected", detail: "Heartbeat accepted from terminal MT5-02", tone: "success" as const },
+  { name: "Risk Service", status: "Guarding", detail: "Daily loss, exposure, and position limits enforced", tone: "success" as const },
+  { name: "Broker Session", status: "Demo Only", detail: "Live execution remains locked by policy", tone: "warning" as const },
+  { name: "AI Decision Gate", status: "Review", detail: "Trades require human confirmation before routing", tone: "warning" as const },
+  { name: "Audit Stream", status: "Ready", detail: "Every state transition writes an auditId", tone: "success" as const },
+];
+
+const engineControlActions = [
+  { title: "Start Engine", detail: "Boot orchestration, reconnect market streams, and enable readiness checks.", icon: Play, variant: "primary" as const },
+  { title: "Pause Trading", detail: "Keep analytics running while blocking new order routing.", icon: Pause, variant: "secondary" as const },
+  { title: "Resume Trading", detail: "Restore trade permission after all readiness gates pass.", icon: RefreshCw, variant: "secondary" as const },
+  { title: "Emergency Stop", detail: "Halt automation, cancel pending routes, and notify risk owners.", icon: Power, variant: "danger" as const },
+];
+
+const enginePolicyRows = [
+  { rule: "Execution scope", value: "Demo auto-execution allowed; live requires approval", owner: "Trading Control", status: "Enforced", tone: "success" as const },
+  { rule: "Autonomy level", value: "AI recommendation with manual execution approval", owner: "Risk Manager", status: "Review", tone: "warning" as const },
+  { rule: "Kill switch", value: "Daily loss, bridge failure, news risk, and prop breach triggers", owner: "Risk Engine", status: "Armed", tone: "success" as const },
+  { rule: "Audit requirement", value: "startId, stopId, userId, accountId, and reason required", owner: "Compliance", status: "Required", tone: "info" as const },
+];
+
+const engineStatusTimeline = [
+  { time: "09:48:12", event: "Engine heartbeat accepted", detail: "SignalR hub published EngineRunning with bridge latency 31 ms.", tone: "success" as const },
+  { time: "09:46:30", event: "Trading permission paused", detail: "Operator changed routing state to manual approval for live accounts.", tone: "warning" as const },
+  { time: "09:44:05", event: "Risk envelope refreshed", detail: "Daily drawdown 1.4% of 5.0%, correlation exposure within limit.", tone: "success" as const },
+  { time: "09:41:22", event: "MT5 bridge connected", detail: "Terminal MT5-02 registered account ACC-2201 and broker heartbeat.", tone: "success" as const },
+];
+
+const engineLinkedRecords = [
+  { label: "engineSessionId", value: "ENG-2026-0622-0948", href: "/system-monitoring/engine-health" },
+  { label: "accountId", value: "ACC-2201", href: "/accounts-brokers/trading-accounts" },
+  { label: "riskPolicyId", value: "RISK-HYB-008", href: "/risk-management/dashboard" },
+  { label: "auditId", value: "AUD-9173", href: "/administration/audit-logs" },
+];
+
 export function CommandCenterPage({ path }: { path: string }) {
   const page = findPageByPath(path);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
@@ -328,6 +374,7 @@ export function CommandCenterPage({ path }: { path: string }) {
   const isDecisionStatusWorkflowPage = page.path === "/dashboard/ai-decision-status-workflow";
   const isDecisionWorkbenchPage =
     page.path === "/ai-decision-engine/decision-workbench" || page.path === "/ai-decision-engine/history";
+  const isTradingEnginePage = page.path === "/trading-control/engine";
 
   return (
     <AppLayout
@@ -342,6 +389,14 @@ export function CommandCenterPage({ path }: { path: string }) {
         <DecisionStatusWorkflowBoard page={page} />
       ) : isDecisionWorkbenchPage ? (
         <DecisionWorkbenchBoard page={page} Breadcrumbs={Breadcrumbs} />
+      ) : isTradingEnginePage ? (
+        <TradingEngineControlPage
+          page={page}
+          engineRunning={engineRunning}
+          onToggleEngine={() => setEngineRunning((value) => !value)}
+          onOpenDrawer={() => setDrawerOpen(true)}
+          onConfirm={() => setConfirmOpen(true)}
+        />
       ) : (
         <>
           <Breadcrumbs page={page} />
@@ -1313,6 +1368,211 @@ function OperationsPanel({ module }: { module: Module }) {
         ))}
       </div>
     </section>
+  );
+}
+
+function TradingEngineControlPage({
+  page,
+  engineRunning,
+  onToggleEngine,
+  onOpenDrawer,
+  onConfirm,
+}: {
+  page: ResolvedPage;
+  engineRunning: boolean;
+  onToggleEngine: () => void;
+  onOpenDrawer: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <>
+      <Breadcrumbs page={page} />
+      <section className="engine-control-hero">
+        <div className="engine-hero-copy">
+          <p className="eyebrow">Trading Control Center</p>
+          <h1>Engine Start/Stop</h1>
+          <p>
+            Govern the runtime state of the trading engine, execution permission, safety gates, and emergency shutdown path from a single operator surface.
+          </p>
+          <div className="engine-hero-actions">
+            <button className={clsx("button", engineRunning ? "button-secondary" : "button-primary")} onClick={onToggleEngine}>
+              {engineRunning ? <Pause size={16} /> : <Play size={16} />}
+              {engineRunning ? "Pause Engine" : "Start Engine"}
+            </button>
+            <button className="button button-danger" onClick={onConfirm}>
+              <Power size={16} />
+              Emergency Stop
+            </button>
+            <button className="button button-secondary" onClick={onOpenDrawer}>
+              <Eye size={16} />
+              Inspect Context
+            </button>
+          </div>
+        </div>
+        <div className={clsx("engine-state-console", engineRunning ? "is-running" : "is-paused")}>
+          <div>
+            <span>Runtime State</span>
+            <strong>{engineRunning ? "RUNNING" : "PAUSED"}</strong>
+          </div>
+          <StatusBadge tone={engineRunning ? "success" : "warning"}>{engineRunning ? "Heartbeat Live" : "Awaiting Start"}</StatusBadge>
+          <dl>
+            <div>
+              <dt>Session</dt>
+              <dd>ENG-2026-0622-0948</dd>
+            </div>
+            <div>
+              <dt>Operator</dt>
+              <dd>Super Administrator</dd>
+            </div>
+            <div>
+              <dt>Safe Mode</dt>
+              <dd>Manual approval</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section className="engine-metric-grid">
+        {engineControlMetrics.map((metric) => (
+          <MetricCard key={metric.label} {...metric} />
+        ))}
+      </section>
+
+      <section className="engine-dashboard-grid">
+        <div className="main-stack">
+          <section className="panel engine-actions-panel">
+            <div className="section-heading">
+              <div>
+                <h2>Protected Runtime Actions</h2>
+                <p>Actions are prepared for API commands, permission checks, and audit logging before a state transition is accepted.</p>
+              </div>
+              <StatusBadge tone="info">Command guarded</StatusBadge>
+            </div>
+            <div className="engine-action-grid">
+              {engineControlActions.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <article key={action.title} className={clsx("engine-action-card", `engine-action-${action.variant}`)}>
+                    <Icon size={22} />
+                    <div>
+                      <h3>{action.title}</h3>
+                      <p>{action.detail}</p>
+                    </div>
+                    <button className={clsx("button", `button-${action.variant}`)} onClick={action.variant === "danger" ? onConfirm : undefined}>
+                      {action.title}
+                    </button>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="panel engine-readiness-panel">
+            <div className="section-heading">
+              <div>
+                <h2>Readiness Gates</h2>
+                <p>Every gate must be healthy before automated execution can be resumed.</p>
+              </div>
+              <button className="button button-secondary"><RefreshCw size={16} /> Refresh</button>
+            </div>
+            <div className="engine-readiness-grid">
+              {engineReadinessChecks.map((check) => (
+                <article key={check.name}>
+                  <div>
+                    <CheckCircle2 size={18} />
+                    <StatusBadge tone={check.tone}>{check.status}</StatusBadge>
+                  </div>
+                  <strong>{check.name}</strong>
+                  <p>{check.detail}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="panel engine-policy-panel">
+            <div className="section-heading">
+              <div>
+                <h2>Control Policies</h2>
+                <p>Execution scope, autonomy, kill switch, and compliance requirements applied to this engine session.</p>
+              </div>
+              <ExportButton />
+            </div>
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Rule</th>
+                    <th>Value</th>
+                    <th>Owner</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {enginePolicyRows.map((row) => (
+                    <tr key={row.rule}>
+                      <td>{row.rule}</td>
+                      <td>{row.value}</td>
+                      <td>{row.owner}</td>
+                      <td><StatusBadge tone={row.tone}>{row.status}</StatusBadge></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <aside className="side-stack">
+          <section className="panel engine-mode-panel">
+            <h2>Current Mode</h2>
+            <div className="engine-mode-card">
+              <Brain size={24} />
+              <strong>Hybrid Default Profit Mode</strong>
+              <p>Institutional order-flow checks and retail confirmation must agree before the AI engine can recommend execution.</p>
+              <div>
+                <span>Institutional</span>
+                <span>Retail</span>
+                <span>Macro</span>
+                <span>Risk</span>
+              </div>
+            </div>
+          </section>
+
+          <section className="panel engine-linked-panel">
+            <h2>Linked Records</h2>
+            <div>
+              {engineLinkedRecords.map((record) => (
+                <Link key={record.label} href={record.href}>
+                  <span>{record.label}</span>
+                  <strong>{record.value}</strong>
+                  <ChevronRight size={15} />
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          <section className="panel engine-log-panel">
+            <div className="section-heading">
+              <div>
+                <h2>Status Logs</h2>
+                <p>Latest engine state transitions and guard decisions.</p>
+              </div>
+            </div>
+            <div className="engine-log-list">
+              {engineStatusTimeline.map((item) => (
+                <article key={`${item.time}-${item.event}`}>
+                  <StatusBadge tone={item.tone}>{item.time}</StatusBadge>
+                  <div>
+                    <strong>{item.event}</strong>
+                    <p>{item.detail}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        </aside>
+      </section>
+    </>
   );
 }
 
