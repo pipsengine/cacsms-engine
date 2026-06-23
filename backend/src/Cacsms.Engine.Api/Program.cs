@@ -46,6 +46,8 @@ app.MapWorkflowEndpoints();
 app.MapTradingUniverseEndpoints();
 app.MapDecisioningEndpoints();
 app.MapDecisionHistoryEndpoints();
+app.MapCurrencyStrengthEndpoints();
+app.MapCurrencyStrengthDecisioningEndpoints();
 app.MapHub<TradingHub>("/hubs/trading");
 
 app.Run();

@@ -65,6 +65,7 @@ import {
   findPageByPath,
 } from "@/features/command-center/config/navigation";
 import { DecisionWorkbenchBoard } from "@/features/decision-workbench/components/decision-workbench-board";
+import { CurrencyStrengthMatrixBoard } from "@/features/currency-strength-matrix/components/currency-strength-matrix-board";
 
 type StatusTone = "success" | "warning" | "danger" | "neutral" | "info";
 
@@ -328,6 +329,7 @@ export function CommandCenterPage({ path }: { path: string }) {
   const isDecisionStatusWorkflowPage = page.path === "/dashboard/ai-decision-status-workflow";
   const isDecisionWorkbenchPage =
     page.path === "/ai-decision-engine/decision-workbench" || page.path === "/ai-decision-engine/history";
+  const isCurrencyStrengthMatrixPage = page.path === "/macro-intelligence/currency-strength-matrix";
 
   return (
     <AppLayout
@@ -342,6 +344,8 @@ export function CommandCenterPage({ path }: { path: string }) {
         <DecisionStatusWorkflowBoard page={page} />
       ) : isDecisionWorkbenchPage ? (
         <DecisionWorkbenchBoard page={page} Breadcrumbs={Breadcrumbs} />
+      ) : isCurrencyStrengthMatrixPage ? (
+        <CurrencyStrengthMatrixBoard page={page} Breadcrumbs={Breadcrumbs} />
       ) : (
         <>
           <Breadcrumbs page={page} />

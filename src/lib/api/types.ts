@@ -92,3 +92,36 @@ export type DecisionHistoryItem = {
   direction: string;
   confidenceScore: number;
 };
+
+export type CurrencyStrengthSnapshot = {
+  engine: string;
+  source: string;
+  updatedAt: string;
+  strongest: string;
+  weakest: string;
+  bestOpportunity: string;
+  tradeBias: "BUY" | "SELL" | "NO TRADE";
+  confidence: number;
+  strengthDifferential: number;
+  divergence: number;
+  htfAlignment: string;
+  signalQuality: string;
+  xauUsdFilter: string;
+  rejectionReasons: string;
+  focusSymbol: string;
+  timeframes: string[];
+  currencies: Record<string, number>;
+  timeframeMatrix: Record<string, Record<string, number>>;
+};
+
+export type CurrencyStrengthEnrichment = {
+  currencyStrengthScore: number;
+  tradeBias: string;
+  confidence: number;
+  strongest: string;
+  weakest: string;
+  htfAlignment: string;
+  signalQuality: string;
+  evidence: string[];
+  rejectionReasons: string[];
+};

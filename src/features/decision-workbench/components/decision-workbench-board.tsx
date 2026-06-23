@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
 import { AlertCircle, CheckCircle2, Loader2, RefreshCw, Zap } from "lucide-react";
 import { createDefaultHybridDecision, evaluateHybridDecisionPersisted, getApiHealth, getDecisionHistory } from "@/lib/api/decisioning";
+import { enrichCurrencyStrength } from "@/lib/api/currency-strength";
 import { getApprovedSymbols } from "@/lib/api/trading-universe";
 import type { DecisionHistoryItem, HybridDecisionRequest, HybridDecisionResponse, TradingSymbol } from "@/lib/api/types";
 import type { ResolvedPage } from "@/features/command-center/config/navigation";
@@ -70,11 +71,24 @@ export function DecisionWorkbenchBoard({ page, Breadcrumbs }: DecisionWorkbenchB
       const approved = await getApprovedSymbols();
       setSymbols(approved);
       setSymbolsState("ready");
+
+      const activeSymbol = approved[0]?.code ?? "XAUUSD";
       setForm((current) => {
-        const hasCurrent = approved.some((item) => item.code === current.symbol);
-        const symbol = hasCurrent ? current.symbol : (approved[0]?.code ?? "XAUUSD");
+        const symbol = approved.some((item) => item.code === current.symbol) ? current.symbol : activeSymbol;
         return { ...createDefaultHybridDecision(symbol), tradingMode: current.tradingMode };
       });
+
+      try {
+        const selectedSymbol = approved.some((item) => item.code === form.symbol) ? form.symbol : activeSymbol;
+        const liveStrength = await enrichCurrencyStrength(selectedSymbol);
+        setForm((current) => ({
+          ...current,
+          symbol: selectedSymbol,
+          currencyStrengthScore: liveStrength.currencyStrengthScore,
+        }));
+      } catch {
+        // Keep default score when live currency strength is unavailable.
+      }
     } catch (error) {
       setSymbolsState("error");
       setSymbolsError(error instanceof Error ? error.message : "Approved symbols could not be loaded.");

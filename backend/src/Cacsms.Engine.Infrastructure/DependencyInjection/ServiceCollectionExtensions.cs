@@ -1,5 +1,6 @@
 using Cacsms.Engine.Application.Abstractions;
 using Cacsms.Engine.Application.Decisioning;
+using Cacsms.Engine.Application.Intelligence;
 using Cacsms.Engine.Application.Trading;
 using Cacsms.Engine.Domain.Abstractions;
 using Cacsms.Engine.Infrastructure.Persistence;
@@ -34,6 +35,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IMarketMemoryService, MarketMemoryService>();
         services.AddSingleton<IMultiTimeframeBiasService, MultiTimeframeBiasService>();
         services.AddSingleton<IDecisionHistoryService, DecisionHistoryService>();
+        services.AddSingleton<ICurrencyStrengthIntelligenceService, CurrencyStrengthIntelligenceService>();
+        services.AddSingleton<LiveCurrencyStrengthHybridEvaluator>();
         services.AddHttpClient<IAiDecisionClient, AiDecisionHttpClient>();
         services.AddSingleton<IMt5BridgeClient, Mt5BridgeClient>();
         return services;
