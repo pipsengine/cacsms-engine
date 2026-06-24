@@ -3,29 +3,30 @@ using Cacsms.Engine.Application.Decisioning;
 using Cacsms.Engine.Application.Trading;
 using Cacsms.Engine.Domain.Abstractions;
 using Cacsms.Engine.Infrastructure.Persistence;
+using Cacsms.Engine.Infrastructure.Persistence.Options;
+using Cacsms.Engine.Infrastructure.Persistence.Repositories;
 using Cacsms.Engine.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 
 namespace Cacsms.Engine.Infrastructure.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddCacsmsInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddCacsmsInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<DatabaseOptions>(configuration.GetSection(DatabaseOptions.SectionName));
+        services.AddSingleton(sp => sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<DatabaseOptions>>().Value);
+
+        ConfigureSqlServer(services, configuration);
+
+        services.AddSingleton<IDecisionRecordRepository, EfDecisionRecordRepository>();
+        services.AddSingleton<IDatabaseInitializer, DatabaseInitializer>();
         services.AddSingleton(typeof(IRepository<>), typeof(InMemoryRepository<>));
         services.AddSingleton<IUnitOfWork, InMemoryUnitOfWork>();
-        services.AddSingleton<IDecisionRecordRepository>(provider =>
-        {
-            var configuration = provider.GetRequiredService<IConfiguration>();
-            var environment = provider.GetRequiredService<IHostEnvironment>();
-            var connectionString = ResolveDecisionStoreConnectionString(configuration, environment);
-
-            var repository = new SqliteDecisionRecordRepository(connectionString);
-            repository.Initialize();
-            return repository;
-        });
         services.AddSingleton<IWorkflowStatusService, WorkflowStatusService>();
         services.AddSingleton<ITradingUniverseService, TradingUniverseService>();
         services.AddSingleton<IHybridDecisionService, HybridDecisionService>();
@@ -39,25 +40,60 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static string ResolveDecisionStoreConnectionString(IConfiguration configuration, IHostEnvironment environment)
+    public static IServiceCollection AddCacsmsDatabaseHealthChecks(this IServiceCollection services)
     {
-        var configuredPath = configuration.GetConnectionString("DecisionStore");
-        var relativePath = string.IsNullOrWhiteSpace(configuredPath)
-            ? "data/cacsms-decisions.db"
-            : configuredPath.StartsWith("Data Source=", StringComparison.OrdinalIgnoreCase)
-                ? configuredPath["Data Source=".Length..]
-                : configuredPath;
+        services.AddHealthChecks()
+            .AddCheck<DatabaseHealthCheck>("database");
 
-        var databasePath = Path.IsPathRooted(relativePath)
-            ? relativePath
-            : Path.Combine(environment.ContentRootPath, relativePath);
+        return services;
+    }
 
-        var directory = Path.GetDirectoryName(databasePath);
-        if (!string.IsNullOrWhiteSpace(directory))
+    private static void ConfigureSqlServer(IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContextFactory<CacsmsEngineDbContext>((provider, options) =>
         {
-            Directory.CreateDirectory(directory);
-        }
+            var environment = provider.GetRequiredService<IHostEnvironment>();
+            var databaseOptions = provider.GetRequiredService<DatabaseOptions>();
+            var connectionString = DatabaseConnectionStringFactory.Build(configuration, environment);
 
-        return $"Data Source={databasePath}";
+            options.UseSqlServer(connectionString, sql =>
+            {
+                sql.MigrationsAssembly(typeof(CacsmsEngineDbContext).Assembly.GetName().Name);
+                sql.EnableRetryOnFailure(
+                    maxRetryCount: databaseOptions.MaxRetryCount,
+                    maxRetryDelay: TimeSpan.FromSeconds(databaseOptions.MaxRetryDelaySeconds),
+                    errorNumbersToAdd: null);
+                sql.CommandTimeout(databaseOptions.CommandTimeoutSeconds);
+            });
+        });
+    }
+}
+
+internal sealed class DatabaseHealthCheck : IHealthCheck
+{
+    private readonly IDbContextFactory<CacsmsEngineDbContext> _dbContextFactory;
+
+    public DatabaseHealthCheck(IDbContextFactory<CacsmsEngineDbContext> dbContextFactory)
+    {
+        _dbContextFactory = dbContextFactory;
+    }
+
+    public async Task<HealthCheckResult> CheckHealthAsync(
+        HealthCheckContext context,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await using var dbContext = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+            var canConnect = await dbContext.Database.CanConnectAsync(cancellationToken);
+
+            return canConnect
+                ? HealthCheckResult.Healthy("SQL Server connection is available.")
+                : HealthCheckResult.Unhealthy("SQL Server connection failed.");
+        }
+        catch (Exception exception)
+        {
+            return HealthCheckResult.Unhealthy("SQL Server connection failed.", exception);
+        }
     }
 }
