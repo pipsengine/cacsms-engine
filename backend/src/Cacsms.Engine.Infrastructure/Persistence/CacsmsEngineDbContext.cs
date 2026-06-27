@@ -16,6 +16,12 @@ public sealed class CacsmsEngineDbContext : DbContext
 
     public DbSet<DecisionRecordEntity> DecisionRecords => Set<DecisionRecordEntity>();
 
+    public DbSet<CotPositioningSnapshotEntity> CotPositioningSnapshots => Set<CotPositioningSnapshotEntity>();
+
+    public DbSet<CotPositioningRowEntity> CotPositioningRows => Set<CotPositioningRowEntity>();
+
+    public DbSet<CftcFuturesOnlyReportEntity> CftcFuturesOnlyReports => Set<CftcFuturesOnlyReportEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         var schema = string.IsNullOrWhiteSpace(_databaseOptions.Schema)

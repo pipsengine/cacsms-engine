@@ -55,6 +55,7 @@ app.MapTradingUniverseEndpoints();
 app.MapDecisioningEndpoints();
 app.MapDecisionHistoryEndpoints();
 app.MapCurrencyStrengthEndpoints();
+app.MapCotPositioningEndpoints();
 app.MapCurrencyStrengthDecisioningEndpoints();
 app.MapHub<TradingHub>("/hubs/trading");
 

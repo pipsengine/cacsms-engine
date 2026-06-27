@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "xcopy .next\\static .next\\standalone\\.next\\static\\ /E /I /Y >NUL && if exist public xcopy public .next\\standalone\\public\\ /E /I /Y >NUL",
     "start": "next start",
     "start:iis": "node .next/standalone/server.js",
     "serve:windows": "set PORT=3000&& set HOSTNAME=127.0.0.1&& node .next/standalone/server.js",

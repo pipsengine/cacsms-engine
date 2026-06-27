@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import {
   AlertCircle,
@@ -66,6 +66,7 @@ import {
 } from "@/features/command-center/config/navigation";
 import { DecisionWorkbenchBoard } from "@/features/decision-workbench/components/decision-workbench-board";
 import { CurrencyStrengthMatrixBoard } from "@/features/currency-strength-matrix/components/currency-strength-matrix-board";
+import { CotPositioningBoard } from "@/features/cot-positioning/components/cot-positioning-board";
 
 type StatusTone = "success" | "warning" | "danger" | "neutral" | "info";
 
@@ -372,32 +373,38 @@ export function CommandCenterPage({ path }: { path: string }) {
   }, [page.module.title]);
 
   const isLifecycleStatusPage = page.path === "/dashboard/trade-lifecycle-status";
+  const isDashboardPage = page.path === "/dashboard";
   const isDecisionStatusWorkflowPage = page.path === "/dashboard/ai-decision-status-workflow";
   const isDecisionWorkbenchPage =
     page.path === "/ai-decision-engine/decision-workbench" || page.path === "/ai-decision-engine/history";
-<<<<<<< HEAD
   const isCurrencyStrengthMatrixPage = page.path === "/macro-intelligence/currency-strength-matrix";
-=======
+  const isCotPositioningPage = page.path === "/macro-intelligence/cot-positioning";
   const isTradingEnginePage = page.path === "/trading-control/engine";
->>>>>>> 82f2b9fb124423eb303fc902acf5c95127f845c8
+  const topbarSubtitle = isDashboardPage
+    ? "Welcome back, Alex! Here's what's happening with your trading engine today."
+    : isCotPositioningPage
+      ? "Commitment of Traders report analysis and institutional positioning"
+      : description;
 
   return (
     <AppLayout
       collapsed={sidebarCollapsed}
       onToggleSidebar={toggleSidebar}
-      topbar={<Topbar engineRunning={engineRunning} onToggleEngine={() => setEngineRunning((value) => !value)} onOpenDrawer={() => setDrawerOpen(true)} />}
+      topbar={<Topbar title={title} subtitle={topbarSubtitle} engineRunning={engineRunning} onToggleEngine={() => setEngineRunning((value) => !value)} onOpenDrawer={() => setDrawerOpen(true)} />}
       sidebar={<Sidebar collapsed={sidebarCollapsed} currentPath={page.path} onToggle={toggleSidebar} />}
     >
-      {isLifecycleStatusPage ? (
+      {isDashboardPage ? (
+        <DashboardReplicaPage />
+      ) : isLifecycleStatusPage ? (
         <LifecycleStatusBoard page={page} />
       ) : isDecisionStatusWorkflowPage ? (
         <DecisionStatusWorkflowBoard page={page} />
       ) : isDecisionWorkbenchPage ? (
         <DecisionWorkbenchBoard page={page} Breadcrumbs={Breadcrumbs} />
-<<<<<<< HEAD
       ) : isCurrencyStrengthMatrixPage ? (
         <CurrencyStrengthMatrixBoard page={page} Breadcrumbs={Breadcrumbs} />
-=======
+      ) : isCotPositioningPage ? (
+        <CotPositioningBoard />
       ) : isTradingEnginePage ? (
         <TradingEngineControlPage
           page={page}
@@ -406,7 +413,6 @@ export function CommandCenterPage({ path }: { path: string }) {
           onOpenDrawer={() => setDrawerOpen(true)}
           onConfirm={() => setConfirmOpen(true)}
         />
->>>>>>> 82f2b9fb124423eb303fc902acf5c95127f845c8
       ) : (
         <>
           <Breadcrumbs page={page} />
@@ -682,22 +688,33 @@ function SidebarGroup({
 }
 
 function Topbar({
+  title,
+  subtitle,
   engineRunning,
   onToggleEngine,
   onOpenDrawer,
 }: {
+  title: string;
+  subtitle: string;
   engineRunning: boolean;
   onToggleEngine: () => void;
   onOpenDrawer: () => void;
 }) {
   return (
     <header className="topbar">
+      <div className="topbar-title-block">
+        <h1>{title}</h1>
+        <p>{subtitle}</p>
+      </div>
       <SearchInput />
       <div className="topbar-actions">
-        <EngineHeaderControl running={engineRunning} onToggle={onToggleEngine} />
-        <StatusBadge tone={engineRunning ? "success" : "warning"}>{engineRunning ? "System Online" : "Engine Paused"}</StatusBadge>
-        <StatusBadge tone="success">MT5 Connected</StatusBadge>
-        <StatusBadge tone="info">Prop Account</StatusBadge>
+        <EngineHeaderControl
+          running={engineRunning}
+          onToggle={onToggleEngine}
+          label={title === "COT Positioning" ? "London Server" : "London Session"}
+          status={title === "COT Positioning" ? "Connected" : engineRunning ? "Open" : "Closed"}
+        />
+        <NigeriaClock />
         <button className="icon-button" aria-label="Notifications" onClick={onOpenDrawer}>
           <Bell size={18} />
           <span className="notification-dot" />
@@ -712,17 +729,49 @@ function Topbar({
   );
 }
 
-function EngineHeaderControl({ running, onToggle }: { running: boolean; onToggle: () => void }) {
+function EngineHeaderControl({
+  running,
+  onToggle,
+  label,
+  status,
+}: {
+  running: boolean;
+  onToggle: () => void;
+  label: string;
+  status: string;
+}) {
   return (
     <div className={clsx("engine-header-control", running ? "running" : "stopped")} aria-label="Trading engine control">
       <span>
-        <strong>Trading Engine</strong>
-        <small>{running ? "Live automation active" : "Automation stopped"}</small>
+        <strong>{label}</strong>
+        <small>{status}</small>
       </span>
       <button className={clsx("button", running ? "button-danger" : "button-primary")} onClick={onToggle}>
-        {running ? <Pause size={16} /> : <Play size={16} />}
-        {running ? "Stop" : "Start"}
+        <ChevronDown size={16} />
+        Session
       </button>
+    </div>
+  );
+}
+
+function NigeriaClock() {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="nigeria-clock" aria-label="Nigeria local time">
+      <strong>{new Intl.DateTimeFormat("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        timeZone: "Africa/Lagos",
+      }).format(now)}</strong>
+      <small>WAT UTC+1</small>
     </div>
   );
 }
@@ -1379,6 +1428,313 @@ function OperationsPanel({ module }: { module: Module }) {
       </div>
     </section>
   );
+}
+
+const dashboardKpis = [
+  { label: "Account Equity", value: "$128,847.32", delta: "2.35%", tone: "blue" as const, icon: Gauge, spark: "M2 34 L12 30 L20 23 L29 25 L38 17 L47 19 L55 12 L64 16 L73 9 L82 14 L92 8" },
+  { label: "Balance", value: "$107,932.21", delta: "1.12%", tone: "green" as const, icon: CircleDollarSign, spark: "M2 36 L11 31 L19 33 L28 22 L36 25 L45 16 L54 19 L63 11 L72 17 L83 12 L92 8" },
+  { label: "Daily P/L", value: "$2,847.32", delta: "2.35%", tone: "green" as const, icon: BarChart3, spark: "M2 36 L10 34 L18 26 L28 28 L36 18 L45 21 L53 13 L62 18 L71 10 L80 14 L92 8" },
+  { label: "Floating P/L", value: "$1,204.75", delta: "0.98%", tone: "green" as const, icon: LineChartIcon, spark: "M2 35 L11 31 L19 25 L28 21 L36 15 L45 18 L54 12 L63 17 L72 15 L82 18 L92 10" },
+];
+
+const statusCards = [
+  { label: "MT5 Connection", value: "Connected", icon: RadioTower },
+  { label: "VPS Status", value: "Healthy", icon: Network },
+  { label: "Bridge Status", value: "Connected", icon: Bot },
+  { label: "Data Feed", value: "Live", icon: FileSpreadsheet },
+  { label: "AI Engine", value: "Active", icon: Brain },
+  { label: "Last Update", value: "10:24:35", icon: Clock, refresh: true },
+];
+
+const openPositions = [
+  ["XAUUSD", "Buy", "0.50", "2,325.45", "$542.35"],
+  ["EURUSD", "Buy", "1.00", "1.08532", "$265.12"],
+  ["GBPUSD", "Sell", "0.80", "1.27015", "-$112.45"],
+  ["USDJPY", "Buy", "0.70", "155.325", "$325.75"],
+  ["AUDUSD", "Buy", "0.60", "0.66412", "$98.45"],
+  ["USDCAD", "Sell", "0.50", "1.36215", "-$45.32"],
+  ["XAGUSD", "Buy", "0.40", "27.452", "$130.85"],
+];
+
+const recentTrades = [
+  ["10:21:35", "XAUUSD", "Buy", "0.50", "2,328.15", "2,334.45", "$315.00", "Won"],
+  ["10:15:22", "EURUSD", "Buy", "1.00", "1.08321", "1.08532", "$211.00", "Won"],
+  ["10:02:11", "GBPUSD", "Sell", "0.80", "1.27145", "1.27015", "$104.00", "Won"],
+  ["09:47:05", "USDJPY", "Buy", "0.70", "154.985", "155.325", "$153.64", "Won"],
+  ["09:30:45", "AUDUSD", "Buy", "0.60", "0.66215", "0.66412", "$118.20", "Won"],
+];
+
+const newsItems = [
+  ["10:00", "UK CPI (YoY)", "High Volatility Expected", "High"],
+  ["09:45", "ECB President Speech", "Medium Volatility", "Medium"],
+  ["09:30", "US Retail Sales (MoM)", "High Volatility Expected", "High"],
+  ["08:15", "FOMC Member Williams Speech", "Low Volatility", "Low"],
+];
+
+const aiModules = ["AI Market Analyzer", "Liquidity Finder", "Sentiment Analyzer", "Smart Money Detector", "Volatility Predictor"];
+
+function DashboardReplicaPage() {
+  return (
+    <div className="dashboard-replica">
+      <section className="replica-kpi-grid" aria-label="Trading KPIs">
+        {dashboardKpis.map((metric) => (
+          <KpiReplicaCard key={metric.label} {...metric} />
+        ))}
+        <ProgressKpiCard label="Margin Level" value="632.14%" percent="82%" tone="purple" />
+        <ProgressKpiCard label="Used Margin" value="$20,351.11" percent="23.32%" tone="blue" />
+      </section>
+
+      <section className="replica-overview-grid">
+        <DashboardPanel title="Open Positions" action="View all">
+          <div className="positions-summary">
+            <div>
+              <strong>7</strong>
+              <span><i className="dot green" /> Profit <b>5</b></span>
+              <span><i className="dot red" /> Loss <b>2</b></span>
+            </div>
+            <DonutChart value="72" center="$1,204.75" label="Floating P/L" />
+          </div>
+        </DashboardPanel>
+        <DashboardPanel title="Today's Trades" action="View all">
+          <div className="positions-summary">
+            <div>
+              <strong>14</strong>
+              <span><i className="dot green" /> Won <b>10</b></span>
+              <span><i className="dot red" /> Lost <b>4</b></span>
+            </div>
+            <DonutChart value="71" center="71.43%" label="Win Rate" accent="blue" />
+          </div>
+        </DashboardPanel>
+        <DashboardPanel title="Performance" action="View report">
+          <div className="performance-triplet">
+            <span>Win Rate <strong>71.43%</strong></span>
+            <span>Profit Factor <strong>2.35</strong></span>
+            <span>Expectancy <strong>$203.38</strong></span>
+          </div>
+          <div className="replica-center-icon"><Bot size={22} /></div>
+        </DashboardPanel>
+        <DashboardPanel title="AI Confidence">
+          <DonutChart value="86" center="86%" label="High Confidence" accent="green" large />
+        </DashboardPanel>
+        <DashboardPanel title="Risk Level">
+          <div className="risk-card-body">
+            <span className="risk-shield"><ShieldCheck size={28} /></span>
+            <div>
+              <strong>Low</strong>
+              <p>Well within limits</p>
+            </div>
+          </div>
+          <MiniLineChart color="green" />
+        </DashboardPanel>
+      </section>
+
+      <section className="replica-status-grid">
+        {statusCards.map(({ icon: Icon, ...item }) => (
+          <article key={item.label} className="replica-status-card">
+            <span className="replica-icon"><Icon size={18} /></span>
+            <div>
+              <p>{item.label}</p>
+              <strong>{item.value} <i className="dot green" /></strong>
+            </div>
+            {item.refresh && <RefreshCw size={16} />}
+          </article>
+        ))}
+      </section>
+
+      <section className="replica-main-grid">
+        <DashboardPanel title="Equity Curve" action="This Week" className="wide-chart">
+          <EquityCurveChart />
+        </DashboardPanel>
+        <DashboardPanel title="Performance Overview" action="This Month" className="wide-chart">
+          <div className="overview-metrics">
+            <span>Net Profit <strong className="profit">$12,847.32</strong><em>12.35%</em></span>
+            <span>Total Trades <strong>156</strong></span>
+            <span>Win Rate <strong>72.44%</strong></span>
+          </div>
+          <BarChart />
+        </DashboardPanel>
+        <DashboardPanel title="Open Positions" action="View all" className="table-panel">
+          <PositionsTable />
+        </DashboardPanel>
+      </section>
+
+      <section className="replica-bottom-grid">
+        <DashboardPanel title="Recent Trades" action="View all" className="table-panel recent-panel">
+          <RecentTradesTable />
+        </DashboardPanel>
+        <DashboardPanel title="News Impact" action="View all" className="news-panel">
+          <NewsList />
+        </DashboardPanel>
+        <div className="right-stack">
+          <DashboardPanel title="Quick Actions">
+            <div className="quick-action-grid">
+              <ReplicaAction icon={Bot} label="New Trade" tone="blue" />
+              <ReplicaAction icon={AlertCircle} label="Close All" tone="red" />
+              <ReplicaAction icon={Pause} label="Pause Engine" tone="amber" />
+              <ReplicaAction icon={ShieldCheck} label="Risk Settings" tone="purple" />
+              <ReplicaAction icon={Search} label="Go to Scanner" tone="blue" />
+              <ReplicaAction icon={FileSpreadsheet} label="Reports" tone="green" />
+            </div>
+          </DashboardPanel>
+          <DashboardPanel title="Active AI Modules" action="View all">
+            <div className="ai-module-grid">
+              {aiModules.map((item) => (
+                <span key={item}><Bot size={13} /> {item} <i className="dot green" /> <b>Active</b></span>
+              ))}
+            </div>
+          </DashboardPanel>
+        </div>
+      </section>
+
+      <footer className="replica-footer">
+        <span>© 2025 Cacsms Engine. All rights reserved.</span>
+        <div>
+          <span>Server: New York (NY4)</span>
+          <span>Version: 2.4.1</span>
+          <span>Latency: <b>18ms</b> <i className="dot green" /></span>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+function KpiReplicaCard({ label, value, delta, tone, icon: Icon, spark }: (typeof dashboardKpis)[number]) {
+  return (
+    <article className="replica-kpi-card">
+      <div className="replica-card-head">
+        <span>{label}</span>
+        <em className={clsx("replica-icon", `replica-${tone}`)}><Icon size={16} /></em>
+      </div>
+      <strong className={tone === "green" ? "profit" : undefined}>{value}</strong>
+      <div className="spark-row">
+        <span className="profit">↑ {delta}</span>
+        <svg viewBox="0 0 94 44" aria-hidden="true">
+          <path d={spark} />
+        </svg>
+      </div>
+    </article>
+  );
+}
+
+function ProgressKpiCard({ label, value, percent, tone }: { label: string; value: string; percent: string; tone: "blue" | "purple" }) {
+  return (
+    <article className="replica-kpi-card progress-kpi">
+      <div className="replica-card-head">
+        <span>{label}</span>
+        <em className={clsx("replica-icon", `replica-${tone}`)}><ShieldCheck size={16} /></em>
+      </div>
+      <strong>{value}</strong>
+      <div className="progress-line"><span style={{ width: percent }} /></div>
+      <small>{percent}</small>
+    </article>
+  );
+}
+
+function DashboardPanel({ title, action, children, className }: { title: string; action?: string; children: React.ReactNode; className?: string }) {
+  return (
+    <article className={clsx("replica-panel", className)}>
+      <div className="replica-panel-head">
+        <h2>{title}</h2>
+        {action && <button>{action} <ChevronRight size={14} /></button>}
+      </div>
+      {children}
+    </article>
+  );
+}
+
+function DonutChart({ value, center, label, accent = "green", large }: { value: string; center: string; label: string; accent?: "green" | "blue"; large?: boolean }) {
+  return (
+    <div className={clsx("donut-replica", large && "large", `donut-${accent}`)} style={{ "--value": `${value}%` } as React.CSSProperties}>
+      <div>
+        <strong>{center}</strong>
+        <span>{label}</span>
+      </div>
+    </div>
+  );
+}
+
+function MiniLineChart({ color = "blue" }: { color?: "blue" | "green" }) {
+  return (
+    <svg className={clsx("mini-line-chart", `line-${color}`)} viewBox="0 0 250 70" aria-hidden="true">
+      <path d="M2 55 L18 48 L30 50 L43 38 L55 41 L69 32 L83 35 L96 30 L112 45 L130 42 L145 50 L160 30 L176 28 L191 34 L205 52 L219 48 L236 56 L248 50" />
+    </svg>
+  );
+}
+
+function EquityCurveChart() {
+  return (
+    <div className="equity-chart">
+      <div className="chart-y"><span>$135K</span><span>$130K</span><span>$125K</span><span>$120K</span><span>$115K</span><span>$110K</span><span>$105K</span></div>
+      <svg viewBox="0 0 560 245" aria-hidden="true">
+        <defs>
+          <linearGradient id="equityFill" x1="0" x2="0" y1="0" y2="1">
+            <stop stopColor="#2563eb" stopOpacity=".22" />
+            <stop offset="1" stopColor="#2563eb" stopOpacity=".03" />
+          </linearGradient>
+        </defs>
+        <path className="fill" d="M0 215 L0 190 L25 170 L48 156 L70 137 L95 150 L118 113 L140 120 L162 92 L188 84 L214 78 L238 86 L262 62 L288 63 L312 41 L338 36 L362 47 L388 70 L414 44 L438 65 L462 58 L486 28 L510 18 L536 14 L560 0 L560 215 Z" />
+        <path className="line" d="M0 190 L25 170 L48 156 L70 137 L95 150 L118 113 L140 120 L162 92 L188 84 L214 78 L238 86 L262 62 L288 63 L312 41 L338 36 L362 47 L388 70 L414 44 L438 65 L462 58 L486 28 L510 18 L536 14 L560 0" />
+      </svg>
+      <div className="chart-x"><span>May 12</span><span>May 13</span><span>May 14</span><span>May 15</span><span>May 16</span><span>May 17</span><span>May 18</span></div>
+    </div>
+  );
+}
+
+function BarChart() {
+  const bars = [42, -31, 18, 37, 55, -22, 68, 29, 77, -16, 35, 50, 91, 64, -28, 45, 34, 79, -47, 52, 23, -18, 41, 60, -24, 36, 72, 61, 33, -26];
+  return (
+    <div className="bar-chart">
+      <div className="bar-grid"><span>2K</span><span>1K</span><span>0</span><span>-1K</span><span>-2K</span></div>
+      <div className="bars">
+        {bars.map((bar, index) => <span key={`${bar}-${index}`} className={bar < 0 ? "negative" : undefined} style={{ height: `${Math.abs(bar)}px` }} />)}
+      </div>
+      <div className="bar-x"><span>May 1</span><span>May 6</span><span>May 11</span><span>May 16</span><span>May 21</span><span>May 26</span><span>May 31</span></div>
+    </div>
+  );
+}
+
+function PositionsTable() {
+  return (
+    <table className="replica-table">
+      <thead><tr><th>Symbol</th><th>Type</th><th>Volume</th><th>Entry Price</th><th>P/L (USD)</th></tr></thead>
+      <tbody>{openPositions.map(([symbol, type, volume, entry, pnl]) => (
+        <tr key={symbol}><td>{symbol}</td><td className={type === "Sell" ? "loss" : "blue-text"}>{type}</td><td>{volume}</td><td>{entry}</td><td className={pnl.startsWith("-") ? "loss" : "profit"}>{pnl}</td></tr>
+      ))}</tbody>
+    </table>
+  );
+}
+
+function RecentTradesTable() {
+  return (
+    <table className="replica-table">
+      <thead><tr><th>Time</th><th>Symbol</th><th>Type</th><th>Volume</th><th>Entry Price</th><th>Exit Price</th><th>P/L (USD)</th><th>Result</th></tr></thead>
+      <tbody>{recentTrades.map((row) => (
+        <tr key={`${row[0]}-${row[1]}`}>{row.map((cell, index) => <td key={index} className={cell === "Sell" ? "loss" : cell === "Buy" ? "blue-text" : cell.startsWith("$") || cell === "Won" ? "profit" : undefined}>{cell}</td>)}</tr>
+      ))}</tbody>
+    </table>
+  );
+}
+
+function NewsList() {
+  return (
+    <div className="news-list">
+      {newsItems.map(([time, title, detail, level]) => (
+        <article key={title}>
+          <span>{time}</span>
+          <div><strong>{title}</strong><p>Impact: {detail}</p></div>
+          <em className={`impact-${level.toLowerCase()}`}>{level}</em>
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function ReplicaAction({ icon: Icon, label, tone }: { icon: LucideIcon; label: string; tone: string }) {
+  return <button className={clsx("replica-action", `action-${tone}`)}><Icon size={18} /> {label}</button>;
+}
+
+function LineChartIcon({ size = 16 }: { size?: number }) {
+  return <BarChart3 size={size} />;
 }
 
 function TradingEngineControlPage({

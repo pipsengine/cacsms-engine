@@ -1,0 +1,68 @@
+namespace Cacsms.Engine.Application.Intelligence;
+
+public sealed record CotPositioningSnapshotDto(
+    Guid Id,
+    DateOnly ReportDate,
+    DateOnly ReleaseDate,
+    string ReportingPeriod,
+    string DataSource,
+    string Server,
+    string ServerStatus,
+    int NetPositionAll,
+    int TotalLong,
+    int TotalShort,
+    decimal LongShortRatio,
+    int TotalTraders,
+    int OpenInterest,
+    int TotalContracts,
+    int NonCommercialNet,
+    int CommercialNet,
+    int NonReportableNet,
+    string Bias,
+    string InstitutionalSentiment,
+    IReadOnlyCollection<CotPositioningRowDto> Rows);
+
+public sealed record CotPositioningRowDto(
+    DateOnly Date,
+    string Symbol,
+    string CurrencyName,
+    string DisplayCode,
+    int Long,
+    int Short,
+    int ChangeLong,
+    int ChangeShort,
+    decimal PercentChange,
+    int NetPositions,
+    string Bias);
+
+public sealed record CotPositioningUpsertRequest(
+    DateOnly ReportDate,
+    DateOnly ReleaseDate,
+    string ReportingPeriod,
+    string DataSource,
+    string Server,
+    string ServerStatus,
+    int NetPositionAll,
+    int TotalLong,
+    int TotalShort,
+    decimal LongShortRatio,
+    int TotalTraders,
+    int OpenInterest,
+    int TotalContracts,
+    int NonCommercialNet,
+    int CommercialNet,
+    int NonReportableNet,
+    string Bias,
+    string InstitutionalSentiment,
+    IReadOnlyCollection<CotPositioningRowDto> Rows);
+
+public sealed record CotPositioningSyncResultDto(
+    DateTimeOffset StartedAt,
+    DateTimeOffset CompletedAt,
+    DateOnly CutoffDate,
+    int YearsScanned,
+    int SnapshotsUpserted,
+    int RowsUpserted,
+    string SourceUrl,
+    string Status,
+    string Message);

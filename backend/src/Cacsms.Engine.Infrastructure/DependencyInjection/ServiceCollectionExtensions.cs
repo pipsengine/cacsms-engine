@@ -37,7 +37,11 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IMultiTimeframeBiasService, MultiTimeframeBiasService>();
         services.AddSingleton<IDecisionHistoryService, DecisionHistoryService>();
         services.AddSingleton<ICurrencyStrengthIntelligenceService, CurrencyStrengthIntelligenceService>();
+        services.AddSingleton<ICotPositioningService, CotPositioningService>();
+        services.AddSingleton<ICotPositioningSyncService, CftcCotPositioningSyncService>();
+        services.AddHostedService<CotPositioningSyncHostedService>();
         services.AddSingleton<LiveCurrencyStrengthHybridEvaluator>();
+        services.AddHttpClient(nameof(CftcCotPositioningSyncService));
         services.AddHttpClient<IAiDecisionClient, AiDecisionHttpClient>();
         services.AddSingleton<IMt5BridgeClient, Mt5BridgeClient>();
         return services;
