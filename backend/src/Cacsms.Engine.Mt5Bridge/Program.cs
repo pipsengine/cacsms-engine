@@ -10,7 +10,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 builder.Services.AddSerilog();
-builder.Services.AddCacsmsInfrastructure();
+builder.Services.AddCacsmsInfrastructure(builder.Configuration);
 builder.Services.AddSingleton<Mt5MessageRouter>();
 builder.Services.AddHostedService<Mt5BridgeWorker>();
 

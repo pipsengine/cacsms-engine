@@ -2,6 +2,7 @@ using Cacsms.Engine.Api.Endpoints;
 using Cacsms.Engine.Api.Hubs;
 using Cacsms.Engine.Application.Realtime;
 using Cacsms.Engine.Infrastructure.DependencyInjection;
+using Cacsms.Engine.Infrastructure.Persistence;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
@@ -16,7 +17,8 @@ builder.Host.UseSerilog((context, configuration) =>
         .WriteTo.Console();
 });
 
-builder.Services.AddCacsmsInfrastructure();
+builder.Services.AddCacsmsInfrastructure(builder.Configuration);
+builder.Services.AddCacsmsDatabaseHealthChecks();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<ITradingEventPublisher, SignalRTradingEventPublisher>();
 builder.Services.AddAuthorization();
@@ -33,6 +35,12 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var databaseInitializer = scope.ServiceProvider.GetRequiredService<IDatabaseInitializer>();
+    await databaseInitializer.InitializeAsync();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -41,7 +49,7 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 app.UseAuthorization();
 
-app.MapGet("/health", () => Results.Ok(new { status = "Healthy", service = "Cacsms Engine API" }));
+app.MapHealthChecks("/health");
 app.MapWorkflowEndpoints();
 app.MapTradingUniverseEndpoints();
 app.MapDecisioningEndpoints();
