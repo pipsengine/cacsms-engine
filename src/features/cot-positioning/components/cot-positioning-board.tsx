@@ -19,7 +19,8 @@ import {
 import {
   getCotPositioningHistory,
   getLatestCotPositioning,
-  saveCotPositioningSnapshot,
+  getCotPositioningReportDates,
+  getCotPositioningSnapshot,
   type CotPositioningSnapshot,
   type CotPositioningRow,
 } from "@/lib/api/cot-positioning";
@@ -36,9 +37,18 @@ const tabs = [
 
 const currencyFilters = ["ALL", "AUD", "CAD", "CHF", "EUR", "GBP", "JPY", "NZD", "USD", "XAU"];
 const exchangeScopes = ["All Exchanges", "CME", "COMEX"];
-const reportScopes = ["Futures Only", "CFTC Legacy"];
+const reportScopes = ["Futures Only"];
 const chartRanges = ["6M", "1Y", "2Y"] as const;
 const chartSeries = ["Net Position", "Long", "Short"] as const;
+const tabDescriptions: Record<string, string> = {
+  Overview: "Latest non-commercial positioning, summary, signal, and history.",
+  "Asset Breakdown": "Currency cards and table isolate each traded CFTC instrument.",
+  "Traders Breakdown": "Trader participation is reflected in the latest CFTC totals.",
+  "Historical Trends": "Chart and rows use the synced two-year CFTC history.",
+  "Percentile Analysis": "Use net-position history to compare current positioning against prior reports.",
+  "Commitments Change": "Long, short, and net changes are loaded from the CFTC weekly report.",
+  "Disaggregated Data": "This page is currently scoped to CFTC Futures Only legacy data.",
+};
 
 type AggregatePoint = {
   date: string;
@@ -48,9 +58,24 @@ type AggregatePoint = {
   ratio: number;
 };
 
+type AutonomousCotAnalysis = {
+  bias: "Bullish" | "Bearish" | "Neutral";
+  confidence: number;
+  action: string;
+  allowedDirection: string;
+  blockedDirection: string;
+  riskNote: string;
+  netChange: number;
+  longChange: number;
+  shortChange: number;
+  ratioChange: number;
+};
+
 export function CotPositioningBoard() {
   const [snapshot, setSnapshot] = useState<CotPositioningSnapshot | null>(null);
   const [historyRows, setHistoryRows] = useState<CotPositioningRow[]>([]);
+  const [reportDates, setReportDates] = useState<string[]>([]);
+  const [selectedReportDate, setSelectedReportDate] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useState("ALL");
   const [activeTab, setActiveTab] = useState("Overview");
   const [exchangeScope, setExchangeScope] = useState(exchangeScopes[0]);
@@ -58,17 +83,20 @@ export function CotPositioningBoard() {
   const [chartRange, setChartRange] = useState<(typeof chartRanges)[number]>("2Y");
   const [chartSeriesMode, setChartSeriesMode] = useState<(typeof chartSeries)[number]>("Net Position");
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState("Loading COT database snapshot...");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
-    Promise.all([getLatestCotPositioning(), getCotPositioningHistory()])
-      .then(([latest, history]) => {
+    Promise.all([getLatestCotPositioning(), getCotPositioningHistory(), getCotPositioningReportDates()])
+      .then(([latest, history, dates]) => {
         if (!cancelled) {
           setSnapshot(latest);
           setHistoryRows(history);
+          setReportDates(dates);
+          setSelectedReportDate(latest.reportDate);
           setStatus("Database snapshot loaded");
         }
       })
@@ -85,10 +113,11 @@ export function CotPositioningBoard() {
     let cancelled = false;
 
     setStatus(`Loading ${selectedCurrency === "ALL" ? "all currency" : selectedCurrency} history...`);
-    getCotPositioningHistory(selectedCurrency)
+    getCotPositioningHistory(selectedCurrency, exchangeScope)
       .then((history) => {
         if (!cancelled) {
           setHistoryRows(history);
+          setCurrentPage(1);
           setStatus(`${selectedCurrency === "ALL" ? "All currency" : selectedCurrency} history loaded`);
         }
       })
@@ -99,7 +128,7 @@ export function CotPositioningBoard() {
     return () => {
       cancelled = true;
     };
-  }, [selectedCurrency]);
+  }, [exchangeScope, selectedCurrency]);
 
   const filteredRows = useMemo(() => {
     const search = searchTerm.trim().toUpperCase();
@@ -110,10 +139,16 @@ export function CotPositioningBoard() {
       row.bias.toUpperCase().includes(search));
   }, [historyRows, searchTerm]);
 
-  const visibleRows = filteredRows.slice(0, 50);
+  const pageSize = 50;
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / pageSize));
+  const normalizedPage = Math.min(currentPage, totalPages);
+  const visibleRows = filteredRows.slice((normalizedPage - 1) * pageSize, normalizedPage * pageSize);
   const aggregatePoints = useMemo(() => buildAggregatePoints(historyRows), [historyRows]);
   const latestPoint = aggregatePoints.at(-1) ?? createEmptyPoint();
   const priorPoint = aggregatePoints.at(-2) ?? createEmptyPoint();
+  const autonomousAnalysis = useMemo(
+    () => buildAutonomousCotAnalysis(latestPoint, priorPoint),
+    [latestPoint, priorPoint]);
 
   const kpis = useMemo(() => {
     if (!snapshot) return [];
@@ -128,20 +163,19 @@ export function CotPositioningBoard() {
     ];
   }, [latestPoint.long, latestPoint.net, latestPoint.ratio, latestPoint.short, priorPoint.long, priorPoint.net, priorPoint.ratio, priorPoint.short, snapshot]);
 
-  const refreshSnapshot = async () => {
-    setStatus("Refreshing latest CFTC snapshot...");
-    const [latest, history] = await Promise.all([getLatestCotPositioning(), getCotPositioningHistory(selectedCurrency)]);
-    setSnapshot(latest);
-    setHistoryRows(history);
-    setStatus(`Updated from SQL at ${formatNigeriaTime(new Date())}`);
+  const selectReportDate = async (reportDate: string) => {
+    setSelectedReportDate(reportDate);
+    setStatus(`Loading ${formatDate(reportDate)} snapshot...`);
+    const selectedSnapshot = await getCotPositioningSnapshot(reportDate);
+    setSnapshot(selectedSnapshot);
+    setStatus(`Loaded ${formatDate(reportDate)} from SQL at ${formatNigeriaTime(new Date())}`);
   };
 
   const exportRows = async () => {
     setSaving(true);
     try {
-      if (snapshot) await saveCotPositioningSnapshot(snapshot);
-      downloadCsv(visibleRows, `${selectedCurrency.toLowerCase()}-cot-history-${new Date().toISOString().slice(0, 10)}.csv`);
-      setStatus(`Exported ${visibleRows.length} rows at ${formatNigeriaTime(new Date())}`);
+      downloadCsv(filteredRows, `${selectedCurrency.toLowerCase()}-cot-history-${new Date().toISOString().slice(0, 10)}.csv`);
+      setStatus(`Exported ${filteredRows.length} rows at ${formatNigeriaTime(new Date())}`);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Export failed.");
     } finally {
@@ -160,7 +194,7 @@ export function CotPositioningBoard() {
   return (
     <div className="cot-board">
       <section className="cot-toolbar">
-        <FilterButton label={formatDate(snapshot.reportDate)} icon={CalendarDays} onClick={() => void refreshSnapshot()} />
+        <DateFilterButton value={selectedReportDate || snapshot.reportDate} dates={reportDates} onChange={(value) => void selectReportDate(value)} />
         <FilterButton label={exchangeScope} onClick={() => cycleState(exchangeScopes, exchangeScope, setExchangeScope, setStatus)} />
         <FilterButton label={reportScope} onClick={() => cycleState(reportScopes, reportScope, setReportScope, setStatus)} />
         <button className="cot-export-button" onClick={exportRows} disabled={saving}>
@@ -190,6 +224,7 @@ export function CotPositioningBoard() {
           </button>
         ))}
       </nav>
+      <p className="cot-tab-context">{tabDescriptions[activeTab]}</p>
 
       <section className="cot-analytics-grid">
         <article className="cot-panel cot-chart-panel">
@@ -222,6 +257,11 @@ export function CotPositioningBoard() {
         </article>
       </section>
 
+      <AutonomousAnalysisPanel
+        analysis={autonomousAnalysis}
+        scope={selectedCurrency === "ALL" ? "All Contracts" : selectedCurrency}
+      />
+
       <section className="cot-panel cot-table-panel">
         <PanelHeader title="COT Data (All Contracts)" info>
           <label className="cot-table-search">
@@ -234,20 +274,24 @@ export function CotPositioningBoard() {
             <button
               key={currency}
               className={selectedCurrency === currency ? "active" : undefined}
-              onClick={() => setSelectedCurrency(currency)}
+              onClick={() => {
+                setSelectedCurrency(currency);
+                setSearchTerm("");
+              }}
             >
               {currency === "ALL" ? "All" : currency}
             </button>
           ))}
         </div>
+        <p className="cot-source-note">USD is derived from the synced CFTC FX futures basket; all other symbols are direct Futures Only contracts.</p>
         <CotTable rows={visibleRows} />
         <footer className="cot-table-footer">
-          <span>Showing {visibleRows.length ? 1 : 0} to {visibleRows.length} of {filteredRows.length} entries</span>
+          <span>Showing {visibleRows.length ? (normalizedPage - 1) * pageSize + 1 : 0} to {Math.min(normalizedPage * pageSize, filteredRows.length)} of {filteredRows.length} entries</span>
           <div>
-            <button><ChevronLeft size={15} /></button>
-            <button className="active">1</button>
-            <button><ChevronRight size={15} /></button>
-            <button>50 / page <ChevronDown size={14} /></button>
+            <button onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={normalizedPage === 1}><ChevronLeft size={15} /></button>
+            <button className="active">{normalizedPage}</button>
+            <button onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))} disabled={normalizedPage === totalPages}><ChevronRight size={15} /></button>
+            <button>{pageSize} / page <ChevronDown size={14} /></button>
           </div>
         </footer>
       </section>
@@ -272,6 +316,31 @@ function FilterButton({ label, icon: Icon, onClick }: { label: string; icon?: ty
       {label}
       {Icon ? <Icon size={15} /> : <ChevronDown size={15} />}
     </button>
+  );
+}
+
+function DateFilterButton({
+  value,
+  dates,
+  onChange,
+}: {
+  value: string;
+  dates: string[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="cot-filter-button cot-date-filter">
+      {formatDate(value)}
+      <CalendarDays size={15} />
+      <input
+        aria-label="Select COT report date"
+        type="date"
+        value={value}
+        min={dates.at(-1)}
+        max={dates[0]}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    </label>
   );
 }
 
@@ -305,6 +374,48 @@ function SummaryRows({ snapshot }: { snapshot: CotPositioningSnapshot }) {
         </div>
       ))}
     </div>
+  );
+}
+
+function AutonomousAnalysisPanel({
+  analysis,
+  scope,
+}: {
+  analysis: AutonomousCotAnalysis;
+  scope: string;
+}) {
+  return (
+    <section className="cot-panel cot-autonomous-panel">
+      <PanelHeader title={`Autonomous COT Analysis (${scope})`} info />
+      <div className="cot-autonomous-grid">
+        <article>
+          <span>COT Bias</span>
+          <strong className={`cot-${analysis.bias.toLowerCase()}-text`}>{analysis.bias}</strong>
+          <small>{analysis.confidence}% confidence</small>
+        </article>
+        <article>
+          <span>Institutional Action</span>
+          <strong>{analysis.action}</strong>
+          <small>Weekly commitment delta</small>
+        </article>
+        <article>
+          <span>Allowed Direction</span>
+          <strong>{analysis.allowedDirection}</strong>
+          <small>Requires technical and risk confirmation</small>
+        </article>
+        <article>
+          <span>Blocked / Caution</span>
+          <strong>{analysis.blockedDirection}</strong>
+          <small>{analysis.riskNote}</small>
+        </article>
+      </div>
+      <div className="cot-autonomous-metrics">
+        <span>Net Change <b className={analysis.netChange < 0 ? "cot-red-text" : "cot-green-text"}>{formatChange(analysis.netChange)}</b></span>
+        <span>Long Change <b className={analysis.longChange < 0 ? "cot-red-text" : "cot-green-text"}>{formatChange(analysis.longChange)}</b></span>
+        <span>Short Change <b className={analysis.shortChange < 0 ? "cot-red-text" : "cot-green-text"}>{formatChange(analysis.shortChange)}</b></span>
+        <span>Ratio Change <b className={analysis.ratioChange < 0 ? "cot-red-text" : "cot-green-text"}>{formatDelta(analysis.ratioChange, 2)}</b></span>
+      </div>
+    </section>
   );
 }
 
@@ -431,6 +542,68 @@ function buildAggregatePoints(rows: CotPositioningRow[]) {
       ...point,
       ratio: point.short === 0 ? 0 : Number((point.long / point.short).toFixed(2)),
     }));
+}
+
+function buildAutonomousCotAnalysis(latest: AggregatePoint, prior: AggregatePoint): AutonomousCotAnalysis {
+  const netChange = latest.net - prior.net;
+  const longChange = latest.long - prior.long;
+  const shortChange = latest.short - prior.short;
+  const ratioChange = latest.ratio - prior.ratio;
+  const changeAligned = Math.sign(netChange) !== 0 && Math.sign(netChange) === Math.sign(latest.net);
+
+  const bias: AutonomousCotAnalysis["bias"] = latest.net > 0 && netChange >= 0
+    ? "Bullish"
+    : latest.net < 0 && netChange <= 0
+      ? "Bearish"
+      : "Neutral";
+
+  const baseScore = latest.net === 0 ? 20 : latest.net > 0 ? 40 : bias === "Bearish" ? 40 : 15;
+  const changeScore = Math.abs(netChange) === 0 ? 10 : changeAligned ? 25 : 8;
+  const ratioScore = latest.ratio > 1.2 ? 20 : latest.ratio < 0.8 ? 20 : 10;
+  const participationScore = Math.abs(longChange) + Math.abs(shortChange) > 0 ? 15 : 5;
+  const confidence = Math.max(5, Math.min(95, baseScore + changeScore + ratioScore + participationScore));
+
+  const action = classifyInstitutionalAction(netChange, longChange, shortChange);
+  const allowedDirection = bias === "Bullish"
+    ? "Buy setups preferred"
+    : bias === "Bearish"
+      ? "Sell setups preferred"
+      : "Both directions need confirmation";
+  const blockedDirection = bias === "Bullish"
+    ? "Avoid weak sell signals"
+    : bias === "Bearish"
+      ? "Avoid weak buy signals"
+      : "Block low-confidence entries";
+
+  return {
+    bias,
+    confidence,
+    action,
+    allowedDirection,
+    blockedDirection,
+    riskNote: buildRiskNote(latest.ratio, netChange, longChange, shortChange),
+    netChange,
+    longChange,
+    shortChange,
+    ratioChange,
+  };
+}
+
+function classifyInstitutionalAction(netChange: number, longChange: number, shortChange: number) {
+  if (netChange > 0 && longChange > 0 && shortChange <= 0) return "Net accumulation";
+  if (netChange > 0 && shortChange < 0) return "Short covering";
+  if (netChange < 0 && shortChange > 0 && longChange <= 0) return "Short building";
+  if (netChange < 0 && longChange < 0) return "Long liquidation";
+  if (longChange > 0 && shortChange > 0) return "Two-sided expansion";
+  return "Mixed commitment";
+}
+
+function buildRiskNote(ratio: number, netChange: number, longChange: number, shortChange: number) {
+  if (longChange > 0 && shortChange > 0) return "Both longs and shorts increased; expect volatility expansion.";
+  if (ratio >= 3) return "Long/short ratio is stretched; avoid late entries without pullback confirmation.";
+  if (ratio > 0 && ratio <= 0.33) return "Short exposure is crowded; watch for squeeze risk.";
+  if (Math.abs(netChange) < 1000) return "Weekly net change is weak; require stronger technical confirmation.";
+  return "COT confirms directional permission, but execution still depends on technical and risk gates.";
 }
 
 function createEmptyPoint(): AggregatePoint {

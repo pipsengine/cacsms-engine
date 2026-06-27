@@ -16,12 +16,30 @@ public static class CotPositioningEndpoints
             return Results.Ok(snapshot);
         });
 
-        group.MapGet("/history", async (
-            string? symbol,
+        group.MapGet("/snapshots/{reportDate}", async (
+            DateOnly reportDate,
             ICotPositioningService service,
             CancellationToken cancellationToken) =>
         {
-            var rows = await service.GetHistoryAsync(symbol, cancellationToken);
+            var snapshot = await service.GetByDateAsync(reportDate, cancellationToken);
+            return snapshot is null ? Results.NotFound() : Results.Ok(snapshot);
+        });
+
+        group.MapGet("/report-dates", async (
+            ICotPositioningService service,
+            CancellationToken cancellationToken) =>
+        {
+            var dates = await service.GetAvailableReportDatesAsync(cancellationToken);
+            return Results.Ok(dates);
+        });
+
+        group.MapGet("/history", async (
+            string? symbol,
+            string? exchange,
+            ICotPositioningService service,
+            CancellationToken cancellationToken) =>
+        {
+            var rows = await service.GetHistoryAsync(symbol, exchange, cancellationToken);
             return Results.Ok(rows);
         });
 
@@ -34,12 +52,11 @@ public static class CotPositioningEndpoints
             return Results.Ok(snapshot);
         });
 
-        group.MapPost("/sync/cftc-futures-only", async (
-            ICotPositioningSyncService syncService,
-            CancellationToken cancellationToken) =>
+        group.MapPost("/sync/cftc-futures-only", (
+            ICotPositioningSyncService syncService) =>
         {
-            var result = await syncService.SyncLastTwoYearsAsync(cancellationToken);
-            return Results.Ok(result);
+            _ = Task.Run(() => syncService.SyncLastTwoYearsAsync(CancellationToken.None));
+            return Results.Accepted("/api/intelligence/cot-positioning/sync/status");
         });
 
         group.MapGet("/sync/status", (ICotPositioningSyncService syncService) =>

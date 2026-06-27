@@ -5,6 +5,8 @@ export type CotPositioningRow = {
   symbol: string;
   currencyName: string;
   displayCode: string;
+  exchange: string;
+  isDerived: boolean;
   long: number;
   short: number;
   changeLong: number;
@@ -41,8 +43,19 @@ export async function getLatestCotPositioning() {
   return apiFetch<CotPositioningSnapshot>("/api/intelligence/cot-positioning/latest");
 }
 
-export async function getCotPositioningHistory(symbol?: string) {
-  const query = symbol && symbol !== "ALL" ? `?symbol=${encodeURIComponent(symbol)}` : "";
+export async function getCotPositioningSnapshot(reportDate: string) {
+  return apiFetch<CotPositioningSnapshot>(`/api/intelligence/cot-positioning/snapshots/${encodeURIComponent(reportDate)}`);
+}
+
+export async function getCotPositioningReportDates() {
+  return apiFetch<string[]>("/api/intelligence/cot-positioning/report-dates");
+}
+
+export async function getCotPositioningHistory(symbol?: string, exchange?: string) {
+  const params = new URLSearchParams();
+  if (symbol && symbol !== "ALL") params.set("symbol", symbol);
+  if (exchange && exchange !== "All Exchanges") params.set("exchange", exchange);
+  const query = params.toString() ? `?${params.toString()}` : "";
   return apiFetch<CotPositioningRow[]>(`/api/intelligence/cot-positioning/history${query}`);
 }
 

@@ -316,26 +316,6 @@ body {
   display: none;
 }
 
-.topbar-actions > .status-badge:nth-of-type(2)::before {
-  content: "10:24:35";
-  display: block;
-  font-size: 15px;
-  font-weight: 800;
-}
-
-.topbar-actions > .status-badge:nth-of-type(2) {
-  font-size: 0;
-}
-
-.topbar-actions > .status-badge:nth-of-type(2)::after {
-  content: "UTC +0";
-  display: block;
-  margin-top: 3px;
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 650;
-}
-
 .topbar-actions > .status-badge:nth-of-type(3) {
   display: none;
 }
@@ -5175,6 +5155,13 @@ body,
   background: #2563eb;
 }
 
+.cot-tab-context {
+  margin: -4px 0 18px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 650;
+}
+
 .cot-analytics-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.75fr) minmax(260px, .5fr) minmax(280px, .52fr);
@@ -5188,6 +5175,74 @@ body,
 
 .cot-chart-panel {
   min-height: 380px;
+}
+
+.cot-autonomous-panel {
+  margin-top: 16px;
+}
+
+.cot-autonomous-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.cot-autonomous-grid article {
+  min-height: 104px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 14px;
+}
+
+.cot-autonomous-grid span,
+.cot-autonomous-grid small {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.cot-autonomous-grid strong {
+  display: block;
+  margin: 8px 0 6px;
+  color: #0f172a;
+  font-size: 17px;
+  line-height: 1.25;
+  font-weight: 900;
+}
+
+.cot-autonomous-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.cot-autonomous-metrics span {
+  border: 1px solid #dbe5f2;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 8px 10px;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.cot-autonomous-metrics b {
+  margin-left: 6px;
+}
+
+.cot-bullish-text {
+  color: #16a34a !important;
+}
+
+.cot-bearish-text {
+  color: #dc2626 !important;
+}
+
+.cot-neutral-text {
+  color: #64748b !important;
 }
 
 .cot-panel-header {
@@ -5474,6 +5529,18 @@ body,
   overflow-x: auto;
 }
 
+.cot-date-filter {
+  position: relative;
+  cursor: pointer;
+}
+
+.cot-date-filter input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
 .cot-currency-filter {
   display: flex;
   flex-wrap: wrap;
@@ -5499,6 +5566,13 @@ body,
   border-color: #2563eb;
   background: #eff6ff;
   color: #2563eb;
+}
+
+.cot-source-note {
+  margin: -2px 14px 12px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 650;
 }
 
 .cot-table {
@@ -5641,6 +5715,11 @@ body,
   min-width: 34px;
   min-height: 34px;
   padding: 0 10px;
+}
+
+.cot-table-footer button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
 }
 
 .cot-table-footer button.active {

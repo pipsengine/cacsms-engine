@@ -115,10 +115,12 @@ public sealed class CftcCotPositioningSyncService : ICotPositioningSyncService
                         row.Symbol,
                         row.CurrencyName,
                         row.DisplayCode,
+                        row.Symbol == "XAU" ? "COMEX" : "CME",
+                        row.Symbol == "USD",
                         row.NonCommercialLong,
-                        -row.NonCommercialShort,
+                        row.NonCommercialShort,
                         row.ChangeNonCommercialLong,
-                        -row.ChangeNonCommercialShort,
+                        row.ChangeNonCommercialShort,
                         CalculatePercentChange(row.ChangeNonCommercialLong, row.NonCommercialLong),
                         row.NetPosition,
                         GetBias(row.NetPosition)))
@@ -343,6 +345,7 @@ public sealed class CftcCotPositioningSyncService : ICotPositioningSyncService
         }
 
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+        dbContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(3));
 
         await dbContext.CftcFuturesOnlyReports
             .Where(report => report.ReportDate >= cutoffDate)

@@ -27,6 +27,8 @@ public sealed record CotPositioningRowDto(
     string Symbol,
     string CurrencyName,
     string DisplayCode,
+    string Exchange,
+    bool IsDerived,
     int Long,
     int Short,
     int ChangeLong,

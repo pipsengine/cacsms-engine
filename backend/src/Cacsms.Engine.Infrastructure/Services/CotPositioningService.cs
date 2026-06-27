@@ -30,12 +30,40 @@ public sealed class CotPositioningService : ICotPositioningService
             return MapToDto(snapshot);
         }
 
-        var seeded = await UpsertAsync(CreateReferenceRequest(), cancellationToken);
-        return seeded;
+        throw new InvalidOperationException("No CFTC COT positioning snapshots are available. Run the CFTC Futures Only sync first.");
+    }
+
+    public async Task<CotPositioningSnapshotDto?> GetByDateAsync(
+        DateOnly reportDate,
+        CancellationToken cancellationToken = default)
+    {
+        await using var dbContext = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+
+        var snapshot = await dbContext.CotPositioningSnapshots
+            .AsNoTracking()
+            .Include(item => item.Rows)
+            .Where(item => item.DataSource == "CFTC Futures Only" && item.ReportDate == reportDate)
+            .OrderByDescending(item => item.UpdatedAt)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return snapshot is null ? null : MapToDto(snapshot);
+    }
+
+    public async Task<IReadOnlyCollection<DateOnly>> GetAvailableReportDatesAsync(CancellationToken cancellationToken = default)
+    {
+        await using var dbContext = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+
+        return await dbContext.CotPositioningSnapshots
+            .AsNoTracking()
+            .Where(item => item.DataSource == "CFTC Futures Only")
+            .OrderByDescending(item => item.ReportDate)
+            .Select(item => item.ReportDate)
+            .ToArrayAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyCollection<CotPositioningRowDto>> GetHistoryAsync(
         string? symbol = null,
+        string? exchange = null,
         CancellationToken cancellationToken = default)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
@@ -50,6 +78,17 @@ public sealed class CotPositioningService : ICotPositioningService
             query = query.Where(row => row.Symbol == normalizedSymbol);
         }
 
+        var normalizedExchange = NormalizeExchange(exchange);
+        if (normalizedExchange is not null)
+        {
+            query = normalizedExchange switch
+            {
+                "CME" => query.Where(row => row.Symbol != "XAU"),
+                "COMEX" => query.Where(row => row.Symbol == "XAU"),
+                _ => query
+            };
+        }
+
         var rows = await query
             .OrderByDescending(row => row.Date)
             .Select(row => new CotPositioningRowDto(
@@ -57,6 +96,8 @@ public sealed class CotPositioningService : ICotPositioningService
                 row.Symbol,
                 row.CurrencyName,
                 row.DisplayCode,
+                ResolveExchange(row.Symbol),
+                row.Symbol == "USD",
                 row.Long,
                 row.Short,
                 row.ChangeLong,
@@ -179,6 +220,8 @@ public sealed class CotPositioningService : ICotPositioningService
                     row.Symbol,
                     row.CurrencyName,
                     row.DisplayCode,
+                    ResolveExchange(row.Symbol),
+                    row.Symbol == "USD",
                     row.Long,
                     row.Short,
                     row.ChangeLong,
@@ -187,57 +230,6 @@ public sealed class CotPositioningService : ICotPositioningService
                     row.NetPositions,
                     row.Bias))
                 .ToArray());
-
-    private static CotPositioningUpsertRequest CreateReferenceRequest()
-    {
-        var reportDate = new DateOnly(2024, 5, 14);
-
-        return new CotPositioningUpsertRequest(
-            reportDate,
-            new DateOnly(2024, 5, 17),
-            "May 7 - May 14, 2024",
-            "CFTC",
-            "London Server",
-            "Connected",
-            215842,
-            1248675,
-            1032833,
-            1.21m,
-            4321,
-            2487652,
-            2281508,
-            1024567,
-            -842321,
-            -182246,
-            "Bullish",
-            "Institutional sentiment is bullish",
-            new[]
-            {
-                Row(reportDate, "EUR", "Euro", "EUR", 180765, -1674475, 12443, -12721, -1.49m, -842321, "Bearish"),
-                Row(reportDate, "GBP", "British Pound", "GBP", 142334, -224433, 9321, -5614, -2.99m, -82099, "Bearish"),
-                Row(reportDate, "JPY", "Japanese Yen", "JPY", 128765, -156145, -4210, 3210, 3.14m, -27380, "Neutral"),
-                Row(reportDate, "CHF", "Swiss Franc", "CHF", 88342, -97310, 1854, -1204, -0.38m, -8968, "Neutral"),
-                Row(reportDate, "CAD", "Canadian Dollar", "CAD", 95321, -66845, -3567, -2100, -0.93m, 28476, "Bullish"),
-                Row(reportDate, "AUD", "Australian Dollar", "AUD", 72654, -44321, 2210, -1987, 1.23m, 28333, "Bullish"),
-                Row(reportDate, "NZD", "New Zealand Dollar", "NZD", 58320, -61444, 1410, -2211, -0.62m, -3124, "Neutral"),
-                Row(reportDate, "DXY", "USD Aggregate / Dollar Index", "DXY", 210456, -112804, 6412, -3741, 2.87m, 97652, "Bullish"),
-                Row(reportDate, "XAU", "Gold", "XAU", 215842, -1032833, 18335, -12721, 1.82m, 215842, "Bullish"),
-            });
-    }
-
-    private static CotPositioningRowDto Row(
-        DateOnly date,
-        string symbol,
-        string name,
-        string display,
-        int @long,
-        int @short,
-        int changeLong,
-        int changeShort,
-        decimal percentChange,
-        int net,
-        string bias) =>
-        new(date, symbol, name, display, @long, @short, changeLong, changeShort, percentChange, net, bias);
 
     private static int InstrumentOrder(string symbol) =>
         symbol.ToUpperInvariant() switch
@@ -262,4 +254,12 @@ public sealed class CotPositioningService : ICotPositioningService
         string.IsNullOrWhiteSpace(value) || value.Equals("ALL", StringComparison.OrdinalIgnoreCase)
             ? null
             : value.Trim().ToUpperInvariant();
+
+    private static string? NormalizeExchange(string? value) =>
+        string.IsNullOrWhiteSpace(value) || value.Equals("All Exchanges", StringComparison.OrdinalIgnoreCase)
+            ? null
+            : value.Trim().ToUpperInvariant();
+
+    private static string ResolveExchange(string symbol) =>
+        symbol.Equals("XAU", StringComparison.OrdinalIgnoreCase) ? "COMEX" : "CME";
 }
