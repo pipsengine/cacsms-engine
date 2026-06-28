@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import {
   AlertCircle,
@@ -67,6 +67,21 @@ import {
 import { DecisionWorkbenchBoard } from "@/features/decision-workbench/components/decision-workbench-board";
 import { CurrencyStrengthMatrixBoard } from "@/features/currency-strength-matrix/components/currency-strength-matrix-board";
 import { CotPositioningBoard } from "@/features/cot-positioning/components/cot-positioning-board";
+import {
+  getDataSourcesStatus,
+  getEngineStatus,
+  getRuntimeConfig,
+  getSymbolSelectionRules,
+  reloadRuntimeConfig,
+  startEngine,
+  stopEngine,
+} from "@/lib/api/operations";
+import type {
+  DataSourcesOverview,
+  EngineRuntimeStatus,
+  RuntimeConfig,
+  SymbolSelectionRulesOverview,
+} from "@/lib/api/types";
 
 type StatusTone = "success" | "warning" | "danger" | "neutral" | "info";
 
@@ -110,6 +125,225 @@ const workflowLinks = [
   { label: "Risk review", href: "/risk-management/dashboard" },
   { label: "Report outcome", href: "/reports/daily" },
   { label: "Learning note", href: "/learning-center/trade-journal" },
+];
+
+type ProcessWorkflowStage = {
+  number: string;
+  name: string;
+  owner: string;
+  status: "Completed" | "In Progress" | "Pending" | "Not Started" | "Blocked";
+  progress: number;
+  note: string;
+  icon: LucideIcon;
+  accent: "green" | "blue" | "amber" | "red" | "purple";
+};
+
+type ProcessWorkflowColumn = {
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  accent: "green" | "blue" | "amber" | "purple";
+  stages: ProcessWorkflowStage[];
+};
+
+const processWorkflowColumns: ProcessWorkflowColumn[] = [
+  {
+    title: "Currency-First Selection",
+    description: "Build market opportunity from currency strength flow",
+    icon: Network,
+    accent: "green",
+    stages: [
+      { number: "01", name: "Start Engine", owner: "Runtime Control", status: "Completed", progress: 100, note: "Runtime active", icon: Play, accent: "green" },
+      { number: "02", name: "Load Runtime + Risk Config", owner: "Runtime Control", status: "Completed", progress: 100, note: "Trading limits loaded", icon: Settings, accent: "green" },
+      { number: "03", name: "Verify Data Sources", owner: "Observability", status: "Completed", progress: 100, note: "Feeds connected", icon: Archive, accent: "green" },
+      { number: "04", name: "Currency Strength Matrix", owner: "8 Major Currencies", status: "Completed", progress: 100, note: "GBP - EUR - USD - JPY - AUD - CAD - CHF - NZD", icon: BarChart3, accent: "green" },
+      { number: "05", name: "Rank Strong / Weak Currencies", owner: "Currency Strength Engine", status: "Completed", progress: 100, note: "Bullish, bearish, neutral, mixed", icon: Gauge, accent: "green" },
+      { number: "06", name: "Strong-vs-Weak Pair Selector", owner: "Symbol Selection Engine", status: "In Progress", progress: 75, note: "Generate candidate FX pairs", icon: Target, accent: "amber" },
+      { number: "07", name: "Approved Symbol Filter", owner: "Trading Universe", status: "Completed", progress: 100, note: "Trade only approved symbols", icon: CheckCircle2, accent: "green" },
+      { number: "08", name: "Directional Bias Assigned", owner: "Symbol Selection Engine", status: "In Progress", progress: 70, note: "Buy, sell, no trade, manual review", icon: SlidersHorizontal, accent: "amber" },
+    ],
+  },
+  {
+    title: "Analysis",
+    description: "Validate opportunity and market condition",
+    icon: BarChart3,
+    accent: "blue",
+    stages: [
+      { number: "09", name: "Market Structure Analysis", owner: "Market Intelligence", status: "In Progress", progress: 65, note: "Trend - BOS/CHOCH - Structure - Zones", icon: SlidersHorizontal, accent: "blue" },
+      { number: "10", name: "Macro + COT Analysis", owner: "Macro Intelligence", status: "In Progress", progress: 60, note: "News - COT - Macro - Sentiment - Yields", icon: Network, accent: "blue" },
+      { number: "11", name: "Opportunity Confirmed", owner: "AI Decision Engine", status: "Pending", progress: 20, note: "Candidate awaiting final confirmation", icon: Target, accent: "blue" },
+    ],
+  },
+  {
+    title: "Decision Engine",
+    description: "AI decision and institutional validation",
+    icon: Brain,
+    accent: "amber",
+    stages: [
+      { number: "12", name: "Hybrid AI Decision", owner: "Decision Engine", status: "In Progress", progress: 70, note: "Score gates and pattern recognition", icon: Brain, accent: "amber" },
+      { number: "13", name: "Currency Strength Gate", owner: "Decision Engine", status: "In Progress", progress: 75, note: "Symbol bias must agree", icon: ShieldCheck, accent: "amber" },
+      { number: "14", name: "Confidence Gate 85%", owner: "Decision Engine", status: "In Progress", progress: 70, note: "Minimum confidence required", icon: ShieldCheck, accent: "amber" },
+      { number: "15", name: "Risk Approval", owner: "Risk & Compliance", status: "In Progress", progress: 60, note: "Drawdown and exposure check", icon: ShieldAlert, accent: "amber" },
+      { number: "16", name: "Final Trade Approval", owner: "Decision Engine", status: "Pending", progress: 10, note: "Execute or no trade", icon: Check, accent: "blue" },
+    ],
+  },
+  {
+    title: "Execution Engine",
+    description: "Execute trade with precision",
+    icon: Zap,
+    accent: "green",
+    stages: [
+      { number: "17", name: "Execution Approval", owner: "Execution Layer", status: "In Progress", progress: 50, note: "Manual/auto permission", icon: User, accent: "green" },
+      { number: "18", name: "MT5 Order Routing", owner: "Execution Layer", status: "Pending", progress: 10, note: "Send order to broker", icon: RadioTower, accent: "blue" },
+      { number: "19", name: "Order Execution", owner: "External Broker", status: "Pending", progress: 10, note: "Confirm fill and position open", icon: Archive, accent: "blue" },
+    ],
+  },
+  {
+    title: "Post-Trade Engine",
+    description: "Manage trade to completion",
+    icon: BriefcaseBusiness,
+    accent: "purple",
+    stages: [
+      { number: "20", name: "Live Trade Monitoring", owner: "Trade Management", status: "Completed", progress: 100, note: "Monitor open position", icon: Gauge, accent: "green" },
+      { number: "21", name: "Profit Lock + Risk Control", owner: "Trade Management", status: "In Progress", progress: 60, note: "Protect gains and manage risk", icon: Lock, accent: "purple" },
+      { number: "22", name: "Exit Decision", owner: "Exit Management", status: "In Progress", progress: 40, note: "Hold, trail, or close", icon: RefreshCw, accent: "purple" },
+      { number: "23", name: "Trade Closure", owner: "Exit Management", status: "Pending", progress: 15, note: "Close position", icon: CheckCircle2, accent: "blue" },
+      { number: "24", name: "Persist Outcome + Reports + Learning", owner: "Data / Reports / Learning", status: "In Progress", progress: 45, note: "Save trade record and improve future selection", icon: BookOpen, accent: "purple" },
+    ],
+  },
+];
+
+const xauPriorityStages: ProcessWorkflowStage[] = [
+  { number: "X1", name: "USD Strength Filter", owner: "XAUUSD Scalping Engine", status: "Completed", progress: 100, note: "Read USD M5/M15/M30/H1", icon: Gauge, accent: "green" },
+  { number: "X2", name: "Invert USD Bias for XAU", owner: "XAUUSD Scalping Engine", status: "In Progress", progress: 80, note: "USD weak = XAU buy; USD strong = XAU sell", icon: RefreshCw, accent: "amber" },
+  { number: "X3", name: "XAU Scalping Gate", owner: "Execution Filter", status: "In Progress", progress: 65, note: "Session, spread, volatility, news", icon: ShieldCheck, accent: "amber" },
+  { number: "X4", name: "XAUUSD Priority Candidate", owner: "Trading Universe", status: "Pending", progress: 25, note: "Validate entry on M1/M5/M15", icon: Target, accent: "blue" },
+];
+
+const processBranches = [
+  { title: "No Trade", detail: "Conditions not aligned", action: "Logged", tone: "red", icon: X },
+  { title: "Manual Review", detail: "Requires human expert assessment", action: "Review Queue", tone: "amber", icon: User },
+  { title: "Blocked", detail: "Risk, compliance, or system block", action: "Not Approved", tone: "red", icon: ShieldAlert },
+  { title: "Emergency Stop", detail: "Kill switch or critical system alert", action: "Engine Halted", tone: "red", icon: Power },
+  { title: "Execute Path", detail: "All gates passed, execute trade", action: "Proceed to Execution", tone: "green", icon: CheckCircle2 },
+];
+
+const processSnapshot = [
+  ["Top FX Candidate", "GBPJPY Buy"],
+  ["XAUUSD Priority", "BUY Scalp"],
+  ["Strongest Currency", "GBP"],
+  ["Weakest Currency", "JPY"],
+  ["USD Strength Score", "23"],
+  ["XAU vs USD Differential", "+68"],
+  ["Opportunity Score", "95 / 100"],
+  ["AI Confidence", "97%"],
+  ["Market Regime", "TRENDING"],
+  ["Current Session", "LONDON"],
+  ["Spread", "OK"],
+  ["Risk Status", "APPROVED"],
+];
+
+const processSelectionRules = [
+  "FX pairs use strongest vs weakest currency",
+  "XAUUSD uses inverse USD strength",
+  "Mixed strength = No Trade or Manual Review",
+];
+
+const processSummary = [
+  ["Completed", "8", "green"],
+  ["In Progress", "11", "amber"],
+  ["Pending", "5", "blue"],
+  ["Not Started", "0", "slate"],
+  ["Blocked", "0", "red"],
+];
+
+const processEngineInfo = [
+  ["Trading Mode", "HYBRID PORTFOLIO"],
+  ["Symbol Selection", "CURRENCY-FIRST"],
+  ["XAU Mode", "PRIORITY SCALP"],
+  ["Autonomy Level", "HIGH"],
+  ["Risk Profile", "MODERATE"],
+  ["Daily Drawdown", "1.2%"],
+  ["Open Position", "1"],
+  ["Active Strategies", "3"],
+];
+
+const processInputs: Array<[string, string, LucideIcon]> = [
+  ["Currency Strength", "8 major currencies", Network],
+  ["Strong-vs-Weak Selector", "Pair ranking", Target],
+  ["Gold Intelligence", "XAU priority", Sparkles],
+  ["USD Intelligence", "DXY, yields, Fed", Gauge],
+  ["COT & Sentiment", "Institutional position", ClipboardCheck],
+  ["Market Structure", "Trend, BOS, liquidity", SlidersHorizontal],
+  ["Macro & News", "Economic calendar", BookOpen],
+  ["Session & Liquidity", "Time and volatility", Clock],
+];
+
+const processWorkflowImageSrc = "/Stages%20Status%20Workflow%20II.png";
+const processWorkflowStaticLiveTime = "Live: 2 Jun 2026, 10:45:32 AM";
+type ProcessEngineRuntimeStatus = "RUNNING" | "OFFLINE";
+
+type ProcessWorkflowOverviewResponse = {
+  overallCompletion?: number;
+  OverallCompletion?: number;
+};
+
+type ProcessStageLiveStatus = {
+  code: "01" | "02" | "03" | "04";
+  status: string;
+  progress: number;
+  note: string;
+  tone: "green" | "amber" | "red" | "slate";
+};
+
+type ProcessCurrencyStrengthStatusResponse = {
+  source?: string;
+  Source?: string;
+  confidence?: number;
+  Confidence?: number;
+};
+
+const initialProcessStageStatuses: ProcessStageLiveStatus[] = [
+  { code: "01", status: "Offline", progress: 0, note: "Engine API unavailable", tone: "red" },
+  { code: "02", status: "Offline", progress: 0, note: "Runtime config unavailable", tone: "red" },
+  { code: "03", status: "Offline", progress: 0, note: "Data-source API unavailable", tone: "red" },
+  { code: "04", status: "Offline", progress: 0, note: "Currency feed unavailable", tone: "red" },
+];
+
+const processHotspots = [
+  { label: "01 Start Engine", href: "/trading-control/engine", x: 1.8, y: 12.5, w: 16.8, h: 5.5 },
+  { label: "02 Load Runtime + Risk Config", href: "/trading-control/runtime-config", x: 1.8, y: 19.2, w: 16.8, h: 5.5 },
+  { label: "03 Verify Data Sources", href: "/system-monitoring/data-sources", x: 1.8, y: 25.9, w: 16.8, h: 5.5 },
+  { label: "04 Currency Strength Matrix", href: "/macro-intelligence/currency-strength-matrix", x: 1.8, y: 35.1, w: 16.8, h: 5.5 },
+  { label: "Selection Rule", href: "/market-intelligence/symbol-selection-rules", x: 19.3, y: 13.2, w: 5.9, h: 20.1 },
+  { label: "05 Rank Strong / Weak Currencies", href: "/macro-intelligence/currency-strength-matrix", x: 2.4, y: 48.3, w: 17.2, h: 5.2 },
+  { label: "06 Strong-vs-Weak Pair Selector", href: "/market-intelligence/watchlist", x: 2.4, y: 56.9, w: 17.2, h: 5.2 },
+  { label: "07 Approved Symbol Filter", href: "/market-intelligence/watchlist", x: 2.4, y: 65.5, w: 17.2, h: 5.2 },
+  { label: "08 Directional Bias Assigned", href: "/ai-decision-engine/recommendations", x: 2.4, y: 74.1, w: 17.2, h: 5.2 },
+  { label: "XAUUSD Priority Scalping Path", href: "/dashboard/process-status-workflow", x: 2.1, y: 82.1, w: 18, h: 13.6 },
+  { label: "09 Market Structure Analysis", href: "/market-intelligence/market-structure", x: 26.8, y: 13.2, w: 14.3, h: 8.2 },
+  { label: "10 Macro + COT Analysis", href: "/macro-intelligence/cot-positioning", x: 26.8, y: 25.2, w: 14.3, h: 8.2 },
+  { label: "11 Opportunity Confirmed", href: "/ai-decision-engine/entry-validation", x: 26.8, y: 37.0, w: 14.3, h: 8.2 },
+  { label: "Institutional Validation", href: "/risk-management/pre-trade-checks", x: 26.8, y: 49.2, w: 14.3, h: 13.2 },
+  { label: "12 Hybrid AI Decision", href: "/ai-decision-engine/recommendations", x: 43.1, y: 13.2, w: 13.9, h: 8.2 },
+  { label: "13 Currency Strength Gate", href: "/macro-intelligence/currency-strength-matrix", x: 43.1, y: 25.2, w: 13.9, h: 8.2 },
+  { label: "14 Confidence Gate 85%", href: "/ai-decision-engine/entry-validation", x: 43.1, y: 37.0, w: 13.9, h: 8.2 },
+  { label: "15 Risk Approval", href: "/risk-management/dashboard", x: 43.1, y: 48.9, w: 13.9, h: 8.2 },
+  { label: "16 Final Trade Approval", href: "/ai-decision-engine/approval-queue", x: 43.1, y: 60.8, w: 13.9, h: 8.2 },
+  { label: "17 Execution Approval", href: "/trade-execution/order-setup", x: 59.1, y: 13.2, w: 13.5, h: 8.2 },
+  { label: "18 MT5 Order Routing", href: "/trade-execution/mt5-bridge", x: 59.1, y: 25.2, w: 13.5, h: 8.2 },
+  { label: "19 Order Execution", href: "/trade-execution/order-history", x: 59.1, y: 37.0, w: 13.5, h: 8.2 },
+  { label: "20 Live Trade Monitoring", href: "/trade-management/open-trades", x: 75.1, y: 13.2, w: 13.2, h: 8.2 },
+  { label: "21 Profit Lock + Risk Control", href: "/trade-management/risk-controls", x: 75.1, y: 25.2, w: 13.2, h: 8.2 },
+  { label: "22 Exit Decision", href: "/trade-management/exit-management", x: 75.1, y: 37.0, w: 13.2, h: 8.2 },
+  { label: "23 Trade Closure", href: "/trade-management/closed-trades", x: 75.1, y: 48.9, w: 13.2, h: 8.2 },
+  { label: "24 Persist Outcome + Reports + Learning", href: "/reports/daily", x: 75.1, y: 60.8, w: 13.2, h: 8.2 },
+  { label: "Live Market Snapshot", href: "/market-intelligence/watchlist", x: 89.0, y: 11.9, w: 9.3, h: 21.0 },
+  { label: "Workflow Summary", href: "/dashboard/process-status-workflow", x: 89.0, y: 34.1, w: 9.3, h: 15.6 },
+  { label: "Engine Information", href: "/system-monitoring/engine-health", x: 89.0, y: 51.0, w: 9.3, h: 19.2 },
+  { label: "Branch Outputs", href: "/ai-decision-engine/approval-queue", x: 25.7, y: 77.0, w: 62.2, h: 8.3 },
+  { label: "Key Intelligence Inputs", href: "/macro-intelligence/currency-strength-matrix", x: 0.9, y: 89.0, w: 73.4, h: 8.4 },
+  { label: "Trading Focus", href: "/dashboard/process-status-workflow", x: 74.9, y: 89.0, w: 24.0, h: 8.4 },
 ];
 
 const unimplementedPageStatus = { status: "Not Implemented", completion: 0, tone: "red" } as const;
@@ -334,15 +568,15 @@ const engineLinkedRecords = [
 
 export function CommandCenterPage({ path }: { path: string }) {
   const page = findPageByPath(path);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
-    if (typeof window === "undefined") return false;
-
-    return window.localStorage.getItem("cacsms.sidebar.collapsed") === "true";
-  });
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [engineRunning, setEngineRunning] = useState(true);
+  const [engineRunning, setEngineRunning] = useState(false);
   const [activeTab, setActiveTab] = useState("Operations");
+
+  useEffect(() => {
+    setSidebarCollapsed(window.localStorage.getItem("cacsms.sidebar.collapsed") === "true");
+  }, []);
 
   const toggleSidebar = () => {
     setSidebarCollapsed((value) => {
@@ -374,12 +608,16 @@ export function CommandCenterPage({ path }: { path: string }) {
 
   const isLifecycleStatusPage = page.path === "/dashboard/trade-lifecycle-status";
   const isDashboardPage = page.path === "/dashboard";
+  const isProcessStatusWorkflowPage = page.path === "/dashboard/process-status-workflow";
   const isDecisionStatusWorkflowPage = page.path === "/dashboard/ai-decision-status-workflow";
   const isDecisionWorkbenchPage =
     page.path === "/ai-decision-engine/decision-workbench" || page.path === "/ai-decision-engine/history";
   const isCurrencyStrengthMatrixPage = page.path === "/macro-intelligence/currency-strength-matrix";
   const isCotPositioningPage = page.path === "/macro-intelligence/cot-positioning";
   const isTradingEnginePage = page.path === "/trading-control/engine";
+  const isRuntimeConfigPage = page.path === "/trading-control/runtime-config";
+  const isDataSourcesPage = page.path === "/system-monitoring/data-sources";
+  const isSymbolSelectionRulesPage = page.path === "/market-intelligence/symbol-selection-rules";
   const topbarSubtitle = isDashboardPage
     ? "Welcome back, Alex! Here's what's happening with your trading engine today."
     : isCotPositioningPage
@@ -390,11 +628,18 @@ export function CommandCenterPage({ path }: { path: string }) {
     <AppLayout
       collapsed={sidebarCollapsed}
       onToggleSidebar={toggleSidebar}
-      topbar={<Topbar title={title} subtitle={topbarSubtitle} engineRunning={engineRunning} onToggleEngine={() => setEngineRunning((value) => !value)} onOpenDrawer={() => setDrawerOpen(true)} />}
+      topbar={
+        isProcessStatusWorkflowPage ? null : (
+          <Topbar title={title} subtitle={topbarSubtitle} engineRunning={engineRunning} onToggleEngine={() => setEngineRunning((value) => !value)} onOpenDrawer={() => setDrawerOpen(true)} />
+        )
+      }
       sidebar={<Sidebar collapsed={sidebarCollapsed} currentPath={page.path} onToggle={toggleSidebar} />}
+      pageChrome={isProcessStatusWorkflowPage ? "figma" : "standard"}
     >
       {isDashboardPage ? (
         <DashboardReplicaPage />
+      ) : isProcessStatusWorkflowPage ? (
+        <ProcessStatusWorkflowBoard />
       ) : isLifecycleStatusPage ? (
         <LifecycleStatusBoard page={page} />
       ) : isDecisionStatusWorkflowPage ? (
@@ -413,6 +658,12 @@ export function CommandCenterPage({ path }: { path: string }) {
           onOpenDrawer={() => setDrawerOpen(true)}
           onConfirm={() => setConfirmOpen(true)}
         />
+      ) : isRuntimeConfigPage ? (
+        <RuntimeConfigPage page={page} />
+      ) : isDataSourcesPage ? (
+        <DataSourcesStatusPage page={page} />
+      ) : isSymbolSelectionRulesPage ? (
+        <SymbolSelectionRulesPage page={page} />
       ) : (
         <>
           <Breadcrumbs page={page} />
@@ -467,15 +718,17 @@ function AppLayout({
   topbar,
   collapsed,
   onToggleSidebar,
+  pageChrome = "standard",
 }: {
   children: React.ReactNode;
   sidebar: React.ReactNode;
   topbar: React.ReactNode;
   collapsed: boolean;
   onToggleSidebar: () => void;
+  pageChrome?: "standard" | "figma";
 }) {
   return (
-    <div className={clsx("app-shell", collapsed && "sidebar-collapsed")}>
+    <div className={clsx("app-shell", collapsed && "sidebar-collapsed", pageChrome === "figma" && "figma-page-shell")}>
       {sidebar}
       <div className="workspace">
         <div className="mobile-toggle">
@@ -493,13 +746,11 @@ function AppLayout({
 function Sidebar({ collapsed, currentPath, onToggle }: { collapsed: boolean; currentPath: string; onToggle: () => void }) {
   const sections = visibleNavigationSections(activeRole);
   const sidebarRef = useRef<HTMLElement>(null);
-  const [openModulePath, setOpenModulePath] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
-
-    return window.sessionStorage.getItem("cacsms.sidebar.openModulePath");
-  });
+  const [openModulePath, setOpenModulePath] = useState<string | null>(null);
 
   useLayoutEffect(() => {
+    setOpenModulePath(window.sessionStorage.getItem("cacsms.sidebar.openModulePath"));
+
     const clearOpenModuleOnRefresh = () => {
       window.sessionStorage.removeItem("cacsms.sidebar.openModulePath");
     };
@@ -755,22 +1006,27 @@ function EngineHeaderControl({
 }
 
 function NigeriaClock() {
-  const [now, setNow] = useState(() => new Date());
+  const [time, setTime] = useState("00:00:00");
 
   useEffect(() => {
-    const timer = window.setInterval(() => setNow(new Date()), 1000);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  return (
-    <div className="nigeria-clock" aria-label="Nigeria local time">
-      <strong>{new Intl.DateTimeFormat("en-GB", {
+    const formatTime = () => {
+      setTime(new Intl.DateTimeFormat("en-GB", {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
         hour12: false,
         timeZone: "Africa/Lagos",
-      }).format(now)}</strong>
+      }).format(new Date()));
+    };
+
+    formatTime();
+    const timer = window.setInterval(formatTime, 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="nigeria-clock" aria-label="Nigeria local time">
+      <strong>{time}</strong>
       <small>WAT UTC+1</small>
     </div>
   );
@@ -832,6 +1088,636 @@ function PageHeader({
       </div>
     </section>
   );
+}
+
+function ProcessStatusWorkflowBoard() {
+  return (
+    <section className="process-figma-replica" aria-label="Process Status Workflow exact Figma replica">
+      <div className="process-figma-frame">
+        <img src={processWorkflowImageSrc} alt="CACSMS Engine - Currency-First Stage Workflow" draggable={false} />
+        <ProcessWorkflowOverallCompletion />
+        <ProcessWorkflowLiveStatus />
+        <ProcessWorkflowFoundationStatus />
+        <nav className="process-figma-hotspots" aria-label="Workflow stage links">
+          {processHotspots.map((hotspot) => (
+            <Link
+              key={hotspot.label}
+              href={hotspot.href}
+              className="process-figma-hotspot"
+              style={{
+                left: `${hotspot.x}%`,
+                top: `${hotspot.y}%`,
+                width: `${hotspot.w}%`,
+                height: `${hotspot.h}%`,
+              }}
+              title={hotspot.label}
+              aria-label={hotspot.label}
+            />
+          ))}
+        </nav>
+      </div>
+    </section>
+  );
+}
+
+function ProcessWorkflowOverallCompletion() {
+  const [completion, setCompletion] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadCompletion = async () => {
+      try {
+        const response = await fetch("/api/workflow/status", { cache: "no-store" });
+
+        if (!response.ok) {
+          if (!cancelled) setCompletion(null);
+          return;
+        }
+
+        const overview = (await response.json()) as ProcessWorkflowOverviewResponse;
+        const nextCompletion = Number(overview.overallCompletion ?? overview.OverallCompletion);
+
+        if (!cancelled && Number.isFinite(nextCompletion)) {
+          setCompletion(Math.max(0, Math.min(100, Math.round(nextCompletion))));
+        }
+      } catch {
+        if (!cancelled) setCompletion(null);
+      }
+    };
+
+    void loadCompletion();
+    const timer = window.setInterval(loadCompletion, 10000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, []);
+
+  const displayCompletion = completion === null ? "--" : `${completion}%`;
+  const barCompletion = completion ?? 0;
+
+  return (
+    <div className={clsx("process-figma-completion", completion === null && "unavailable")} aria-label={completion === null ? "Overall completion unavailable" : `Overall completion ${completion}%`}>
+      <span>Overall Completion</span>
+      <strong>{displayCompletion}</strong>
+      <div><i style={{ width: `${barCompletion}%` }} /></div>
+    </div>
+  );
+}
+
+function ProcessWorkflowFoundationStatus() {
+  const [statuses, setStatuses] = useState<ProcessStageLiveStatus[]>(initialProcessStageStatuses);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadStatuses = async () => {
+      const nextStatuses = await Promise.all([
+        resolveEngineStageStatus(),
+        resolveRuntimeConfigStageStatus(),
+        resolveDataSourcesStageStatus(),
+        resolveCurrencyStrengthStageStatus(),
+      ]);
+
+      if (!cancelled) {
+        setStatuses(nextStatuses);
+      }
+    };
+
+    void loadStatuses();
+    const timer = window.setInterval(loadStatuses, 10000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, []);
+
+  return (
+    <div className="process-figma-stage-overlays" aria-label="Live foundation stage statuses">
+      {statuses.map((stage) => (
+        <div key={stage.code} className={clsx("process-figma-stage-status", `stage-${stage.code}`, `tone-${stage.tone}`)}>
+          <span>{stage.status}</span>
+          <div><i style={{ width: `${stage.progress}%` }} /></div>
+          <strong>{stage.progress}%</strong>
+          <em>{stage.note}</em>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+async function resolveEngineStageStatus(): Promise<ProcessStageLiveStatus> {
+  try {
+    const response = await fetch("/api/engine/status", { cache: "no-store" });
+    if (!response.ok) throw new Error("Engine API unavailable");
+    const status = (await response.json()) as EngineRuntimeStatus;
+    const running = status.state === "RUNNING";
+
+    return {
+      code: "01",
+      status: running ? "Completed" : "Stopped",
+      progress: running ? 100 : 0,
+      note: status.reason || (running ? "Engine running" : "Engine stopped"),
+      tone: running ? "green" : "slate",
+    };
+  } catch {
+    return { code: "01", status: "Offline", progress: 0, note: "Engine API unavailable", tone: "red" };
+  }
+}
+
+async function resolveRuntimeConfigStageStatus(): Promise<ProcessStageLiveStatus> {
+  try {
+    const response = await fetch("/api/runtime/config", { cache: "no-store" });
+    if (!response.ok) throw new Error("Runtime config unavailable");
+    const config = (await response.json()) as RuntimeConfig;
+    const configured = config.riskProfile !== "NotConfigured"
+      && config.maxRiskPerTradePercent > 0
+      && config.dailyDrawdownLimitPercent > 0;
+
+    return {
+      code: "02",
+      status: configured ? "Completed" : "Pending Data",
+      progress: configured ? 100 : 25,
+      note: configured ? "Runtime limits loaded" : "Risk config incomplete",
+      tone: configured ? "green" : "amber",
+    };
+  } catch {
+    return { code: "02", status: "Offline", progress: 0, note: "Runtime API unavailable", tone: "red" };
+  }
+}
+
+async function resolveDataSourcesStageStatus(): Promise<ProcessStageLiveStatus> {
+  try {
+    const response = await fetch("/api/system/data-sources/status", { cache: "no-store" });
+    if (!response.ok) throw new Error("Data-source API unavailable");
+    const overview = (await response.json()) as DataSourcesOverview;
+    const total = overview.sources.length;
+    const progress = total > 0 ? Math.round((overview.healthy / total) * 100) : 0;
+    const blocked = overview.offline > 0;
+
+    return {
+      code: "03",
+      status: progress === 100 ? "Completed" : blocked ? "Blocked" : "In Progress",
+      progress,
+      note: `${overview.healthy} healthy, ${overview.offline} offline`,
+      tone: progress === 100 ? "green" : blocked ? "red" : "amber",
+    };
+  } catch {
+    return { code: "03", status: "Offline", progress: 0, note: "Source API unavailable", tone: "red" };
+  }
+}
+
+async function resolveCurrencyStrengthStageStatus(): Promise<ProcessStageLiveStatus> {
+  try {
+    const response = await fetch("/api/intelligence/currency-strength/latest", { cache: "no-store" });
+    if (!response.ok) throw new Error("Currency strength unavailable");
+    const snapshot = (await response.json()) as ProcessCurrencyStrengthStatusResponse;
+    const source = String(snapshot.source ?? snapshot.Source ?? "unavailable");
+    const hasLiveFeed = source.toLowerCase() !== "unavailable";
+
+    return {
+      code: "04",
+      status: hasLiveFeed ? "Completed" : "Pending Data",
+      progress: hasLiveFeed ? 100 : 0,
+      note: hasLiveFeed ? `${source.toUpperCase()} strength matrix live` : "Awaiting live strength feed",
+      tone: hasLiveFeed ? "green" : "amber",
+    };
+  } catch {
+    return { code: "04", status: "Offline", progress: 0, note: "Strength API unavailable", tone: "red" };
+  }
+}
+
+function ProcessWorkflowLiveStatus() {
+  const [liveTime, setLiveTime] = useState(processWorkflowStaticLiveTime);
+  const [engineStatus, setEngineStatus] = useState<ProcessEngineRuntimeStatus>("OFFLINE");
+  const [engineCommanding, setEngineCommanding] = useState(false);
+
+  useEffect(() => {
+    const formatLiveTime = () => {
+      const now = new Date();
+      const dateParts = new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        timeZone: "Africa/Lagos",
+      }).format(now);
+      const timeParts = new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+        timeZone: "Africa/Lagos",
+      }).format(now);
+
+      setLiveTime(`Live: ${dateParts}, ${timeParts}`);
+    };
+
+    formatLiveTime();
+    const timer = window.setInterval(formatLiveTime, 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadEngineStatus = async () => {
+      try {
+        const response = await fetch("/api/engine/status", { cache: "no-store" });
+        if (!response.ok) throw new Error("Engine API offline");
+        const status = (await response.json()) as EngineRuntimeStatus;
+        if (!cancelled) setEngineStatus(status.state === "RUNNING" ? "RUNNING" : "OFFLINE");
+      } catch {
+        if (!cancelled) setEngineStatus("OFFLINE");
+      }
+    };
+
+    void loadEngineStatus();
+    const timer = window.setInterval(loadEngineStatus, 10000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, []);
+
+  const toggleEngineStatus = async () => {
+    setEngineCommanding(true);
+
+    try {
+      const endpoint = engineStatus === "RUNNING" ? "/api/engine/stop" : "/api/engine/start";
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason: "Workflow header engine-status toggle." }),
+        cache: "no-store",
+      });
+
+      if (!response.ok) throw new Error("Engine command failed");
+      const status = (await response.json()) as EngineRuntimeStatus;
+      setEngineStatus(status.state === "RUNNING" ? "RUNNING" : "OFFLINE");
+    } catch {
+      setEngineStatus("OFFLINE");
+    } finally {
+      setEngineCommanding(false);
+    }
+  };
+
+  return (
+    <>
+      <div className="process-figma-live-clock" aria-label="Live Nigeria time">{liveTime}</div>
+      <div className="process-figma-engine-line">
+        <span>Engine Status:</span>
+        <button
+          type="button"
+          className={clsx("process-figma-engine-status", engineStatus.toLowerCase())}
+          disabled={engineCommanding}
+          onClick={() => void toggleEngineStatus()}
+          aria-label={`Engine status ${engineStatus}. Click to switch to ${engineStatus === "RUNNING" ? "OFFLINE" : "RUNNING"}.`}
+          title={`Click to switch engine status to ${engineStatus === "RUNNING" ? "OFFLINE" : "RUNNING"}`}
+        >
+          <strong>{engineStatus}</strong>
+          <i />
+        </button>
+      </div>
+    </>
+  );
+}
+
+function WorkflowColumnHeader({ column }: { column: ProcessWorkflowColumn }) {
+  const Icon = column.icon;
+  return (
+    <div className={clsx("process-column-header", `process-column-header-${column.accent}`)}>
+      <Icon size={24} />
+      <div>
+        <h2>{column.title}</h2>
+        <p>{column.description}</p>
+      </div>
+    </div>
+  );
+}
+
+function ProcessStageCard({ stage, compact = false }: { stage: ProcessWorkflowStage; compact?: boolean }) {
+  const Icon = stage.icon;
+  return (
+    <article className={clsx("process-stage-card", compact && "compact", `process-stage-${stage.accent}`)}>
+      <div className="process-stage-number">{stage.number}</div>
+      <div className="process-stage-body">
+        <div className="process-stage-topline">
+          <div>
+            <h3>{stage.name}</h3>
+            <p>{stage.owner}</p>
+          </div>
+          <Icon size={compact ? 16 : 20} />
+        </div>
+        <div className="process-stage-meta">
+          <span className={clsx("process-status-chip", processStatusClass(stage.status))}>{stage.status}</span>
+          <em>{stage.progress}%</em>
+        </div>
+        <div className="process-progress-track">
+          <i style={{ width: `${stage.progress}%` }} />
+        </div>
+        <small>{stage.note}</small>
+      </div>
+    </article>
+  );
+}
+
+function InstitutionalValidationPanel() {
+  const checks = ["Liquidity OK", "Trading Session OK", "Spread Check OK", "News Filter OK", "Volatility Check OK", "Trading Window OK", "Risk Budget OK"];
+
+  return (
+    <section className="process-validation-panel">
+      <h3>Institutional Validation</h3>
+      <div>
+        {checks.map((check) => (
+          <span key={check}><CheckCircle2 size={14} />{check}</span>
+        ))}
+      </div>
+      <strong><CheckCircle2 size={16} />All Conditions Valid</strong>
+    </section>
+  );
+}
+
+function ProcessInfoPanel({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="process-info-panel">
+      <h2>{title}</h2>
+      <div>{children}</div>
+    </section>
+  );
+}
+
+function processStatusClass(status: string) {
+  return status.toLowerCase().replace(/\s+/g, "-");
+}
+
+function RuntimeConfigPage({ page }: { page: ResolvedPage }) {
+  const [config, setConfig] = useState<RuntimeConfig | null>(null);
+  const [state, setState] = useState<"loading" | "ready" | "error">("loading");
+  const [error, setError] = useState("");
+
+  const loadConfig = useCallback(async (reload = false) => {
+    setState("loading");
+    setError("");
+
+    try {
+      const nextConfig = reload ? await reloadRuntimeConfig() : await getRuntimeConfig();
+      setConfig(nextConfig);
+      setState("ready");
+    } catch (requestError) {
+      setConfig(null);
+      setState("error");
+      setError(requestError instanceof Error ? requestError.message : "Runtime configuration is unavailable.");
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadConfig();
+  }, [loadConfig]);
+
+  return (
+    <OperationsPageFrame
+      page={page}
+      eyebrow="Stage 02"
+      title="Load Runtime + Risk Config"
+      description="Load trading mode, autonomy, risk limits, and environment permissions from production configuration."
+      action={<button className="button button-secondary" onClick={() => void loadConfig(true)}><RefreshCw size={16} /> Reload Config</button>}
+    >
+      <LiveStateBanner state={state} error={error} />
+      <section className="ops-grid">
+        {config ? (
+          <>
+            <OpsFact label="Trading Mode" value={config.tradingMode} />
+            <OpsFact label="Autonomy Level" value={config.autonomyLevel} />
+            <OpsFact label="Risk Profile" value={config.riskProfile} />
+            <OpsFact label="Max Risk / Trade" value={`${config.maxRiskPerTradePercent}%`} />
+            <OpsFact label="Daily Drawdown Limit" value={`${config.dailyDrawdownLimitPercent}%`} />
+            <OpsFact label="Demo Execution" value={config.demoExecutionEnabled ? "Enabled" : "Disabled"} tone={config.demoExecutionEnabled ? "success" : "neutral"} />
+            <OpsFact label="Live Execution" value={config.liveExecutionEnabled ? "Enabled" : "Disabled"} tone={config.liveExecutionEnabled ? "danger" : "neutral"} />
+            <OpsFact label="Prop Firm Mode" value={config.propFirmModeEnabled ? "Enabled" : "Disabled"} tone={config.propFirmModeEnabled ? "warning" : "neutral"} />
+          </>
+        ) : (
+          <EmptyOpsState message="Runtime configuration has not been loaded from the API." />
+        )}
+      </section>
+      {config && <p className="ops-footnote">Loaded from {config.source} at {formatDateTime(config.loadedAt)}.</p>}
+    </OperationsPageFrame>
+  );
+}
+
+function DataSourcesStatusPage({ page }: { page: ResolvedPage }) {
+  const [overview, setOverview] = useState<DataSourcesOverview | null>(null);
+  const [state, setState] = useState<"loading" | "ready" | "error">("loading");
+  const [error, setError] = useState("");
+
+  const loadSources = useCallback(async () => {
+    setState("loading");
+    setError("");
+
+    try {
+      const nextOverview = await getDataSourcesStatus();
+      setOverview(nextOverview);
+      setState("ready");
+    } catch (requestError) {
+      setOverview(null);
+      setState("error");
+      setError(requestError instanceof Error ? requestError.message : "Data-source status is unavailable.");
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadSources();
+    const timer = window.setInterval(() => void loadSources(), 15000);
+    return () => window.clearInterval(timer);
+  }, [loadSources]);
+
+  return (
+    <OperationsPageFrame
+      page={page}
+      eyebrow="Stage 03"
+      title="Verify Data Sources"
+      description="Confirm production connectivity for engine runtime, SQL Server, currency strength, MT5 bridge, and macro/news feeds."
+      action={<button className="button button-secondary" onClick={() => void loadSources()}><RefreshCw size={16} /> Refresh</button>}
+    >
+      <LiveStateBanner state={state} error={error} />
+      {overview ? (
+        <>
+          <section className="ops-grid compact">
+            <OpsFact label="Healthy" value={overview.healthy} tone="success" />
+            <OpsFact label="Degraded" value={overview.degraded} tone="warning" />
+            <OpsFact label="Offline" value={overview.offline} tone={overview.offline > 0 ? "danger" : "success"} />
+            <OpsFact label="Checked" value={formatDateTime(overview.checkedAt)} />
+          </section>
+          <section className="ops-list">
+            {overview.sources.map((source) => (
+              <article key={source.code}>
+                <div>
+                  <strong>{source.name}</strong>
+                  <p>{source.detail}</p>
+                </div>
+                <StatusBadge tone={source.isHealthy ? "success" : source.status === "UNAVAILABLE" ? "warning" : "danger"}>{source.status}</StatusBadge>
+              </article>
+            ))}
+          </section>
+        </>
+      ) : (
+        <EmptyOpsState message="No data-source status has been returned by the API." />
+      )}
+    </OperationsPageFrame>
+  );
+}
+
+function SymbolSelectionRulesPage({ page }: { page: ResolvedPage }) {
+  const [overview, setOverview] = useState<SymbolSelectionRulesOverview | null>(null);
+  const [state, setState] = useState<"loading" | "ready" | "error">("loading");
+  const [error, setError] = useState("");
+
+  const loadRules = useCallback(async () => {
+    setState("loading");
+    setError("");
+
+    try {
+      const nextOverview = await getSymbolSelectionRules();
+      setOverview(nextOverview);
+      setState("ready");
+    } catch (requestError) {
+      setOverview(null);
+      setState("error");
+      setError(requestError instanceof Error ? requestError.message : "Symbol selection rules are unavailable.");
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadRules();
+    const timer = window.setInterval(() => void loadRules(), 15000);
+    return () => window.clearInterval(timer);
+  }, [loadRules]);
+
+  return (
+    <OperationsPageFrame
+      page={page}
+      eyebrow="Selection Rule"
+      title="Currency-First Symbol Selection Rules"
+      description="Institutional symbol selection using strong-vs-weak currency flow, inverse USD logic for XAUUSD, and mixed-strength no-trade safety gates."
+      action={<button className="button button-secondary" onClick={() => void loadRules()}><RefreshCw size={16} /> Re-evaluate</button>}
+    >
+      <LiveStateBanner state={state} error={error} />
+      {overview ? (
+        <>
+          <section className="ops-list">
+            {overview.rules.map((rule) => (
+              <article key={rule.code}>
+                <div>
+                  <strong>{rule.name}</strong>
+                  <p>{rule.description}</p>
+                </div>
+                <StatusBadge tone={rule.status === "ACTIVE" ? "success" : "warning"}>{rule.status}</StatusBadge>
+              </article>
+            ))}
+          </section>
+          <section className="ops-table-card">
+            <h2>Current Candidates</h2>
+            {overview.candidates.length > 0 ? (
+              <div className="table-wrap">
+                <table>
+                  <thead><tr><th>Symbol</th><th>Direction</th><th>Score</th><th>Status</th><th>Evidence</th></tr></thead>
+                  <tbody>
+                    {overview.candidates.map((candidate) => (
+                      <tr key={candidate.symbol}>
+                        <td>{candidate.symbol}</td>
+                        <td>{candidate.direction}</td>
+                        <td>{candidate.score.toFixed(1)}</td>
+                        <td><StatusBadge tone={candidate.status === "ELIGIBLE" ? "success" : candidate.status === "BLOCKED" ? "danger" : "warning"}>{candidate.status}</StatusBadge></td>
+                        <td>{candidate.evidence.join(" ")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <EmptyOpsState message="No candidate can be produced until production currency-strength data is ingested." />
+            )}
+          </section>
+        </>
+      ) : (
+        <EmptyOpsState message="No symbol-selection rule result has been returned by the API." />
+      )}
+    </OperationsPageFrame>
+  );
+}
+
+function OperationsPageFrame({
+  page,
+  eyebrow,
+  title,
+  description,
+  action,
+  children,
+}: {
+  page: ResolvedPage;
+  eyebrow: string;
+  title: string;
+  description: string;
+  action?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      <Breadcrumbs page={page} />
+      <section className="ops-page">
+        <header className="ops-header">
+          <div>
+            <p className="eyebrow">{eyebrow}</p>
+            <h1>{title}</h1>
+            <p>{description}</p>
+          </div>
+          {action}
+        </header>
+        {children}
+      </section>
+    </>
+  );
+}
+
+function LiveStateBanner({ state, error }: { state: "loading" | "ready" | "error"; error: string }) {
+  if (state === "ready") {
+    return <div className="ops-state-banner ready"><CheckCircle2 size={16} /> Live API data loaded.</div>;
+  }
+
+  if (state === "error") {
+    return <div className="ops-state-banner error"><AlertCircle size={16} /> {error}</div>;
+  }
+
+  return <div className="ops-state-banner loading"><RefreshCw size={16} /> Loading live API data...</div>;
+}
+
+function OpsFact({ label, value, tone = "neutral" }: { label: string; value: React.ReactNode; tone?: "success" | "warning" | "danger" | "neutral" }) {
+  return (
+    <article className={clsx("ops-fact", `ops-fact-${tone}`)}>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </article>
+  );
+}
+
+function EmptyOpsState({ message }: { message: string }) {
+  return (
+    <div className="ops-empty">
+      <AlertCircle size={18} />
+      <span>{message}</span>
+    </div>
+  );
+}
+
+function formatDateTime(value: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "medium",
+    timeZone: "Africa/Lagos",
+  }).format(new Date(value));
 }
 
 function LifecycleStatusBoard({ page }: { page: ResolvedPage }) {
@@ -1739,8 +2625,6 @@ function LineChartIcon({ size = 16 }: { size?: number }) {
 
 function TradingEngineControlPage({
   page,
-  engineRunning,
-  onToggleEngine,
   onOpenDrawer,
   onConfirm,
 }: {
@@ -1750,6 +2634,51 @@ function TradingEngineControlPage({
   onOpenDrawer: () => void;
   onConfirm: () => void;
 }) {
+  const [runtime, setRuntime] = useState<EngineRuntimeStatus | null>(null);
+  const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
+  const [commanding, setCommanding] = useState(false);
+  const [error, setError] = useState("");
+
+  const loadRuntime = useCallback(async () => {
+    setLoadState("loading");
+    setError("");
+
+    try {
+      const status = await getEngineStatus();
+      setRuntime(status);
+      setLoadState("ready");
+    } catch (requestError) {
+      setRuntime(null);
+      setLoadState("error");
+      setError(requestError instanceof Error ? requestError.message : "Engine status could not be loaded.");
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadRuntime();
+    const timer = window.setInterval(() => void loadRuntime(), 10000);
+    return () => window.clearInterval(timer);
+  }, [loadRuntime]);
+
+  const runtimeRunning = runtime?.state === "RUNNING";
+
+  const executeRuntimeCommand = async (command: "start" | "stop") => {
+    setCommanding(true);
+    setError("");
+
+    try {
+      const nextStatus = command === "start"
+        ? await startEngine("Operator requested engine start from Trading Control Center.")
+        : await stopEngine("Operator requested engine stop from Trading Control Center.");
+      setRuntime(nextStatus);
+      setLoadState("ready");
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "Engine command failed.");
+    } finally {
+      setCommanding(false);
+    }
+  };
+
   return (
     <>
       <Breadcrumbs page={page} />
@@ -1761,11 +2690,11 @@ function TradingEngineControlPage({
             Govern the runtime state of the trading engine, execution permission, safety gates, and emergency shutdown path from a single operator surface.
           </p>
           <div className="engine-hero-actions">
-            <button className={clsx("button", engineRunning ? "button-secondary" : "button-primary")} onClick={onToggleEngine}>
-              {engineRunning ? <Pause size={16} /> : <Play size={16} />}
-              {engineRunning ? "Pause Engine" : "Start Engine"}
+            <button className={clsx("button", runtimeRunning ? "button-secondary" : "button-primary")} disabled={commanding} onClick={() => void executeRuntimeCommand(runtimeRunning ? "stop" : "start")}>
+              {runtimeRunning ? <Pause size={16} /> : <Play size={16} />}
+              {runtimeRunning ? "Stop Engine" : "Start Engine"}
             </button>
-            <button className="button button-danger" onClick={onConfirm}>
+            <button className="button button-danger" disabled={commanding} onClick={() => void executeRuntimeCommand("stop")}>
               <Power size={16} />
               Emergency Stop
             </button>
@@ -1774,25 +2703,26 @@ function TradingEngineControlPage({
               Inspect Context
             </button>
           </div>
+          {error && <p className="form-error">{error}</p>}
         </div>
-        <div className={clsx("engine-state-console", engineRunning ? "is-running" : "is-paused")}>
+        <div className={clsx("engine-state-console", runtimeRunning ? "is-running" : "is-paused")}>
           <div>
             <span>Runtime State</span>
-            <strong>{engineRunning ? "RUNNING" : "PAUSED"}</strong>
+            <strong>{loadState === "error" ? "OFFLINE" : runtime?.state ?? "LOADING"}</strong>
           </div>
-          <StatusBadge tone={engineRunning ? "success" : "warning"}>{engineRunning ? "Heartbeat Live" : "Awaiting Start"}</StatusBadge>
+          <StatusBadge tone={runtimeRunning ? "success" : loadState === "error" ? "danger" : "warning"}>{runtimeRunning ? "Trading Enabled" : loadState === "error" ? "API Offline" : "Stopped"}</StatusBadge>
           <dl>
             <div>
-              <dt>Session</dt>
-              <dd>ENG-2026-0622-0948</dd>
+              <dt>Updated</dt>
+              <dd>{runtime ? formatDateTime(runtime.updatedAt) : "Unavailable"}</dd>
             </div>
             <div>
-              <dt>Operator</dt>
-              <dd>Super Administrator</dd>
+              <dt>Source</dt>
+              <dd>{runtime?.source ?? "Unavailable"}</dd>
             </div>
             <div>
-              <dt>Safe Mode</dt>
-              <dd>Manual approval</dd>
+              <dt>Reason</dt>
+              <dd>{runtime?.reason ?? "No engine response."}</dd>
             </div>
           </dl>
         </div>

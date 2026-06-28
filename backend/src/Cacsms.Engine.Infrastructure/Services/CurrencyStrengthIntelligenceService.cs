@@ -20,7 +20,7 @@ public sealed class CurrencyStrengthIntelligenceService : ICurrencyStrengthIntel
 
     public CurrencyStrengthIntelligenceService()
     {
-        _latest = CreateDemoSnapshot();
+        _latest = CreateUnavailableSnapshot();
     }
 
     public CurrencyStrengthSnapshotDto GetLatest()
@@ -45,6 +45,16 @@ public sealed class CurrencyStrengthIntelligenceService : ICurrencyStrengthIntel
         var weakest = string.IsNullOrWhiteSpace(request.Weakest)
             ? ResolveWeakest(currencies)
             : request.Weakest.Trim().ToUpperInvariant();
+        var confidence = Math.Clamp(request.Confidence, 0, 100);
+        var hasActionableOpportunity = confidence >= 15
+            && !string.IsNullOrWhiteSpace(strongest)
+            && !string.IsNullOrWhiteSpace(weakest)
+            && !strongest.Equals("MIXED", StringComparison.OrdinalIgnoreCase)
+            && !weakest.Equals("MIXED", StringComparison.OrdinalIgnoreCase)
+            && !strongest.Equals(weakest, StringComparison.OrdinalIgnoreCase);
+        var bestOpportunity = string.IsNullOrWhiteSpace(request.BestOpportunity)
+            ? hasActionableOpportunity ? strongest + weakest : string.Empty
+            : request.BestOpportunity.Trim().ToUpperInvariant();
 
         var snapshot = new CurrencyStrengthSnapshotDto(
             string.IsNullOrWhiteSpace(request.Engine) ? "CacsmsCurrencyStrengthEngine" : request.Engine.Trim(),
@@ -52,11 +62,9 @@ public sealed class CurrencyStrengthIntelligenceService : ICurrencyStrengthIntel
             updatedAt,
             strongest,
             weakest,
-            string.IsNullOrWhiteSpace(request.BestOpportunity)
-                ? strongest + weakest
-                : request.BestOpportunity.Trim().ToUpperInvariant(),
+            bestOpportunity,
             NormalizeBias(request.TradeBias),
-            Math.Clamp(request.Confidence, 0, 100),
+            confidence,
             request.StrengthDifferential,
             request.Divergence,
             request.HtfAlignment.Trim().ToUpperInvariant(),
@@ -153,18 +161,18 @@ public sealed class CurrencyStrengthIntelligenceService : ICurrencyStrengthIntel
             rejections.Distinct(StringComparer.OrdinalIgnoreCase).ToArray());
     }
 
-    private static CurrencyStrengthSnapshotDto CreateDemoSnapshot()
+    private static CurrencyStrengthSnapshotDto CreateUnavailableSnapshot()
     {
         var composite = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase)
         {
-            ["EUR"] = 42.5m,
-            ["GBP"] = 18.0m,
-            ["USD"] = -12.5m,
-            ["JPY"] = -48.0m,
-            ["AUD"] = 28.0m,
-            ["NZD"] = 8.5m,
-            ["CAD"] = -4.0m,
-            ["CHF"] = -32.5m
+            ["EUR"] = 0,
+            ["GBP"] = 0,
+            ["USD"] = 0,
+            ["JPY"] = 0,
+            ["AUD"] = 0,
+            ["NZD"] = 0,
+            ["CAD"] = 0,
+            ["CHF"] = 0
         };
 
         var matrix = new Dictionary<string, IReadOnlyDictionary<string, decimal>>(StringComparer.OrdinalIgnoreCase);
@@ -174,8 +182,7 @@ public sealed class CurrencyStrengthIntelligenceService : ICurrencyStrengthIntel
             var baseScore = composite[currency];
             for (var index = 0; index < Timeframes.Length; index++)
             {
-                var drift = (index - (Timeframes.Length / 2.0m)) * 3.2m;
-                tfScores[Timeframes[index]] = Math.Clamp(baseScore + drift, -100, 100);
+                tfScores[Timeframes[index]] = baseScore;
             }
 
             matrix[currency] = tfScores;
@@ -183,20 +190,20 @@ public sealed class CurrencyStrengthIntelligenceService : ICurrencyStrengthIntel
 
         return new CurrencyStrengthSnapshotDto(
             "CacsmsCurrencyStrengthEngine",
-            "demo",
+            "unavailable",
             DateTimeOffset.UtcNow,
-            "EUR",
-            "JPY",
-            "EURJPY",
-            "BUY",
-            78.5m,
-            90.5m,
-            6.2m,
-            "ALIGNED",
-            "A",
+            "",
+            "",
+            "",
+            "NO TRADE",
+            0,
+            0,
+            0,
+            "PENDING_DATA",
+            "UNAVAILABLE",
             "N/A",
-            "None",
-            "EURUSD",
+            "No production currency-strength snapshot has been ingested.",
+            "",
             Timeframes,
             composite,
             matrix);

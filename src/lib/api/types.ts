@@ -77,6 +77,67 @@ export type HealthResponse = {
   service: string;
 };
 
+export type EngineRuntimeStatus = {
+  state: string;
+  isOnline: boolean;
+  isTradingEnabled: boolean;
+  updatedAt: string;
+  source: string;
+  reason: string;
+};
+
+export type RuntimeConfig = {
+  tradingMode: string;
+  autonomyLevel: string;
+  riskProfile: string;
+  maxRiskPerTradePercent: number;
+  dailyDrawdownLimitPercent: number;
+  demoExecutionEnabled: boolean;
+  liveExecutionEnabled: boolean;
+  propFirmModeEnabled: boolean;
+  loadedAt: string;
+  source: string;
+};
+
+export type DataSourceStatus = {
+  code: string;
+  name: string;
+  status: string;
+  isHealthy: boolean;
+  checkedAt: string;
+  detail: string;
+};
+
+export type DataSourcesOverview = {
+  checkedAt: string;
+  healthy: number;
+  degraded: number;
+  offline: number;
+  sources: DataSourceStatus[];
+};
+
+export type SymbolSelectionRule = {
+  code: string;
+  name: string;
+  description: string;
+  status: string;
+};
+
+export type SymbolSelectionCandidate = {
+  symbol: string;
+  direction: string;
+  score: number;
+  status: string;
+  evidence: string[];
+};
+
+export type SymbolSelectionRulesOverview = {
+  evaluatedAt: string;
+  status: string;
+  rules: SymbolSelectionRule[];
+  candidates: SymbolSelectionCandidate[];
+};
+
 export type PersistedHybridDecisionResponse = {
   decisionId: string;
   createdAt: string;

@@ -18,8 +18,7 @@ internal static class DatabaseConnectionStringFactory
         var password = ResolvePassword(configuration, environment);
         if (string.IsNullOrWhiteSpace(password))
         {
-            throw new InvalidOperationException(
-                $"Database password is required. Set {DatabaseOptions.SectionName}:Password, user secrets, or {PasswordEnvironmentVariable}.");
+            return BuildUnavailableConnectionString();
         }
 
         if (string.IsNullOrWhiteSpace(options.UserId))
@@ -38,6 +37,24 @@ internal static class DatabaseConnectionStringFactory
             TrustServerCertificate = options.TrustServerCertificate,
             ConnectTimeout = options.ConnectTimeoutSeconds,
             ApplicationName = "Cacsms.Engine",
+            PersistSecurityInfo = false,
+            MultipleActiveResultSets = false
+        };
+
+        return builder.ConnectionString;
+    }
+
+    private static string BuildUnavailableConnectionString()
+    {
+        var builder = new SqlConnectionStringBuilder
+        {
+            DataSource = "127.0.0.1,1",
+            InitialCatalog = "CacsmsEngineUnavailable",
+            IntegratedSecurity = true,
+            Encrypt = false,
+            TrustServerCertificate = true,
+            ConnectTimeout = 1,
+            ApplicationName = "Cacsms.Engine.Degraded",
             PersistSecurityInfo = false,
             MultipleActiveResultSets = false
         };

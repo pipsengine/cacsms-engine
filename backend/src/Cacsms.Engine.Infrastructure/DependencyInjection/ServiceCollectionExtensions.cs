@@ -29,6 +29,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(typeof(IRepository<>), typeof(InMemoryRepository<>));
         services.AddSingleton<IUnitOfWork, InMemoryUnitOfWork>();
         services.AddSingleton<IWorkflowStatusService, WorkflowStatusService>();
+        services.AddSingleton<IEngineOperationsService, EngineOperationsService>();
+        services.AddSingleton<IMt5TelemetryService, Mt5TelemetryService>();
         services.AddSingleton<ITradingUniverseService, TradingUniverseService>();
         services.AddSingleton<IHybridDecisionService, HybridDecisionService>();
         services.AddSingleton<IMacroIntelligenceService, MacroIntelligenceService>();

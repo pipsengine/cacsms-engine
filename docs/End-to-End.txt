@@ -1,0 +1,15 @@
+Assuming the system is fully deployed, it runs like this:
+Operator presses Start Engine in the dashboard.
+System loads runtime config, DB settings, trading mode, risk limits, approved symbols, and service health.
+Data feeds connect: MT5/broker feed, currency strength, COT/macro data, market candles, account state.
+Scanner checks approved symbols such as XAUUSD, EURUSD, GBPJPY, indices, etc.
+Intelligence layer scores market structure, macro bias, COT positioning, currency strength, regime, volatility, and historical similarity.
+AI Decision Engine creates a hybrid decision: Execute, NoTrade, or Manual Review.
+The 85% confidence gate blocks weak setups.
+Risk gate checks drawdown, daily loss, spread, slippage, news risk, risk/reward, and strategy health.
+If approved, execution routes the order through the MT5 bridge.
+Broker fill is confirmed.
+Trade monitoring starts: floating P/L, stop loss, profit lock, risk controls, exit rules.
+Exit engine decides whether to hold, partially close, trail, or close.
+Closed trade outcome is persisted.
+Reports, audit trail, decision history, and learning feedback are updated.

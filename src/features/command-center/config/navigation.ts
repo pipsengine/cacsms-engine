@@ -98,7 +98,7 @@ export const modules: Module[] = [
     roles: allRoles,
     submodules: [
       ["Executive Overview", "executive"],
-      ["Live Trading Dashboard", "live-trading"],
+      ["Process Status Workflow", "process-status-workflow"],
       ["Account Performance", "account-performance"],
       ["Risk Overview", "risk-overview"],
       ["AI Decision Summary", "ai-decisions"],
@@ -123,6 +123,7 @@ export const modules: Module[] = [
     roles: ["Super Administrator", "Administrator", "Risk Manager", "Portfolio Manager", "Trader"],
     submodules: [
       ["Engine Start/Stop", "engine"],
+      ["Runtime Config", "runtime-config"],
       ["Trading Mode Control", "modes"],
       ["Hybrid Default Profit Mode", "hybrid-default-profit-mode"],
       ["Account Environment", "account-environment"],
@@ -149,6 +150,7 @@ export const modules: Module[] = [
     submodules: [
       ["Market Overview", "overview"],
       ["Symbol Watchlist", "watchlist"],
+      ["Symbol Selection Rules", "symbol-selection-rules"],
       ["Multi-Timeframe Analysis", "multi-timeframe"],
       ["Multi-Timeframe Bias Engine", "multi-timeframe-bias-engine"],
       ["Timeframe Candle Direction", "timeframe-candle-direction"],
@@ -661,6 +663,7 @@ export const modules: Module[] = [
     roles: ["Super Administrator", "Administrator", "Risk Manager", "Compliance Officer", "Portfolio Manager"],
     submodules: [
       ["Engine Health", "engine-health"],
+      ["Data Sources", "data-sources"],
       ["MT5 Bridge Health", "mt5-bridge"],
       ["Server Health", "server-health"],
       ["Latency Monitor", "latency"],
