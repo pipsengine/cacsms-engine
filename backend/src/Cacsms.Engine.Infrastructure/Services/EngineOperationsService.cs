@@ -126,6 +126,44 @@ public sealed class EngineOperationsService(
             candidates);
     }
 
+    public async Task<BridgeSettingsOverviewDto> GetBridgeSettingsAsync(CancellationToken cancellationToken = default)
+    {
+        var checkedAt = DateTimeOffset.UtcNow;
+        var database = await CheckDatabaseAsync(checkedAt, cancellationToken);
+        var currencyStrength = CheckCurrencyStrength(checkedAt);
+        var mt5Bridge = CheckMt5Bridge(checkedAt);
+        var terminals = ResolveMt5Terminals();
+        var primaryTerminal = terminals.FirstOrDefault(terminal => terminal.MarketDataEaSourceExists)
+            ?? terminals.FirstOrDefault();
+        var dedicatedMarketDataEaActive =
+            mt5TelemetryService.LatestEaName.Equals("CacsmsMarketDataBridgeEA", StringComparison.OrdinalIgnoreCase)
+            && mt5TelemetryService.LatestBridgeKind.Equals("market-data", StringComparison.OrdinalIgnoreCase)
+            && mt5TelemetryService.LatestHeartbeatHasTimeframeTelemetry;
+
+        return new BridgeSettingsOverviewDto(
+            checkedAt,
+            Read("CACSMS_MT5_BRIDGE_URL", "Mt5Bridge:Url", "http://127.0.0.1:8787"),
+            Read("CACSMS_MARKET_DATA_MODE", "MarketData:Mode", "MT5_EA_BRIDGE"),
+            "CacsmsMarketDataBridgeEA",
+            primaryTerminal?.MarketDataEaSourcePath ?? string.Empty,
+            primaryTerminal?.MarketDataEaCompiledPath ?? string.Empty,
+            primaryTerminal?.MarketDataEaSourceExists ?? false,
+            primaryTerminal?.MarketDataEaCompiledExists ?? false,
+            primaryTerminal?.MarketDataEaCompiledAt,
+            mt5TelemetryService.LatestTerminalId,
+            mt5TelemetryService.LatestEaName,
+            mt5TelemetryService.LatestBridgeKind,
+            mt5TelemetryService.LatestHeartbeatHasTimeframeTelemetry,
+            dedicatedMarketDataEaActive,
+            mt5Bridge.Status,
+            mt5TelemetryService.LastHeartbeatAt,
+            mt5TelemetryService.LastHeartbeatAt is null ? null : Convert.ToInt32(Math.Max(0, (checkedAt - mt5TelemetryService.LastHeartbeatAt.Value).TotalSeconds)),
+            database.Status,
+            currencyStrength.Status,
+            terminals,
+            [database, currencyStrength, mt5Bridge]);
+    }
+
     private RuntimeConfigDto LoadRuntimeConfig()
     {
         return new RuntimeConfigDto(
@@ -289,5 +327,46 @@ public sealed class EngineOperationsService(
     private static string NormalizeReason(string reason, string fallback)
     {
         return string.IsNullOrWhiteSpace(reason) ? fallback : reason.Trim();
+    }
+
+    private IReadOnlyCollection<Mt5TerminalBridgeDto> ResolveMt5Terminals()
+    {
+        var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        var terminalRoot = Path.Combine(appData, "MetaQuotes", "Terminal");
+        if (!Directory.Exists(terminalRoot))
+        {
+            return [];
+        }
+
+        return Directory
+            .EnumerateDirectories(terminalRoot)
+            .Where(path =>
+            {
+                var name = Path.GetFileName(path);
+                return !name.Equals("Common", StringComparison.OrdinalIgnoreCase)
+                    && !name.Equals("Community", StringComparison.OrdinalIgnoreCase)
+                    && Directory.Exists(Path.Combine(path, "MQL5", "Experts"));
+            })
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .Select(path =>
+            {
+                var sourcePath = Path.Combine(path, "MQL5", "Experts", "CACSMS", "CacsmsMarketDataBridgeEA", "CacsmsMarketDataBridgeEA.mq5");
+                var compiledPath = Path.ChangeExtension(sourcePath, ".ex5");
+                var compiled = File.Exists(compiledPath) ? new FileInfo(compiledPath) : null;
+                var terminalKey = Path.GetFileName(path);
+
+                return new Mt5TerminalBridgeDto(
+                    terminalKey,
+                    path,
+                    Path.Combine(path, "MQL5", "Experts"),
+                    sourcePath,
+                    compiledPath,
+                    File.Exists(sourcePath),
+                    compiled is not null,
+                    compiled?.LastWriteTime,
+                    !string.IsNullOrWhiteSpace(mt5TelemetryService.LatestTerminalId)
+                        && mt5TelemetryService.LatestTerminalId.Contains(terminalKey, StringComparison.OrdinalIgnoreCase));
+            })
+            .ToArray();
     }
 }

@@ -138,6 +138,42 @@ export type SymbolSelectionRulesOverview = {
   candidates: SymbolSelectionCandidate[];
 };
 
+export type BridgeSettingsOverview = {
+  checkedAt: string;
+  bridgeUrl: string;
+  bridgeMode: string;
+  marketDataEaName: string;
+  marketDataEaSourcePath: string;
+  marketDataEaCompiledPath: string;
+  marketDataEaSourceExists: boolean;
+  marketDataEaCompiledExists: boolean;
+  marketDataEaCompiledAt: string | null;
+  activeTerminalId: string;
+  activeEaName: string;
+  activeBridgeKind: string;
+  activeHeartbeatHasTimeframeTelemetry: boolean;
+  dedicatedMarketDataEaActive: boolean;
+  mt5HeartbeatStatus: string;
+  lastHeartbeatAt: string | null;
+  heartbeatAgeSeconds: number | null;
+  databaseStatus: string;
+  currencyStrengthStatus: string;
+  terminals: Mt5TerminalBridge[];
+  dependencies: DataSourceStatus[];
+};
+
+export type Mt5TerminalBridge = {
+  terminalKey: string;
+  terminalPath: string;
+  expertsPath: string;
+  marketDataEaSourcePath: string;
+  marketDataEaCompiledPath: string;
+  marketDataEaSourceExists: boolean;
+  marketDataEaCompiledExists: boolean;
+  marketDataEaCompiledAt: string | null;
+  isActiveTerminal: boolean;
+};
+
 export type PersistedHybridDecisionResponse = {
   decisionId: string;
   createdAt: string;

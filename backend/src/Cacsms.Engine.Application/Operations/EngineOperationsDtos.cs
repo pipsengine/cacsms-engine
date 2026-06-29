@@ -53,3 +53,37 @@ public sealed record SymbolSelectionRulesOverviewDto(
     string Status,
     IReadOnlyCollection<SymbolSelectionRuleDto> Rules,
     IReadOnlyCollection<SymbolSelectionCandidateDto> Candidates);
+
+public sealed record BridgeSettingsOverviewDto(
+    DateTimeOffset CheckedAt,
+    string BridgeUrl,
+    string BridgeMode,
+    string MarketDataEaName,
+    string MarketDataEaSourcePath,
+    string MarketDataEaCompiledPath,
+    bool MarketDataEaSourceExists,
+    bool MarketDataEaCompiledExists,
+    DateTimeOffset? MarketDataEaCompiledAt,
+    string ActiveTerminalId,
+    string ActiveEaName,
+    string ActiveBridgeKind,
+    bool ActiveHeartbeatHasTimeframeTelemetry,
+    bool DedicatedMarketDataEaActive,
+    string Mt5HeartbeatStatus,
+    DateTimeOffset? LastHeartbeatAt,
+    int? HeartbeatAgeSeconds,
+    string DatabaseStatus,
+    string CurrencyStrengthStatus,
+    IReadOnlyCollection<Mt5TerminalBridgeDto> Terminals,
+    IReadOnlyCollection<DataSourceStatusDto> Dependencies);
+
+public sealed record Mt5TerminalBridgeDto(
+    string TerminalKey,
+    string TerminalPath,
+    string ExpertsPath,
+    string MarketDataEaSourcePath,
+    string MarketDataEaCompiledPath,
+    bool MarketDataEaSourceExists,
+    bool MarketDataEaCompiledExists,
+    DateTimeOffset? MarketDataEaCompiledAt,
+    bool IsActiveTerminal);

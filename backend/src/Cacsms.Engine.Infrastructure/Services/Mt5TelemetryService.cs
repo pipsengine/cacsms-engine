@@ -7,11 +7,30 @@ namespace Cacsms.Engine.Infrastructure.Services;
 public sealed class Mt5TelemetryService(ICurrencyStrengthIntelligenceService currencyStrengthService) : IMt5TelemetryService
 {
     private static readonly string[] CurrencyCodes = ["EUR", "GBP", "USD", "JPY", "AUD", "NZD", "CAD", "CHF"];
+    private static readonly string[] Timeframes = ["M15", "M30", "H1", "H4", "H8", "H12", "D1", "W1", "MN1", "Y1"];
+    private static readonly IReadOnlyDictionary<string, decimal> CompositeWeights = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["M15"] = 0.08m,
+        ["M30"] = 0.08m,
+        ["H1"] = 0.10m,
+        ["H4"] = 0.12m,
+        ["H8"] = 0.10m,
+        ["H12"] = 0.10m,
+        ["D1"] = 0.16m,
+        ["W1"] = 0.10m,
+        ["MN1"] = 0.08m,
+        ["Y1"] = 0.08m
+    };
+
     private readonly object _sync = new();
     private readonly Dictionary<string, decimal> _previousMidPrices = new(StringComparer.OrdinalIgnoreCase);
     private CurrencyStrengthSnapshotDto? _latestCurrencyStrength;
 
     public DateTimeOffset? LastHeartbeatAt { get; private set; }
+    public string LatestTerminalId { get; private set; } = "";
+    public string LatestEaName { get; private set; } = "";
+    public string LatestBridgeKind { get; private set; } = "";
+    public bool LatestHeartbeatHasTimeframeTelemetry { get; private set; }
 
     public CurrencyStrengthSnapshotDto? GetLatestCurrencyStrength()
     {
@@ -24,25 +43,49 @@ public sealed class Mt5TelemetryService(ICurrencyStrengthIntelligenceService cur
     public CurrencyStrengthSnapshotDto IngestHeartbeat(JsonElement heartbeat)
     {
         var telemetry = ReadSymbolTelemetry(heartbeat);
+        var terminalId = ReadString(heartbeat, "terminalId");
+        var eaName = ReadString(heartbeat, "eaName");
+        var bridgeKind = ReadString(heartbeat, "bridgeKind");
         var currentMidPrices = telemetry
             .Where(item => item.MidPrice > 0)
             .ToDictionary(item => item.Symbol, item => item.MidPrice, StringComparer.OrdinalIgnoreCase);
 
         var rawStrength = CurrencyCodes.ToDictionary(code => code, _ => 0m, StringComparer.OrdinalIgnoreCase);
         var observationCount = CurrencyCodes.ToDictionary(code => code, _ => 0, StringComparer.OrdinalIgnoreCase);
+        var timeframeStrength = CurrencyCodes.ToDictionary(
+            code => code,
+            _ => Timeframes.ToDictionary(timeframe => timeframe, _ => 0m, StringComparer.OrdinalIgnoreCase),
+            StringComparer.OrdinalIgnoreCase);
+        var timeframeObservationCount = CurrencyCodes.ToDictionary(
+            code => code,
+            _ => Timeframes.ToDictionary(timeframe => timeframe, _ => 0, StringComparer.OrdinalIgnoreCase),
+            StringComparer.OrdinalIgnoreCase);
+        var hasTimeframeTelemetry = false;
 
         foreach (var item in telemetry)
         {
             if (item.Symbol.Length < 6 || item.MidPrice <= 0) continue;
-            if (!_previousMidPrices.TryGetValue(item.Symbol, out var previousMidPrice) || previousMidPrice <= 0) continue;
 
             var baseCurrency = item.Symbol[..3];
             var quoteCurrency = item.Symbol[3..6];
             if (!rawStrength.ContainsKey(baseCurrency) || !rawStrength.ContainsKey(quoteCurrency)) continue;
 
-            var returnPoints = previousMidPrice == 0
-                ? 0
-                : ((item.MidPrice - previousMidPrice) / previousMidPrice) * 10000m;
+            foreach (var timeframeMove in item.TimeframeChangeBps)
+            {
+                if (!CompositeWeights.ContainsKey(timeframeMove.Key)) continue;
+
+                var scaledMove = ScaleMoveToStrength(timeframeMove.Value);
+                timeframeStrength[baseCurrency][timeframeMove.Key] += scaledMove;
+                timeframeStrength[quoteCurrency][timeframeMove.Key] -= scaledMove;
+                timeframeObservationCount[baseCurrency][timeframeMove.Key]++;
+                timeframeObservationCount[quoteCurrency][timeframeMove.Key]++;
+                hasTimeframeTelemetry = true;
+            }
+
+            if (hasTimeframeTelemetry) continue;
+            if (!_previousMidPrices.TryGetValue(item.Symbol, out var previousMidPrice) || previousMidPrice <= 0) continue;
+
+            var returnPoints = ((item.MidPrice - previousMidPrice) / previousMidPrice) * 10000m;
 
             rawStrength[baseCurrency] += returnPoints;
             rawStrength[quoteCurrency] -= returnPoints;
@@ -55,10 +98,14 @@ public sealed class Mt5TelemetryService(ICurrencyStrengthIntelligenceService cur
             _previousMidPrices[current.Key] = current.Value;
         }
 
-        var normalized = rawStrength.ToDictionary(
-            pair => pair.Key,
-            pair => observationCount[pair.Key] == 0 ? 0 : Math.Clamp(pair.Value / observationCount[pair.Key], -100, 100),
-            StringComparer.OrdinalIgnoreCase);
+        var timeframeMatrix = hasTimeframeTelemetry
+            ? NormalizeTimeframeMatrix(timeframeStrength, timeframeObservationCount)
+            : BuildFlatTimeframeMatrix(rawStrength.ToDictionary(
+                pair => pair.Key,
+                pair => observationCount[pair.Key] == 0 ? 0 : Math.Clamp(pair.Value / observationCount[pair.Key], -100, 100),
+                StringComparer.OrdinalIgnoreCase));
+
+        var normalized = BuildCompositeStrength(timeframeMatrix);
 
         var strongestPair = normalized.OrderByDescending(pair => pair.Value).First();
         var weakestPair = normalized.OrderBy(pair => pair.Value).First();
@@ -85,13 +132,17 @@ public sealed class Mt5TelemetryService(ICurrencyStrengthIntelligenceService cur
             RejectionReasons: confidence < 15 ? "Currency strength differential below institutional threshold." : "",
             FocusSymbol: hasActionableStrength ? strongest + weakest : "",
             Currencies: normalized.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.OrdinalIgnoreCase),
-            TimeframeMatrix: BuildFlatTimeframeMatrix(normalized));
+            TimeframeMatrix: timeframeMatrix);
 
         var snapshot = currencyStrengthService.Ingest(request);
 
         lock (_sync)
         {
             LastHeartbeatAt = DateTimeOffset.UtcNow;
+            LatestTerminalId = terminalId;
+            LatestEaName = string.IsNullOrWhiteSpace(eaName) ? "Legacy/Unknown EA" : eaName;
+            LatestBridgeKind = string.IsNullOrWhiteSpace(bridgeKind) ? "legacy" : bridgeKind;
+            LatestHeartbeatHasTimeframeTelemetry = hasTimeframeTelemetry;
             _latestCurrencyStrength = snapshot;
         }
 
@@ -114,21 +165,48 @@ public sealed class Mt5TelemetryService(ICurrencyStrengthIntelligenceService cur
             var available = ReadBool(item, "available");
             var stale = ReadBool(item, "stale");
 
-            if (symbol.Length < 6 || !available || stale || bid <= 0 || ask <= 0 || ask < bid) continue;
+            if (symbol.Length < 6 || !available || bid <= 0 || ask <= 0 || ask < bid) continue;
 
-            result.Add(new SymbolTelemetry(symbol, (bid + ask) / 2m));
+            result.Add(new SymbolTelemetry(symbol, (bid + ask) / 2m, ReadTimeframeChangeBps(item)));
         }
 
         return result;
     }
 
+    private static Dictionary<string, decimal> BuildCompositeStrength(Dictionary<string, Dictionary<string, decimal>> timeframeMatrix)
+    {
+        return timeframeMatrix.ToDictionary(
+            pair => pair.Key,
+            pair => Math.Round(pair.Value.Sum(timeframe => timeframe.Value * CompositeWeights.GetValueOrDefault(timeframe.Key, 0m)), 2),
+            StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static Dictionary<string, Dictionary<string, decimal>> NormalizeTimeframeMatrix(
+        Dictionary<string, Dictionary<string, decimal>> rawTimeframeStrength,
+        Dictionary<string, Dictionary<string, int>> observationCounts)
+    {
+        return rawTimeframeStrength.ToDictionary(
+            pair => pair.Key,
+            pair => pair.Value.ToDictionary(
+                timeframe => timeframe.Key,
+                timeframe => observationCounts[pair.Key][timeframe.Key] == 0
+                    ? 0
+                    : Math.Clamp(Math.Round(timeframe.Value / observationCounts[pair.Key][timeframe.Key], 2), -100, 100),
+                StringComparer.OrdinalIgnoreCase),
+            StringComparer.OrdinalIgnoreCase);
+    }
+
     private static Dictionary<string, Dictionary<string, decimal>> BuildFlatTimeframeMatrix(Dictionary<string, decimal> strengths)
     {
-        var timeframes = new[] { "M15", "M30", "H1", "H4", "H8", "H12", "D1", "W1", "MN1", "Y1" };
         return strengths.ToDictionary(
             pair => pair.Key,
-            pair => timeframes.ToDictionary(timeframe => timeframe, _ => pair.Value, StringComparer.OrdinalIgnoreCase),
+            pair => Timeframes.ToDictionary(timeframe => timeframe, _ => pair.Value, StringComparer.OrdinalIgnoreCase),
             StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static decimal ScaleMoveToStrength(decimal moveBps)
+    {
+        return Math.Clamp(Math.Round(moveBps, 2), -100, 100);
     }
 
     private static decimal CalculateDivergence(Dictionary<string, decimal> strengths)
@@ -165,5 +243,24 @@ public sealed class Mt5TelemetryService(ICurrencyStrengthIntelligenceService cur
             && value.GetBoolean();
     }
 
-    private sealed record SymbolTelemetry(string Symbol, decimal MidPrice);
+    private static Dictionary<string, decimal> ReadTimeframeChangeBps(JsonElement element)
+    {
+        var result = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase);
+        if (!element.TryGetProperty("timeframeChangeBps", out var changes) || changes.ValueKind != JsonValueKind.Object)
+        {
+            return result;
+        }
+
+        foreach (var timeframe in Timeframes)
+        {
+            if (changes.TryGetProperty(timeframe, out var value) && value.TryGetDecimal(out var parsed))
+            {
+                result[timeframe] = parsed;
+            }
+        }
+
+        return result;
+    }
+
+    private sealed record SymbolTelemetry(string Symbol, decimal MidPrice, IReadOnlyDictionary<string, decimal> TimeframeChangeBps);
 }

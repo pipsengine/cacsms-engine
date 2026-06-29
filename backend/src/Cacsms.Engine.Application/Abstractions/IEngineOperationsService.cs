@@ -11,4 +11,5 @@ public interface IEngineOperationsService
     RuntimeConfigDto ReloadRuntimeConfig();
     Task<DataSourcesOverviewDto> GetDataSourcesAsync(CancellationToken cancellationToken = default);
     SymbolSelectionRulesOverviewDto GetSymbolSelectionRules();
+    Task<BridgeSettingsOverviewDto> GetBridgeSettingsAsync(CancellationToken cancellationToken = default);
 }

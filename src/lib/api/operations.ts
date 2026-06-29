@@ -1,6 +1,7 @@
 import { apiFetch } from "@/lib/api/client";
 import type {
   DataSourcesOverview,
+  BridgeSettingsOverview,
   EngineRuntimeStatus,
   RuntimeConfig,
   SymbolSelectionRulesOverview,
@@ -40,4 +41,8 @@ export function getDataSourcesStatus() {
 
 export function getSymbolSelectionRules() {
   return apiFetch<SymbolSelectionRulesOverview>("/api/symbol-selection/rules");
+}
+
+export function getBridgeSettings() {
+  return apiFetch<BridgeSettingsOverview>("/api/bridge/settings");
 }

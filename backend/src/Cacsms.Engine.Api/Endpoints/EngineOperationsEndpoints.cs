@@ -35,6 +35,11 @@ public static class EngineOperationsEndpoints
         selection.MapGet("/rules", (IEngineOperationsService service) =>
             Results.Ok(service.GetSymbolSelectionRules()));
 
+        var bridge = endpoints.MapGroup("/api/bridge").WithTags("Bridge");
+
+        bridge.MapGet("/settings", async (IEngineOperationsService service, CancellationToken cancellationToken) =>
+            Results.Ok(await service.GetBridgeSettingsAsync(cancellationToken)));
+
         return endpoints;
     }
 }

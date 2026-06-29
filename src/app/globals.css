@@ -7403,6 +7403,7 @@ body,
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1px;
+  min-width: 0;
   overflow: hidden;
 }
 
@@ -7413,6 +7414,7 @@ body,
 .ops-fact {
   display: grid;
   gap: 8px;
+  min-width: 0;
   min-height: 96px;
   padding: 18px;
   background: #ffffff;
@@ -7429,6 +7431,7 @@ body,
   color: #071538;
   font-size: 20px;
   font-weight: 900;
+  overflow-wrap: anywhere;
 }
 
 .ops-fact-success strong {
@@ -7453,6 +7456,7 @@ body,
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 16px;
+  min-width: 0;
   padding: 18px 20px;
   border-bottom: 1px solid #e8eef6;
 }
@@ -7473,9 +7477,11 @@ body,
   color: #48607f;
   font-size: 13px;
   font-weight: 650;
+  overflow-wrap: anywhere;
 }
 
 .ops-table-card {
+  min-width: 0;
   padding: 18px;
 }
 
@@ -7521,6 +7527,83 @@ body,
   font-weight: 750;
 }
 
+.bridge-path {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.bridge-terminal-list {
+  display: grid;
+  gap: 12px;
+}
+
+.bridge-terminal-card {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #dbe5f2;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.bridge-terminal-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+}
+
+.bridge-terminal-header strong {
+  display: block;
+  color: #071538;
+  font-size: 14px;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.bridge-terminal-header p {
+  margin: 6px 0 0;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.bridge-terminal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.bridge-terminal-grid div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #e8eef6;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.bridge-terminal-grid dt {
+  margin: 0 0 8px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.bridge-terminal-grid dd {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 @media (max-width: 1200px) {
   .process-figma-frame {
     width: 100%;
@@ -7542,6 +7625,11 @@ body,
   .ops-grid,
   .ops-grid.compact,
   .ops-list article {
+    grid-template-columns: 1fr;
+  }
+
+  .bridge-terminal-header,
+  .bridge-terminal-grid {
     grid-template-columns: 1fr;
   }
 }

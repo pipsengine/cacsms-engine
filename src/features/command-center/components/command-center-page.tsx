@@ -69,6 +69,7 @@ import { CurrencyStrengthMatrixBoard } from "@/features/currency-strength-matrix
 import { CotPositioningBoard } from "@/features/cot-positioning/components/cot-positioning-board";
 import {
   getDataSourcesStatus,
+  getBridgeSettings,
   getEngineStatus,
   getRuntimeConfig,
   getSymbolSelectionRules,
@@ -78,6 +79,7 @@ import {
 } from "@/lib/api/operations";
 import type {
   DataSourcesOverview,
+  BridgeSettingsOverview,
   EngineRuntimeStatus,
   RuntimeConfig,
   SymbolSelectionRulesOverview,
@@ -618,6 +620,7 @@ export function CommandCenterPage({ path }: { path: string }) {
   const isRuntimeConfigPage = page.path === "/trading-control/runtime-config";
   const isDataSourcesPage = page.path === "/system-monitoring/data-sources";
   const isSymbolSelectionRulesPage = page.path === "/market-intelligence/symbol-selection-rules";
+  const isBridgeSettingsPage = page.path === "/accounts-brokers/api-bridge";
   const topbarSubtitle = isDashboardPage
     ? "Welcome back, Alex! Here's what's happening with your trading engine today."
     : isCotPositioningPage
@@ -664,6 +667,8 @@ export function CommandCenterPage({ path }: { path: string }) {
         <DataSourcesStatusPage page={page} />
       ) : isSymbolSelectionRulesPage ? (
         <SymbolSelectionRulesPage page={page} />
+      ) : isBridgeSettingsPage ? (
+        <BridgeSettingsPage page={page} />
       ) : (
         <>
           <Breadcrumbs page={page} />
@@ -1644,6 +1649,140 @@ function SymbolSelectionRulesPage({ page }: { page: ResolvedPage }) {
         </>
       ) : (
         <EmptyOpsState message="No symbol-selection rule result has been returned by the API." />
+      )}
+    </OperationsPageFrame>
+  );
+}
+
+function BridgeSettingsPage({ page }: { page: ResolvedPage }) {
+  const [overview, setOverview] = useState<BridgeSettingsOverview | null>(null);
+  const [state, setState] = useState<"loading" | "ready" | "error">("loading");
+  const [error, setError] = useState("");
+
+  const loadBridge = useCallback(async () => {
+    setState("loading");
+    setError("");
+
+    try {
+      const nextOverview = await getBridgeSettings();
+      setOverview(nextOverview);
+      setState("ready");
+    } catch (requestError) {
+      setOverview(null);
+      setState("error");
+      setError(requestError instanceof Error ? requestError.message : "Bridge settings are unavailable.");
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadBridge();
+    const timer = window.setInterval(() => void loadBridge(), 10000);
+    return () => window.clearInterval(timer);
+  }, [loadBridge]);
+
+  return (
+    <OperationsPageFrame
+      page={page}
+      eyebrow="Accounts & Brokers"
+      title="API/Bridge Settings"
+      description="Dedicated market-data bridge settings for MT5 terminal telemetry, currency-strength feed health, and CACSMS EA installation status."
+      action={<button className="button button-secondary" onClick={() => void loadBridge()}><RefreshCw size={16} /> Refresh bridge</button>}
+    >
+      <LiveStateBanner state={state} error={error} />
+      {overview ? (
+        <>
+          <section className="ops-grid">
+            <OpsFact label="Bridge URL" value={overview.bridgeUrl} tone="neutral" />
+            <OpsFact label="Bridge Mode" value={overview.bridgeMode} tone="success" />
+            <OpsFact label="MT5 Heartbeat" value={overview.mt5HeartbeatStatus} tone={overview.mt5HeartbeatStatus === "ONLINE" ? "success" : overview.mt5HeartbeatStatus === "DEGRADED" ? "warning" : "danger"} />
+            <OpsFact label="Heartbeat Age" value={overview.heartbeatAgeSeconds === null ? "No heartbeat" : `${overview.heartbeatAgeSeconds}s`} tone={overview.heartbeatAgeSeconds !== null && overview.heartbeatAgeSeconds <= 30 ? "success" : "warning"} />
+            <OpsFact label="Active EA" value={overview.activeEaName || "No active EA"} tone={overview.dedicatedMarketDataEaActive ? "success" : "warning"} />
+            <OpsFact label="Timeframe Feed" value={overview.activeHeartbeatHasTimeframeTelemetry ? "Active" : "Awaiting EA reload"} tone={overview.activeHeartbeatHasTimeframeTelemetry ? "success" : "warning"} />
+            <OpsFact label="SQL Server" value={overview.databaseStatus} tone={overview.databaseStatus === "HEALTHY" ? "success" : "danger"} />
+            <OpsFact label="Currency Strength" value={overview.currencyStrengthStatus} tone={overview.currencyStrengthStatus === "ONLINE" ? "success" : "warning"} />
+          </section>
+
+          <section className="ops-table-card">
+            <h2>Dedicated Market Data EA</h2>
+            <div className="ops-list">
+              <article>
+                <div>
+                  <strong>{overview.marketDataEaName}</strong>
+                  <p>Telemetry-only EA for market data. It does not place, modify, or close trades.</p>
+                  <p>Active terminal: {overview.activeTerminalId || "No terminal heartbeat yet"} / {overview.activeBridgeKind || "unknown bridge kind"}</p>
+                </div>
+                <StatusBadge tone={overview.dedicatedMarketDataEaActive ? "success" : overview.marketDataEaCompiledExists ? "warning" : "danger"}>{overview.dedicatedMarketDataEaActive ? "ACTIVE" : overview.marketDataEaCompiledExists ? "READY" : "MISSING"}</StatusBadge>
+              </article>
+              <article>
+                <div>
+                  <strong>Source location</strong>
+                  <p className="bridge-path">{overview.marketDataEaSourcePath || "MT5 terminal path not discovered."}</p>
+                </div>
+                <StatusBadge tone={overview.marketDataEaSourceExists ? "success" : "danger"}>{overview.marketDataEaSourceExists ? "FOUND" : "MISSING"}</StatusBadge>
+              </article>
+              <article>
+                <div>
+                  <strong>Compiled location</strong>
+                  <p className="bridge-path">{overview.marketDataEaCompiledPath || "Compiled EA path not discovered."}</p>
+                  <p>{overview.marketDataEaCompiledAt ? `Compiled ${formatDateTime(overview.marketDataEaCompiledAt)}` : "No compiled timestamp available."}</p>
+                </div>
+                <StatusBadge tone={overview.marketDataEaCompiledExists ? "success" : "danger"}>{overview.marketDataEaCompiledExists ? "READY" : "NOT READY"}</StatusBadge>
+              </article>
+            </div>
+          </section>
+
+          <section className="ops-table-card">
+            <h2>Discovered MT5 Terminals</h2>
+            {overview.terminals.length > 0 ? (
+              <div className="bridge-terminal-list">
+                {overview.terminals.map((terminal) => (
+                  <article className="bridge-terminal-card" key={terminal.terminalKey}>
+                    <header className="bridge-terminal-header">
+                      <div>
+                        <strong>{terminal.terminalKey}</strong>
+                        <p className="bridge-path">{terminal.terminalPath}</p>
+                      </div>
+                      <StatusBadge tone={terminal.isActiveTerminal ? "success" : "neutral"}>{terminal.isActiveTerminal ? "ACTIVE" : "IDLE"}</StatusBadge>
+                    </header>
+
+                    <dl className="bridge-terminal-grid">
+                      <div>
+                        <dt>EA Source</dt>
+                        <dd>
+                          <StatusBadge tone={terminal.marketDataEaSourceExists ? "success" : "warning"}>{terminal.marketDataEaSourceExists ? "FOUND" : "INSTALL NEEDED"}</StatusBadge>
+                          <span className="bridge-path">{terminal.marketDataEaSourcePath}</span>
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Compiled EA</dt>
+                        <dd>
+                          <StatusBadge tone={terminal.marketDataEaCompiledExists ? "success" : "danger"}>{terminal.marketDataEaCompiledExists ? "COMPILED" : "MISSING"}</StatusBadge>
+                          <span className="bridge-path">{terminal.marketDataEaCompiledAt ? formatDateTime(terminal.marketDataEaCompiledAt) : terminal.marketDataEaCompiledPath}</span>
+                        </dd>
+                      </div>
+                    </dl>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <EmptyOpsState message="No local MT5 terminal data folders were discovered for this Windows user." />
+            )}
+          </section>
+
+          <section className="ops-list">
+            {overview.dependencies.map((dependency) => (
+              <article key={dependency.code}>
+                <div>
+                  <strong>{dependency.name}</strong>
+                  <p>{dependency.detail}</p>
+                </div>
+                <StatusBadge tone={dependency.isHealthy ? "success" : dependency.status === "UNAVAILABLE" ? "warning" : "danger"}>{dependency.status}</StatusBadge>
+              </article>
+            ))}
+          </section>
+        </>
+      ) : (
+        <EmptyOpsState message="No bridge settings have been returned by the API." />
       )}
     </OperationsPageFrame>
   );
