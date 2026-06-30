@@ -4370,6 +4370,12 @@ th {
   font-size: 13px;
 }
 
+.workbench-alert.info {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
 .workbench-results-stack {
   display: grid;
   gap: 14px;
@@ -7239,42 +7245,46 @@ body,
 
 .process-figma-stage-status {
   position: absolute;
-  left: 10.05%;
-  width: 8.05%;
-  height: 4.1%;
+  left: 9.35%;
+  width: 8.75%;
+  height: 3.62%;
   display: grid;
-  grid-template-columns: 1fr 28px;
-  grid-template-rows: 16px 7px 12px;
+  grid-template-columns: minmax(0, 1fr) 24px;
+  grid-template-rows: 13px 5px 10px;
   align-items: center;
-  gap: 2px 5px;
+  gap: 1px 4px;
   background: #ffffff;
+  overflow: hidden;
 }
 
 .process-figma-stage-status.stage-01 {
-  top: 13.05%;
+  top: 13.18%;
 }
 
 .process-figma-stage-status.stage-02 {
-  top: 19.72%;
+  top: 19.85%;
 }
 
 .process-figma-stage-status.stage-03 {
-  top: 26.4%;
+  top: 26.52%;
 }
 
 .process-figma-stage-status.stage-04 {
-  top: 35.62%;
+  top: 35.73%;
 }
 
 .process-figma-stage-status span {
   justify-self: start;
+  max-width: 100%;
   border-radius: 999px;
-  padding: 3px 8px;
+  padding: 2px 7px;
+  overflow: hidden;
   color: #047857;
   background: #d1fae5;
-  font-size: clamp(5px, .56vw, 8px);
+  font-size: clamp(5px, .5vw, 7px);
   font-weight: 900;
   line-height: 1;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -7299,7 +7309,7 @@ body,
   grid-row: 2 / 3;
   justify-self: end;
   color: #071538;
-  font-size: clamp(5px, .58vw, 8px);
+  font-size: clamp(5px, .5vw, 7px);
   font-weight: 950;
   line-height: 1;
 }
@@ -7308,7 +7318,7 @@ body,
   grid-column: 1 / -1;
   overflow: hidden;
   color: #1f3768;
-  font-size: clamp(5px, .52vw, 7px);
+  font-size: clamp(4px, .45vw, 6px);
   font-style: normal;
   font-weight: 750;
   line-height: 1.15;

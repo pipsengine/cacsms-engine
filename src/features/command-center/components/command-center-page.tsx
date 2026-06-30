@@ -1259,15 +1259,18 @@ async function resolveDataSourcesStageStatus(): Promise<ProcessStageLiveStatus> 
     const response = await fetch("/api/system/data-sources/status", { cache: "no-store" });
     if (!response.ok) throw new Error("Data-source API unavailable");
     const overview = (await response.json()) as DataSourcesOverview;
-    const total = overview.sources.length;
-    const progress = total > 0 ? Math.round((overview.healthy / total) * 100) : 0;
-    const blocked = overview.offline > 0;
+    const criticalSources = overview.sources.filter((source) => ["SQL", "MT5", "CURRENCY_STRENGTH"].includes(source.code));
+    const total = criticalSources.length;
+    const healthy = criticalSources.filter((source) => source.isHealthy).length;
+    const offline = criticalSources.filter((source) => !source.isHealthy).length;
+    const progress = total > 0 ? Math.round((healthy / total) * 100) : 0;
+    const blocked = offline > 0;
 
     return {
       code: "03",
       status: progress === 100 ? "Completed" : blocked ? "Blocked" : "In Progress",
       progress,
-      note: `${overview.healthy} healthy, ${overview.offline} offline`,
+      note: `${healthy} critical healthy, ${offline} offline`,
       tone: progress === 100 ? "green" : blocked ? "red" : "amber",
     };
   } catch {

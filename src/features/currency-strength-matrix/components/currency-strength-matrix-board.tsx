@@ -102,6 +102,7 @@ export function CurrencyStrengthMatrixBoard({ page, Breadcrumbs }: CurrencyStren
   const [aiResult, setAiResult] = useState<HybridDecisionResponse | null>(null);
   const [aiState, setAiState] = useState<LoadState>("idle");
   const [aiError, setAiError] = useState("");
+  const recommendedSymbol = snapshot?.bestOpportunity || snapshot?.focusSymbol || "";
 
   const loadSnapshot = useCallback(async () => {
     setSnapshotState("loading");
@@ -110,12 +111,15 @@ export function CurrencyStrengthMatrixBoard({ page, Breadcrumbs }: CurrencyStren
     try {
       const latest = await getLatestCurrencyStrength();
       setSnapshot(latest);
+      if (latest.bestOpportunity && latest.bestOpportunity !== symbol) {
+        setSymbol(latest.bestOpportunity);
+      }
       setSnapshotState("ready");
     } catch (error) {
       setSnapshotState("error");
       setSnapshotError(error instanceof Error ? error.message : "Currency strength snapshot could not be loaded.");
     }
-  }, []);
+  }, [symbol]);
 
   const loadEnrichment = useCallback(async (selectedSymbol: string) => {
     setEnrichmentState("loading");
@@ -134,13 +138,13 @@ export function CurrencyStrengthMatrixBoard({ page, Breadcrumbs }: CurrencyStren
     try {
       const approved = await getApprovedSymbols();
       setSymbols(approved);
-      if (!approved.some((item) => item.code === symbol)) {
+      if (!approved.some((item) => item.code === symbol) && !recommendedSymbol) {
         setSymbol(approved[0]?.code ?? "EURUSD");
       }
     } catch {
       setSymbols([]);
     }
-  }, [symbol]);
+  }, [recommendedSymbol, symbol]);
 
   useEffect(() => {
     void loadSnapshot();
@@ -157,6 +161,12 @@ export function CurrencyStrengthMatrixBoard({ page, Breadcrumbs }: CurrencyStren
       void loadEnrichment(symbol);
     }
   }, [loadEnrichment, symbol]);
+
+  useEffect(() => {
+    setAiResult(null);
+    setAiError("");
+    setAiState("idle");
+  }, [symbol]);
 
   const rankedCurrencies = useMemo(() => {
     if (!snapshot) {
@@ -323,13 +333,23 @@ export function CurrencyStrengthMatrixBoard({ page, Breadcrumbs }: CurrencyStren
                 <label className="cs-symbol-field">
                   Focus symbol
                   <select value={symbol} onChange={(event) => setSymbol(event.target.value)}>
-                    {(symbols.length > 0 ? symbols.map((item) => item.code) : ["EURUSD", "GBPUSD", "XAUUSD"]).map((code) => (
+                    {Array.from(new Set([
+                      ...(recommendedSymbol ? [recommendedSymbol] : []),
+                      ...(symbols.length > 0 ? symbols.map((item) => item.code) : ["EURUSD", "GBPUSD", "USDCAD", "XAUUSD"]),
+                    ])).map((code) => (
                       <option key={code} value={code}>
-                        {code}
+                        {code}{code === recommendedSymbol ? " - live best" : ""}
                       </option>
                     ))}
                   </select>
                 </label>
+
+                {recommendedSymbol && symbol !== recommendedSymbol && (
+                  <div className="workbench-alert info" role="status">
+                    <AlertCircle size={16} />
+                    <span>Live best opportunity is {recommendedSymbol}; current gate is evaluating {symbol}.</span>
+                  </div>
+                )}
 
                 {enrichment && (
                   <div className="cs-enrichment-card">

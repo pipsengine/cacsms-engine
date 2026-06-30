@@ -74,7 +74,7 @@ public sealed class Mt5TelemetryService(ICurrencyStrengthIntelligenceService cur
             {
                 if (!CompositeWeights.ContainsKey(timeframeMove.Key)) continue;
 
-                var scaledMove = ScaleMoveToStrength(timeframeMove.Value);
+                var scaledMove = ScaleMoveToStrength(timeframeMove.Key, timeframeMove.Value);
                 timeframeStrength[baseCurrency][timeframeMove.Key] += scaledMove;
                 timeframeStrength[quoteCurrency][timeframeMove.Key] -= scaledMove;
                 timeframeObservationCount[baseCurrency][timeframeMove.Key]++;
@@ -204,9 +204,30 @@ public sealed class Mt5TelemetryService(ICurrencyStrengthIntelligenceService cur
             StringComparer.OrdinalIgnoreCase);
     }
 
-    private static decimal ScaleMoveToStrength(decimal moveBps)
+    private static decimal ScaleMoveToStrength(string timeframe, decimal moveBps)
     {
-        return Math.Clamp(Math.Round(moveBps, 2), -100, 100);
+        var threshold = timeframe.ToUpperInvariant() switch
+        {
+            "M15" => 8m,
+            "M30" => 12m,
+            "H1" => 18m,
+            "H4" => 35m,
+            "H8" => 50m,
+            "H12" => 65m,
+            "D1" => 95m,
+            "W1" => 180m,
+            "MN1" => 350m,
+            "Y1" => 650m,
+            _ => 50m
+        };
+
+        if (moveBps == 0)
+        {
+            return 0;
+        }
+
+        var normalized = 100m * moveBps / (Math.Abs(moveBps) + threshold);
+        return Math.Clamp(Math.Round(normalized, 2), -100, 100);
     }
 
     private static decimal CalculateDivergence(Dictionary<string, decimal> strengths)
